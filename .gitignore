@@ -10,6 +10,15 @@
 *.dvi
 *.log
 *.out
+*.xls
+*.docx
+*.pptx
+*.*;*
+*converted*
+*.lyx
+*#
+doc/html/*
+doc/html.*
 .vscode
 doxydoc
 test/unittests

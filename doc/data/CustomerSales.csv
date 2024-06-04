@@ -1,0 +1,1267 @@
+﻿Date,Salesperson,Source,Suburb,Quote,Discount,Price
+01/04/2024,Ford Prefect,Bartercard,Wyoming,8967.21,876.3,8090.91
+01/04/2024,Slartibartfast,Business Referral,Not Available,227.27,0,227.27
+01/04/2024,Arthur Dent,Business Referral,Bateau Bay,3766.6,174.84,3591.76
+01/04/2024,Ford Prefect,Business Referral,Gosford,1285.57,0,1285.57
+01/04/2024,Arthur Dent,Business Referral,Wyoming,568.9,0,568.9
+01/04/2024,Ford Prefect,Business Referral,Bateau Bay,300.98,0,300.98
+01/04/2024,Arthur Dent,Business Referral,Yattalunga,470.35,0,470.35
+01/04/2024,Arthur Dent,Business Referral,Yattalunga,3996.35,178.17,3818.18
+01/04/2024,Ford Prefect,Business Referral,Bensville,1902.5,0,1902.5
+01/04/2024,Arthur Dent,Car Signage,Narara,6733.2,641.38,6091.82
+01/04/2024,Ford Prefect,Car Signage,Wamberal,2508.6,190.42,2318.18
+01/04/2024,Trillian,Car Signage,Wyoming,309.09,0,309.09
+01/04/2024,Ford Prefect,Car Signage,Wyoming,2752,161.09,2590.91
+01/04/2024,Ford Prefect,Car Signage,Wyoming,6881.2,381.05,6500.15
+01/04/2024,Arthur Dent,Car Signage,Narara,4881.4,154.13,4727.27
+01/04/2024,Ford Prefect,Car Signage,Booker Bay,2722.76,86.4,2636.36
+01/04/2024,Arthur Dent,Car Signage,Not Available,1720.55,0,1720.55
+01/04/2024,Ford Prefect,Car Signage,Chain Valley Bay,3289.72,585.63,2704.09
+01/04/2024,Ford Prefect,Drive/Walking Past,Aberglasslyn,1455.36,0,1455.36
+01/04/2024,Arthur Dent,Drive/Walking Past,Umina Beach,2263.16,172.25,2090.91
+01/04/2024,Ford Prefect,Drive/Walking Past,Umina Beach,2579.19,170.1,2409.09
+01/04/2024,Ford Prefect,Drive/Walking Past,Wyoming,1537.68,0,1537.68
+01/04/2024,Arthur Dent,Drive/Walking Past,Avoca,7047.14,592.18,6454.96
+01/04/2024,Ford Prefect,Drive/Walking Past,Terrigal,10543.59,843.49,9700.1
+01/04/2024,Ford Prefect,Drive/Walking Past,Umina Beach,1135.88,82.25,1053.63
+01/04/2024,Ford Prefect,Drive/Walking Past,Umina Beach,2520.43,126.02,2394.41
+01/04/2024,Ford Prefect,Drive/Walking Past,Wyoming,1615.01,0,1615.01
+01/04/2024,Slartibartfast,Drive/Walking Past,Wyoming,1278,0,1278
+01/04/2024,Ford Prefect,Drive/Walking Past,Wyoming,473.86,0,473.86
+01/04/2024,Ford Prefect,Drive/Walking Past,Avoca Beach,514.92,0,514.92
+01/04/2024,Ford Prefect,Drive/Walking Past,Avoca Beach,9743.2,487.16,9256.04
+01/04/2024,Arthur Dent,Drive/Walking Past,Narara,2379.89,198.07,2181.82
+01/04/2024,Arthur Dent,Drive/Walking Past,Terrigal,4648,738.91,3909.09
+01/04/2024,Arthur Dent,Drive/Walking Past,Yattalunga,2094.81,104.74,1990.07
+01/04/2024,Ford Prefect,Drive/Walking Past,Avoca Beach,2370.81,143.54,2227.27
+01/04/2024,Arthur Dent,Drive/Walking Past,Wyoming,644.69,0,644.69
+01/04/2024,Trillian,Drive/Walking Past,Wyoming,629.18,0,629.18
+01/04/2024,Arthur Dent,Drive/Walking Past,Yattalunga,4907.44,0,4907.44
+01/04/2024,Arthur Dent,Drive/Walking Past,Not Available,1803.33,121.51,1681.82
+01/04/2024,Arthur Dent,Drive/Walking Past,Bateau Bay,515.78,0,515.78
+01/04/2024,Arthur Dent,Drive/Walking Past,Bateau Bay,3143.82,234.73,2909.09
+01/04/2024,Ford Prefect,Drive/Walking Past,Bateau Bay,3454.24,214.24,3240
+02/04/2024,Ford Prefect,Drive/Walking Past,Gorokan,2035.82,0,2035.82
+02/04/2024,Ford Prefect,Drive/Walking Past,Gorokan,858.82,0,858.82
+02/04/2024,Arthur Dent,Drive/Walking Past,Green Point,1444.37,0,1444.37
+02/04/2024,Arthur Dent,Drive/Walking Past,Umina Beach,814.68,0,814.68
+02/04/2024,Ford Prefect,Drive/Walking Past,Umina Beach,5422.8,331.89,5090.91
+02/04/2024,Ford Prefect,Drive/Walking Past,Wyoming,2476.08,99.78,2376.3
+02/04/2024,Arthur Dent,Drive/Walking Past,Wyoming,5438.46,438.46,5000
+02/04/2024,Ford Prefect,Drive/Walking Past,Wyoming,6306.44,0,6306.44
+02/04/2024,Ford Prefect,Drive/Walking Past,Green Point,13770.24,861.15,12909.09
+02/04/2024,Arthur Dent,Drive/Walking Past,Umina Beach,355.93,0,355.93
+02/04/2024,Arthur Dent,Drive/Walking Past,Wyoming,5918.29,414.65,5503.64
+02/04/2024,Ford Prefect,Drive/Walking Past,Wyongah,570.22,0,570.22
+02/04/2024,Arthur Dent,Drive/Walking Past,Yattalunga,1963.98,0,1963.98
+02/04/2024,Arthur Dent,Drive/Walking Past,Chittaway Bay,5667.44,383.12,5284.32
+02/04/2024,Ford Prefect,Drive/Walking Past,Chittaway Bay,1541.98,0,1541.98
+02/04/2024,Arthur Dent,Drive/Walking Past,Lisarow,1791.81,0,1791.81
+02/04/2024,Ford Prefect,Drive/Walking Past,Not Available,12794.51,0,12794.51
+02/04/2024,Ford Prefect,Drive/Walking Past,Not Available,1920.23,0,1920.23
+02/04/2024,Arthur Dent,Drive/Walking Past,Not Available,3800.68,0,3800.68
+02/04/2024,Ford Prefect,Drive/Walking Past,Erina,3304.94,0,3304.94
+02/04/2024,Arthur Dent,Drive/Walking Past,Erina,2522.71,201.82,2320.89
+02/04/2024,Ford Prefect,Drive/Walking Past,Ettalong Beach,1236.89,55.07,1181.82
+02/04/2024,Ford Prefect,Drive/Walking Past,Terrigal,539.5,0,539.5
+02/04/2024,Arthur Dent,Drive/Walking Past,Toukley,3132,132,3000
+02/04/2024,Ford Prefect,Drive/Walking Past,Wyoming,361.85,0,361.85
+02/04/2024,Slartibartfast,Drive/Walking Past,Wyoming,2533.33,0,2533.33
+02/04/2024,Slartibartfast,Drive/Walking Past,Wyoming,639.53,0,639.53
+02/04/2024,Arthur Dent,Drive/Walking Past,Wyoming,5740.12,281.03,5459.09
+02/04/2024,Arthur Dent,Drive/Walking Past,Wyoming,1773,0,1773
+02/04/2024,Arthur Dent,Drive/Walking Past,Yattalunga,10093.15,819.97,9273.18
+02/04/2024,Arthur Dent,Drive/Walking Past,Bateau Bay,6914.98,315.54,6599.44
+02/04/2024,Arthur Dent,Drive/Walking Past,Erina,2139.84,0,2139.84
+02/04/2024,Ford Prefect,Drive/Walking Past,Erina,11488.33,899.24,10589.09
+02/04/2024,Arthur Dent,Drive/Walking Past,Magenta,853.56,0,853.56
+02/04/2024,Arthur Dent,Drive/Walking Past,Terrigal,1944.82,0,1944.82
+02/04/2024,Ford Prefect,Drive/Walking Past,Terrigal,975.53,0,975.53
+02/04/2024,Trillian,Drive/Walking Past,Wyoming,126.36,0,126.36
+02/04/2024,Ford Prefect,Drive/Walking Past,Wyoming,1362.48,0,1362.48
+02/04/2024,Trillian,Drive/Walking Past,Gosford,303.43,0,303.43
+02/04/2024,Ford Prefect,Drive/Walking Past,Gosford,4680.31,271.22,4409.09
+02/04/2024,Ford Prefect,Drive/Walking Past,Gosford,3062.5,160.68,2901.82
+02/04/2024,Ford Prefect,Drive/Walking Past,Lisarow,373.39,0,373.39
+02/04/2024,Ford Prefect,Drive/Walking Past,Macmasters Beach,5049.57,249.57,4800
+02/04/2024,Arthur Dent,Drive/Walking Past,Matcham,1161.03,0,1161.03
+02/04/2024,Arthur Dent,Drive/Walking Past,Terrigal,2850.12,0,2850.12
+03/04/2024,Arthur Dent,Drive/Walking Past,Kincumber,9326.8,599.53,8727.27
+03/04/2024,Arthur Dent,Drive/Walking Past,Kincumber,3149.31,103.85,3045.46
+03/04/2024,Arthur Dent,Drive/Walking Past,Kincumber,329.48,0,329.48
+03/04/2024,Arthur Dent,Drive/Walking Past,Kincumber,762.55,0,762.55
+03/04/2024,Arthur Dent,Drive/Walking Past,Lisarow,6472.39,245.12,6227.27
+03/04/2024,Ford Prefect,Drive/Walking Past,Terrigal,2424.83,0,2424.83
+03/04/2024,Arthur Dent,Drive/Walking Past,Wyoming,4528.3,0,4528.3
+03/04/2024,Ford Prefect,Drive/Walking Past,Not Available,2222.75,0,2222.75
+03/04/2024,Trillian,Drive/Walking Past,Bateau Bay,11964.85,0,11964.85
+03/04/2024,Ford Prefect,Drive/Walking Past,Bateau Bay,1438.54,0,1438.54
+03/04/2024,Ford Prefect,Drive/Walking Past,Belmont,1190.01,44.55,1145.46
+03/04/2024,Ford Prefect,Drive/Walking Past,Bateau Bay,170,0,170
+03/04/2024,Arthur Dent,Drive/Walking Past,Bateau Bay,1480.11,0,1480.11
+03/04/2024,Ford Prefect,Drive/Walking Past,Bateau Bay,1277.86,0,1277.86
+03/04/2024,Arthur Dent,Drive/Walking Past,Lisarow,825.86,0,825.86
+03/04/2024,Arthur Dent,Drive/Walking Past,Lisarow,316.2,0,316.2
+03/04/2024,Arthur Dent,Drive/Walking Past,Lisarow,548.64,0,548.64
+03/04/2024,Ford Prefect,Drive/Walking Past,Yattalunga,767.52,0,767.52
+03/04/2024,Ford Prefect,Drive/Walking Past,Not Available,2477.76,91.41,2386.35
+03/04/2024,Arthur Dent,Drive/Walking Past,Bateau Bay,4143.52,188.97,3954.55
+03/04/2024,Arthur Dent,Drive/Walking Past,Booker Bay,2693.3,102.39,2590.91
+03/04/2024,Ford Prefect,Drive/Walking Past,Davistown,1007.35,0,1007.35
+03/04/2024,Trillian,Drive/Walking Past,Lisarow,486.38,0,486.38
+03/04/2024,Arthur Dent,Drive/Walking Past,Long Jetty,2213.13,31.31,2181.82
+03/04/2024,Arthur Dent,Drive/Walking Past,Yattalunga,1075.45,0,1075.45
+03/04/2024,Ford Prefect,Drive/Walking Past,Cooranbong,2606.41,130.32,2476.09
+03/04/2024,Ford Prefect,Drive/Walking Past,Davistown,1322.28,67.74,1254.54
+03/04/2024,Ford Prefect,Drive/Walking Past,Davistown,3642.52,392.26,3250.26
+03/04/2024,Ford Prefect,Drive/Walking Past,Narara,469.2,0,469.2
+03/04/2024,Arthur Dent,Drive/Walking Past,Not Available,8447.1,810.74,7636.36
+03/04/2024,Arthur Dent,Drive/Walking Past,Berkeley Vale,1360.35,0,1360.35
+03/04/2024,Arthur Dent,Drive/Walking Past,Berkeley Vale,638.77,0,638.77
+03/04/2024,Ford Prefect,Drive/Walking Past,Berkeley Vale,2333.6,97.24,2236.36
+03/04/2024,Ford Prefect,Drive/Walking Past,Chittaway Bay,1811.51,84.78,1726.73
+04/04/2024,Arthur Dent,Drive/Walking Past,Copacabana,7795.28,249.82,7545.46
+04/04/2024,Arthur Dent,Drive/Walking Past,Narara,849.41,0,849.41
+04/04/2024,Ford Prefect,Drive/Walking Past,Narara,1474.93,43.85,1431.08
+04/04/2024,Ford Prefect,Drive/Walking Past,Narara,5978.53,297.62,5680.91
+04/04/2024,Arthur Dent,Drive/Walking Past,Not Available,1110.73,40.23,1070.5
+04/04/2024,Trillian,Drive/Walking Past,Berkeley Vale,250,0,250
+04/04/2024,Arthur Dent,Drive/Walking Past,Erina,386.51,0,386.51
+04/04/2024,Ford Prefect,Drive/Walking Past,Pearl Beach,3965.28,146.65,3818.63
+04/04/2024,Arthur Dent,Drive/Walking Past,Pearl Beach,462.48,0,462.48
+04/04/2024,Ford Prefect,Drive/Walking Past,Terrigal,5689.8,326.16,5363.64
+04/04/2024,Ford Prefect,Drive/Walking Past,Terrigal,1087.16,0,1087.16
+04/04/2024,Arthur Dent,Drive/Walking Past,Not Available,13977.73,432.27,13545.46
+04/04/2024,Ford Prefect,Drive/Walking Past,Not Available,1066.75,0,1066.75
+04/04/2024,Arthur Dent,Drive/Walking Past,Not Available,1317.65,0,1317.65
+04/04/2024,Ford Prefect,Drive/Walking Past,Not Available,1685.84,67.64,1618.2
+04/04/2024,Arthur Dent,Drive/Walking Past,Tumbi Umbi,3607.88,0,3607.88
+04/04/2024,Ford Prefect,Drive/Walking Past,Wamberal,5195.4,242.97,4952.43
+04/04/2024,Arthur Dent,Drive/Walking Past,Wamberal,6432.83,250.1,6182.73
+04/04/2024,Trillian,Drive/Walking Past,Wyoming,272.73,0,272.73
+04/04/2024,Ford Prefect,Drive/Walking Past,Wyoming,3723.08,372.31,3350.77
+04/04/2024,Ford Prefect,Drive/Walking Past,Gosford,1825.11,52.39,1772.72
+04/04/2024,Ford Prefect,Drive/Walking Past,Green Point,1360.08,0,1360.08
+04/04/2024,Arthur Dent,Drive/Walking Past,Yattalunga,6050.12,231.94,5818.18
+04/04/2024,Trillian,Drive/Walking Past,Yattalunga,870.75,0,870.75
+04/04/2024,Arthur Dent,Drive/Walking Past,Not Available,5200.77,225.71,4975.06
+04/04/2024,Arthur Dent,Drive/Walking Past,Not Available,1424.75,0,1424.75
+04/04/2024,Arthur Dent,Drive/Walking Past,Hamlyn Terrace,1690.78,0,1690.78
+04/04/2024,Ford Prefect,Drive/Walking Past,Kariong,8105.98,0,8105.98
+04/04/2024,Arthur Dent,Drive/Walking Past,Killarney Vale,2772.11,90.29,2681.82
+04/04/2024,Arthur Dent,Drive/Walking Past,Killarney Vale,469.11,0,469.11
+04/04/2024,Ford Prefect,Drive/Walking Past,Narara,747.6,0,747.6
+04/04/2024,Ford Prefect,Drive/Walking Past,Narara,1935.26,68.89,1866.37
+04/04/2024,Ford Prefect,Drive/Walking Past,Narara,5609.83,246.18,5363.65
+04/04/2024,Arthur Dent,Drive/Walking Past,Woy Woy,9170.92,443.65,8727.27
+04/04/2024,Ford Prefect,Drive/Walking Past,Yattalunga,836.5,0,836.5
+04/04/2024,Arthur Dent,Drive/Walking Past,Wyoming,2571.38,71.38,2500
+04/04/2024,Ford Prefect,Drive/Walking Past,Wyoming,2404.41,0,2404.41
+04/04/2024,Ford Prefect,Drive/Walking Past,Wyoming,7204.13,322.31,6881.82
+04/04/2024,Arthur Dent,Drive/Walking Past,Budgewoi,1610.72,0,1610.72
+04/04/2024,Arthur Dent,Drive/Walking Past,Umina Beach,6382.18,0,6382.18
+04/04/2024,Arthur Dent,Drive/Walking Past,Wyoming,2003.7,0,2003.7
+04/04/2024,Ford Prefect,Drive/Walking Past,Yattalunga,9295.56,464.78,8830.78
+04/04/2024,Arthur Dent,Drive/Walking Past,Not Available,491.71,0,491.71
+04/04/2024,Arthur Dent,Drive/Walking Past,Wyoming,489.11,0,489.11
+04/04/2024,Arthur Dent,Drive/Walking Past,Wyoming,3804.49,0,3804.49
+04/04/2024,Ford Prefect,Drive/Walking Past,Yattalunga,1431.1,167.46,1263.64
+05/04/2024,Ford Prefect,Drive/Walking Past,Not Available,5797.29,0,5797.29
+05/04/2024,Ford Prefect,Drive/Walking Past,Green Point,2444.46,80.83,2363.63
+05/04/2024,Arthur Dent,Drive/Walking Past,Umina Beach,3647.31,101.85,3545.46
+05/04/2024,Arthur Dent,Drive/Walking Past,Woy Woy,1617.36,64.21,1553.15
+05/04/2024,Ford Prefect,Drive/Walking Past,Wyee,1615.93,0,1615.93
+05/04/2024,Ford Prefect,Drive/Walking Past,Wyoming,3714.75,123.85,3590.9
+05/04/2024,Ford Prefect,Drive/Walking Past,Wyoming,476.14,0,476.14
+05/04/2024,Arthur Dent,Drive/Walking Past,Wyoming,778.19,0,778.19
+05/04/2024,Ford Prefect,Drive/Walking Past,Narara,1046.44,0,1046.44
+05/04/2024,Ford Prefect,Drive/Walking Past,None Supplied,2870.81,114.84,2755.97
+05/04/2024,Slartibartfast,Drive/Walking Past,Wyoming,377.27,0,377.27
+05/04/2024,Arthur Dent,Drive/Walking Past,Yattalunga,1537.48,52.43,1485.05
+05/04/2024,Arthur Dent,Drive/Walking Past,Not Available,2454.37,90.75,2363.62
+05/04/2024,Arthur Dent,Drive/Walking Past,Not Available,445.4,0,445.4
+05/04/2024,Ford Prefect,Drive/Walking Past,Bensville,5128,0,5128
+05/04/2024,Arthur Dent,Drive/Walking Past,Bensville,4448,175.27,4272.73
+05/04/2024,Ford Prefect,Drive/Walking Past,East Gosford,2148.37,0,2148.37
+05/04/2024,Arthur Dent,Drive/Walking Past,East Gosford,2850.87,123.6,2727.27
+05/04/2024,Trillian,Drive/Walking Past,Macmasters Beach,168.54,0,168.54
+05/04/2024,Trillian,Drive/Walking Past,Narara,56.6,0,56.6
+05/04/2024,Ford Prefect,Drive/Walking Past,Not Available,198.73,0,198.73
+05/04/2024,Ford Prefect,Drive/Walking Past,Berkeley Vale,1206.32,48.25,1158.07
+05/04/2024,Arthur Dent,Drive/Walking Past,Berkeley Vale,1794.01,0,1794.01
+05/04/2024,Trillian,Drive/Walking Past,Yattalunga,80,0,80
+05/04/2024,Arthur Dent,Drive/Walking Past,Yattalunga,2910.1,87.3,2822.8
+05/04/2024,Ford Prefect,Drive/Walking Past,Yattalunga,1854.54,0,1854.54
+05/04/2024,Ford Prefect,Drive/Walking Past,Lake Munmorah,2366.7,0,2366.7
+05/04/2024,Arthur Dent,Drive/Walking Past,Wyong,371.64,0,371.64
+05/04/2024,Arthur Dent,Drive/Walking Past,Yattalunga,3181.16,0,3181.16
+05/04/2024,Arthur Dent,Drive/Walking Past,Yattalunga,4366.58,0,4366.58
+05/04/2024,Arthur Dent,Drive/Walking Past,Not Available,3854.33,0,3854.33
+05/04/2024,Ford Prefect,Facebook,Avoca Beach,1447.74,0,1447.74
+05/04/2024,Arthur Dent,Facebook,Kincumber,2700.05,108.24,2591.81
+05/04/2024,Arthur Dent,Facebook,Gosford,2182.73,0,2182.73
+05/04/2024,Arthur Dent,Facebook,Bateau Bay,960.08,0,960.08
+05/04/2024,Arthur Dent,Facebook,Bateau Bay,629.75,0,629.75
+05/04/2024,Ford Prefect,Facebook,Bateau Bay,4890.23,0,4890.23
+05/04/2024,Arthur Dent,Facebook,Caves Beach,4218.41,218.41,4000
+05/04/2024,Ford Prefect,Facebook,Davistown,1223.7,0,1223.7
+06/04/2024,Arthur Dent,Facebook,Berkeley Vale,2901.3,0,2901.3
+06/04/2024,Ford Prefect,Gary Lead,Tumbi Umbi,1193.41,119.35,1074.06
+06/04/2024,Ford Prefect,Gary Lead,Yattalunga,17387.5,1478.41,15909.09
+06/04/2024,Ford Prefect,Gary Lead,Erina,1746.59,174.66,1571.93
+06/04/2024,Ford Prefect,Gary Lead,Macmasters Beach,9279.35,927.94,8351.41
+06/04/2024,Ford Prefect,Gary Lead,Lisarow,759.74,75.97,683.77
+06/04/2024,Arthur Dent,Hi Pages,Chittaway Bay,4453.03,180.3,4272.73
+06/04/2024,Trillian,Hi Pages,Terrigal,5295.8,0,5295.8
+06/04/2024,Arthur Dent,Hi Pages,Chittaway Bay,443.72,0,443.72
+06/04/2024,Ford Prefect,Internet Order,Wyoming,2042.54,0,2042.54
+06/04/2024,Arthur Dent,Internet Order,Berkeley Vale,10660.55,387.83,10272.72
+06/04/2024,Arthur Dent,Internet Order,Yattalunga,1081.91,0,1081.91
+06/04/2024,Arthur Dent,Internet Order,Wyoming,962.75,0,962.75
+06/04/2024,Arthur Dent,Internet Order,Umina Beach,4601.53,146.98,4454.55
+06/04/2024,Ford Prefect,Internet Order,Yattalunga,11969.78,0,11969.78
+06/04/2024,Arthur Dent,Internet Order,Umina Beach,3307.54,0,3307.54
+06/04/2024,Arthur Dent,Internet/Google,Avoca,3588.76,316.04,3272.72
+06/04/2024,Ford Prefect,Internet/Google,Davistown,1006.96,52.42,954.54
+06/04/2024,Arthur Dent,Internet/Google,None Supplied,3985.92,440.46,3545.46
+06/04/2024,Ford Prefect,Internet/Google,None Supplied,3044.91,0,3044.91
+06/04/2024,Arthur Dent,Internet/Google,None Supplied,4166.82,0,4166.82
+06/04/2024,Ford Prefect,Internet/Google,Terrigal,1977.67,68.58,1909.09
+06/04/2024,Ford Prefect,Internet/Google,Terrigal,531.44,0,531.44
+06/04/2024,Ford Prefect,Internet/Google,The Entrance North,4622.56,369.81,4252.75
+06/04/2024,Arthur Dent,Internet/Google,Umina Beach,3600.72,327.99,3272.73
+06/04/2024,Ford Prefect,Internet/Google,Umina Beach,4666.94,348.75,4318.19
+06/04/2024,Zaphod Beeblebrox,Internet/Google,Umina Beach,218.18,0,218.18
+06/04/2024,Petunia Bowl,Internet/Google,Umina Beach,4331.88,0,4331.88
+06/04/2024,Ford Prefect,Internet/Google,Umina Beach,1954.55,0,1954.55
+06/04/2024,Ford Prefect,Internet/Google,Wyoming,13255.17,1325.52,11929.65
+06/04/2024,Arthur Dent,Internet/Google,Wyoming,1986.17,0,1986.17
+06/04/2024,Arthur Dent,Internet/Google,Avoca Beach,5582.85,491.95,5090.9
+06/04/2024,Ford Prefect,Internet/Google,Avoca Beach,1106.75,0,1106.75
+06/04/2024,Slartibartfast,Internet/Google,Kincumber,158.18,0,158.18
+06/04/2024,Ford Prefect,Internet/Google,Kincumber,2666.7,75.79,2590.91
+06/04/2024,Ford Prefect,Internet/Google,Kincumber,9314.55,-1862.91,11177.46
+06/04/2024,Ford Prefect,Internet/Google,Narara,4705.95,-941.19,5647.14
+07/04/2024,Arthur Dent,Internet/Google,Narara,7552.7,473.61,7079.09
+07/04/2024,Ford Prefect,Internet/Google,None Supplied,525.45,0,525.45
+07/04/2024,Arthur Dent,Internet/Google,Terrigal,1344,71.27,1272.73
+07/04/2024,Arthur Dent,Internet/Google,Terrigal,1268.85,87.04,1181.81
+07/04/2024,Ford Prefect,Internet/Google,Terrigal,3144.79,235.86,2908.93
+07/04/2024,Arthur Dent,Internet/Google,Terrigal,6100.09,708.18,5391.91
+07/04/2024,Ford Prefect,Internet/Google,Terrigal,2809.64,197.27,2612.37
+07/04/2024,Ford Prefect,Internet/Google,Umina Beach,7409.27,1063.64,6345.63
+07/04/2024,Ford Prefect,Internet/Google,Umina Beach,1311.65,65.58,1246.07
+07/04/2024,Ford Prefect,Internet/Google,Wamberal,1889.6,71.42,1818.18
+07/04/2024,Ford Prefect,Internet/Google,Wamberal,5308.77,126.95,5181.82
+07/04/2024,Ford Prefect,Internet/Google,West Gosford,8256.19,496.19,7760
+07/04/2024,Ford Prefect,Internet/Google,Not Available,2151.6,-430.32,2581.92
+07/04/2024,Arthur Dent,Internet/Google,Avoca Beach,751,0,751
+07/04/2024,Ford Prefect,Internet/Google,Avoca Beach,6156.68,492.54,5664.14
+07/04/2024,Ford Prefect,Internet/Google,Avoca Beach,6125.33,306.26,5819.07
+07/04/2024,Arthur Dent,Internet/Google,Avoca Beach,1206.37,0,1206.37
+07/04/2024,Arthur Dent,Internet/Google,Avoca Beach,1228.18,0,1228.18
+07/04/2024,Ford Prefect,Internet/Google,Terrigal,8323.88,0,8323.88
+07/04/2024,Arthur Dent,Internet/Google,Terrigal,8736.75,827.65,7909.1
+07/04/2024,Ford Prefect,Internet/Google,Terrigal,3410.9,162.35,3248.55
+07/04/2024,Ford Prefect,Internet/Google,Umina Beach,7101.35,533.17,6568.18
+07/04/2024,Ford Prefect,Internet/Google,Umina Beach,2218.18,0,2218.18
+07/04/2024,Ford Prefect,Internet/Google,Wamberal,31347.38,3134.74,28212.64
+07/04/2024,Arthur Dent,Internet/Google,Wyoming,688.14,0,688.14
+07/04/2024,Petunia Bowl,Internet/Google,Wyoming,3286.94,0,3286.94
+07/04/2024,Arthur Dent,Internet/Google,Wyongah,3818,528,3290
+07/04/2024,Arthur Dent,Internet/Google,Yattalunga,6903.81,721.99,6181.82
+07/04/2024,Arthur Dent,Internet/Google,Yattalunga,1660.55,160.55,1500
+07/04/2024,Ford Prefect,Internet/Google,Yattalunga,7972.63,-1594.53,9567.16
+07/04/2024,Arthur Dent,Internet/Google,Yattalunga,2768.68,222.32,2546.36
+07/04/2024,Ford Prefect,Internet/Google,Avoca Beach,16401.28,868.55,15532.73
+07/04/2024,Slartibartfast,Internet/Google,Bateau Bay,495.45,0,495.45
+07/04/2024,Arthur Dent,Internet/Google,Erina,3784.87,147.6,3637.27
+07/04/2024,Arthur Dent,Internet/Google,Pearl Beach,3790.92,336.37,3454.55
+07/04/2024,Arthur Dent,Internet/Google,Point Frederick,1535.1,80.55,1454.55
+07/04/2024,Arthur Dent,Internet/Google,Point Frederick,4880.05,424.6,4455.45
+07/04/2024,Arthur Dent,Internet/Google,Point Frederick,289.65,0,289.65
+07/04/2024,Ford Prefect,Internet/Google,Terrigal,9752.6,661.69,9090.91
+07/04/2024,Arthur Dent,Internet/Google,Wyoming,316.2,0,316.2
+07/04/2024,Trillian,Internet/Google,Wyoming,5952.77,36.41,5916.36
+07/04/2024,Arthur Dent,Internet/Google,Wyoming,1482.12,0,1482.12
+07/04/2024,Ford Prefect,Internet/Google,Yattalunga,3483,0,3483
+07/04/2024,Ford Prefect,Internet/Google,Yattalunga,6002.18,300.11,5702.07
+07/04/2024,Arthur Dent,Internet/Google,Yattalunga,663.06,0,663.06
+07/04/2024,Slartibartfast,Internet/Google,Not Available,512.73,0,512.73
+07/04/2024,Ford Prefect,Internet/Google,Bateau Bay,4351.66,214.85,4136.81
+07/04/2024,Ford Prefect,Internet/Google,Bateau Bay,3441.7,0,3441.7
+08/04/2024,Arthur Dent,Internet/Google,Bateau Bay,12922.16,1012.62,11909.54
+08/04/2024,Ford Prefect,Internet/Google,Green Point,8275.79,98.52,8177.27
+08/04/2024,Ford Prefect,Internet/Google,Killarney Vale,24395.1,1219.75,23175.35
+08/04/2024,Arthur Dent,Internet/Google,Wyoming,866.8,0,866.8
+08/04/2024,Ford Prefect,Internet/Google,Wyoming,996.45,0,996.45
+08/04/2024,Arthur Dent,Internet/Google,Wyoming,4429.86,218.05,4211.81
+08/04/2024,Arthur Dent,Internet/Google,Wyoming,9247.27,792.73,8454.54
+08/04/2024,Slartibartfast,Internet/Google,Wyoming,6847.44,1196.53,5650.91
+08/04/2024,Ford Prefect,Internet/Google,Wyoming,2222.45,95.18,2127.27
+08/04/2024,Ford Prefect,Internet/Google,Yarramalong,684.56,0,684.56
+08/04/2024,Ford Prefect,Internet/Google,Yattalunga,17861.38,1071.68,16789.7
+08/04/2024,Ford Prefect,Internet/Google,Yattalunga,7366.14,547.52,6818.62
+08/04/2024,Arthur Dent,Internet/Google,Yattalunga,3746,540.55,3205.45
+08/04/2024,Ford Prefect,Internet/Google,Bateau Bay,418.92,0,418.92
+08/04/2024,Ford Prefect,Internet/Google,Bateau Bay,2524.83,70.28,2454.55
+08/04/2024,Ford Prefect,Internet/Google,Daleys Point,8887.12,448.16,8438.96
+08/04/2024,Arthur Dent,Internet/Google,Green Point,4543.27,270.55,4272.72
+08/04/2024,Arthur Dent,Internet/Google,Killarney Vale,391.38,0,391.38
+08/04/2024,Arthur Dent,Internet/Google,Terrigal,20986.91,986.91,20000
+08/04/2024,Arthur Dent,Internet/Google,Terrigal,8945.72,0,8945.72
+08/04/2024,Arthur Dent,Internet/Google,Terrigal,21820.54,1820.54,20000
+08/04/2024,Ford Prefect,Internet/Google,Umina Beach,2381.84,0,2381.84
+08/04/2024,Arthur Dent,Internet/Google,Umina Beach,637.92,0,637.92
+08/04/2024,Ford Prefect,Internet/Google,Umina Beach,7452.21,372.61,7079.6
+08/04/2024,Ford Prefect,Internet/Google,Umina Beach,5279.63,279.63,5000
+08/04/2024,Zaphod Beeblebrox,Internet/Google,Umina Beach,9509.75,950.97,8558.78
+08/04/2024,Ford Prefect,Internet/Google,Umina Beach,3258.29,0,3258.29
+08/04/2024,Ford Prefect,Internet/Google,Wyoming,1759.79,0,1759.79
+08/04/2024,Trillian,Internet/Google,Wyoming,262.26,0,262.26
+08/04/2024,Trillian,Internet/Google,Wyoming,371.29,7.2,364.09
+08/04/2024,Ford Prefect,Internet/Google,Wyoming,2152,61.09,2090.91
+08/04/2024,Arthur Dent,Internet/Google,Yattalunga,1190.01,13.65,1176.36
+08/04/2024,Ford Prefect,Internet/Google,Bateau Bay,2073.17,0,2073.17
+08/04/2024,Ford Prefect,Internet/Google,Bateau Bay,4175.07,175.07,4000
+08/04/2024,Ford Prefect,Internet/Google,Bateau Bay,6157.92,248.83,5909.09
+08/04/2024,Arthur Dent,Internet/Google,Bateau Bay,2001.11,92.02,1909.09
+08/04/2024,Arthur Dent,Internet/Google,Bateau Bay,2859.87,132.15,2727.72
+08/04/2024,Ford Prefect,Internet/Google,Chittaway Bay,30440.65,0,30440.65
+08/04/2024,Ford Prefect,Internet/Google,Kincumber,3489.2,125.56,3363.64
+08/04/2024,Ford Prefect,Internet/Google,Kincumber,1731.25,0,1731.25
+08/04/2024,Ford Prefect,Internet/Google,Lisarow,3784.54,0,3784.54
+08/04/2024,Ford Prefect,Internet/Google,Lisarow,1528.72,86.06,1442.66
+08/04/2024,Ford Prefect,Internet/Google,Terrigal,10355.42,0,10355.42
+08/04/2024,Ford Prefect,Internet/Google,Terrigal,14752.88,0,14752.88
+08/04/2024,Ford Prefect,Internet/Google,Terrigal,5279.63,0,5279.63
+08/04/2024,Ford Prefect,Internet/Google,Terrigal,3247.54,128.1,3119.44
+08/04/2024,Slartibartfast,Internet/Google,Terrigal,1754.01,0,1754.01
+08/04/2024,Arthur Dent,Internet/Google,Toukley,1908.83,152.71,1756.12
+08/04/2024,Ford Prefect,Internet/Google,Umina Beach,46835.2,3529.09,43306.11
+08/04/2024,Arthur Dent,Internet/Google,Umina Beach,13275.34,0,13275.34
+08/04/2024,Ford Prefect,Internet/Google,Umina Beach,1631.37,40.46,1590.91
+08/04/2024,Arthur Dent,Internet/Google,Woongarrah,9328.3,782.85,8545.45
+09/04/2024,Ford Prefect,Internet/Google,Not Available,2226.59,0,2226.59
+09/04/2024,Ford Prefect,Internet/Google,Not Available,2832.55,141.63,2690.92
+09/04/2024,Ford Prefect,Internet/Google,Not Available,6147.01,0,6147.01
+09/04/2024,Ford Prefect,Internet/Google,East Gosford,3672.95,0,3672.95
+09/04/2024,Arthur Dent,Internet/Google,Erina,654.13,-32.71,686.84
+09/04/2024,Arthur Dent,Internet/Google,Erina,4073.72,164.63,3909.09
+09/04/2024,Ford Prefect,Internet/Google,Erina,1526.66,0,1526.66
+09/04/2024,Ford Prefect,Internet/Google,Ettalong Beach,28674.03,1583.12,27090.91
+09/04/2024,Arthur Dent,Internet/Google,Terrigal,1418.73,0,1418.73
+09/04/2024,Ford Prefect,Internet/Google,Terrigal,20100.34,1918.52,18181.82
+09/04/2024,Arthur Dent,Internet/Google,Toukley,1110.18,50.18,1060
+09/04/2024,Slartibartfast,Internet/Google,Wyoming,1641.27,0,1641.27
+09/04/2024,Ford Prefect,Internet/Google,Wyoming,1754.98,73.16,1681.82
+09/04/2024,Arthur Dent,Internet/Google,Wyoming,2157.87,-23.95,2181.82
+09/04/2024,Arthur Dent,Internet/Google,Wyoming,7863.43,0,7863.43
+09/04/2024,Ford Prefect,Internet/Google,Wyoming,592.9,0,592.9
+09/04/2024,Ford Prefect,Internet/Google,Wyoming,16567.28,1656.73,14910.55
+09/04/2024,Arthur Dent,Internet/Google,Wyoming,1886.32,0,1886.32
+09/04/2024,Arthur Dent,Internet/Google,Wyoming,3239.43,243.97,2995.46
+09/04/2024,Petunia Bowl,Internet/Google,Wyoming,980.64,71.55,909.09
+09/04/2024,Ford Prefect,Internet/Google,Wyongah,2369.17,96.45,2272.72
+09/04/2024,Slartibartfast,Internet/Google,Yattalunga,150,0,150
+09/04/2024,Ford Prefect,Internet/Google,Yattalunga,32501.15,3410,29091.15
+09/04/2024,Arthur Dent,Internet/Google,Yattalunga,2519.5,109.95,2409.55
+09/04/2024,Ford Prefect,Internet/Google,Blackwall,470,0,470
+09/04/2024,Arthur Dent,Internet/Google,Bonnells Bay,1700,0,1700
+09/04/2024,Arthur Dent,Internet/Google,Erina,6002.09,365.73,5636.36
+09/04/2024,Arthur Dent,Internet/Google,Erina,2085.71,0,2085.71
+09/04/2024,Arthur Dent,Internet/Google,Erina,2217.76,0,2217.76
+09/04/2024,Ford Prefect,Internet/Google,Ettalong Beach,2752.32,0,2752.32
+09/04/2024,Ford Prefect,Internet/Google,Ettalong Beach,11348.19,893.65,10454.54
+09/04/2024,Arthur Dent,Internet/Google,Ettalong Beach,490.91,0,490.91
+09/04/2024,Slartibartfast,Internet/Google,Ettalong Beach,4432.73,0,4432.73
+09/04/2024,Ford Prefect,Internet/Google,Terrigal,12895.45,0,12895.45
+09/04/2024,Marvin,Internet/Google,Terrigal,1159.55,0,1159.55
+09/04/2024,Ford Prefect,Internet/Google,Terrigal,6754.09,390.45,6363.64
+09/04/2024,Ford Prefect,Internet/Google,Terrigal,3859.26,135.07,3724.19
+09/04/2024,Arthur Dent,Internet/Google,Wyoming,1865.2,93.26,1771.94
+09/04/2024,Arthur Dent,Internet/Google,Yattalunga,3349.62,0,3349.62
+09/04/2024,Ford Prefect,Internet/Google,Yattalunga,3020,0,3020
+09/04/2024,Ford Prefect,Internet/Google,Kanwal,2780.18,98.36,2681.82
+09/04/2024,Zaphod Beeblebrox,Internet/Google,Lisarow,1311.96,0,1311.96
+10/04/2024,Arthur Dent,Internet/Google,Lisarow,5365.83,0,5365.83
+10/04/2024,Arthur Dent,Internet/Google,Lisarow,6141.14,0,6141.14
+10/04/2024,Ford Prefect,Internet/Google,Macmasters Beach,6063.48,290.75,5772.73
+10/04/2024,Ford Prefect,Internet/Google,Macmasters Beach,11002.1,825.15,10176.95
+10/04/2024,Arthur Dent,Internet/Google,Narara,2037.95,0,2037.95
+10/04/2024,Arthur Dent,Internet/Google,Narara,4359.85,17.13,4342.72
+10/04/2024,Ford Prefect,Internet/Google,Narara,5369.58,0,5369.58
+10/04/2024,Arthur Dent,Internet/Google,Narara,3440.91,0,3440.91
+10/04/2024,Ford Prefect,Internet/Google,Narara,5360.49,0,5360.49
+10/04/2024,Arthur Dent,Internet/Google,Narara,1187.95,0,1187.95
+10/04/2024,Ford Prefect,Internet/Google,Terrigal,1065.17,0,1065.17
+10/04/2024,Ford Prefect,Internet/Google,Terrigal,3804.44,174.42,3630.02
+10/04/2024,Arthur Dent,Internet/Google,Wyoming,4526.22,253.49,4272.73
+10/04/2024,Arthur Dent,Internet/Google,Wyoming,10148.67,0,10148.67
+10/04/2024,Ford Prefect,Internet/Google,Bateau Bay,11589.42,631.24,10958.18
+10/04/2024,Ford Prefect,Internet/Google,Bateau Bay,70,0,70
+10/04/2024,Arthur Dent,Internet/Google,Bateau Bay,323,0,323
+10/04/2024,Arthur Dent,Internet/Google,Holgate,5598.74,280.55,5318.19
+10/04/2024,Ford Prefect,Internet/Google,Kincumber,22976.15,682.51,22293.64
+10/04/2024,Arthur Dent,Internet/Google,Kincumber,8473.15,334.06,8139.09
+10/04/2024,Ford Prefect,Internet/Google,Kincumber,470.18,0,470.18
+10/04/2024,Arthur Dent,Internet/Google,Kincumber,703.63,0,703.63
+10/04/2024,Arthur Dent,Internet/Google,Kincumber,6458.08,276.26,6181.82
+10/04/2024,Ford Prefect,Internet/Google,Kincumber,5787.31,221.35,5565.96
+10/04/2024,Petunia Bowl,Internet/Google,Macmasters Beach,763.26,0,763.26
+10/04/2024,Ford Prefect,Internet/Google,Macmasters Beach,1210,0,1210
+10/04/2024,Petunia Bowl,Internet/Google,Narara,2161.61,96.61,2065
+10/04/2024,Ford Prefect,Internet/Google,Wyoming,6513.94,332.12,6181.82
+10/04/2024,Arthur Dent,Internet/Google,Yattalunga,988.41,0,988.41
+10/04/2024,Slartibartfast,Internet/Google,Yattalunga,2039,0,2039
+10/04/2024,Ford Prefect,Internet/Google,Not Available,1049.92,31.5,1018.42
+10/04/2024,Arthur Dent,Internet/Google,Bateau Bay,10722.35,1040.08,9682.27
+10/04/2024,Ford Prefect,Internet/Google,Bateau Bay,5992.58,0,5992.58
+10/04/2024,Ford Prefect,Internet/Google,Green Point,797.02,0,797.02
+10/04/2024,Ford Prefect,Internet/Google,Green Point,418.92,0,418.92
+10/04/2024,Arthur Dent,Internet/Google,Kincumber,3444.41,171.68,3272.73
+11/04/2024,Arthur Dent,Internet/Google,Kincumber,3018.88,0,3018.88
+11/04/2024,Arthur Dent,Internet/Google,Kincumber,2564.98,0,2564.98
+11/04/2024,Arthur Dent,Internet/Google,Kincumber,4343.11,0,4343.11
+11/04/2024,Slartibartfast,Internet/Google,Kincumber,2525.4,0,2525.4
+11/04/2024,Ford Prefect,Internet/Google,Lake Munmorah,363.07,0,363.07
+11/04/2024,Arthur Dent,Internet/Google,Lake Munmorah,2947.83,129.64,2818.19
+11/04/2024,Arthur Dent,Internet/Google,Lake Munmorah,3174.87,128.06,3046.81
+11/04/2024,Ford Prefect,Internet/Google,Wyong,8482.55,300.74,8181.81
+11/04/2024,Arthur Dent,Internet/Google,Yattalunga,1176.91,0,1176.91
+11/04/2024,Ford Prefect,Internet/Google,Yattalunga,6513.94,0,6513.94
+11/04/2024,Ford Prefect,Internet/Google,Yattalunga,920,101.36,818.64
+11/04/2024,Arthur Dent,Internet/Google,Not Available,690.93,0,690.93
+11/04/2024,Arthur Dent,Internet/Google,Bateau Bay,11031.36,574.45,10456.91
+11/04/2024,Arthur Dent,Internet/Google,Bateau Bay,6971.95,243.77,6728.18
+11/04/2024,Ford Prefect,Internet/Google,Bateau Bay,7012.8,394.62,6618.18
+11/04/2024,Ford Prefect,Internet/Google,Bateau Bay,2894.82,167.55,2727.27
+11/04/2024,Arthur Dent,Internet/Google,Blue Haven,370.55,0,370.55
+11/04/2024,Petunia Bowl,Internet/Google,Kincumber,846.55,0,846.55
+11/04/2024,Arthur Dent,Internet/Google,Kincumber,954,0,954
+11/04/2024,Ford Prefect,Internet/Google,Lake Haven,956.59,0,956.59
+11/04/2024,Arthur Dent,Internet/Google,Lisarow,7390.76,299.86,7090.9
+11/04/2024,Ford Prefect,Internet/Google,Lisarow,2604.68,0,2604.68
+11/04/2024,Ford Prefect,Internet/Google,Lisarow,6277.36,368.27,5909.09
+11/04/2024,Ford Prefect,Internet/Google,Long Jetty,5189.85,0,5189.85
+11/04/2024,Ford Prefect,Internet/Google,Yattalunga,1116.64,71.18,1045.46
+11/04/2024,Ford Prefect,Internet/Google,Yattalunga,3685.15,185.15,3500
+11/04/2024,Arthur Dent,Internet/Google,Yattalunga,381.11,0,381.11
+11/04/2024,Ford Prefect,Internet/Google,Bateau Bay,380.36,0,380.36
+11/04/2024,Ford Prefect,Internet/Google,Bateau Bay,8237.2,509.93,7727.27
+11/04/2024,Arthur Dent,Internet/Google,Bateau Bay,1973.96,0,1973.96
+11/04/2024,Arthur Dent,Internet/Google,Bateau Bay,5776.02,230.56,5545.46
+11/04/2024,Arthur Dent,Internet/Google,Daleys Point,1528.62,0,1528.62
+11/04/2024,Ford Prefect,Internet/Google,Daleys Point,435.74,0,435.74
+11/04/2024,Ford Prefect,Internet/Google,Daleys Point,1049.92,0,1049.92
+11/04/2024,Arthur Dent,Internet/Google,Daleys Point,4159.73,159.73,4000
+11/04/2024,Arthur Dent,Internet/Google,Davistown,1072,0,1072
+11/04/2024,Ford Prefect,Internet/Google,Davistown,2175.81,93.99,2081.82
+11/04/2024,Ford Prefect,Internet/Google,Davistown,866.32,0,866.32
+11/04/2024,Arthur Dent,Internet/Google,Davistown,7403.45,358,7045.45
+11/04/2024,Ford Prefect,Internet/Google,Davistown,2549.68,171.85,2377.83
+11/04/2024,Arthur Dent,Internet/Google,Davistown,955.11,0,955.11
+12/04/2024,Ford Prefect,Internet/Google,Davistown,2418.69,0,2418.69
+12/04/2024,Arthur Dent,Internet/Google,Green Point,8391.55,391.55,8000
+12/04/2024,Arthur Dent,Internet/Google,Lisarow,6700.71,245.58,6455.13
+12/04/2024,Ford Prefect,Internet/Google,Lisarow,813.91,0,813.91
+12/04/2024,Arthur Dent,Internet/Google,Lisarow,5191.33,211.15,4980.18
+12/04/2024,Arthur Dent,Internet/Google,Lisarow,2363.63,0,2363.63
+12/04/2024,Ford Prefect,Internet/Google,Lisarow,10534.55,526.73,10007.82
+12/04/2024,Ford Prefect,Internet/Google,Lisarow,5141.28,195.83,4945.45
+12/04/2024,Arthur Dent,Internet/Google,Lisarow,4009.81,191.62,3818.19
+12/04/2024,Ford Prefect,Internet/Google,Lisarow,1614.2,77.84,1536.36
+12/04/2024,Ford Prefect,Internet/Google,Lisarow,3600.17,0,3600.17
+12/04/2024,Ford Prefect,Internet/Google,Long Jetty,2920.35,147.63,2772.72
+12/04/2024,Ford Prefect,Internet/Google,Narara,317.71,0,317.71
+12/04/2024,Ford Prefect,Internet/Google,Narara,518.39,36.57,481.82
+12/04/2024,Arthur Dent,Internet/Google,Wyoming,1559.2,0,1559.2
+12/04/2024,Trillian,Internet/Google,Wyoming,1872,0,1872
+12/04/2024,Slartibartfast,Internet/Google,Wyongah,909.1,0,909.1
+12/04/2024,Ford Prefect,Internet/Google,Yattalunga,2071,71,2000
+12/04/2024,Ford Prefect,Internet/Google,Yattalunga,1153.24,0,1153.24
+12/04/2024,Arthur Dent,Internet/Google,Yattalunga,1909.52,0,1909.52
+12/04/2024,Ford Prefect,Internet/Google,Not Available,2912.01,93.83,2818.18
+12/04/2024,Ford Prefect,Internet/Google,Bateau Bay,3149.19,148.74,3000.45
+12/04/2024,Arthur Dent,Internet/Google,Bateau Bay,4357.2,217.86,4139.34
+12/04/2024,Arthur Dent,Internet/Google,Bateau Bay,8124.36,306.18,7818.18
+12/04/2024,Ford Prefect,Internet/Google,Bateau Bay,3411.4,93.22,3318.18
+12/04/2024,Ford Prefect,Internet/Google,Bateau Bay,5613.86,0,5613.86
+12/04/2024,Arthur Dent,Internet/Google,Booker Bay,1445.33,57.81,1387.52
+12/04/2024,Ford Prefect,Internet/Google,Booker Bay,2373.91,83.01,2290.9
+12/04/2024,Ford Prefect,Internet/Google,Caves Beach,8913.12,731.3,8181.82
+12/04/2024,Arthur Dent,Internet/Google,Chittaway Bay,4924,196.73,4727.27
+12/04/2024,Arthur Dent,Internet/Google,Cooranbong,3423.83,151.1,3272.73
+12/04/2024,Ford Prefect,Internet/Google,Cooranbong,2397.76,125.04,2272.72
+12/04/2024,Ford Prefect,Internet/Google,Cooranbong,1497,0,1497
+12/04/2024,Arthur Dent,Internet/Google,Cooranbong,1501.12,0,1501.12
+12/04/2024,Ford Prefect,Internet/Google,Copacabana,3388.6,115.87,3272.73
+12/04/2024,Ford Prefect,Internet/Google,Davistown,2184.1,93.19,2090.91
+12/04/2024,Arthur Dent,Internet/Google,Narara,2036,0,2036
+12/04/2024,Arthur Dent,Internet/Google,Narara,8452.18,361.35,8090.83
+12/04/2024,Ford Prefect,Internet/Google,Narara,1523.13,45.85,1477.28
+12/04/2024,Arthur Dent,Internet/Google,Narara,3421,148.27,3272.73
+12/04/2024,Arthur Dent,Internet/Google,Narara,689.75,0,689.75
+12/04/2024,Arthur Dent,Internet/Google,Narara,2312.03,0,2312.03
+12/04/2024,Arthur Dent,Internet/Google,Narara,3325.37,0,3325.37
+12/04/2024,Arthur Dent,Internet/Google,Narara,3316.3,0,3316.3
+12/04/2024,Ford Prefect,Internet/Google,Not Available,902.02,0,902.02
+12/04/2024,Arthur Dent,Internet/Google,Berkeley Vale,1723.86,0,1723.86
+13/04/2024,Ford Prefect,Internet/Google,Berkeley Vale,2715.05,0,2715.05
+13/04/2024,Ford Prefect,Internet/Google,Berkeley Vale,759.36,0,759.36
+13/04/2024,Arthur Dent,Internet/Google,Berkeley Vale,9533.32,351.5,9181.82
+13/04/2024,Arthur Dent,Internet/Google,Berkeley Vale,7111.25,284.45,6826.8
+13/04/2024,Ford Prefect,Internet/Google,Berkeley Vale,4575.45,0,4575.45
+13/04/2024,Ford Prefect,Internet/Google,Berkeley Vale,1610.73,110.73,1500
+13/04/2024,Arthur Dent,Internet/Google,Blackwall,1036.92,0,1036.92
+13/04/2024,Ford Prefect,Internet/Google,Blackwall,329.81,0,329.81
+13/04/2024,Ford Prefect,Internet/Google,Blackwall,2577.88,77.88,2500
+13/04/2024,Ford Prefect,Internet/Google,Cooranbong,2458.89,0,2458.89
+13/04/2024,Arthur Dent,Internet/Google,Copacabana,8862.54,271.63,8590.91
+13/04/2024,Ford Prefect,Internet/Google,Copacabana,310.7,0,310.7
+13/04/2024,Arthur Dent,Internet/Google,Narara,949.83,0,949.83
+13/04/2024,Ford Prefect,Internet/Google,Narara,600.64,0,600.64
+13/04/2024,Arthur Dent,Internet/Google,Narara,3644.61,143.7,3500.91
+13/04/2024,Ford Prefect,Internet/Google,Not Available,816.55,0,816.55
+13/04/2024,Trillian,Internet/Google,Berkeley Vale,2771.68,0,2771.68
+13/04/2024,Ford Prefect,Internet/Google,Berkeley Vale,2898.75,0,2898.75
+13/04/2024,Arthur Dent,Internet/Google,Berkeley Vale,240,0,240
+13/04/2024,Ford Prefect,Internet/Google,Blue Haven,2468.32,89.64,2378.68
+13/04/2024,Arthur Dent,Internet/Google,East Gosford,1040,39.94,1000.06
+13/04/2024,Ford Prefect,Internet/Google,Niagara Park,1915.6,97.42,1818.18
+13/04/2024,Arthur Dent,Internet/Google,Niagara Park,1078.71,0,1078.71
+13/04/2024,Arthur Dent,Internet/Google,Niagara Park,3649.12,103.65,3545.47
+13/04/2024,Ford Prefect,Internet/Google,North Gosford,1022.72,53.14,969.58
+13/04/2024,Arthur Dent,Internet/Google,North Gosford,1420.42,0,1420.42
+13/04/2024,Arthur Dent,Internet/Google,Patonga,4558.35,558.35,4000
+13/04/2024,Arthur Dent,Internet/Google,Pearl Beach,1138.09,0,1138.09
+13/04/2024,Arthur Dent,Internet/Google,Pearl Beach,3970.6,147.71,3822.89
+13/04/2024,Ford Prefect,Internet/Google,Point Frederick,834.32,0,834.32
+13/04/2024,Arthur Dent,Internet/Google,Point Frederick,3642,142,3500
+13/04/2024,Ford Prefect,Internet/Google,Somersby,2169.32,123.86,2045.46
+13/04/2024,Arthur Dent,Internet/Google,Terrigal,3226.07,135.16,3090.91
+13/04/2024,Arthur Dent,Internet/Google,Terrigal,5254.63,163.72,5090.91
+13/04/2024,Ford Prefect,Internet/Google,Terrigal,254.96,0,254.96
+13/04/2024,Ford Prefect,Internet/Google,Yattalunga,14971.8,1517.25,13454.55
+13/04/2024,Ford Prefect,Internet/Google,Yattalunga,11762.05,0,11762.05
+13/04/2024,Ford Prefect,Internet/Google,Yattalunga,10308.17,762.7,9545.47
+13/04/2024,Arthur Dent,Internet/Google,Yattalunga,10865.81,320.35,10545.46
+13/04/2024,Arthur Dent,Internet/Google,Not Available,3102.64,0,3102.64
+13/04/2024,Arthur Dent,Internet/Google,Niagara Park,5318.47,0,5318.47
+13/04/2024,Ford Prefect,Internet/Google,Terrigal,4888.34,489.8,4398.54
+13/04/2024,Arthur Dent,Internet/Google,Terrigal,1772,90.18,1681.82
+13/04/2024,Arthur Dent,Internet/Google,Terrigal,8386.75,295.85,8090.9
+14/04/2024,Ford Prefect,Internet/Google,Terrigal,2114.18,0,2114.18
+14/04/2024,Ford Prefect,Internet/Google,Terrigal,6969,383.29,6585.71
+14/04/2024,Arthur Dent,Internet/Google,Terrigal,5752.23,552.22,5200.01
+14/04/2024,Arthur Dent,Internet/Google,Terrigal,9211.75,302.66,8909.09
+14/04/2024,Ford Prefect,Internet/Google,Terrigal,3859.96,178.15,3681.81
+14/04/2024,Ford Prefect,Internet/Google,Toukley,14290.8,836.25,13454.55
+14/04/2024,Ford Prefect,Internet/Google,Tumbi Umbi,3074.27,73.82,3000.45
+14/04/2024,Arthur Dent,Internet/Google,Wamberal,4602.4,161.55,4440.85
+14/04/2024,Arthur Dent,Internet/Google,Wamberal,11614.15,705.06,10909.09
+14/04/2024,Arthur Dent,Internet/Google,Wamberal,5845,208.63,5636.37
+14/04/2024,Ford Prefect,Internet/Google,Wamberal,651.86,0,651.86
+14/04/2024,Ford Prefect,Internet/Google,Wamberal,2983.08,149.15,2833.93
+14/04/2024,Ford Prefect,Internet/Google,Wamberal,2595.15,86.06,2509.09
+14/04/2024,Ford Prefect,Internet/Google,Wamberal,3970.91,198.19,3772.72
+14/04/2024,Arthur Dent,Internet/Google,Wyoming,6514.08,227.38,6286.7
+14/04/2024,Trillian,Internet/Google,Not Available,8798.3,0,8798.3
+14/04/2024,Ford Prefect,Internet/Google,Not Available,2613.64,100.89,2512.75
+14/04/2024,Ford Prefect,Internet/Google,Not Available,1142.24,0,1142.24
+14/04/2024,Trillian,Internet/Google,Not Available,7553.93,0,7553.93
+14/04/2024,Ford Prefect,Internet/Google,Not Available,575.93,0,575.93
+14/04/2024,Ford Prefect,Internet/Google,Booker Bay,5375.93,239.11,5136.82
+14/04/2024,Arthur Dent,Internet/Google,Booker Bay,607.91,0,607.91
+14/04/2024,Trillian,Internet/Google,Booker Bay,1413.37,0,1413.37
+14/04/2024,Arthur Dent,Internet/Google,Booker Bay,4174.6,37.34,4137.26
+14/04/2024,Ford Prefect,Internet/Google,Terrigal,1263.17,0,1263.17
+14/04/2024,Ford Prefect,Internet/Google,Terrigal,2172.16,81.25,2090.91
+14/04/2024,Ford Prefect,Internet/Google,Terrigal,12480.58,1248.05,11232.53
+14/04/2024,Ford Prefect,Internet/Google,Terrigal,2367.75,285.94,2081.81
+14/04/2024,Ford Prefect,Internet/Google,Terrigal,1793.06,65.79,1727.27
+14/04/2024,Arthur Dent,Internet/Google,Terrigal,9180.07,361.88,8818.19
+14/04/2024,Arthur Dent,Internet/Google,Tumbi Umbi,3458.79,111.37,3347.42
+14/04/2024,Ford Prefect,Internet/Google,Tumbi Umbi,4586.74,295.85,4290.89
+14/04/2024,Ford Prefect,Internet/Google,Wamberal,9885.52,0,9885.52
+14/04/2024,Ford Prefect,Internet/Google,Wyoming,1131.81,0,1131.81
+14/04/2024,Arthur Dent,Internet/Google,Wyoming,8203.9,294.81,7909.09
+14/04/2024,Ford Prefect,Internet/Google,Wyoming,17208.19,0,17208.19
+14/04/2024,Arthur Dent,Internet/Google,Wyoming,2484,0,2484
+14/04/2024,Ford Prefect,Internet/Google,Wyoming,4349.8,167.87,4181.93
+14/04/2024,Ford Prefect,Internet/Google,Wyoming,2332.62,116.63,2215.99
+14/04/2024,Arthur Dent,Internet/Google,Yattalunga,8732.8,5.53,8727.27
+14/04/2024,Ford Prefect,Internet/Google,Not Available,4809.75,173.39,4636.36
+14/04/2024,Arthur Dent,Internet/Google,Chittaway Bay,917.51,0,917.51
+14/04/2024,Ford Prefect,Internet/Google,Green Point,976,66.91,909.09
+14/04/2024,Ford Prefect,Internet/Google,Green Point,6754.68,316.12,6438.56
+14/04/2024,Arthur Dent,Internet/Google,Green Point,6258,0,6258
+14/04/2024,Ford Prefect,Internet/Google,Green Point,181.82,0,181.82
+14/04/2024,Arthur Dent,Internet/Google,Green Point,6121.56,212.47,5909.09
+14/04/2024,Arthur Dent,Internet/Google,Green Point,2456.7,0,2456.7
+14/04/2024,Arthur Dent,Internet/Google,Green Point,3046.51,91.05,2955.46
+14/04/2024,Ford Prefect,Internet/Google,Wamberal,9692.48,484.63,9207.85
+14/04/2024,Arthur Dent,Internet/Google,Wamberal,15481.16,0,15481.16
+14/04/2024,Arthur Dent,Internet/Google,Wamberal,4032.59,123.5,3909.09
+14/04/2024,Arthur Dent,Internet/Google,Woy Woy,7037.97,210.85,6827.12
+14/04/2024,Arthur Dent,Internet/Google,Woy Woy,25996.9,815.08,25181.82
+15/04/2024,Arthur Dent,Internet/Google,Woy Woy,9375.15,374.7,9000.45
+15/04/2024,Ford Prefect,Internet/Google,Woy Woy,9474.6,521.1,8953.5
+15/04/2024,Arthur Dent,Internet/Google,Woy Woy,6667.35,208.69,6458.66
+15/04/2024,Arthur Dent,Internet/Google,Wyoming,1296.16,0,1296.16
+15/04/2024,Slartibartfast,Internet/Google,Wyoming,179.17,0,179.17
+15/04/2024,Ford Prefect,Internet/Google,Wyongah,11333.6,424.51,10909.09
+15/04/2024,Ford Prefect,Internet/Google,Yattalunga,1705.78,0,1705.78
+15/04/2024,Ford Prefect,Internet/Google,Yattalunga,280,0,280
+15/04/2024,Ford Prefect,Internet/Google,Yattalunga,8459.8,459.8,8000
+15/04/2024,Arthur Dent,Internet/Google,Not Available,1008,0,1008
+15/04/2024,Ford Prefect,Internet/Google,Not Available,3996.8,360.44,3636.36
+15/04/2024,Ford Prefect,Internet/Google,Not Available,1059.66,41.48,1018.18
+15/04/2024,Ford Prefect,Internet/Google,Green Point,4077.92,163.12,3914.8
+15/04/2024,Arthur Dent,Internet/Google,Kariong,3008.31,99.22,2909.09
+15/04/2024,Arthur Dent,Internet/Google,Killarney Vale,907.34,0,907.34
+15/04/2024,Ford Prefect,Internet/Google,Killarney Vale,3084.84,308.48,2776.36
+15/04/2024,Ford Prefect,Internet/Google,Killarney Vale,771.25,0,771.25
+15/04/2024,Arthur Dent,Internet/Google,Killarney Vale,1473.17,0,1473.17
+15/04/2024,Ford Prefect,Internet/Google,Killarney Vale,2264.36,82.55,2181.81
+15/04/2024,Ford Prefect,Internet/Google,Killarney Vale,1735.27,98.91,1636.36
+15/04/2024,Ford Prefect,Internet/Google,Killarney Vale,2363.08,89.9,2273.18
+15/04/2024,Arthur Dent,Internet/Google,Killarney Vale,3487.69,214.96,3272.73
+15/04/2024,Arthur Dent,Internet/Google,Killarney Vale,228.41,0,228.41
+15/04/2024,Arthur Dent,Internet/Google,Killarney Vale,1660,0,1660
+15/04/2024,Ford Prefect,Internet/Google,Kincumber,2700.2,87.75,2612.45
+15/04/2024,Arthur Dent,Internet/Google,Kincumber South,2257.23,0,2257.23
+15/04/2024,Arthur Dent,Internet/Google,Koolewong,11218.11,399.93,10818.18
+15/04/2024,Arthur Dent,Internet/Google,Mardi,181.82,0,181.82
+15/04/2024,Ford Prefect,Internet/Google,Mardi,2309.53,45.89,2263.64
+15/04/2024,Ford Prefect,Internet/Google,Mardi,5185.43,185.43,5000
+15/04/2024,Ford Prefect,Internet/Google,Narara,1070.55,52.37,1018.18
+15/04/2024,Arthur Dent,Internet/Google,Narara,4315.24,133.42,4181.82
+15/04/2024,Arthur Dent,Internet/Google,Narara,450.53,0,450.53
+15/04/2024,Arthur Dent,Internet/Google,Niagara Park,3295.21,0,3295.21
+15/04/2024,Arthur Dent,Internet/Google,Woy Woy,12086.7,359.43,11727.27
+15/04/2024,Ford Prefect,Internet/Google,Wyong,11024.26,569.72,10454.54
+15/04/2024,Arthur Dent,Internet/Google,Wyong,2755.78,0,2755.78
+15/04/2024,Arthur Dent,Internet/Google,Yattalunga,3811.89,85.76,3726.13
+15/04/2024,Ford Prefect,Internet/Google,Yattalunga,3791.56,164.29,3627.27
+15/04/2024,Arthur Dent,Internet/Google,Yattalunga,1220.21,0,1220.21
+15/04/2024,Trillian,Internet/Google,Not Available,1348.3,0,1348.3
+15/04/2024,Ford Prefect,Internet/Google,Not Available,445.52,0,445.52
+16/04/2024,Ford Prefect,Internet/Google,Not Available,9274.17,927.42,8346.75
+16/04/2024,Ford Prefect,Internet/Google,Kincumber,343.41,0,343.41
+16/04/2024,Arthur Dent,Internet/Google,Lisarow,984.85,0,984.85
+16/04/2024,Arthur Dent,Internet/Google,Mardi,1034.16,0,1034.16
+16/04/2024,Arthur Dent,Internet/Google,Narara,482.19,0,482.19
+16/04/2024,Arthur Dent,Internet/Google,Narara,327.54,0,327.54
+16/04/2024,Arthur Dent,Internet/Google,Narara,778.21,0,778.21
+16/04/2024,Ford Prefect,Internet/Google,Narara,900,0,900
+16/04/2024,Arthur Dent,Internet/Google,Narara,18554.05,563.58,17990.47
+16/04/2024,Ford Prefect,Internet/Google,Narara,2216.27,0,2216.27
+16/04/2024,Ford Prefect,Internet/Google,Narara,1447.52,0,1447.52
+16/04/2024,Arthur Dent,Internet/Google,Narara,416.35,0,416.35
+16/04/2024,Ford Prefect,Internet/Google,Narara,2109.77,0,2109.77
+16/04/2024,Arthur Dent,Internet/Google,Narara,1585.77,0,1585.77
+16/04/2024,Trillian,Internet/Google,Narara,372.2,0,372.2
+16/04/2024,Arthur Dent,Internet/Google,Niagara Park,18784.28,693.37,18090.91
+16/04/2024,Arthur Dent,Internet/Google,Niagara Park,1150.95,0,1150.95
+16/04/2024,Ford Prefect,Internet/Google,Niagara Park,516.08,0,516.08
+16/04/2024,Arthur Dent,Internet/Google,Umina Beach,242.02,0,242.02
+16/04/2024,Ford Prefect,Internet/Google,Umina Beach,1816.28,0,1816.28
+16/04/2024,Ford Prefect,Internet/Google,Woy Woy,1792.24,89.61,1702.63
+16/04/2024,Arthur Dent,Internet/Google,Woy Woy,1768.2,0,1768.2
+16/04/2024,Ford Prefect,Internet/Google,Woy Woy,3258.63,94.99,3163.64
+16/04/2024,Ford Prefect,Internet/Google,Woy Woy,3297.18,0,3297.18
+16/04/2024,Arthur Dent,Internet/Google,Woy Woy,3038.81,84.26,2954.55
+16/04/2024,Arthur Dent,Internet/Google,Yattalunga,1124,0,1124
+16/04/2024,Ford Prefect,Internet/Google,Yattalunga,6964,696.4,6267.6
+16/04/2024,Arthur Dent,Internet/Google,Not Available,327.54,0,327.54
+16/04/2024,Ford Prefect,Internet/Google,Not Available,1559.1,0,1559.1
+16/04/2024,Ford Prefect,Internet/Google,Not Available,3533.27,0,3533.27
+16/04/2024,Ford Prefect,Internet/Google,None Supplied,10211.83,510.59,9701.24
+16/04/2024,Ford Prefect,Internet/Google,Umina Beach,1695.59,86.5,1609.09
+16/04/2024,Ford Prefect,Internet/Google,Umina Beach,4816.83,168.59,4648.24
+16/04/2024,Arthur Dent,Internet/Google,West Gosford,6770.65,225.2,6545.45
+16/04/2024,Ford Prefect,Internet/Google,Woy Woy,246.55,0,246.55
+16/04/2024,Ford Prefect,Internet/Google,Woy Woy,1462.16,0,1462.16
+16/04/2024,Ford Prefect,Internet/Google,Woy Woy,6419.31,419.31,6000
+16/04/2024,Ford Prefect,Internet/Google,Woy Woy,4878.58,242.22,4636.36
+16/04/2024,Ford Prefect,Internet/Google,Wyoming,914.33,0,914.33
+16/04/2024,Arthur Dent,Internet/Google,Wyoming,793.1,0,793.1
+17/04/2024,Ford Prefect,Internet/Google,Wyoming,1562.89,62.89,1500
+17/04/2024,Ford Prefect,Internet/Google,Wyoming,2000.37,0,2000.37
+17/04/2024,Ford Prefect,Internet/Google,Wyoming,2783,101.18,2681.82
+17/04/2024,Ford Prefect,Internet/Google,Yattalunga,1566.06,0,1566.06
+17/04/2024,Ford Prefect,Internet/Google,Yattalunga,8773.61,409.97,8363.64
+17/04/2024,Ford Prefect,Internet/Google,Not Available,1581.68,72.59,1509.09
+17/04/2024,Ford Prefect,Internet/Google,Budgewoi,16659.91,669,15990.91
+17/04/2024,Ford Prefect,Internet/Google,Charmhaven,8149.87,0,8149.87
+17/04/2024,Arthur Dent,Internet/Google,Dora Creek,366.09,0,366.09
+17/04/2024,Arthur Dent,Internet/Google,East Gosford,4168.12,142.55,4025.57
+17/04/2024,Trillian,Internet/Google,Green Point,4858.85,214.3,4644.55
+17/04/2024,Ford Prefect,Internet/Google,Green Point,3283.96,102.15,3181.81
+17/04/2024,Arthur Dent,Internet/Google,Umina Beach,9521.92,431.01,9090.91
+17/04/2024,Ford Prefect,Internet/Google,Umina Beach,1342.86,88.32,1254.54
+17/04/2024,Slartibartfast,Internet/Google,Umina Beach,66.36,0,66.36
+17/04/2024,Ford Prefect,Internet/Google,Umina Beach,5649.89,286.25,5363.64
+17/04/2024,Arthur Dent,Internet/Google,Umina Beach,1992.84,0,1992.84
+17/04/2024,Ford Prefect,Internet/Google,Wamberal,9667.02,576.11,9090.91
+17/04/2024,Trillian,Internet/Google,Wamberal,2027.27,0,2027.27
+17/04/2024,Arthur Dent,Internet/Google,Wamberal,2373.62,0,2373.62
+17/04/2024,Ford Prefect,Internet/Google,Wamberal,901.95,0,901.95
+17/04/2024,Arthur Dent,Internet/Google,Wyoming,3173.83,0,3173.83
+17/04/2024,Ford Prefect,Internet/Google,Wyoming,427.33,0,427.33
+17/04/2024,Ford Prefect,Internet/Google,Wyoming,2029.98,101.5,1928.48
+17/04/2024,Ford Prefect,Internet/Google,Yattalunga,2824.06,0,2824.06
+17/04/2024,Arthur Dent,Internet/Google,Not Available,5947.28,220.01,5727.27
+17/04/2024,Arthur Dent,Internet/Google,Not Available,13018.24,472.78,12545.46
+17/04/2024,Arthur Dent,Internet/Google,Not Available,1454.05,0,1454.05
+17/04/2024,Ford Prefect,Internet/Google,Not Available,4403.5,94.41,4309.09
+17/04/2024,Ford Prefect,Internet/Google,Berkeley Vale,5002.59,0,5002.59
+17/04/2024,Ford Prefect,Internet/Google,Chain Valley Bay,4385.75,0,4385.75
+17/04/2024,Arthur Dent,Internet/Google,East Gosford,470.27,0,470.27
+17/04/2024,Arthur Dent,Internet/Google,East Gosford,12141.17,412.99,11728.18
+17/04/2024,Ford Prefect,Internet/Google,East Gosford,657.85,0,657.85
+17/04/2024,Arthur Dent,Internet/Google,Narara,8909.15,272.79,8636.36
+17/04/2024,Ford Prefect,Internet/Google,Narara,6324,0,6324
+17/04/2024,Arthur Dent,Internet/Google,Narara,8013.7,0,8013.7
+17/04/2024,Ford Prefect,Internet/Google,Umina Beach,5749.43,0,5749.43
+17/04/2024,Arthur Dent,Internet/Google,Wyoming,1064.16,0,1064.16
+17/04/2024,Ford Prefect,Internet/Google,Wyoming,9075.96,453.69,8622.27
+17/04/2024,Arthur Dent,Internet/Google,Wyoming,5981.31,208.58,5772.73
+17/04/2024,Arthur Dent,Internet/Google,Wyoming,1365.82,0,1365.82
+17/04/2024,Arthur Dent,Internet/Google,Wyoming,5404.85,0,5404.85
+17/04/2024,Ford Prefect,Internet/Google,Wyoming,5984.21,256.95,5727.26
+17/04/2024,Ford Prefect,Internet/Google,Wyoming,4089.13,184.01,3905.12
+17/04/2024,Ford Prefect,Internet/Google,Wyoming,1797.5,0,1797.5
+17/04/2024,Arthur Dent,Internet/Google,Yattalunga,1987.97,68.58,1919.39
+18/04/2024,Arthur Dent,Internet/Google,East Gosford,6159.37,0,6159.37
+18/04/2024,Arthur Dent,Internet/Google,East Gosford,5949.4,222.13,5727.27
+18/04/2024,Arthur Dent,Internet/Google,Erina,1188.29,0,1188.29
+18/04/2024,Ford Prefect,Internet/Google,Long Jetty,17748.22,976.15,16772.07
+18/04/2024,Arthur Dent,Internet/Google,Narara,6261.73,382.64,5879.09
+18/04/2024,Ford Prefect,Internet/Google,Umina Beach,8300.42,0,8300.42
+18/04/2024,Arthur Dent,Internet/Google,Umina Beach,1451.51,0,1451.51
+18/04/2024,Ford Prefect,Internet/Google,Wyee,5247.52,247.52,5000
+18/04/2024,Arthur Dent,Internet/Google,Wyoming,11156.53,1115.65,10040.88
+18/04/2024,Ford Prefect,Internet/Google,Wyoming,723.61,0,723.61
+18/04/2024,Arthur Dent,Internet/Google,Wyoming,2264,0,2264
+18/04/2024,Arthur Dent,Internet/Google,Not Available,13125.2,420.65,12704.55
+18/04/2024,Trillian,Internet/Google,Not Available,1271.67,0,1271.67
+18/04/2024,Ford Prefect,Internet/Google,Not Available,599.1,0,599.1
+18/04/2024,Arthur Dent,Internet/Google,Not Available,254.15,0,254.15
+18/04/2024,Arthur Dent,Internet/Google,Not Available,1145.64,0,1145.64
+18/04/2024,Arthur Dent,Internet/Google,Not Available,4225.56,133.75,4091.81
+18/04/2024,Arthur Dent,Internet/Google,Bonnells Bay,900.03,0,900.03
+18/04/2024,Arthur Dent,Internet/Google,Booker Bay,443.72,0,443.72
+18/04/2024,Arthur Dent,Internet/Google,East Gosford,1102,0,1102
+18/04/2024,Ford Prefect,Internet/Google,East Gosford,1705.15,68.34,1636.81
+18/04/2024,Arthur Dent,Internet/Google,Erina,2525.37,0,2525.37
+18/04/2024,Arthur Dent,Internet/Google,Erina,1167.08,0,1167.08
+18/04/2024,Ford Prefect,Internet/Google,Erina,362.47,-0.25,362.72
+18/04/2024,Ford Prefect,Internet/Google,Ettalong Beach,1257.25,0,1257.25
+18/04/2024,Arthur Dent,Internet/Google,Hamlyn Terrace,3863.99,115.92,3748.07
+18/04/2024,Ford Prefect,Internet/Google,Hamlyn Terrace,5441.06,231.97,5209.09
+18/04/2024,Arthur Dent,Internet/Google,Hamlyn Terrace,6023.46,712.55,5310.91
+18/04/2024,Arthur Dent,Internet/Google,Long Jetty,2036,81.24,1954.76
+18/04/2024,Ford Prefect,Internet/Google,Long Jetty,14706.21,660.75,14045.46
+18/04/2024,Ford Prefect,Internet/Google,Matcham,3873.36,237,3636.36
+18/04/2024,Trillian,Internet/Google,Matcham,1652.88,0,1652.88
+18/04/2024,Ford Prefect,Internet/Google,Narara,9251.2,462.56,8788.64
+18/04/2024,Arthur Dent,Internet/Google,Narara,5142.59,215.77,4926.82
+18/04/2024,Ford Prefect,Internet/Google,None Supplied,20124.95,1006.25,19118.7
+18/04/2024,Arthur Dent,Internet/Google,None Supplied,4630.56,176.02,4454.54
+18/04/2024,Ford Prefect,Internet/Google,Wamberal,8956.79,0,8956.79
+18/04/2024,Arthur Dent,Internet/Google,Woy Woy,3389.65,0,3389.65
+18/04/2024,Ford Prefect,Internet/Google,Wyoming,7340.51,440.43,6900.08
+19/04/2024,Arthur Dent,Internet/Google,Wyoming,480.01,0,480.01
+19/04/2024,Ford Prefect,Internet/Google,Wyoming,10050.38,502.52,9547.86
+19/04/2024,Arthur Dent,Internet/Google,Wyoming,8140.34,0,8140.34
+19/04/2024,Ford Prefect,Internet/Google,Wyoming,1410.88,70.55,1340.33
+19/04/2024,Arthur Dent,Internet/Google,Wyoming,1740.33,65.09,1675.24
+19/04/2024,Ford Prefect,Internet/Google,Wyoming,355.52,0,355.52
+19/04/2024,Ford Prefect,Internet/Google,Yattalunga,3499.79,90.7,3409.09
+19/04/2024,Arthur Dent,Internet/Google,Yattalunga,701.75,0,701.75
+19/04/2024,Arthur Dent,Internet/Google,Not Available,9285.35,363.05,8922.3
+19/04/2024,Arthur Dent,Internet/Google,Not Available,4625.25,169.8,4455.45
+19/04/2024,Ford Prefect,Internet/Google,Not Available,1057.85,0,1057.85
+19/04/2024,Arthur Dent,Internet/Google,Bensville,3442.84,124.65,3318.19
+19/04/2024,Ford Prefect,Internet/Google,Bensville,4385.87,0,4385.87
+19/04/2024,Ford Prefect,Internet/Google,Bensville,7460.77,0,7460.77
+19/04/2024,Arthur Dent,Internet/Google,Bensville,3849.38,0,3849.38
+19/04/2024,Ford Prefect,Internet/Google,East Gosford,8206.9,343.26,7863.64
+19/04/2024,Ford Prefect,Internet/Google,East Gosford,5826.26,189.9,5636.36
+19/04/2024,Ford Prefect,Internet/Google,Long Jetty,697.9,0,697.9
+19/04/2024,Ford Prefect,Internet/Google,Macmasters Beach,961.34,0,961.34
+19/04/2024,Ford Prefect,Internet/Google,Narara,1523.61,0,1523.61
+19/04/2024,Arthur Dent,Internet/Google,Narara,4055.91,146.82,3909.09
+19/04/2024,Ford Prefect,Internet/Google,Narara,8686.64,0,8686.64
+19/04/2024,Ford Prefect,Internet/Google,Narara,5538.78,0,5538.78
+19/04/2024,Ford Prefect,Internet/Google,None Supplied,2794,0,2794
+19/04/2024,Ford Prefect,Internet/Google,None Supplied,1544.91,69.52,1475.39
+19/04/2024,Arthur Dent,Internet/Google,None Supplied,5080.32,80.32,5000
+19/04/2024,Ford Prefect,Internet/Google,Not Available,3063.6,0,3063.6
+19/04/2024,Arthur Dent,Internet/Google,Not Available,416.58,0,416.58
+19/04/2024,Arthur Dent,Internet/Google,Not Available,3495.07,130.52,3364.55
+19/04/2024,Ford Prefect,Internet/Google,Bellevue Hill,4922.6,140.13,4782.47
+19/04/2024,Ford Prefect,Internet/Google,Bensville,531.66,0,531.66
+19/04/2024,Arthur Dent,Internet/Google,Berkeley Vale,10142.04,0,10142.04
+19/04/2024,Ford Prefect,Internet/Google,Berkeley Vale,12284.03,0,12284.03
+19/04/2024,Ford Prefect,Internet/Google,Berkeley Vale,2202.8,49.39,2153.41
+19/04/2024,Arthur Dent,Internet/Google,Berkeley Vale,464.72,0,464.72
+19/04/2024,Arthur Dent,Internet/Google,Berkeley Vale,902.94,0,902.94
+19/04/2024,Petunia Bowl,Internet/Google,Berkeley Vale,1115.45,0,1115.45
+19/04/2024,Ford Prefect,Internet/Google,East Gosford,6486.1,668.83,5817.27
+19/04/2024,Dolphin Fish,Internet/Google,East Gosford,2260.83,33.1,2227.73
+19/04/2024,Arthur Dent,Internet/Google,Green Point,977.08,0,977.08
+20/04/2024,Arthur Dent,Internet/Google,Wyongah,1500.74,0,1500.74
+20/04/2024,Arthur Dent,Internet/Google,Yattalunga,3000.51,0,3000.51
+20/04/2024,Ford Prefect,Internet/Google,Yattalunga,3729.62,0,3729.62
+20/04/2024,Slartibartfast,Internet/Google,Yattalunga,3325.27,188.45,3136.82
+20/04/2024,Arthur Dent,Internet/Google,Yattalunga,3683.69,126.42,3557.27
+20/04/2024,Arthur Dent,Internet/Google,Yattalunga,2135.66,0,2135.66
+20/04/2024,Arthur Dent,Internet/Google,Yattalunga,603.27,0,603.27
+20/04/2024,Ford Prefect,Internet/Google,Yattalunga,381.97,0,381.97
+20/04/2024,Dolphin Fish,Internet/Google,Yattalunga,2325.76,0,2325.76
+20/04/2024,Ford Prefect,Internet/Google,Yattalunga,403.8,0,403.8
+20/04/2024,Arthur Dent,Internet/Google,Not Available,2116.67,0,2116.67
+20/04/2024,Arthur Dent,Internet/Google,Bensville,3644.05,143.15,3500.9
+20/04/2024,Ford Prefect,Internet/Google,Berkeley Vale,1526.35,0,1526.35
+20/04/2024,Ford Prefect,Internet/Google,Berkeley Vale,10503.61,0,10503.61
+20/04/2024,Arthur Dent,Internet/Google,Berkeley Vale,2869.17,0,2869.17
+20/04/2024,Dolphin Fish,Internet/Google,Blue Haven,20921.86,0,20921.86
+20/04/2024,Arthur Dent,Internet/Google,Green Point,4333.97,152.55,4181.42
+20/04/2024,Ford Prefect,Internet/Google,Green Point,1663.49,0,1663.49
+20/04/2024,Ford Prefect,Internet/Google,Green Point,182.73,0,182.73
+20/04/2024,Arthur Dent,Internet/Google,Lake Munmorah,316.2,0,316.2
+20/04/2024,Arthur Dent,Internet/Google,Point Frederick,1868.17,0,1868.17
+20/04/2024,Arthur Dent,Internet/Google,Point Frederick,1030.98,0,1030.98
+20/04/2024,Dolphin Fish,Internet/Google,Wyong,3477.74,527.74,2950
+20/04/2024,Arthur Dent,Internet/Google,Yattalunga,3139.14,0,3139.14
+20/04/2024,Arthur Dent,Internet/Google,Yattalunga,2577.7,0,2577.7
+20/04/2024,Ford Prefect,Internet/Google,Yattalunga,4933.66,197.35,4736.31
+20/04/2024,Arthur Dent,Internet/Google,Yattalunga,10165.84,0,10165.84
+20/04/2024,Slartibartfast,Internet/Google,Yattalunga,270,0,270
+20/04/2024,Ford Prefect,Internet/Google,Not Available,3369.74,165.19,3204.55
+20/04/2024,Ford Prefect,Internet/Google,Not Available,4233.48,233.48,4000
+20/04/2024,Trillian,Golgafrinchan Phone Sanitizers,Avoca Beach,3056,-611.2,3667.2
+20/04/2024,Trillian,Golgafrinchan Phone Sanitizers,Yattalunga,1408.22,0,1408.22
+20/04/2024,Arthur Dent,Golgafrinchan Phone Sanitizers,Wyoming,4004.21,208.75,3795.46
+20/04/2024,Arthur Dent,Golgafrinchan Phone Sanitizers,Umina Beach,1351.14,0,1351.14
+20/04/2024,Trillian,Golgafrinchan Phone Sanitizers,Wyoming,2664.13,0,2664.13
+20/04/2024,Arthur Dent,Golgafrinchan Phone Sanitizers,Long Jetty,14591.17,954.8,13636.37
+20/04/2024,Ford Prefect,Golgafrinchan Phone Sanitizers,Erina,2042.25,0,2042.25
+20/04/2024,Trillian,Golgafrinchan Phone Sanitizers,Not Available,2574.97,0,2574.97
+20/04/2024,Arthur Dent,Golgafrinchan Phone Sanitizers,Yattalunga,590.63,0,590.63
+20/04/2024,Dolphin Fish,Golgafrinchan Phone Sanitizers,None Supplied,4486.15,122.52,4363.63
+20/04/2024,Zaphod Beeblebrox,Letterbox Drop,None Supplied,15313.43,1495.25,13818.18
+20/04/2024,Dolphin Fish,Letterbox Drop,Yattalunga,1845.53,26.89,1818.64
+20/04/2024,Arthur Dent,Magazine Seniors,Wyoming,9182.39,909.66,8272.73
+20/04/2024,Arthur Dent,Magazine Seniors,Wamberal,3458.59,458.59,3000
+20/04/2024,Ford Prefect,Magazine Seniors,Terrigal,1229.19,0,1229.19
+20/04/2024,Arthur Dent,Magazine Seniors,Toukley,1373.64,0,1373.64
+20/04/2024,Arthur Dent,Magazine Seniors,Wyoming,1926.92,0,1926.92
+20/04/2024,Arthur Dent,Magazine Seniors,Yattalunga,2677.07,86.16,2590.91
+21/04/2024,Ford Prefect,Magazine Seniors,Hamlyn Terrace,3882.88,194.15,3688.73
+21/04/2024,Arthur Dent,Magazine Seniors,East Gosford,2994.58,85.49,2909.09
+21/04/2024,Arthur Dent,Mailout To Customer,Ettalong Beach,4942.01,578.37,4363.64
+21/04/2024,Ford Prefect,N/A Do Not Use,Umina Beach,2390.78,390.78,2000
+21/04/2024,Ford Prefect,N/A Do Not Use,Kincumber,4000,330,3670
+21/04/2024,Trillian,N/A Do Not Use,East Gosford,856.79,0,856.79
+21/04/2024,Trillian,N/A Do Not Use,Not Available,2248.66,0,2248.66
+21/04/2024,Ford Prefect,Newspaper,Pearl Beach,1117.34,53.7,1063.64
+21/04/2024,Arthur Dent,Newspaper,Terrigal,316.2,0,316.2
+21/04/2024,Arthur Dent,Newspaper,Long Jetty,9071.38,260.35,8811.03
+21/04/2024,Slartibartfast,Not Supplied,Umina Beach,332.85,0,332.85
+21/04/2024,Slartibartfast,Not Supplied,Umina Beach,1018.18,0,1018.18
+21/04/2024,Ford Prefect,Not Supplied,Umina Beach,495,0,495
+21/04/2024,Trillian,Not Supplied,Not Available,1294.87,0,1294.87
+21/04/2024,Arthur Dent,Not Supplied,Avoca Beach,1674.94,129.48,1545.46
+21/04/2024,Arthur Dent,Not Supplied,Yattalunga,1700.91,0,1700.91
+21/04/2024,Ford Prefect,Not Supplied,Avoca Beach,7114.05,0,7114.05
+21/04/2024,Arthur Dent,Not Supplied,Avoca Beach,2010.69,100.69,1910
+21/04/2024,Arthur Dent,Not Supplied,Pearl Beach,577.01,0,577.01
+21/04/2024,Zaphod Beeblebrox,Not Supplied,Terrigal,4481.22,0,4481.22
+21/04/2024,Petunia Bowl,Not Supplied,Wyoming,3878.75,162.39,3716.36
+21/04/2024,Arthur Dent,Not Supplied,Wyoming,820.72,0,820.72
+21/04/2024,Petunia Bowl,Not Supplied,Yattalunga,3256,293.04,2962.96
+21/04/2024,Trillian,Not Supplied,Not Available,718.84,0,718.84
+21/04/2024,Trillian,Not Supplied,Not Available,577.08,0,577.08
+21/04/2024,Arthur Dent,Not Supplied,Not Available,1085.32,0,1085.32
+21/04/2024,Trillian,Not Supplied,Not Available,1214.17,0,1214.17
+21/04/2024,Trillian,Not Supplied,Green Point,13628.19,0,13628.19
+21/04/2024,Ford Prefect,Not Supplied,Wyoming,2096.2,0,2096.2
+21/04/2024,Trillian,Not Supplied,Not Available,167.42,0,167.42
+21/04/2024,Trillian,Not Supplied,Not Available,265.75,0,265.75
+21/04/2024,Ford Prefect,Not Supplied,Terrigal,3841.55,205.19,3636.36
+21/04/2024,Arthur Dent,Not Supplied,Wyoming,511.7,0,511.7
+21/04/2024,Ford Prefect,Not Supplied,Wyoming,1697.03,0,1697.03
+21/04/2024,Petunia Bowl,Not Supplied,Wyoming,4394.89,0,4394.89
+21/04/2024,Arthur Dent,Not Supplied,Not Available,2818.18,-10.89,2829.07
+21/04/2024,Arthur Dent,Not Supplied,Not Available,3942.04,-788.41,4730.45
+21/04/2024,Arthur Dent,Not Supplied,Wyoming,719.9,0,719.9
+21/04/2024,Ford Prefect,Not Supplied,Wyoming,2036.57,0,2036.57
+21/04/2024,Trillian,Not Supplied,Not Available,2453.32,0,2453.32
+21/04/2024,Eddie,Not Supplied,Narara,136.36,0,136.36
+21/04/2024,Ford Prefect,Not Supplied,Wyoming,2591.57,194.36,2397.21
+21/04/2024,Arthur Dent,Not Supplied,Wyoming,308.97,0,308.97
+21/04/2024,Ford Prefect,Not Supplied,Wyoming,7306.78,0,7306.78
+21/04/2024,Trillian,Not Supplied,Not Available,722.41,0,722.41
+21/04/2024,Trillian,Not Supplied,Bateau Bay,800,0,800
+22/04/2024,Ford Prefect,Not Supplied,Kincumber,5013.76,0,5013.76
+22/04/2024,Arthur Dent,Not Supplied,Bateau Bay,12898.61,1080.43,11818.18
+22/04/2024,Ford Prefect,Not Supplied,Green Point,474.75,0,474.75
+22/04/2024,Trillian,Not Supplied,Yattalunga,227.27,0,227.27
+22/04/2024,Random,Not Supplied,Bateau Bay,962.51,0,962.51
+22/04/2024,Zaphod Beeblebrox,Not Supplied,Kincumber,12428,1245.73,11182.27
+22/04/2024,Ford Prefect,Not Supplied,Lisarow,982.08,0,982.08
+22/04/2024,Slartibartfast,Not Supplied,Lisarow,3385.43,0,3385.43
+22/04/2024,Ford Prefect,Not Supplied,Narara,1871.32,0,1871.32
+22/04/2024,Ford Prefect,Not Supplied,Yattalunga,170,0,170
+22/04/2024,Ford Prefect,Not Supplied,Narara,4771.82,-1196.36,5968.18
+22/04/2024,Arthur Dent,Not Supplied,Narara,1850.1,0,1850.1
+22/04/2024,Ford Prefect,Not Supplied,Not Available,5382.89,-1329.84,6712.73
+22/04/2024,Ford Prefect,Not Supplied,Narara,1449.92,0,1449.92
+22/04/2024,Trillian,Not Supplied,The Entrance,3903.57,267.21,3636.36
+22/04/2024,Ford Prefect,Not Supplied,Buff Point,4222.91,0,4222.91
+22/04/2024,Ford Prefect,Not Supplied,Cameron Park,19820.21,729.3,19090.91
+22/04/2024,Trillian,Not Supplied,Terrigal,1226.2,0,1226.2
+22/04/2024,Ford Prefect,Not Supplied,Green Point,1023.36,0,1023.36
+22/04/2024,Arthur Dent,Not Supplied,Green Point,4370,874,3496
+22/04/2024,Trillian,Not Supplied,Not Available,585.48,0,585.48
+22/04/2024,Ford Prefect,Not Supplied,Green Point,3201.24,502.64,2698.6
+22/04/2024,Ford Prefect,Not Supplied,Wyee,1302.12,0,1302.12
+22/04/2024,Slartibartfast,Not Supplied,Wyoming,426.01,0,426.01
+22/04/2024,Douglas Adams,Not Supplied,Buff Point,910.05,0,910.05
+22/04/2024,Ford Prefect,Not Supplied,Not Available,362.55,0,362.55
+22/04/2024,Ford Prefect,Not Supplied,Narara,1867,86.09,1780.91
+22/04/2024,Slartibartfast,Not Supplied,None Supplied,5592.25,0,5592.25
+22/04/2024,Ford Prefect,Not Supplied,Berkeley Vale,844.63,0,844.63
+22/04/2024,Arthur Dent,Not Supplied,Wyong,2262.73,0,2262.73
+22/04/2024,Arthur Dent,Not Supplied,Yattalunga,1048.49,0,1048.49
+22/04/2024,Arthur Dent,Paul Lead,Not Available,4177.8,0,4177.8
+22/04/2024,Arthur Dent,Radio,Wamberal,2334.54,0,2334.54
+22/04/2024,Ford Prefect,Radio,Green Point,439.85,0,439.85
+22/04/2024,Arthur Dent,Refer A Friend Email,Yattalunga,6398.07,307.16,6090.91
+22/04/2024,Arthur Dent,Referred Existing,Avoca Beach,3867.29,385.47,3481.82
+22/04/2024,Ford Prefect,Referred Existing,None Supplied,1294.99,0,1294.99
+23/04/2024,Ford Prefect,Referred Existing,None Supplied,1375.22,0,1375.22
+23/04/2024,Arthur Dent,Referred Existing,Umina Beach,5813.21,540.48,5272.73
+23/04/2024,Arthur Dent,Referred Existing,Umina Beach,1623.3,123.37,1499.93
+23/04/2024,Arthur Dent,Referred Existing,Not Available,12637.12,2092.57,10544.55
+23/04/2024,Arthur Dent,Referred Existing,Kincumber,583.21,0,583.21
+23/04/2024,Ford Prefect,Referred Existing,None Supplied,8040.7,767.97,7272.73
+23/04/2024,Ford Prefect,Referred Existing,Wyoming,1350.69,134.33,1216.36
+23/04/2024,Ford Prefect,Referred Existing,Wyoming,5577.53,350.25,5227.28
+23/04/2024,Arthur Dent,Referred Existing,Avoca Beach,4807.07,443.44,4363.63
+23/04/2024,Arthur Dent,Referred Existing,Avoca Beach,833.4,0,833.4
+23/04/2024,Fenchurch,Referred Existing,Avoca Beach,7663.64,0,7663.64
+23/04/2024,Arthur Dent,Referred Existing,Wyoming,1749.66,138.57,1611.09
+23/04/2024,Zaphod Beeblebrox,Referred Existing,Wyongah,3443.85,344.38,3099.47
+23/04/2024,Arthur Dent,Referred Existing,Yattalunga,4684.57,410.94,4273.63
+23/04/2024,Arthur Dent,Referred Existing,Not Available,10444.35,989.81,9454.54
+23/04/2024,Ford Prefect,Referred Existing,Bateau Bay,6909.68,93.32,6816.36
+23/04/2024,Ford Prefect,Referred Existing,Wyoming,2425.44,0,2425.44
+23/04/2024,Arthur Dent,Referred Existing,Wyoming,502.69,0,502.69
+23/04/2024,Ford Prefect,Referred Existing,Yattalunga,1014.68,0,1014.68
+23/04/2024,Ford Prefect,Referred Existing,Green Point,534.87,0,534.87
+23/04/2024,Ford Prefect,Referred Existing,Kincumber,3851.94,385.19,3466.75
+23/04/2024,Ford Prefect,Referred Existing,Yattalunga,1731.66,129.87,1601.79
+23/04/2024,Ford Prefect,Referred Existing,East Gosford,1603.08,0,1603.08
+23/04/2024,Ford Prefect,Referred Existing,Erina,1786.6,59.33,1727.27
+23/04/2024,Ford Prefect,Referred Existing,Erina,8608.05,471.69,8136.36
+23/04/2024,Ford Prefect,Referred Existing,Wyoming,800.5,0,800.5
+23/04/2024,Arthur Dent,Referred Existing,Bateau Bay,1667.28,0,1667.28
+23/04/2024,Slartibartfast,Referred Existing,Macmasters Beach,528.18,0,528.18
+23/04/2024,Arthur Dent,Referred Existing,Wyoming,1003.22,0,1003.22
+23/04/2024,Arthur Dent,Referred Existing,Mardi,1403.67,0,1403.67
+23/04/2024,Arthur Dent,Referred Existing,Terrigal,1176.7,0,1176.7
+23/04/2024,Arthur Dent,Referred Existing,Wyoming,1996.11,0,1996.11
+23/04/2024,Ford Prefect,Referred Existing,Wyoming,15196.96,651.51,14545.45
+23/04/2024,Arthur Dent,Referred Existing,Bensville,172.73,0,172.73
+23/04/2024,Ford Prefect,Referred Existing,Green Point,454.55,0,454.55
+23/04/2024,Arthur Dent,Referred Existing,Kincumber,3334.27,151.55,3182.72
+23/04/2024,Arthur Dent,Referred Existing,Kincumber,9369.19,669.19,8700
+23/04/2024,Ford Prefect,Referred Existing,Kincumber,12605.97,945.45,11660.52
+24/04/2024,Arthur Dent,Referred Existing,Yattalunga,1475.43,0,1475.43
+24/04/2024,Arthur Dent,Referred Existing,Yattalunga,1475.43,0,1475.43
+24/04/2024,Ford Prefect,Referred Existing,Bateau Bay,1605.45,69.09,1536.36
+24/04/2024,Trillian,Referred Existing,Bateau Bay,8980,798.18,8181.82
+24/04/2024,Ford Prefect,Referred Existing,Green Point,582.66,0,582.66
+24/04/2024,Arthur Dent,Referred Existing,Kincumber,4849.76,213.4,4636.36
+24/04/2024,Ford Prefect,Referred Existing,Lake Haven,9302.15,665.8,8636.35
+24/04/2024,Arthur Dent,Referred Existing,Yattalunga,1198.93,0,1198.93
+24/04/2024,Petunia Bowl,Referred Existing,Yattalunga,3353.26,220.54,3132.72
+24/04/2024,Arthur Dent,Referred Existing,Yattalunga,4215.07,174.08,4040.99
+24/04/2024,Ford Prefect,Referred Existing,Bateau Bay,1926.33,62.69,1863.64
+24/04/2024,Ford Prefect,Referred Existing,Booker Bay,3782.03,163.85,3618.18
+24/04/2024,Ford Prefect,Referred Existing,Davistown,1169.33,0,1169.33
+24/04/2024,Ford Prefect,Referred Existing,Narara,2440.5,95.05,2345.45
+24/04/2024,Ford Prefect,Referred Existing,Chittaway Point,411.71,0,411.71
+24/04/2024,Ford Prefect,Referred Existing,Berkeley Vale,2167.88,86.06,2081.82
+24/04/2024,Ford Prefect,Referred Existing,Narara,2465.01,123.25,2341.76
+24/04/2024,Ford Prefect,Referred Existing,Narara,792.5,0,792.5
+24/04/2024,Arthur Dent,Referred Existing,Berkeley Vale,8843.73,265.31,8578.42
+24/04/2024,Ford Prefect,Referred Existing,Blackwall,1618.01,54.37,1563.64
+24/04/2024,Ford Prefect,Referred Existing,Niagara Park,2657.06,132.85,2524.21
+24/04/2024,Arthur Dent,Referred Existing,Point Frederick,27245.14,1790.59,25454.55
+24/04/2024,Ford Prefect,Referred Existing,Terrigal,1328.53,66.43,1262.1
+24/04/2024,Arthur Dent,Referred Existing,Yattalunga,507.16,0,507.16
+24/04/2024,Arthur Dent,Referred Existing,Yattalunga,507.16,0,507.16
+24/04/2024,Ford Prefect,Referred Existing,Green Point,8255.92,0,8255.92
+24/04/2024,Ford Prefect,Referred Existing,Green Point,1100.54,0,1100.54
+24/04/2024,Arthur Dent,Referred Existing,Green Point,831.97,0,831.97
+24/04/2024,Arthur Dent,Referred Existing,Yattalunga,4817.93,181.56,4636.37
+24/04/2024,Arthur Dent,Referred Existing,Not Available,1674.53,0,1674.53
+24/04/2024,Arthur Dent,Referred Existing,Lisarow,4632.94,87.48,4545.46
+24/04/2024,Ford Prefect,Referred Existing,Narara,10352.45,1138.77,9213.68
+24/04/2024,Arthur Dent,Referred Existing,Niagara Park,1743,0,1743
+24/04/2024,Ford Prefect,Referred Existing,Woy Woy,1302.33,0,1302.33
+24/04/2024,Ford Prefect,Referred Existing,Umina Beach,2617.55,0,2617.55
+24/04/2024,Ford Prefect,Referred Existing,Woy Woy,2141.1,95.65,2045.45
+24/04/2024,Ford Prefect,Referred Existing,Woy Woy,848.15,0,848.15
+24/04/2024,Arthur Dent,Referred Existing,Wyoming,6830,193.64,6636.36
+24/04/2024,Ford Prefect,Referred Existing,Not Available,1515.36,193.55,1321.81
+24/04/2024,Arthur Dent,Referred Existing,Woongarrah,932.95,0,932.95
+24/04/2024,Ford Prefect,Referred Existing,Green Point,3701.13,82.95,3618.18
+24/04/2024,Arthur Dent,Referred Existing,Bensville,11608.41,335.68,11272.73
+24/04/2024,Ford Prefect,Referred Existing,Bensville,2334.62,70.98,2263.64
+24/04/2024,Ford Prefect,Referred Existing,Macmasters Beach,1506.12,0,1506.12
+25/04/2024,Arthur Dent,Referred Existing,None Supplied,5704.67,159.22,5545.45
+25/04/2024,Arthur Dent,Referred Existing,Wyoming,1584.09,0,1584.09
+25/04/2024,Arthur Dent,Referred Existing,Not Available,5439.12,165.48,5273.64
+25/04/2024,Arthur Dent,Referred Existing,Wyongah,3157.19,110.83,3046.36
+25/04/2024,Arthur Dent,Referred Existing,Bensville,868.36,0,868.36
+25/04/2024,Arthur Dent,Referred Existing,Wyongah,733.86,0,733.86
+25/04/2024,Ford Prefect,Repeat,Avoca Beach,189.85,0,189.85
+25/04/2024,Ford Prefect,Repeat,None Supplied,1839.23,0,1839.23
+25/04/2024,Ford Prefect,Repeat,Umina Beach,4233.39,369.75,3863.64
+25/04/2024,Ford Prefect,Repeat,Wyoming,2038.79,0,2038.79
+25/04/2024,Ford Prefect,Repeat,Wyoming,4658.33,249.24,4409.09
+25/04/2024,Ford Prefect,Repeat,Wyoming,378.09,0,378.09
+25/04/2024,Ford Prefect,Repeat,Yattalunga,3909.77,195.49,3714.28
+25/04/2024,Ford Prefect,Repeat,Not Available,2245.71,154.78,2090.93
+25/04/2024,Ford Prefect,Repeat,Avoca Beach,2732.58,0,2732.58
+25/04/2024,Ford Prefect,Repeat,Kincumber,731.02,0,731.02
+25/04/2024,Arthur Dent,Repeat,Terrigal,3617.22,253.58,3363.64
+25/04/2024,Arthur Dent,Repeat,The Entrance North,2507.65,143.11,2364.54
+25/04/2024,Arthur Dent,Repeat,Wamberal,1867.25,139.98,1727.27
+25/04/2024,Arthur Dent,Repeat,West Gosford,4060.87,333.6,3727.27
+25/04/2024,Arthur Dent,Repeat,West Gosford,3266.57,268.18,2998.39
+25/04/2024,Arthur Dent,Repeat,Avoca Beach,16822.3,58.66,16763.64
+25/04/2024,Arthur Dent,Repeat,Ourimbah,3185.82,239,2946.82
+25/04/2024,Ford Prefect,Repeat,Yattalunga,3886.64,233.2,3653.44
+25/04/2024,Ford Prefect,Repeat,Yattalunga,845.52,0,845.52
+25/04/2024,Arthur Dent,Repeat,Not Available,870.29,0,870.29
+25/04/2024,Arthur Dent,Repeat,Avoca Beach,3680.2,316.56,3363.64
+25/04/2024,Arthur Dent,Repeat,Terrigal,5199.09,0,5199.09
+25/04/2024,Ford Prefect,Repeat,Terrigal,3989.92,263.24,3726.68
+25/04/2024,Ford Prefect,Repeat,Umina Beach,2807.98,126.16,2681.82
+25/04/2024,Arthur Dent,Repeat,Wyoming,2913.54,118.08,2795.46
+25/04/2024,Ford Prefect,Repeat,Yattalunga,975.98,0,975.98
+26/04/2024,Ford Prefect,Repeat,Bateau Bay,3609.99,127.95,3482.04
+26/04/2024,Ford Prefect,Repeat,Green Point,505.45,0,505.45
+26/04/2024,Ford Prefect,Repeat,Green Point,2470.54,61.45,2409.09
+26/04/2024,Arthur Dent,Repeat,Terrigal,1833.48,0,1833.48
+26/04/2024,Arthur Dent,Repeat,Terrigal,1518.03,0,1518.03
+26/04/2024,Ford Prefect,Repeat,Yattalunga,2208.15,71.81,2136.34
+26/04/2024,Ford Prefect,Repeat,Charmhaven,1666.48,121.03,1545.45
+26/04/2024,Ford Prefect,Repeat,Lisarow,10785.21,1078.52,9706.69
+26/04/2024,Douglas Adams,Repeat,Terrigal,338.41,0,338.41
+26/04/2024,Ford Prefect,Repeat,Terrigal,1548.64,0,1548.64
+26/04/2024,Ford Prefect,Repeat,Yattalunga,4925.86,289.5,4636.36
+26/04/2024,Slartibartfast,Repeat,Not Available,109.09,0,109.09
+26/04/2024,Slartibartfast,Repeat,Not Available,393.36,0,393.36
+26/04/2024,Ford Prefect,Repeat,Not Available,2319.85,115.99,2203.86
+26/04/2024,Ford Prefect,Repeat,Erina,1469.14,16.41,1452.73
+26/04/2024,Arthur Dent,Repeat,Erina,661.97,0,661.97
+26/04/2024,Arthur Dent,Repeat,Ettalong Beach,358.57,0,358.57
+26/04/2024,Ford Prefect,Repeat,Terrigal,855.99,0,855.99
+26/04/2024,Ford Prefect,Repeat,Wyoming,8164.94,0,8164.94
+26/04/2024,Arthur Dent,Repeat,Yattalunga,2007.88,0,2007.88
+26/04/2024,Marvin,Repeat,Not Available,354.55,0,354.55
+26/04/2024,Ford Prefect,Repeat,Blackwall,837.17,0,837.17
+26/04/2024,Ford Prefect,Repeat,Booker Bay,4186.59,0,4186.59
+26/04/2024,Ford Prefect,Repeat,Davistown,6791.8,504.53,6287.27
+26/04/2024,Slartibartfast,Repeat,Erina,1807.82,180.78,1627.04
+26/04/2024,Slartibartfast,Repeat,Erina,2753.07,275.31,2477.76
+26/04/2024,Arthur Dent,Repeat,Wyoming,2217.75,0,2217.75
+26/04/2024,Arthur Dent,Repeat,Narara,6414.26,458.81,5955.45
+26/04/2024,Arthur Dent,Repeat,Wyoming,394.54,0,394.54
+26/04/2024,Ford Prefect,Repeat,Kincumber,5896.97,0,5896.97
+26/04/2024,Trillian,Repeat,Kincumber,2773.25,0,2773.25
+26/04/2024,Ford Prefect,Repeat,Narara,1307.55,171.19,1136.36
+26/04/2024,Ford Prefect,Repeat,Point Clare,8514.25,923.35,7590.9
+26/04/2024,Ford Prefect,Repeat,Yattalunga,1698.39,84.92,1613.47
+26/04/2024,Arthur Dent,Repeat,Kincumber,5615.57,251.94,5363.63
+26/04/2024,Arthur Dent,Repeat,Kincumber,1589.85,0,1589.85
+26/04/2024,Arthur Dent,Repeat,Kincumber,373.55,37.35,336.2
+26/04/2024,Arthur Dent,Repeat,Kincumber,2286.12,0,2286.12
+26/04/2024,Arthur Dent,Repeat,Matcham,5516.41,243.68,5272.73
+26/04/2024,Arthur Dent,Repeat,Not Available,3717.08,0,3717.08
+26/04/2024,Slartibartfast,Repeat,Not Available,1458.45,0,1458.45
+27/04/2024,Ford Prefect,Repeat,Bateau Bay,861.92,0,861.92
+27/04/2024,Ford Prefect,Repeat,Kincumber,2374.13,96.4,2277.73
+27/04/2024,Ford Prefect,Repeat,Koolewong,2931.23,203.95,2727.28
+27/04/2024,Arthur Dent,Repeat,Lake Haven,4597.5,188.41,4409.09
+27/04/2024,Arthur Dent,Repeat,Narara,2509.21,100.12,2409.09
+27/04/2024,Slartibartfast,Repeat,Not Available,240,0,240
+27/04/2024,Ford Prefect,Repeat,Cooranbong,6822.57,0,6822.57
+27/04/2024,Ford Prefect,Repeat,Copacabana,9540,0,9540
+27/04/2024,Arthur Dent,Repeat,Copacabana,3328.23,146.41,3181.82
+27/04/2024,Arthur Dent,Repeat,East Gosford,3155.4,155.4,3000
+27/04/2024,Slartibartfast,Repeat,Not Available,107.71,0,107.71
+27/04/2024,Arthur Dent,Repeat,Not Available,1394.95,0,1394.95
+27/04/2024,Ford Prefect,Repeat,Berkeley Vale,5094.34,0,5094.34
+27/04/2024,Ford Prefect,Repeat,Berkeley Vale,3186.42,95.51,3090.91
+27/04/2024,Ford Prefect,Repeat,Berkeley Vale,4527.39,271.65,4255.74
+27/04/2024,Ford Prefect,Repeat,Berkeley Vale,306.65,0,306.65
+27/04/2024,Arthur Dent,Repeat,Berkeley Vale,1065.3,0,1065.3
+27/04/2024,Ford Prefect,Repeat,Berowra Heights,5596.99,364.26,5232.73
+27/04/2024,Arthur Dent,Repeat,Blackwall,7358.05,267.15,7090.9
+27/04/2024,Ford Prefect,Repeat,Narara,480.34,0,480.34
+27/04/2024,Ford Prefect,Repeat,Narara,2030.7,93.88,1936.82
+27/04/2024,Marvin,Repeat,Berkeley Vale,1772.73,408.64,1364.09
+27/04/2024,Ford Prefect,Repeat,Narara,6712.68,576.32,6136.36
+27/04/2024,Ford Prefect,Repeat,Niagara Park,53181.82,0,53181.82
+27/04/2024,Ford Prefect,Repeat,Niagara Park,972.12,52.88,919.24
+27/04/2024,Arthur Dent,Repeat,Terrigal,3393.22,256.85,3136.37
+27/04/2024,Ford Prefect,Repeat,Terrigal,2361.6,93.42,2268.18
+27/04/2024,Ford Prefect,Repeat,Not Available,1357.26,48.17,1309.09
+27/04/2024,Ford Prefect,Repeat,Toukley,4520.08,138.25,4381.83
+27/04/2024,Ford Prefect,Repeat,Tumbi Umbi,3201.29,0,3201.29
+27/04/2024,Ford Prefect,Repeat,Tumbi Umbi,314.59,0,314.59
+27/04/2024,Ford Prefect,Repeat,Tumbi Umbi,1628.99,0,1628.99
+27/04/2024,Ford Prefect,Repeat,Wamberal,3229.83,0,3229.83
+27/04/2024,Ford Prefect,Repeat,Not Available,5806.63,261.3,5545.33
+27/04/2024,Ford Prefect,Repeat,Not Available,1541.1,0,1541.1
+27/04/2024,Ford Prefect,Repeat,Booker Bay,445.47,0,445.47
+27/04/2024,Ford Prefect,Repeat,Terrigal,9263.16,1099.07,8164.09
+27/04/2024,Ford Prefect,Repeat,Terrigal,2315.17,0,2315.17
+27/04/2024,Arthur Dent,Repeat,Wamberal,1787.54,0,1787.54
+27/04/2024,Arthur Dent,Repeat,Wamberal,1408,0,1408
+27/04/2024,Arthur Dent,Repeat,Wamberal,6820.11,183.75,6636.36
+27/04/2024,Arthur Dent,Repeat,Woy Woy,4020.33,156.69,3863.64
+27/04/2024,Ford Prefect,Repeat,Yattalunga,6075.81,257.63,5818.18
+27/04/2024,Slartibartfast,Repeat,Not Available,336.42,0,336.42
+27/04/2024,Arthur Dent,Repeat,Green Point,826.5,0,826.5
+27/04/2024,Arthur Dent,Repeat,Killarney Vale,888.22,0,888.22
+27/04/2024,Ford Prefect,Repeat,Narara,11131.96,0,11131.96
+27/04/2024,Ford Prefect,Repeat,Yattalunga,1180.94,44.57,1136.37
+27/04/2024,Arthur Dent,Repeat,Yattalunga,1868.26,0,1868.26
+27/04/2024,Arthur Dent,Repeat,Narara,1562,0,1562
+28/04/2024,Arthur Dent,Repeat,Woy Woy,1887.2,0,1887.2
+28/04/2024,Arthur Dent,Repeat,Yattalunga,639.3,0,639.3
+28/04/2024,Trillian,Repeat,Not Available,522.16,0,522.16
+28/04/2024,Ford Prefect,Repeat,Umina Beach,1514.52,0,1514.52
+28/04/2024,Ford Prefect,Repeat,Umina Beach,2502.28,0,2502.28
+28/04/2024,Ford Prefect,Repeat,Woy Woy,1957.19,0,1957.19
+28/04/2024,Ford Prefect,Repeat,Woy Woy,3326.25,133.05,3193.2
+28/04/2024,Ford Prefect,Repeat,Wyoming,7567.45,412.15,7155.3
+28/04/2024,Arthur Dent,Repeat,Wyoming,700.85,0,700.85
+28/04/2024,Ford Prefect,Repeat,Wyoming,2312.68,85.41,2227.27
+28/04/2024,Ford Prefect,Repeat,Not Available,842.75,0,842.75
+28/04/2024,Arthur Dent,Repeat,Berkeley Vale,4208.59,0,4208.59
+28/04/2024,Arthur Dent,Repeat,Umina Beach,36.36,0,36.36
+28/04/2024,Ford Prefect,Repeat,Umina Beach,11489.07,0,11489.07
+28/04/2024,Arthur Dent,Repeat,Umina Beach,1894.49,0,1894.49
+28/04/2024,Trillian,Repeat,Umina Beach,400,0,400
+28/04/2024,Slartibartfast,Repeat,Not Available,395.34,0,395.34
+28/04/2024,Slartibartfast,Repeat,Not Available,865.18,0,865.18
+28/04/2024,Slartibartfast,Repeat,Not Available,519.82,0,519.82
+28/04/2024,Arthur Dent,Repeat,East Gosford,316.8,0,316.8
+28/04/2024,Ford Prefect,Repeat,Long Jetty,3627.11,0,3627.11
+28/04/2024,Arthur Dent,Repeat,Narara,851.44,0,851.44
+28/04/2024,Trillian,Repeat,Yattalunga,4427.4,0,4427.4
+28/04/2024,Slartibartfast,Repeat,Yattalunga,623.32,0,623.32
+28/04/2024,Slartibartfast,Repeat,Not Available,693.07,0,693.07
+28/04/2024,Ford Prefect,Repeat,Not Available,1876.22,0,1876.22
+28/04/2024,Arthur Dent,Repeat,Green Point,1618.6,0,1618.6
+28/04/2024,Ford Prefect,Repeat,Green Point,704.55,0,704.55
+28/04/2024,Arthur Dent,Repeat,Not Available,919.89,0,919.89
+28/04/2024,Slartibartfast,Repeat,Not Available,1156.58,0,1156.58
+28/04/2024,Ford Prefect,Repeat,Erina,2912.5,121.45,2791.05
+28/04/2024,Arthur Dent,Repeat,Narara,19266.3,902.66,18363.64
+28/04/2024,Ford Prefect,Repeat,Wyoming,1832.87,61.22,1771.65
+28/04/2024,Arthur Dent,Repeat,Wyoming,5879.08,242.63,5636.45
+28/04/2024,Ford Prefect,Repeat,Bensville,1399.56,58.36,1341.2
+28/04/2024,Arthur Dent,Repeat,East Gosford,2647.59,102.14,2545.45
+28/04/2024,Ford Prefect,Repeat,Macmasters Beach,15099.4,0,15099.4
+28/04/2024,Ford Prefect,Repeat,None Supplied,5650.39,513.57,5136.82
+28/04/2024,Ford Prefect,Repeat,None Supplied,1448.22,0,1448.22
+28/04/2024,Slartibartfast,Repeat,Not Available,3057.22,0,3057.22
+28/04/2024,Arthur Dent,Repeat,Not Available,25515.74,1424.83,24090.91
+29/04/2024,Ford Prefect,Repeat,Bensville,7470.96,308.23,7162.73
+29/04/2024,Ford Prefect,Repeat,Berkeley Vale,2000,0,2000
+29/04/2024,Arthur Dent,Repeat,Yattalunga,5604.8,-1120.96,6725.76
+29/04/2024,Ford Prefect,Repeat,Berkeley Vale,7508,563.1,6944.9
+29/04/2024,Trillian,Repeat,Cameron Park,6829.93,0,6829.93
+29/04/2024,Arthur Dent,Seniors Discount,Terrigal,590.63,0,590.63
+29/04/2024,Arthur Dent,Seniors Discount,Wyoming,243.62,0,243.62
+29/04/2024,Ford Prefect,Showroom,Green Point,3401.97,220.15,3181.82
+29/04/2024,Trillian,Showroom,Wyoming,2659.4,0,2659.4
+29/04/2024,Arthur Dent,Staff Friend,None Supplied,305.52,0,305.52
+29/04/2024,Arthur Dent,Staff Friend,None Supplied,1715.68,171.57,1544.11
+29/04/2024,Arthur Dent,Staff Friend,None Supplied,1016.72,0,1016.72
+29/04/2024,Arthur Dent,Staff Friend,Terrigal,540.42,0,540.42
+29/04/2024,Ford Prefect,Staff Friend,Umina Beach,8449.8,633.74,7816.06
+29/04/2024,Arthur Dent,Staff Friend,Yattalunga,5889.19,588.92,5300.27
+29/04/2024,Ford Prefect,Staff Friend,Erina,2025.5,207.32,1818.18
+29/04/2024,Arthur Dent,Staff Friend,Wyoming,2819.6,322.28,2497.32
+29/04/2024,Ford Prefect,Staff Friend,Long Jetty,7453.75,484.49,6969.26
+29/04/2024,Slartibartfast,Staff Friend,Not Available,7207.83,0,7207.83
+29/04/2024,Ford Prefect,Staff Friend,Bateau Bay,6020.87,451.56,5569.31
+29/04/2024,Ford Prefect,Staff Friend,Yattalunga,1468.62,0,1468.62
+29/04/2024,Slartibartfast,Staff Friend,Blue Haven,2054.8,205.48,1849.32
+29/04/2024,Arthur Dent,Staff Friend,Bateau Bay,977.03,0,977.03
+29/04/2024,Marvin,Staff Friend,Copacabana,2354.55,263.19,2091.36
+29/04/2024,Ford Prefect,Staff Friend,Niagara Park,3923.02,392.3,3530.72
+29/04/2024,Ford Prefect,Staff Friend,Tumbi Umbi,1448.34,0,1448.34
+29/04/2024,Ford Prefect,Staff Friend,Wamberal,1064.57,0,1064.57
+29/04/2024,Ford Prefect,Staff Friend,Yattalunga,872.56,0,872.56
+29/04/2024,Ford Prefect,Staff Friend,Erina,3504.02,350.4,3153.62
+29/04/2024,Slartibartfast,Staff Friend,Narara,2566.22,512.58,2053.64
+29/04/2024,Slartibartfast,Staff Friend,Blue Haven,2467.31,246.73,2220.58
+29/04/2024,Slartibartfast,Staff Friend,Green Point,6196,1239.2,4956.8
+29/04/2024,Dolphin Fish,Staff Friend,Not Available,8331.89,0,8331.89
+29/04/2024,Arthur Dent,Supplier Referred,Umina Beach,1000.04,0,1000.04
+29/04/2024,Arthur Dent,Supplier Referred,Forresters Beach,1814.6,172.78,1641.82
+29/04/2024,Arthur Dent,Supplier Referred,Wyoming,18432.3,0,18432.3
+29/04/2024,Arthur Dent,Supplier Referred,Terrigal,604.58,0,604.58
+29/04/2024,Ford Prefect,Supplier Referred,Terrigal,7308,308,7000
+29/04/2024,Arthur Dent,Supplier Referred,Bateau Bay,5610.87,0,5610.87
+30/04/2024,Arthur Dent,Supplier Referred,Lisarow,1996.32,80.45,1915.87
+30/04/2024,Trillian,Supplier Referred,Berkeley Vale,354.55,0,354.55
+30/04/2024,Arthur Dent,Supplier Referred,Booker Bay,5143.15,0,5143.15
+30/04/2024,Ford Prefect,Supplier Referred,Green Point,1895.37,86.28,1809.09
+30/04/2024,Arthur Dent,Supplier Referred,Narara,1158.7,0,1158.7
+30/04/2024,Arthur Dent,Supplier Referred,Umina Beach,4593.52,134.59,4458.93
+30/04/2024,Ford Prefect,Supplier Referred,Umina Beach,21686.81,1053.98,20632.83
+30/04/2024,Arthur Dent,Supplier Referred,Erina,2740.61,0,2740.61
+30/04/2024,Arthur Dent,Supplier Referred,Yattalunga,5043.6,0,5043.6
+30/04/2024,Arthur Dent,Tv,Yattalunga,1414.38,96.2,1318.18
+30/04/2024,Arthur Dent,Tv,Avoca Beach,4964.37,509.83,4454.54
+30/04/2024,Ford Prefect,Tv,Chittaway Bay,3593.04,0,3593.04
+30/04/2024,Ford Prefect,Tv,Green Point,1445.19,0,1445.19
+30/04/2024,Ford Prefect,Tv,Green Point,3630.6,175.58,3455.02
+30/04/2024,Trillian,Tv,East Gosford,1101.82,0,1101.82
+30/04/2024,Arthur Dent,Village Visit,Bateau Bay,236.36,0,236.36
+30/04/2024,Arthur Dent,Village Visit,Umina Beach,2194.67,145.95,2048.72
+30/04/2024,Arthur Dent,Village Visit,Wyoming,1843.79,0,1843.79
+30/04/2024,Ford Prefect,Village Visit,Not Available,1610.98,65.53,1545.45
+30/04/2024,Arthur Dent,Village Visit,Not Available,468.23,0,468.23
+30/04/2024,Arthur Dent,Village Visit,Lake Munmorah,1310.97,0,1310.97
+30/04/2024,Arthur Dent,Village Visit,Not Available,419.31,0,419.31
+30/04/2024,Arthur Dent,Village Visit,Bateau Bay,227.27,0,227.27
+30/04/2024,Arthur Dent,Village Visit,Lisarow,477.75,0,477.75
+30/04/2024,Ford Prefect,Village Visit,Wyoming,3466.88,173.35,3293.53
+30/04/2024,Arthur Dent,Village Visit,Blackwall,145.45,0,145.45
+30/04/2024,Arthur Dent,Village Visit,Wyoming,6515.93,208.51,6307.42
+30/04/2024,Arthur Dent,Village Visit,Not Available,431.67,0,431.67
+30/04/2024,Arthur Dent,Word Of Mouth,Wyoming,881.3,0,881.3
+30/04/2024,Ford Prefect,Word Of Mouth,Wyoming,100,0,100
+30/04/2024,Ford Prefect,Yel Pages Online,East Gosford,13431.97,1343.2,12088.77
+30/04/2024,Arthur Dent,Yellow Pages Print,The Entrance,1873.42,146.15,1727.27
+30/04/2024,Arthur Dent,Yellow Pages Print,Macmasters Beach,1563.85,0,1563.85
+30/04/2024,Trillian,Word Of Mouth,West Gosford,11075.86,2439.5,8636.36
+30/04/2024,Trillian,Word Of Mouth,Yattalunga,3610.06,0,3610.06
+30/04/2024,Trillian,Word Of Mouth,Wyoming,504.64,0,504.64

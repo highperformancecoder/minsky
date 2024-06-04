@@ -1,14 +1,18 @@
-%!PS-Adobe-3.0 EPSF-3.0
-%%Creator: cairo 1.12.16 (http://cairographics.org)
-%%CreationDate: Wed Dec 28 13:05:26 2016
+%!PS-Adobe-3.0
+%%Creator: cairo 1.15.10 (http://cairographics.org)
+%%CreationDate: Tue Jun 04 13:37:16 2024
 %%Pages: 1
 %%DocumentData: Clean7Bit
 %%LanguageLevel: 2
-%%BoundingBox: 0 33 22 59
+%%DocumentMedia: 12x11mm 35 32 0 () ()
+%%BoundingBox: 0 0 35 32
 %%EndComments
 %%BeginProlog
-save
-50 dict begin
+/languagelevel where
+{ pop languagelevel } { 1 } ifelse
+2 lt { /Helvetica findfont 12 scalefont setfont 50 500 moveto
+  (This print job requires a PostScript Language Level 2 printer.) show
+  showpage quit } if
 /q { gsave } bind def
 /Q { grestore } bind def
 /cm { 6 array astore concat } bind def
@@ -31,9 +35,6 @@ save
 /W* { eoclip } bind def
 /BT { } bind def
 /ET { } bind def
-/pdfmark where { pop globaldict /?pdfmark /exec load put }
-    { globaldict begin /?pdfmark /pop load def /pdfmark
-    /cleartomark load def end } ifelse
 /BDC { mark 3 1 roll /BDC pdfmark } bind def
 /EMC { mark /EMC pdfmark } bind def
 /cairo_store_point { /cairo_point_y exch def /cairo_point_x exch def } def
@@ -58,33 +59,79 @@ save
 /g { setgray } bind def
 /rg { setrgbcolor } bind def
 /d1 { setcachedevice } bind def
+/cairo_data_source {
+  CairoDataIndex CairoData length lt
+    { CairoData CairoDataIndex get /CairoDataIndex CairoDataIndex 1 add def }
+    { () } ifelse
+} def
+/cairo_flush_ascii85_file { cairo_ascii85_file status { cairo_ascii85_file flushfile } if } def
+/cairo_image { image cairo_flush_ascii85_file } def
+/cairo_imagemask { imagemask cairo_flush_ascii85_file } def
+/cairo_set_page_size {
+  % Change paper size, but only if different from previous paper size otherwise
+  % duplex fails. PLRM specifies a tolerance of 5 pts when matching paper size
+  % so we use the same when checking if the size changes.
+  /setpagedevice where {
+    pop currentpagedevice
+    /PageSize known {
+      2 copy
+      currentpagedevice /PageSize get aload pop
+      exch 4 1 roll
+      sub abs 5 gt
+      3 1 roll
+      sub abs 5 gt
+      or
+    } {
+      true
+    } ifelse
+    {
+      2 array astore
+      2 dict begin
+        /PageSize exch def
+        /ImagingBBox null def
+      currentdict end
+      setpagedevice
+    } {
+      pop pop
+    } ifelse
+  } {
+    pop
+  } ifelse
+} def
 %%EndProlog
+%%BeginSetup
+%%EndSetup
 %%Page: 1 1
 %%BeginPageSetup
-%%PageBoundingBox: 0 33 22 59
+%%PageMedia: 12x11mm
+%%PageBoundingBox: 0 0 35 32
+35 32 cairo_set_page_size
 %%EndPageSetup
-q 0 33 22 26 rectclip q
+q 0 0 35 32 rectclip
+1 0 0 -1 0 32 cm q
 0 g
-1 w
+1.25 w
 0 J
 0 j
 [] 0.0 d
-10 M 4 46 m 14 46 l 10 43 m 10 41.668 8 41.668 8 43 c 8 44.332 10 44.332 10 
-43 c 10 49 m 10 47.668 8 47.668 8 49 c 8 50.332 10 50.332 10 49 c S
-0.5 w
-q 1 0 0 -1 0 59 cm
-0.898 3.301 m 5.898 8.301 l 0.898 8.301 m 5.898 3.301 l S Q
-q 1 0 0 -1 0 59 cm
-0.898 20.199 m 5.898 20.199 l 3.898 21.699 m 3.898 22.367 2.898 22.367 
-2.898 21.699 c 2.898 21.035 3.898 21.035 3.898 21.699 c 3.898 18.699 m 3.898
- 19.367 2.898 19.367 2.898 18.699 c 2.898 18.035 3.898 18.035 3.898 18.699
+10 M q 1 0 0 1 0 0 cm
+10 16.25 m 22.5 16.25 l 17.5 20 m 17.5 21.664 15 21.664 15 20 c 15 18.336
+ 17.5 18.336 17.5 20 c 17.5 12.5 m 17.5 14.164 15 14.164 15 12.5 c 15 10.836
+ 17.5 10.836 17.5 12.5 c S Q
+0.625 w
+q 1 0 0 1 0 0 cm
+6.125 4.125 m 12.375 10.375 l 6.125 10.375 m 12.375 4.125 l S Q
+q 1 0 0 1 0 0 cm
+6.125 25.25 m 12.375 25.25 l 9.875 27.125 m 9.875 27.961 8.625 27.961 8.625
+ 27.125 c 8.625 26.293 9.875 26.293 9.875 27.125 c 9.875 23.375 m 9.875 
+24.211 8.625 24.211 8.625 23.375 c 8.625 22.543 9.875 22.543 9.875 23.375
  c S Q
 0 0 1 rg
-1 w
-1 34 m 1 58 l 21 46 l h
-S
+1.25 w
+q 1 0 0 1 0 0 cm
+1.25 1.25 m 1.25 31.25 l 31.25 31.25 l 33.75 16.25 l 31.25 1.25 l h
+1.25 1.25 m S Q
 Q Q
 showpage
 %%Trailer
-end restore
 %%EOF
