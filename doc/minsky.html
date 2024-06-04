@@ -7,7 +7,8 @@
       // extract query portion to set the content URL
       function setContent()
       {
-        if (location.search)
+        // only allow links to within this documentation to be passed in (prevent XSS).
+        if (location.search && location.search.slice(1).startsWith("minsky/"))
           document.getElementById("content").src=location.search.slice(1);
         else
           document.getElementById("content").src=minsky/minsky.html;
