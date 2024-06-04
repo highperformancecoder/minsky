@@ -4,8 +4,8 @@
 \usepackage[latin9]{inputenc}
 \setcounter{secnumdepth}{3}
 \setcounter{tocdepth}{3}
-\usepackage{array}
 \usepackage{textcomp}
+\usepackage{ifsym}
 \usepackage{url}
 \usepackage{graphicx}
 \usepackage{esint}
@@ -60,16 +60,9 @@
   \resizebox{!}{2ex}{\includegraphics{images/#1}}
   }
 
-
-
 \makeatother
 
 \begin{document}
 \include{Introduction} \include{GettingStarted} \include{Tutorial}
-\include{Reference} \include{exprtk} \include{Introduction-Minsky}
-\include{GettingStarted-Minsky} \include{Tutorial-Minsky}
-
-% no FAQs have been answered yet :)
-%\include{FAQs}
-
+\include{Reference} \include{Introduction-Minsky} 
 \end{document}

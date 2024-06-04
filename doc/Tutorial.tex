@@ -1,5 +1,5 @@
 
-\chapter{A \emph{Ravel} Tutorial}
+\chapter{An Overview of \emph{Ravel}}
 
 \label{tutorial}
 
@@ -33,7 +33,8 @@ The right-pointing axis of the Ravel determines what is shown on the
 rows of the sheet, while the down-pointing Axes of the Ravel determine
 what is shown by the columns. At present these are Reference Area
 by Value, and the sheet shows a slice of that data for the first entry
-in the Date and Value axes--1927-Q3 and Nominal.
+in the Date and Value axes--1927-Q3, and Nominal (unadjusted for
+inflation).
 
 It would be more useful to see the data by Reference Area by Date.
 To get that view, click the left mouse button on the arrowhead of
@@ -45,10 +46,10 @@ now have countries by rows and Quarters by columns.
 
 \includegraphics[width=15cm]{images/tut02HPI4DwithSheetRotatedCountryDate}
 
-The Sheet is still blank because there is no data for the current
-selections--the Index for Nominal House Prices in the very first
-Quarters of the data (in the years 1927 and 1928) for the first countries
-in the file in alphabetical order.
+The Sheet is still blank, because there is no data for the current
+selections--there is no data for Index for Nominal House Prices in
+the very first Quarters of the data (in the years 1927 and 1928) for
+the first countries in the file in alphabetical order.
 
 To see data immediately, you can take advantage of a feature of the
 Sheet: it can display the first few rows and columns of data (the
@@ -75,7 +76,9 @@ To see the Real (CPI-adjusted) annual rate of change of house prices,
 use the selector dot on those two axes. That selection is shown below--where
 Date has also been rotated to the rows so that Countries are shown
 by the columns. This already gives one interesting insight: house
-prices were falling across advanced countries in 2023. \includegraphics[width=15cm]{images/tut04HPI4DwithSheetRotatedCountryDateRealChange}
+prices were on average falling across advanced countries in 2023.
+
+\includegraphics[width=15cm]{images/tut04HPI4DwithSheetRotatedCountryDateRealChange}
 
 To really develop insights from your data, you attach the output of
 the Ravel to variables, and analyse them using \emph{Ravel}'s flowchart
@@ -112,23 +115,93 @@ why not compare the average for all advanced countries (the first
 entry on the Reference Area axis) to each advanced country?
 
 The image below shows the result of attempting to do this by selecting
-just the data for "Advanced Economies" (this is done using the "Pick
-Axis Slices" option on the right-click menu for the Reference Area
-axis, and then choosing several entries by using control-click) and
+just the data for "Advanced Economies" using the selector dot, and
 attaching that to a new variable $\Delta{HPI}_{Advanced}^{Avg}$,
-while selecting a number of advanced economies from the axis (Australia,
-Austria, Belgium, etc.) and assigning that to another variable $\Delta{HPI}_{Advanced}$.
+while also selecting a number of advanced economies from the axis
+(Australia, Austria, Belgium, etc.) and assigning that to another
+variable $\Delta{HPI}_{Advanced}$.
 
 \includegraphics[width=15cm]{images/tut07SeparatingAdvancedAverage}
 
-\section{Basic Analysis using Ravel}
+\section{Basic Analysis using \emph{Ravel}}
+
+Data analysis can be done using the features of a Ravel alone. As
+well as enabling the selection of display of different segments of
+multidimensional data, you can perform basic data analysis by collapsing
+the axes of a Ravel and applying various aggregations:
+\begin{enumerate}
+\item Summing an axis;
+\item Multiplying axis elements by each other;
+\item Extracting the maximum or minimum values along an axis; 
+\item Calculating the average along an axis;
+\item Calculating the standard deviation of an axis; and
+\item Extracting the maximum or minimum values along an axis.
+\end{enumerate}
+More advanced analysis can be performed by attaching the output of
+a Ravel to a variable (preferably via a Lock \ref{Lock}, so that
+the contents of the variable are unaffected by any subsequent manipulations
+of the Ravel), and analysing it using \emph{Ravel}'s mathematical
+operators. For more details see \ref{Operations}.
 
 \section{Linking Ravels}
 
+Ravels which have the same dimensions can be linked to each other.
+For example, one Ravel may contain inflation data by country by month,
+while another contains unemployment data by country by month. If the
+two or more Ravels are linked, then selections applied to one Ravel
+are applied to the other, which makes it easy to compare these variables
+by country over time. For more details see \ref{Linking-Ravels}.
+
 \section{Displaying your results in Sheets and Plots}
+
+Ravels enable the selection and some analysis of data, but don't display
+data themselves (however, we will embed Sheets and Plots into Ravels
+in future releases of \emph{Ravel}). To see the output of a Ravel,
+you need to attach the output of the Ravel (or variables derived from
+it) to a Sheet or a Plot. For more details see \ref{Sheet} and \ref{PlotWidget}.
 
 \section{Using Publication Tabs}
 
-\section{Working with Other Programs}
+Calculations on the Wiring canvas can become too complicated for non-experts
+to follow, so Publication tabs exist to enable you to show tailored
+views of the results for different audiences---say one Tab for the
+Marketing and another for the Accounting divisions of a company. For
+details see \ref{tabs:Publication}.
+
+\section{Working with Other Programs \label{Export}}
+
+Though \emph{Ravel} can be used to present results very effectively,
+you will sometimes wish to display your results in publication or
+presentation software, or to create better-looking plots (Ravel's
+Plots will improve dramatically in subsequent releases). You can export
+a variety of formats from Ravel:
+\begin{enumerate}
+\item CSV files, in both columnar and tabular layout;
+\item SVG and EMF vector and PNG bitmapped~graphics files, for use in word
+processor and presentation software;
+\item PDF format;
+\item LaTeX format, for use in mathematical formatting programs like LaTeX
+editors and MathType; and
+\item .m files, for analysis of the mathematics of a Ravel document in Matlab.
+\end{enumerate}
+Exporting is done in two main ways:
+\begin{enumerate}
+\item From the File menu option \emph{Export canvas as}, which exports an
+entire canvas (this includes the Equations, Summary and Publication
+Tabs)
+\item From the context menu for any specific object, such as a Ravel, Variable,
+Plot or Sheet.
+\end{enumerate}
 
 \section{Importing Data into Ravel}
+
+CSV files typically have with some columns that specify the nature
+of data, while other columns contain the data itself. \emph{Ravel}
+turns the fields specifying the nature of data into \emph{dimensions}
+(which become axes of a Ravel), which enables the data to be manipulated
+much more effectively than can be done with a spreadsheet. For data
+to be imported into \emph{Ravel}, the dimensions must uniquely specify
+each data point. This process is controlled by the import operator
+\includegraphics{images/ImportWidget}, which then brings up the import
+form in which you specify which columns to treat as dimensions and
+which as data. For more details see \ref{CSV import} and \ref{Operation:csvImport}.

@@ -78,11 +78,9 @@
 \begin_body
 
 \begin_layout Chapter
-A 
+An Overview of 
 \emph on
 Ravel
-\emph default
- Tutorial
 \end_layout
 
 \begin_layout Standard
@@ -214,8 +212,8 @@ The right-pointing axis of the Ravel determines what is shown on the rows
  of the sheet, while the down-pointing Axes of the Ravel determine what
  is shown by the columns.
  At present these are Reference Area by Value, and the sheet shows a slice
- of that data for the first entry in the Date and Value axes–1927-Q3 and
- Nominal.
+ of that data for the first entry in the Date and Value axes–1927-Q3, and
+ Nominal (unadjusted for inflation).
 \end_layout
 
 \begin_layout Standard
@@ -239,10 +237,10 @@ It would be more useful to see the data by Reference Area by Date.
 \end_layout
 
 \begin_layout Standard
-The Sheet is still blank because there is no data for the current selections–the
- Index for Nominal House Prices in the very first Quarters of the data (in
- the years 1927 and 1928) for the first countries in the file in alphabetical
- order.
+The Sheet is still blank, because there is no data for the current selections–th
+ere is no data for Index for Nominal House Prices in the very first Quarters
+ of the data (in the years 1927 and 1928) for the first countries in the
+ file in alphabetical order.
 \end_layout
 
 \begin_layout Standard
@@ -294,9 +292,11 @@ To see the Real (CPI-adjusted) annual rate of change of house prices, use
  the selector dot on those two axes.
  That selection is shown below–where Date has also been rotated to the rows
  so that Countries are shown by the columns.
- This already gives one interesting insight: house prices were falling across
- advanced countries in 2023.
- 
+ This already gives one interesting insight: house prices were on average
+ falling across advanced countries in 2023.
+\end_layout
+
+\begin_layout Standard
 \begin_inset Graphics
 	filename images/tut04HPI4DwithSheetRotatedCountryDateRealChange.eps
 	width 15cm
@@ -412,35 +412,11 @@ status collapsed
 
 \end_inset
 
- (this is done using the 
-\begin_inset ERT
-status collapsed
-
-\begin_layout Plain Layout
-
-"
-\end_layout
-
-\end_inset
-
-Pick Axis Slices
-\begin_inset ERT
-status collapsed
-
-\begin_layout Plain Layout
-
-"
-\end_layout
-
-\end_inset
-
- option on the right-click menu for the Reference Area axis, and then choosing
- several entries by using control-click) and attaching that to a new variable
- 
+ using the selector dot, and attaching that to a new variable 
 \begin_inset Formula $\Delta{HPI}_{Advanced}^{Avg}$
 \end_inset
 
-, while selecting a number of advanced economies from the axis (Australia,
+, while also selecting a number of advanced economies from the axis (Australia,
  Austria, Belgium, etc.) and assigning that to another variable 
 \begin_inset Formula $\Delta{HPI}_{Advanced}$
 \end_inset
@@ -459,27 +435,273 @@ status collapsed
 \end_layout
 
 \begin_layout Section
-Basic Analysis using Ravel
+Basic Analysis using 
+\emph on
+Ravel
+\end_layout
+
+\begin_layout Standard
+Data analysis can be done using the features of a Ravel alone.
+ As well as enabling the selection of display of different segments of multidime
+nsional data, you can perform basic data analysis by collapsing the axes
+ of a Ravel and applying various aggregations:
+\end_layout
+
+\begin_layout Enumerate
+Summing an axis;
+\end_layout
+
+\begin_layout Enumerate
+Multiplying axis elements by each other;
+\end_layout
+
+\begin_layout Enumerate
+Extracting the maximum or minimum values along an axis; 
+\end_layout
+
+\begin_layout Enumerate
+Calculating the average along an axis;
+\end_layout
+
+\begin_layout Enumerate
+Calculating the standard deviation of an axis; and
+\end_layout
+
+\begin_layout Enumerate
+Extracting the maximum or minimum values along an axis.
+\end_layout
+
+\begin_layout Standard
+More advanced analysis can be performed by attaching the output of a Ravel
+ to a variable (preferably via a Lock 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "Lock"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, so that the contents of the variable are unaffected by any subsequent
+ manipulations of the Ravel), and analysing it using 
+\emph on
+Ravel
+\emph default
+'s mathematical operators.
+ For more details see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "Operations"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Section
 Linking Ravels
 \end_layout
 
+\begin_layout Standard
+Ravels which have the same dimensions can be linked to each other.
+ For example, one Ravel may contain inflation data by country by month,
+ while another contains unemployment data by country by month.
+ If the two or more Ravels are linked, then selections applied to one Ravel
+ are applied to the other, which makes it easy to compare these variables
+ by country over time.
+ For more details see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "Linking-Ravels"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+\end_layout
+
 \begin_layout Section
 Displaying your results in Sheets and Plots
+\end_layout
+
+\begin_layout Standard
+Ravels enable the selection and some analysis of data, but don't display
+ data themselves (however, we will embed Sheets and Plots into Ravels in
+ future releases of 
+\emph on
+Ravel
+\emph default
+).
+ To see the output of a Ravel, you need to attach the output of the Ravel
+ (or variables derived from it) to a Sheet or a Plot.
+ For more details see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "Sheet"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "PlotWidget"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
 \end_layout
 
 \begin_layout Section
 Using Publication Tabs
 \end_layout
 
+\begin_layout Standard
+Calculations on the Wiring canvas can become too complicated for non-experts
+ to follow, so Publication tabs exist to enable you to show tailored views
+ of the results for different audiences—say one Tab for the Marketing and
+ another for the Accounting divisions of a company.
+ For details see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "tabs:Publication"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+\end_layout
+
 \begin_layout Section
-Working with Other Programs
+Working with Other Programs 
+\begin_inset CommandInset label
+LatexCommand label
+name "Export"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Though 
+\emph on
+Ravel
+\emph default
+ can be used to present results very effectively, you will sometimes wish
+ to display your results in publication or presentation software, or to
+ create better-looking plots (Ravel's Plots will improve dramatically in
+ subsequent releases).
+ You can export a variety of formats from Ravel:
+\end_layout
+
+\begin_layout Enumerate
+CSV files, in both columnar and tabular layout;
+\end_layout
+
+\begin_layout Enumerate
+SVG and EMF vector and PNG bitmapped
+\begin_inset space ~
+\end_inset
+
+graphics files, for use in word processor and presentation software;
+\end_layout
+
+\begin_layout Enumerate
+PDF format;
+\end_layout
+
+\begin_layout Enumerate
+LaTeX format, for use in mathematical formatting programs like LaTeX editors
+ and MathType; and
+\end_layout
+
+\begin_layout Enumerate
+.m files, for analysis of the mathematics of a Ravel document in Matlab.
+\end_layout
+
+\begin_layout Standard
+Exporting is done in two main ways:
+\end_layout
+
+\begin_layout Enumerate
+From the File menu option 
+\emph on
+Export canvas as
+\emph default
+, which exports an entire canvas (this includes the Equations, Summary and
+ Publication Tabs)
+\end_layout
+
+\begin_layout Enumerate
+From the context menu for any specific object, such as a Ravel, Variable,
+ Plot or Sheet.
 \end_layout
 
 \begin_layout Section
 Importing Data into Ravel
+\end_layout
+
+\begin_layout Standard
+CSV files typically have with some columns that specify the nature of data,
+ while other columns contain the data itself.
+ 
+\emph on
+Ravel
+\emph default
+ turns the fields specifying the nature of data into 
+\emph on
+dimensions
+\emph default
+ (which become axes of a Ravel), which enables the data to be manipulated
+ much more effectively than can be done with a spreadsheet.
+ For data to be imported into 
+\emph on
+Ravel
+\emph default
+, the dimensions must uniquely specify each data point.
+ This process is controlled by the import operator 
+\begin_inset Graphics
+	filename images/ImportWidget.png
+
+\end_inset
+
+, which then brings up the import form in which you specify which columns
+ to treat as dimensions and which as data.
+ For more details see 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "CSV import"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ and 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "Operation:csvImport"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
 \end_layout
 
 \end_body

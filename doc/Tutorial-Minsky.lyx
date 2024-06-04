@@ -98,30 +98,6 @@ Basic System Dynamics model
 \begin_layout Standard
 In 1965, Richard Goodwin, the great pioneer of complexity in economics,
  presented the paper 
-\begin_inset ERT
-status collapsed
-
-\begin_layout Plain Layout
-
-
-\backslash
-htmladdnormallink
-\end_layout
-
-\end_inset
-
-
-\begin_inset ERT
-status collapsed
-
-\begin_layout Plain Layout
-
-{
-\end_layout
-
-\end_inset
-
-
 \begin_inset Quotes eld
 \end_inset
 
@@ -129,35 +105,13 @@ A Growth Cycle
 \begin_inset Quotes erd
 \end_inset
 
-
-\begin_inset ERT
-status collapsed
-
-\begin_layout Plain Layout
-
-}
-\end_layout
-
-\end_inset
-
-
-\begin_inset ERT
-status collapsed
+ 
+\begin_inset Flex URL
+status open
 
 \begin_layout Plain Layout
-
-{
-\end_layout
-
-\end_inset
 
 https://en.wikipedia.org/wiki/Goodwinmodel(economics)
-\begin_inset ERT
-status collapsed
-
-\begin_layout Plain Layout
-
-}
 \end_layout
 
 \end_inset
@@ -226,7 +180,7 @@ status collapsed
 
 .
  Cambridge: Cambridge University Press, pp.
- 54–58.); to my knowledge it was never published in a journal.
+ 54–58.).
 \end_layout
 
 \begin_layout Standard

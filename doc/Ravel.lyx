@@ -151,55 +151,6 @@ filename "Introduction-Minsky.lyx"
 \end_inset
 
  
-\begin_inset CommandInset include
-LatexCommand include
-filename "GettingStarted-Minsky.lyx"
-
-\end_inset
-
- 
-\begin_inset CommandInset include
-LatexCommand include
-filename "Tutorial-Minsky.lyx"
-
-\end_inset
-
-
-\end_layout
-
-\begin_layout Standard
-\begin_inset ERT
-status collapsed
-
-\begin_layout Plain Layout
-
-% no FAQs have been answered yet :)
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
-\begin_inset ERT
-status collapsed
-
-\begin_layout Plain Layout
-
-%
-\backslash
-include{FAQs}
-\end_layout
-
-\begin_layout Plain Layout
-
-\end_layout
-
-\end_inset
-
-
 \end_layout
 
 \end_body

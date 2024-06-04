@@ -68,7 +68,7 @@
 \papercolumns 1
 \papersides 2
 \paperpagestyle default
-\tracking_changes false
+\tracking_changes true
 \output_changes false
 \html_math_output 0
 \html_css_as_file 0
@@ -88,17 +88,65 @@ name "Introduction"
 
 \end_inset
 
+
+\emph on
+Ravel
+\emph default
+ is a data analysis program which is an alternative to spreadsheets and
+ existing business intelligence programs (Tableau, Power BI, etc.).
+ It has two key features that distinguish it from all other programs in
+ this space: 
+\end_layout
+
+\begin_layout Itemize
+The Ravel, a visual representation of multidimensional data that is far
+ easier to use than Pivot Tables; and
+\end_layout
+
+\begin_layout Itemize
+Equations that are written as flowcharts, rather than the obscure cell reference
+s of spreadsheets.
+\end_layout
+
+\begin_layout Standard
+It also includes the system-dynamics engine 
+\emph on
+Minsky
+\emph default
+, which is documented here: 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "Introduction-Minsky"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+Unlike spreadsheets, which are fundamentally limited to two dimensions (rows
+ and columns), 
+\emph on
+Ravel
+\emph default
+ supports an effectively unlimited number of dimensions.
  
 \emph on
 Ravel
 \emph default
- is an intuitive and powerful way to analyse data.
- Its key feature is the Ravel: a visual tool for manipulating and analysing
- data.
+'s key feature—also called a Ravel—is a visual tool for manipulating and
+ analysing multidimensional data, which can handle as many dimensions as
+ your data contains.
+ 
 \end_layout
 
 \begin_layout Standard
-This is a blank Ravel—a Ravel with no data attached to it:
+This is a blank Ravel—a Ravel with no data attached to it.
+ The axes are indicative examples, and will be replaced by the dimensions
+ of your data, once you attach a data parameter to the Ravel:
 \end_layout
 
 \begin_layout Standard
@@ -113,7 +161,17 @@ This is a blank Ravel—a Ravel with no data attached to it:
 \begin_layout Standard
 To use a Ravel, you first need to import a data file–at present this must
  be a CSV file (other data sources will be added in later releases).
- Once the data is imported, the data object can be attached to a Ravel.
+ Once the data is imported 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "CSV import"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, the data object can be attached to a Ravel.
  This is a Ravel with data attached:
 \end_layout
 
@@ -152,9 +210,12 @@ status collapsed
 \end_inset
 
  data is selected from the Unit of Measure axis; two countries (Japan and
- the United States) are selected from the Reference area axis; Monthly data
- is chosen from the Frequency axis; and Calipers are applied to the Date
- axis to select data from 1960 till 2024.
+ the United States) are selected from the Reference area axis via the 
+\emph on
+Pick axis slices
+\emph default
+ command; Monthly data is chosen from the Frequency axis; and Calipers are
+ applied to the Date axis to select data from 1960 till 2024.
 \end_layout
 
 \begin_layout Standard
@@ -242,13 +303,45 @@ status collapsed
 \end_layout
 
 \begin_layout Standard
-Finally, the data is analyzed by (a) working out the average inflation rate
- for the selected countries, and (b) subtracting the average from the actual
- inflation rate for each country.
+The data is analyzed by (a) working out the average inflation rate for the
+ selected countries, and (b) subtracting the average from the actual inflation
+ rate for each country.
 \end_layout
 
 \begin_layout Standard
-The average inflation rate was calculated using the formula:
+The average inflation rate is calculated using the formula shown below,
+ where the 
+\begin_inset Graphics
+	filename images/mean.svg
+
+\end_inset
+
+operator works out the average inflation rate over time for the six countries
+ in the variable 
+\emph on
+Post2000
+\emph default
+ to generate the variable 
+\emph on
+Inflation
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+
+\emph on
+Average
+\end_layout
+
+\end_inset
+
+
+\emph default
+.
+ This average is then subtracted from the country-specific data in 
+\emph on
+Post2000
+\emph default
+:
 \end_layout
 
 \begin_layout Standard
@@ -292,16 +385,8 @@ This one formula is applied to every country in the Ravel (six countries
 \end_layout
 
 \begin_layout Standard
-The final example is the comparison of average inflation outcomes for the
- six countries, and the deviation of them from the average.
- This illustrates the capacity of Ravel to rapidly provide insights from
- data–in this case, that the best-performing country during the post-Covid
- inflation was Japan, and the worst performing were the USA and UK.
- This is noteworthy, because both the USA and UK sharply increased interest
- rates with the intention of reducing inflation, while Japan kept its interest
- rate constant.
- Perhaps then, interest rates aren't effective at controlling interest rates?
- 
+This example shows average inflation outcomes for the six countries, and
+ the deviation of each of them from the average.
 \end_layout
 
 \begin_layout Standard
@@ -335,6 +420,17 @@ status collapsed
 
 \end_inset
 
+ 
+\end_layout
+
+\begin_layout Standard
+This illustrates the capacity of Ravel to rapidly provide insights from
+ data–in this case, that the best-performing country during the post-Covid
+ inflation was Japan, and the worst performing were the USA and UK.
+ This is noteworthy, because both the USA and UK sharply increased interest
+ rates with the intention of reducing inflation, while Japan kept its interest
+ rate constant.
+ Perhaps then, interest rates aren't effective at controlling interest rates?
  
 \end_layout
 
