@@ -37,7 +37,7 @@ namespace minsky
     //      regex_match(utf_to_utf<char>(name), pattern);   // Leave curly braces in valueIds. For ticket 1165
     if (name.substr(name.length()-2)==":_") return false;
     
-    static string constantPrefix="constant:", tempPrefix="temp:";
+    static const string constantPrefix="constant:", tempPrefix="temp:";
     auto nameCStr=name.c_str();
     const char* endp=nullptr;
     strtoull(nameCStr,&const_cast<char*&>(endp),10);

@@ -133,7 +133,7 @@ namespace minsky
             for (auto& xv: a2->hypercube().xvectors)
               if (a2Axes.contains(xv.name))
                 hcSpread1.xvectors.push_back(xv);
-            size_t numCommonAxes=common.size();
+            const size_t numCommonAxes=common.size();
             
             // append common dimensions to make up a1 final order
             a1Order.insert(a1Order.end(), common.begin(), common.end());
@@ -171,9 +171,9 @@ namespace minsky
                 auto& xv=pivotArg2->hypercube().xvectors;
                 size_t commonElements=1;
                 for (size_t i=0; i<numCommonAxes; ++i) commonElements*=xv[i].size();
-                size_t p1NumElements=pivotArg1->hypercube().numElements();
-                size_t p1ExtraElements=p1NumElements/commonElements;
-                size_t p2ExtraElements=pivotArg2->hypercube().numElements()/commonElements;
+                const size_t p1NumElements=pivotArg1->hypercube().numElements();
+                const size_t p1ExtraElements=p1NumElements/commonElements;
+                const size_t p2ExtraElements=pivotArg2->hypercube().numElements()/commonElements;
                 for (auto i: pivotArg2->index())
                   {
                     checkCancel();
@@ -187,7 +187,7 @@ namespace minsky
                       checkCancel();
                       auto s=p2i.find(i/p1ExtraElements);
                       if (s!=p2i.end())
-                        if (s->second.count(j))
+                        if (s->second.contains(j))
                           index.insert(i+p1NumElements*j);
                     }
                 m_index=index;
@@ -423,7 +423,7 @@ namespace minsky
       auto idx=arg->index();
       const set<size_t> idxSet(idx.begin(),idx.end());
       set<size_t> newIdx;
-      size_t hcSize=cachedResult.hypercube().numElements();
+      const size_t hcSize=cachedResult.hypercube().numElements();
       for (auto& i: idx)
         {
           checkCancel();
@@ -493,7 +493,7 @@ namespace minsky
   struct GeneralTensorOp<OperationType::differencePlus>: public GeneralTensorOp<OperationType::difference>
   {
     void setArgument(const TensorPtr& a,const ITensor::Args& args) override {
-      ITensor::Args negArg={args.dimension,-args.val};
+      const ITensor::Args negArg={args.dimension,-args.val};
       GeneralTensorOp<OperationType::difference>::setArgument(a,negArg);
     }
     double operator[](std::size_t i) const override
@@ -687,7 +687,7 @@ namespace minsky
           for (size_t i=0; !xv.empty() && i<arg2->size() && i<hc.xvectors[0].size(); ++i)
             {
               double intPart;
-              double fracPart=std::modf((*arg2)[i], &intPart);
+              const double fracPart=std::modf((*arg2)[i], &intPart);
               if (intPart>=0)
                 if (intPart<xvToGather.size()-1)
                   hc.xvectors[0][i]=interpolate(xvToGather[intPart],xvToGather[intPart+1],fracPart);

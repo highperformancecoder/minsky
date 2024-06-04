@@ -49,9 +49,6 @@ using namespace minsky;
 using namespace civita;
 using ecolab::Pango;
 using ecolab::cairo::CairoSave;
-using tcp = boost::asio::ip::tcp;       
-namespace ssl = boost::asio::ssl;       
-namespace http = boost::beast::http;    
 using boost::filesystem::file_size;
 
 const unsigned CSVDialog::numInitialLines;

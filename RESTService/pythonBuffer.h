@@ -154,7 +154,7 @@ namespace classdesc
         pyObject=x; 
       else
         pyObject=Py_None;
-      Py_INCREF(x);
+      Py_XINCREF(x);
     }
     
     ~PythonBuffer() {Py_DECREF(pyObject);}

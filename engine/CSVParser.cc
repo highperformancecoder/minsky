@@ -521,7 +521,7 @@ bool DataSpec::processChunk(std::istream& input, const TokenizerFunction& tf, si
               {
                 string metadata=match[1];
                 // remove leaning toothpicks
-                metadata.erase(remove(metadata.begin(),metadata.end(),'\\'));
+                metadata.erase(remove(metadata.begin(),metadata.end(),'\\'),metadata.end());
                 string horizontalName;
                 getline(input, buf);
                 static const regex re("HorizontalDimension=\"(.*)\"");
@@ -539,7 +539,7 @@ bool DataSpec::processChunk(std::istream& input, const TokenizerFunction& tf, si
               }
         }
       const boost::tokenizer<TokenizerFunction> tok(buf.begin(),buf.end(), tf);
-      vector<string> line(tok.begin(), tok.end());
+      const vector<string> line(tok.begin(), tok.end());
       starts.push_back(firstNumerical(line));
       nCols=std::max(nCols, line.size());
       if (starts.back()==line.size())
@@ -1136,14 +1136,14 @@ namespace minsky
     } onError;
 
     // parse file to extract error locations
-    ParseCSV<P> parseCSV(input, spec, fileSize, onError, /*checkValues=*/true);
+    const ParseCSV<P> parseCSV(input, spec, fileSize, onError, /*checkValues=*/true);
 
     input.clear();
     input.seekg(0);
     if (!input) throw FailedToRewind();
     string buf;
     size_t row=0;
-    string sep{spec.separator};
+    const string sep{spec.separator};
     multimap<Key,string> duplicateLines;
     vector<string> invalidDataLines;
 
@@ -1154,9 +1154,17 @@ namespace minsky
       for (;  getWholeLine(input, buf, spec); ++row)
         {
           if (onError.duplicates.contains(row))
-            duplicateLines.emplace(onError.duplicates[row],"Duplicate key"+sep+buf);
+            {
+              string msg="Duplicate key";
+              msg+=sep; msg+=buf;
+              duplicateLines.emplace(onError.duplicates[row],msg);
+            }
           if (onError.invalidData.contains(row))
-            invalidDataLines.push_back(onError.invalidData[row]+sep+buf);
+            {
+              string msg=onError.invalidData[row];
+              msg+=sep; msg+=buf;
+              invalidDataLines.push_back(msg);
+            }
           bytesRead+=buf.size();
           pu.setProgress(double(bytesRead)/fileSize);
         }

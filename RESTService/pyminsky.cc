@@ -48,7 +48,7 @@ namespace
   // JSON for now
   PyObject* call(PyObject* self, PyObject* args)
   {
-    string command=PyUnicode_AsUTF8(PySequence_GetItem(args,0));
+    const string command=PyUnicode_AsUTF8(PySequence_GetItem(args,0));
     PythonBuffer arguments;
     if (PySequence_Size(args)>1)
       {
@@ -84,9 +84,9 @@ struct CppWrapperType: public PyTypeObject
     // container commands that take a key as as an argument
     static bool containerSpecialCommand(const std::string& command)
     {
-      static set<string> specialCommands{".@elem",".@elemNoThrow"};
+      static const set<string> specialCommands{".@elem",".@elemNoThrow"};
       auto n=command.rfind('.');
-      return n!=string::npos && specialCommands.count(command.substr(n));
+      return n!=string::npos && specialCommands.contains(command.substr(n));
     }
     
     static PyObject* call(PyObject* self, PyObject* args, PyObject *kwargs)
@@ -153,7 +153,7 @@ struct CppWrapperType: public PyTypeObject
       static int setElem(PyObject* self, PyObject* key, PyObject* val)
       {
         auto cppWrapper=static_cast<CppWrapper*>(self);
-        PyObjectRef r=
+        const PyObjectRef r=
           callMinsky( cppWrapper->command+".@elem."+write(PythonBuffer(key).get<json_pack_t>()),
                       PythonBuffer(val)
                       );
@@ -200,7 +200,7 @@ struct CppWrapperType: public PyTypeObject
         for (auto& i: methods.array())
           {
 
-            string methodName(i.get_str());
+            const string& methodName(i.get_str());
             auto uqMethodName=methodName.substr(1); // remove leading '.'
             if (uqMethodName.find('.')!=string::npos) continue; // ignore recursive commands
             PyObjectRef method{CppWrapper::create(command+methodName)};
@@ -237,7 +237,7 @@ struct CppWrapperType: public PyTypeObject
             replace(c.begin(),c.end(),'.','/');
             RESTStream<<'/'<<c<<' '<<write(args)<<endl;
           }
-        PythonBuffer result(moduleMinsky().registry.process(command, args));
+        const PythonBuffer result(moduleMinsky().registry.process(command, args));
         moduleMinsky().commandHook(command,args);
 
         auto pyResult=result.getPyObject();

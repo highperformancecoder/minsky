@@ -269,7 +269,7 @@ namespace minsky
         else if (fc.name.starts_with("rand"))
           {
             for (size_t i=0; i<r.size(); ++i)
-              r[i]=double(rand())/RAND_MAX;
+              r[i]=double(rand())/RAND_MAX; // NOLINT
           }
         return r;
       }

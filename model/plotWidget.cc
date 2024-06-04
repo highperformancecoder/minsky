@@ -171,7 +171,7 @@ namespace minsky
 
     cairo_translate(cairo, portSpace, yoffs);
     cairo_set_line_width(cairo,1);
-    double gw=w-2*portSpace, gh=h-portSpace;
+    const double gw=w-2*portSpace, gh=h-portSpace;
 
     Plot::draw(cairo,gw,gh);
     if (mouseFocus && legend)
@@ -319,8 +319,8 @@ namespace minsky
   void PlotWidget::mouseMove(float x,float y)
   {
     const double z=Item::zoomFactor();
-    const double w=0.5*iWidth()*z, h=0.5*iHeight()*z;
-    const double dx=x-this->x(), dy=y-this->y();
+    //const double w=0.5*iWidth()*z, h=0.5*iHeight()*z;
+    //const double dx=x-this->x(), dy=y-this->y();
     const double gw=iWidth()*z-2*portSpace;
     double gh=iHeight()*z-portSpace;
     if (!title.empty()) gh=iHeight()*z-portSpace-titleHeight;
@@ -582,7 +582,7 @@ namespace minsky
     size_t pen=0;
     bool noLhsPens=true; // track whether any left had side ports are connected
     clearPensOnLabelling=true; // arrange for penLabels to be cleared first time an entry is added
-    OnStackExit setClearPensOnLabellingFalse([this]{clearPensOnLabelling=false;});
+    const OnStackExit setClearPensOnLabellingFalse([this]{clearPensOnLabelling=false;});
     
     for (size_t port=0; port<yvars.size(); ++port)
       for (size_t i=0; i<yvars[port].size(); ++i)
