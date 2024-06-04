@@ -316,7 +316,7 @@ namespace minsky
     zoomTranslate(x,y);
     if (auto item=m_getItemAt(x,y))
       {
-        EnsureEditorMode em(*item);
+        const EnsureEditorMode em(*item);
         if (item->itemRef->onKeyPress(args.keySym,args.utf8,args.state))
           {
             requestRedraw();
