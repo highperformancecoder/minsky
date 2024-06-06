@@ -18,7 +18,14 @@ Unlike spreadsheets, which are fundamentally limited to two dimensions
 (rows and columns), \emph{Ravel} supports an effectively unlimited
 number of dimensions. \emph{Ravel}'s key feature---also called a
 Ravel---is a visual tool for manipulating and analysing multidimensional
-data, which can handle as many dimensions as your data contains. 
+data, which can handle as many dimensions as your data contains. By
+contrast, to handle more than 2 dimensions in a spreadsheet, the go to
+tool is a {\em Pivot table}, which provides some sort of control over
+the slice through the multidimensional {\em hypercube}. Needless the
+say, pivot tables are not for the faint of heart!
+
+Ravel is primarily focussed on numerical data, although it is possible
+to analyse purely symbolic data in \htmlref{``counter mode''}{counter}.
 
 This is a blank Ravel---a Ravel with no data attached to it. The
 axes are indicative examples, and will be replaced by the dimensions
@@ -36,7 +43,7 @@ can be attached to a Ravel. This is a Ravel with data attached:
 
 There are many ways to manipulate and display data directly from a
 Ravel. This is a Ravel with data attached and selected for graphing:
-the "Year on Year Changes" data is selected from the Unit of Measure
+the ``Year on Year Changes'' data is selected from the Unit of Measure
 axis; two countries (Japan and the United States) are selected from
 the Reference area axis via the \emph{Pick axis slices} command; Monthly
 data is chosen from the Frequency axis; and Calipers are applied to
@@ -51,7 +58,7 @@ that standard Business Intelligence program use.
 \emph{Ravel} the program enables easy analysis of data using self-documenting
 flowchart formulas.This is a Ravel with data selected--for six countries,
 on the annualised monthly inflation rate, for dates from January 2001
-till January 2024--and assigned to a variable ("Post2000").
+till January 2024--and assigned to a variable (``Post2000'').
 \noindent \begin{flushleft}
 \resizebox{10cm}{!}{\includegraphics{images/02RavelDataInflationGraphed}} 
 \par\end{flushleft}
@@ -86,13 +93,25 @@ the post-Covid inflation was Japan, and the worst performing were
 the USA and UK. This is noteworthy, because both the USA and UK sharply
 increased interest rates with the intention of reducing inflation,
 while Japan kept its interest rate constant. Perhaps then, interest
-rates aren't effective at controlling interest rates? 
+rates aren't effective at controlling inflation rates? 
 
 These examples are drawn from economics, mainly because \emph{Ravel}'s
 inventor is an economist (and a contrarian one at that). But \emph{Ravel}
 can analyze any data you give it---marketing data, scientific data,
 production data, whatever. It can also handle enormous data sets,
 far larger than are manageable with Excel.
+ 
+Ravel can handle sparse data---it requires 16 bytes per data point, so
+for example, a 16GB computer will technically be able to handle up to a billion
+data points, although in practice it is unwise to exceed more than
+half that. There is no limit to the number of rows and columns it can
+ingest, subject to the overall limit due to available memory, in
+contrast to Excel's limits of 1,048,576 rows by 16,384 columns. One
+other limit to keep in mind is that the size of the datacube (product
+of sizes of all the dimensions) cannot exceed $1.8\times
+10^{19}$. This is something to bear in mind when importing data, as
+the datacube size increases exponentially with the number of
+dimensions.
 
 We hope these examples show how easy it is to turn data into information
 using Ravel.

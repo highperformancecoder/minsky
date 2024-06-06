@@ -12,14 +12,16 @@ select the components of your data that you wish to see, and those
 components are then the output of the Ravel, which can be graphed
 or displayed directly, or attached to variables which can be further
 analysed using the flowchart equation capabilities of \emph{Ravel}.
-The Ravel below loads data from the \emph{\href{https://data.bis.org/bulkdownload}{Bank of International Settlements}}
+The Ravel below loads data from the \htmladdnormallink{\emph{Bank of International Settlements}}{https://data.bis.org/bulkdownload}
 on house prices. This data has four dimensions:
-\begin{enumerate}
+\begin{description}
 \item[Date] Quarterly data from 1927 till 2024: 388 entries 
 \item[Unit of Measure] House Price Index where 2010 = 100; 2 entries 
 \item[Value] Nominal or Real (CPI-deflated) prices: 2 entries 
 \item[Reference Area] Country or Region: 62 entries 
-\end{enumerate}
+\end{description}
+\newpage
+
 \includegraphics{images/tut00Ravel}
 
 When a Ravel is first attached to data, it outputs the entire data
@@ -27,7 +29,7 @@ set---which is indicated by the dimension count \emph{4D} in the
 lower right quadrant of this Ravel. You can see this by attaching
 a Sheet to the output port of the Ravel:
 
-\includegraphics[width=15cm]{images/tut01Ravel4DwithSheet}
+\noindent\includegraphics[width=\textwidth]{images/tut01Ravel4DwithSheet}
 
 The right-pointing axis of the Ravel determines what is shown on the
 rows of the sheet, while the down-pointing Axes of the Ravel determine
@@ -44,7 +46,7 @@ you release the mouse button, the Date axis will replace the Unit
 of measure axis in the down direction, and the data in the Sheet will
 now have countries by rows and Quarters by columns.
 
-\includegraphics[width=15cm]{images/tut02HPI4DwithSheetRotatedCountryDate}
+\noindent\includegraphics[width=\textwidth]{images/tut02HPI4DwithSheetRotatedCountryDate}
 
 The Sheet is still blank, because there is no data for the current
 selections--there is no data for Index for Nominal House Prices in
@@ -78,7 +80,7 @@ Date has also been rotated to the rows so that Countries are shown
 by the columns. This already gives one interesting insight: house
 prices were on average falling across advanced countries in 2023.
 
-\includegraphics[width=15cm]{images/tut04HPI4DwithSheetRotatedCountryDateRealChange}
+\noindent\includegraphics[width=\textwidth]{images/tut04HPI4DwithSheetRotatedCountryDateRealChange}
 
 To really develop insights from your data, you attach the output of
 the Ravel to variables, and analyse them using \emph{Ravel}'s flowchart
@@ -100,7 +102,7 @@ The lock for $\Delta{HPI}$ has been closed, while the lock for $HPI_{Real}$
 is still open. Once the lock is closed, the output from that lock
 remains the same, even if the selection on the source Ravel is altered.
 
-\includegraphics[width=15cm]{images/tut05HPIandInflationSeparatedLocks}
+\noindent\includegraphics[width=\textwidth]{images/tut05HPIandInflationSeparatedLocks}
 
 With the data separated into index and inflation data, we can now
 focus on those subsets of the data rather than the entire source file.
@@ -108,20 +110,20 @@ The next image shows the source Ravel in icon mode, with the house
 price inflation data attached to another Ravel and the currently selected
 data displayed in a sheet.
 
-\includegraphics[width=15cm]{images/tut06HPIwithVariablesAssigned02DeltaHPI}
+\noindent\includegraphics[width=\textwidth]{images/tut06HPIwithVariablesAssigned02DeltaHPI}
 
 The information in the sheet suggests a possibly useful piece of analysis:
 why not compare the average for all advanced countries (the first
 entry on the Reference Area axis) to each advanced country?
 
 The image below shows the result of attempting to do this by selecting
-just the data for "Advanced Economies" using the selector dot, and
+just the data for ``Advanced Economies'' using the selector dot, and
 attaching that to a new variable $\Delta{HPI}_{Advanced}^{Avg}$,
 while also selecting a number of advanced economies from the axis
 (Australia, Austria, Belgium, etc.) and assigning that to another
 variable $\Delta{HPI}_{Advanced}$.
 
-\includegraphics[width=15cm]{images/tut07SeparatingAdvancedAverage}
+\noindent\includegraphics[width=\textwidth]{images/tut07SeparatingAdvancedAverage}
 
 \section{Basic Analysis using \emph{Ravel}}
 
@@ -135,7 +137,6 @@ the axes of a Ravel and applying various aggregations:
 \item Extracting the maximum or minimum values along an axis; 
 \item Calculating the average along an axis;
 \item Calculating the standard deviation of an axis; and
-\item Extracting the maximum or minimum values along an axis.
 \end{enumerate}
 More advanced analysis can be performed by attaching the output of
 a Ravel to a variable (preferably via a Lock \ref{Lock}, so that
@@ -177,12 +178,13 @@ Plots will improve dramatically in subsequent releases). You can export
 a variety of formats from Ravel:
 \begin{enumerate}
 \item CSV files, in both columnar and tabular layout;
-\item SVG and EMF vector and PNG bitmapped~graphics files, for use in word
+\item SVG, EPS and EMF vector and PNG bitmapped~graphics files, for use in word
 processor and presentation software;
 \item PDF format;
-\item LaTeX format, for use in mathematical formatting programs like LaTeX
+\item LaTeX format, for use in mathematical formatting programs like \LaTeX{}
 editors and MathType; and
-\item .m files, for analysis of the mathematics of a Ravel document in Matlab.
+\item .m files, for analysis of the mathematics of a Ravel document in
+  Matlab or Octave.
 \end{enumerate}
 Exporting is done in two main ways:
 \begin{enumerate}
@@ -195,13 +197,13 @@ Plot or Sheet.
 
 \section{Importing Data into Ravel}
 
-CSV files typically have with some columns that specify the nature
+CSV files typically have some columns that specify the nature
 of data, while other columns contain the data itself. \emph{Ravel}
 turns the fields specifying the nature of data into \emph{dimensions}
 (which become axes of a Ravel), which enables the data to be manipulated
 much more effectively than can be done with a spreadsheet. For data
 to be imported into \emph{Ravel}, the dimensions must uniquely specify
-each data point. This process is controlled by the import operator
-\includegraphics{images/ImportWidget}, which then brings up the import
+each data point. This process is controlled by the import tool
+\buttonIcon{importData}~, which then brings up the import
 form in which you specify which columns to treat as dimensions and
 which as data. For more details see \ref{CSV import} and \ref{Operation:csvImport}.

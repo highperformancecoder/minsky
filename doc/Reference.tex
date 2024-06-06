@@ -1,3 +1,8 @@
+\newcommand\operatorKey[1]{
+  \begin{center}
+    \includegraphics[height=10mm]{images/#1}
+  \end{center}
+  }
 
 \chapter{Reference}
 
@@ -5,14 +10,6 @@
 
 \emph{Ravel} has six Tabs:
 \begin{itemize}
-<<<<<<< HEAD
-\item By clicking on the relevant icon on the Fundamental Constants
-  toolbar; or
-\item By typing the constant name on the canvas, and pressing Enter
-  (or clicking OK) in the variable definition window. These names are:
-  \textit{Euler} for $e=2.72\ldots$; \textit{pi} for $\pi=3.14\ldots$;
-  and \textit{inf} for $\infty$.
-=======
 \item \emph{Wiring}, which houses the Operators and the Design canvas on
 which data analysis (\emph{Ravel}) and dynamic models (\emph{Minsky})
 are constructed;
@@ -25,18 +22,10 @@ flows in a dynamic economic model;
 \item \emph{Publication}, which enables selected items from a Wiring to
 be displayed; and
 \item +, which adds additional Publication Tabs
->>>>>>> f85cdaddca17eacc1fd534ee1eccdb509c5807e0
 \end{itemize}
 
 \subsection{Wiring}
 
-<<<<<<< HEAD
-\includegraphics{images/FundamentalConstants.png} 
- 	
-\subsection{Percent} \label{Operation:percent} The percent operator
-takes one input, and multiplies its elements by 100. It is useful for
-converting fractions into percentages for display purposes.
-=======
 The Wiring Tab consists of:
 \begin{itemize}
 \item The Operations bar \ref{Operations}, which contains all of \emph{Ravel}'s
@@ -45,12 +34,11 @@ mathematical operators; and
 and operations are combined to perform analysis of data in \emph{Ravel},
 and to simulate dynamic systems in \emph{Minsky}.
 \end{itemize}
->>>>>>> f85cdaddca17eacc1fd534ee1eccdb509c5807e0
 
 \subsection{Equations}
 
 The Equation Tab shows the equations in your data analysis or model.
-To export equations in a format that can be inserted into TeX editors
+To export equations in a format that can be inserted into \LaTeX{} editors
 or programs like MathType, choose ``Export canvas as'' from the
 File menu, and choose the format LaTeX. For details see \ref{Export}.
 
@@ -98,40 +86,38 @@ of any annotations on the wiring tab.
 
 Wires currently cannot be added to the publication tab. However, you
 can insert text-based arrows (eg $\rightarrow$) by typing \verb+#\rightarrow+
-on the canvas. This will generate a text string consisting solely
-of the LaTeX rightarrow character \includegraphics{images/rightarrow}.
-This text string can then be rotated and scaled to emulate the wiring
-diagram accorss connecting parts of the dashboard together.
+on the canvas. This item can then be rotated and scaled to emulate the wiring
+diagram connecting parts of the dashboard together.
 
 \section{Operations}
 
 \label{Operations}
 
-\includegraphics{images/DesignIcons}
+\noindent\includegraphics[width=\textwidth]{images/DesignIcons}
 
-Except for \includegraphics{images/var}, which invokes a pop-up sideways
+Except for \buttonIcon{var}, which invokes a pop-up sideways
 menu for defining variables, constants and parameters, the first 8
 icons on the Operations bar---from data importing to the simulation
 time--are immediately activated by clicking on them. The remaining
 mathematical and data operations are stored on pop-up sideway menus,
 which are activated when you click on the menu's icon. For example,
-clicking on the \includegraphics{images/Plus} symbol brings up the
+clicking on the \buttonIcon{Plus} symbol brings up the
 Binary Operators menu:
 
-\includegraphics{images/DesignIconsWithBinaryOperatorsMenu}
+\noindent\includegraphics[width=\textwidth]{images/DesignIconsWithBinaryOperatorsMenu}
 
 \subsection{Import Data}
 
-The import data operator \includegraphics{images/ImportWidget} inserts
-a parameter on the canvas called \includegraphics{images/dataImport},
-and invokes the data import form. For more details see \ref{CSV import}.
+The import data operator \buttonIcon{importData} inserts
+a parameter on the canvas called \buttonIcon{dataImport},
+and invokes the data import form. For more details see \htmlref{CSV import}{CSV import}.
 
 \subsection{Ravel}
 
 A Ravel is a visual tool for manipulating and analyzing multi-dimensional
-data. For full details on the concept see \ref{Ravel}.
+data. For full details on the concept see \htmlref{Ravel}{Ravel}.
 
-The Ravel operator \includegraphics{images/RavelWidget}inserts a
+The Ravel operator \buttonIcon{ravelIcon}inserts a
 Ravel onto the Wiring canvas. The first Ravel inserted is in Edit
 mode, and has sample axis names and a sample data point selected.
 
@@ -139,34 +125,39 @@ mode, and has sample axis names and a sample data point selected.
 
 Subsequent Ravels are inserted in iconized mode.
 
-\includegraphics{images/RavelIcon}
+%\includegraphics{images/RavelIcon}
 
 To use a Ravel, it must first have a parameter (or variable) attached
 to it. Normally the parameter will contain data imported from a CSV
-file---for more details see \ref{CSV import}.
+file---for more details see \htmlref{CSV import}{CSV import}.
 
 The key feature of a Ravel is its Axes (or ``Arrows''). A Ravel
 has one axis per dimension of the data attached to it. Axes can be:
-\begin{itemize}
-\item \emph{Rotated}. The right-pointing axis determines what is shown on
+\begin{description}
+\item[Rotated] The right-pointing axis determines what is shown on
 the x-axis of a Plot and columns of a Sheet; the down-pointing axis
 determines what is displayed on the Y-axis of a plot and the rows
 of a sheet.
-\item \emph{Collapsed}. An axis is collapsed by dragging the arrow head
+\item[Collapsed] An axis is collapsed by dragging the arrow head
 back to the centre of the Ravel. This applies an aggregation method
 to the axis, which is determined by the setting for ``Set next aggregation''
 on the context menu. The aggregations are Sum, Product, Average, Standard
-Deviation, Maximum and Minimum.
-\item \emph{Selected}. When the selector dot for an Axis is in the centre
-of the Ravel, the entire Ravel is output (though this can be a selection
+Deviation, Maximum and Minimum. The aggregation type can be changed
+{\em post facto} unser the ``Axis properties'' context menu. 
+\item[Selected] When the selector dot for an Axis is in the centre
+of the Ravel, the entire Ravel axis is output (though this can be a selection
 of values on the axis if ``Pick axis slices'' has been activated).
 When the selector dot is on a particular value on an axis, only that
 value is output.
-\item \emph{Sorted }by name. The default sort order of a Ravel is that of
-the data to which it is attached. The axis can also be sorted alphabetically
-either Forward (A-Z) or in Reverse (Z to A).
-\item \emph{Sorted }by value. When the output of a Ravel is 1-dimensional,
-axes can be sorted by the data values on this 1-dimensional axis.
+\item[Sorted] The ``none'' sort order of a Ravel is that of
+the axis as it is attached (usually the order in which it is read from
+a CSV file). The axis can also be sorted in
+either a ``forward'' or ``reverse''  direction. The sorting comparison
+depends on the dimension type --- numerical in the case of ``value'',
+time order in the case of ``time'' and {\em lexicographic}
+(``alphabetical'') in the case of ``string''.
+\item[Sorted by value] When the output of a Ravel is 1-dimensional,
+axes can be sorted by the data values along this 1-dimensional axis.
 The choices are a combination of Forward and Reverse, and Statically
 and Dynamically. A Static sort applies the order of the data for a
 given instance---for example, countries could be sorted by the inflation
@@ -178,24 +169,26 @@ applies the sort order for each selection. For example, a reverse
 dynamic sort of Country by inflation rates would show countries by
 descending order of their inflation rate in whichever year was chosen
 on the Date axis.
-\item \emph{Picked}. The context menu option ``Pick axis slices'' invokes
+\item[Picked] The context menu option ``Pick axis slices'' invokes
 a pop-down menu showing all the entries on that axis---countries
 for a Country axis, dates for a Time axis, etc. You can select specific
 values by clicking on them, and select multiple values by control-clicking
 on them.
-\item \emph{Calipered}. ``Toggle axis calipers'' brings up a caliper which
+\item[Calipered] ``Toggle axis calipers'' brings up a caliper which
 initially spans the entire data range. The ends of the caliper can
 be individually adjusted to select a range of the data, while the
 whole caliper can be moved to select the same number of data points
 for different segments of the data.
-\end{itemize}
+\end{description}
 Ravels can be linked with other Ravels that share the same dimension(s).
 This means that any operation applies to one Ravel is applied to all
 Ravels in the linked set. For more details see \ref{Linking-Ravels}.
 
 \subsection{Lock}
 
-\includegraphics{images/Lock}
+\begin{center}
+  \includegraphics{images/Lock}
+\end{center}
 
 Locks are attached to the output of Ravels. After a Lock is closed
 (either by double-clicking on the Lock, or choosing Lock from the
@@ -207,34 +200,37 @@ see \ref{Lock}
 
 \subsection{Variable}
 
-\includegraphics{images/var}
-
+\begin{center}
+  \includegraphics{images/var}
+\end{center}
+    
 This operator activates a pop-up menu for defining variables, parameters
 and constants. For details see \ref{Variables}.
 
 \subsection{Plot}
-
-\includegraphics{images/plot}
+\begin{center}
+  \includegraphics{images/plot}
+\end{center}
 
 This operator inserts a Plot onto the Wiring canvas. For details see
 \ref{PlotWidget}.
 
 \subsection{Sheet}
-
-\includegraphics{images/sheet}
+\begin{center}
+  \includegraphics{images/sheet}
+\end{center}
 
 This operator inserts a Sheet onto the Wiring canvas. For details
 see \ref{Sheet}.
 
 \subsection{time $t$}
-
-\includegraphics{images/time}
+\operatorKey{time}
 
 \label{Operation:time} Returns the current value of system time.
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
-\item From the time widget on the toolbar \includegraphics{images/time};
+\item From the time widget on the toolbar \buttonIcon{time};
 or 
 \item By typing the letters "time" on the canvas and then pressing the
 Enter key.
@@ -244,19 +240,14 @@ Enter key.
 
 \label{Binary-Operations}
 
-<<<<<<< HEAD
-The input ports allow multiple wires, which are all summed. If an
-input port is unwired, it is equivalent to setting it to zero.
-=======
 \subsubsection{add +}
->>>>>>> f85cdaddca17eacc1fd534ee1eccdb509c5807e0
+
+\operatorKey{PlusSymbol}
 
 \label{Operation:add} Add multiple numbers together.
 
 The input ports allow multiple wires, which are all summed. If an
 input port is unwired, it is equivalent to setting it to zero.
-
-\includegraphics{images/PlusSymbol}
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
@@ -266,22 +257,14 @@ The operator can be placed on the canvas in two ways:
 
 \subsubsection{subtract $-$}
 
-<<<<<<< HEAD
-\subsection{subtract $-$}\label{Operation:subtract} Subtract two
-numbers. The input ports allow multiple wires, which are summed prior
-to the subtraction being carried out. If an input port is unwired, it
-is equivalent to setting it to zero. Note the small `+' and `$-$'
-signs on the input ports indicating which terms are added or
-subtracted from the result.
-=======
+\operatorKey{MinusKey}
+
 \label{Operation:subtract} Subtract two numbers. The input ports
 allow multiple wires, which are summed prior to the subtraction being
 carried out. If an input port is unwired, it is equivalent to setting
 it to zero. Note the small `+' and `$-$' signs on the input ports
 indicating which terms are added or subtracted from the result.
->>>>>>> f85cdaddca17eacc1fd534ee1eccdb509c5807e0
 
-\includegraphics{images/MinusKey}
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
@@ -293,38 +276,28 @@ immediately placing the minus operator on the keyboard, as with the
 plus and multiply operators---is that a user may wish to enter a
 negative number as a constant. 
 \end{itemize}
-\includegraphics{images/MinusTextWindow}
+
+\noindent\includegraphics[width=\textwidth]{images/MinusTextWindow}
 
 \subsubsection{multiply $\times$}
+
+\operatorKey{MultiplyKey}
 
 \label{Operation:multiply} Multiply numbers with each other. The
 input ports allow multiple wires, which are all multiplied together.
 If an input port is unwired, it is equivalent to setting it to one.
 
-\includegraphics{images/MultiplyKey}
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
-<<<<<<< HEAD
-\item From the Binary Operations toolbar; or
-\item By pressing the multiply (asterisk: *) key anywhere on the
-  wiring canvas.
-\end{itemize}
-
-\subsection{divide $\div$}\label{Operation:divide} Divide a number by
-another. The input ports allow multiple wires, which are multiplied
-together prior to the division being carried out. If an input port is
-unwired, it is equivalent to setting it to one. Note the small
-`$\times$' and `$\div$' signs indicating which port refers to the
-numerator and which the denominator.
-=======
 \item From the \emph{Binary Operations (``binop'')} toolbar; or 
 \item By pressing the multiply (asterisk: {*}) key anywhere on the wiring
 canvas. 
 \end{itemize}
->>>>>>> f85cdaddca17eacc1fd534ee1eccdb509c5807e0
 
 \subsubsection{divide $\div$}
+
+\operatorKey{DivideKey}
 
 \label{Operation:divide} Divide a number by another. The input ports
 allow multiple wires, which are multiplied together for each port
@@ -333,158 +306,49 @@ it is equivalent to setting it to one. Note the small `$\times$'
 and `$\div$' signs indicating which port refers to the numerator
 and which the denominator.
 
-\includegraphics{images/DivideKey}
-
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
 \item From the \emph{Binary Operations (``binop'')} toolbar; or 
 \item By pressing the divide key (/) anywhere on the wiring canvas. 
 \end{itemize}
-<<<<<<< HEAD
-
-\subsection{log}\label{Operation:log} Take the logarithm of the $x$
-input port, to base $b$. The base $b$ needs to be specified --- if the
-natural logarithm is desired ($b=e$), use the \htmlref{ln
-  operator}{Operation:ln} instead.
-=======
->>>>>>> f85cdaddca17eacc1fd534ee1eccdb509c5807e0
 
 \subsubsection{min}
 
-\label{Operation:min} Returns the minimum of $x$ and $y$.
+\operatorKey{minkey}
 
-\includegraphics{images/minkey}
+\label{Operation:min} Returns the minimum of $x$ and $y$. If multiple
+wires are connected to the ports, the the overall minimum from all
+inputs is returned.
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
-<<<<<<< HEAD
-\item From the Binary Operations toolbar; or
-\item By typing the word ``log'' anywhere on the wiring canvas, and then
-  pressing the Enter key.
-\end{itemize}
-
-When you use the direct typing method to enter the log operations, the
-text entry window pops up. This allows you to type a
-variable/parameter name starting with log (like, for example,
-``logical''. If you press Enter (or click on OK) with only the word log
-in the window, the log operation will be placed on the canvas.
-
-\subsection{pow $x^y$}\label{Operation:pow} Raise one number to the
-power of another. The ports are labelled $x$ and $y$, referring the
-the formula $x^y$.
-=======
 \item From the \emph{Binary Operations (``binop'')} toolbar; or 
-\item By typing the letters "min" on the canvas and then pressing the
+\item By typing the letters ``min'' on the canvas and then pressing the
 Enter key. 
 \end{itemize}
 
 \subsubsection{max}
->>>>>>> f85cdaddca17eacc1fd534ee1eccdb509c5807e0
 
-\label{Operation:max} Returns the maximum of $x$ and $y$.
+\operatorKey{maxkey}
 
-\includegraphics{images/maxkey}
+\label{Operation:max} Returns the maximum of $x$ and $y$. If multiple
+wires are connected to the ports, the the overall maximum from all
+inputs is returned.
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
-<<<<<<< HEAD
-\item From the Binary Operations toolbar; or
-\item By typing the word ``pow'' anywhere on the wiring canvas and then
-  pressing the Enter Key (or clicking on OK).
-=======
 \item From the \emph{Binary Operations (``binop'') }toolbar; or 
 \item By typing the letters "max" on the canvas and then pressing the
 Enter key. 
->>>>>>> f85cdaddca17eacc1fd534ee1eccdb509c5807e0
 \end{itemize}
 
 \subsubsection{and $\wedge$}
 
-<<<<<<< HEAD
-\includegraphics{images/LessThanKey.png} 
+\operatorKey{andkey}
 
-The operator can be placed on the canvas in two ways:
-
-\begin{itemize}
-\item From the Binary Operations toolbar; or
-\item By typing the letters ``lt'' on the canvas and then pressing the Enter key.
-\end{itemize}
-
-
-\subsection{le $\le$}\label{Operation:le} Returns 0 or 1, depending on
-whether $x\le y$ is true (1) or false (0).
-
-\includegraphics{images/LessEqualKey.png} 
-
-The operator can be placed on the canvas in two ways:
-
-\begin{itemize}
-\item From the Binary Operations toolbar; or
-\item By typing the letters ``le'' on the canvas and then pressing the
-  Enter key.
-\end{itemize}
-
-
-\subsection{eq $=$}\label{Operation:eq} Returns 0 or 1, depending on
-whether $x=y$ is true (1) or false (0).
-
-\includegraphics{images/EqualKey.png} 
-
-The operator can be placed on the canvas in two ways:
-
-\begin{itemize}
-\item From the Binary Operations toolbar; or
-\item By typing the letters ``eq'' on the canvas and then pressing the
-  Enter key.
-\end{itemize}
-
-\subsection{min}\label{Operation:min} Returns the minimum of $x$ and $y$.
-
-\includegraphics{images/minkey.png} 
-
-The operator can be placed on the canvas in two ways:
-
-\begin{itemize}
-\item From the Binary Operations toolbar; or
-\item By typing the letters ``min'' on the canvas and then pressing
-  the Enter key.
-\end{itemize}
-
-\subsection{max}\label{Operation:max} Returns the maximum of $x$ and $y$.
-
-\includegraphics{images/maxkey.png} 
-
-\subsection{and $\wedge$}\label{Operation:and_} Logical and of $x$ and $y$, where $x\le 0.5$ means false, and $x>0.5$ means true. The output is 1 or 0, depending on the result being true (1) or false (0) respectively.
-
-\includegraphics{images/andkey.png} 
-
-The operator can be placed on the canvas in two ways:
-
-\begin{itemize}
-\item From the Binary Operations toolbar; or
-\item By typing the letters ``and\_'' on the canvas and then pressing
-  the Enter key. Note the trailing underscore is required because
-  \verb+and+ is a reserved word in C++!
-\end{itemize}
-
-
-\subsection{or $\vee$}\label{Operation:or_} Logical or of $x$ and $y$,
-where $x\le0.5$ means false, and $x>0.5$ means true. The output is 1
-or 0, depending on the result being true (1) or false (0)
-respectively.
-
-\subsection{not $\neg$}\label{Operation:not_} The output is 1 or 0,
-depending
-on whether $x\le0.5$ is true (1) or false (0) respectively.
-
-\subsection{time $t$}\label{Operation:time} Returns the current value
-of system time.
-=======
 \label{Operation:and_} Logical and of $x$ and $y$, where $x\le0.5$
 means false, and $x>0.5$ means true. The output is 1 or 0, depending
 on the result being true (1) or false (0) respectively.
-
-\includegraphics{images/andkey}
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
@@ -494,20 +358,19 @@ underscore}) on the canvas and then pressing the Enter key. The underscore
 is needed because ``and'' is a reserved word in \emph{C++,} the
 programming language in which \emph{Ravel} is written.
 \end{itemize}
->>>>>>> f85cdaddca17eacc1fd534ee1eccdb509c5807e0
 
 \subsubsection{or $\vee$}
+
+\operatorKey{or}
 
 \label{Operation:or_} Logical or of $x$ and $y$, where $x\le0.5$
 means false, and $x>0.5$ means true. The output is 1 or 0, depending
 on the result being true (1) or false (0) respectively.
 
-\includegraphics{images/or}
-
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
 \item From the \emph{Binary Operations (``binop'') }toolbar; or 
-\item By typing the letters "or\_" (the word or, \emph{followed by an
+\item By typing the letters ``or\_'' (the word or, \emph{followed by an
 underscore}) on the canvas and then pressing the Enter key. The underscore
 is needed because ``or'' is a reserved word in \emph{C++,} the programming
 language in which \emph{Ravel} is written.
@@ -515,39 +378,41 @@ language in which \emph{Ravel} is written.
 
 \subsubsection{log}
 
+\operatorKey{LogKey}
+
 \label{Operation:log} Take the logarithm of the $x$ input port,
 to base $b$. The base $b$ needs to be specified --- if the natural
-logarithm is desired ($b=e$), use the \ref{Operation:ln} instead.
-
-\includegraphics{images/LogKey}
+logarithm is desired ($b=e$), use the \htmlref{natural log}{Operation:ln} instead.
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
 \item From the \emph{Binary Operations (``binop'')} toolbar; or 
-\item By typing the word "log" anywhere on the wiring canvas, and then
+\item By typing the word ``log'' anywhere on the wiring canvas, and then
 pressing the Enter key. 
 \end{itemize}
 When you use the direct typing method to enter the Log operator, the
 text entry window pops up. This allows you to type a variable/parameter
-name starting with Log (like, for example, "Logical". If you press
+name starting with Log (like, for example, ``Logical''. If you press
 Enter (or click on OK) with only the word Log in the window, the Log
 operator will be placed on the canvas.
 
 \subsubsection{pow $x^{y}$}
 
+\operatorKey{PowerKey}
+
 \label{Operation:pow} Raise one number to the power of another. The
 ports are labelled $x$ and $y$, referring the the formula $x^{y}$.
-
-\includegraphics{images/PowerKey}
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
 \item From the \emph{Binary Operations (``binop'')} toolbar; or 
-\item By typing the letters "Pow" anywhere on the wiring canvas and then
+\item By typing the letters ``Pow'' anywhere on the wiring canvas and then
 pressing the Enter Key (or clicking on OK). 
 \end{itemize}
 
 \subsubsection{Polygamma $\psi^{(n)}(x)$}
+
+\operatorKey{Polygamma}
 
 \label{Operation:polygamma} Returns the polygamma function of the
 first argument $x$, with the order $n$ being given by the floor
@@ -556,21 +421,19 @@ of the second argument.
 \psi^{(n)}(x)=\frac{d^{n+1}}{dx^{n+1}}\ln\Gamma(x)
 \]
 
-\includegraphics{images/Polygamma}
-
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
 \item From the \emph{Binary Operations (``binop'')} toolbar; or 
-\item By typing the letters "polygamma" on the canvas and then pressing
+\item By typing the letters ``polygamma'' on the canvas and then pressing
 the Enter key.
 \end{itemize}
 
 \subsubsection{lt $<$}
 
+\operatorKey{LessThanKey}
+
 \label{Operation:lt} Returns 0 or 1, depending on whether $x<y$
 is true (1) or false (0).
-
-\includegraphics{images/LessThanKey}
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
@@ -581,10 +444,10 @@ key.
 
 \subsubsection{le $\le$}
 
+\operatorKey{LessEqualKey}
+
 \label{Operation:le} Returns 0 or 1, depending on whether $x\le y$
 is true (1) or false (0).
-
-\includegraphics{images/LessEqualKey}
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
@@ -595,21 +458,23 @@ key.
 
 \subsubsection{eq $=$}
 
+\operatorKey{Equal}
+
 \label{Operation:eq} Returns 0 or 1, depending on whether $x=y$
 is true (1) or false (0).
-
-\includegraphics{images/EqualKey}
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
 \item From the \emph{Binary Operations (``binop'')} toolbar; or 
-\item By typing the letters "eq" on the canvas and then pressing the Enter
+\item By typing the letters ``eq'' on the canvas and then pressing the Enter
 key. 
 \end{itemize}
 
 \subsection{Special constants}
 
 \label{Special-constants}
+
+\includegraphics{images/FundamentalConstants}
 
 \label{Operation:euler}\label{Operation:pi}\label{Operation:zero}\label{Operation:one}
 \label{Operation:inf}
@@ -625,15 +490,14 @@ for $e=2.72\ldots$; \textit{pi} for $\pi=3.14\ldots$; \textit{inf}
 for $\infty$; and the percent symbol for the percent operator (which
 multiplies the input by 100).
 \end{itemize}
-\includegraphics{images/FundamentalConstants}
 
 \subsubsection{Percent}
+
+\operatorKey{PercentOperator}
 
 \label{Operation:percent} The percent operator takes one input, and
 multiplies its elements by 100. It is useful for converting fractions
 into percentages for display purposes.
-
-\includegraphics{images/PercentOperator}
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
@@ -647,10 +511,10 @@ The operator can be placed on the canvas in two ways:
 
 \subsubsection{sqrt $\protect\surd$}
 
+\operatorKey{squareRoot}
+    
 \label{Operation:sqrt} This produces the square root of the input
 value.
-
-\includegraphics{images/squareRoot}
 
 For example, connecting the value of 9 with the ``sqrt'' block will
 produce the value of 3. As with all Ravel operators, this function
@@ -659,45 +523,45 @@ accepts multidimensional arguments.
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
 \item From the \emph{Functions (``function'')} toolbar; or 
-\item By typing the letters "sqrt" on the canvas and then pressing the
+\item By typing the letters ``sqrt'' on the canvas and then pressing the
 Enter key. 
 \end{itemize}
 
 \subsubsection{exp}
 
+\operatorKey{Exponential}
+
 \label{Operation:exp} Connecting a variable (for example, ``time'')
 to this block will produce the exponential function $e^{x}$ where
 x is the input variable.
 
-\includegraphics{images/Exponential}
-
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
 \item From the \emph{Functions (``function'')} toolbar; or 
-\item By typing the letters "exp" on the canvas and then pressing the
+\item By typing the letters ``exp'' on the canvas and then pressing the
 Enter key. 
 \end{itemize}
 
 \subsubsection{ln}
 
+\operatorKey{ln}
+
 \label{Operation:ln} Produces a natural logarithm of the input, to
 the base of e. This takes the equation $\log_{e}x$ where $x$ is
 the input.
 
-\includegraphics{images/ln}
-
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
 \item From the \emph{Functions (``function'')} toolbar; or 
-\item By typing the letters "ln" on the canvas and then pressing the Enter
+\item By typing the letters ``ln'' on the canvas and then pressing the Enter
 key. 
 \end{itemize}
 
 \subsubsection{sin}
 
-\label{Operation:sin} Produces a sine function of the input.
+\operatorKey{sine}
 
-\includegraphics{images/sine}
+\label{Operation:sin} Produces a sine function of the input.
 
 For example, connecting a ``time'' block to this function, and then
 to a graph, will produce a sine wave.
@@ -705,179 +569,180 @@ to a graph, will produce a sine wave.
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
 \item From the \emph{Functions (``function'')} toolbar; or 
-\item By typing the letters "sin" on the canvas and then pressing the
+\item By typing the letters ``sin'' on the canvas and then pressing the
 Enter key. 
 \end{itemize}
-For further explanation regarding trigonemtric functions, see \url{https://en.wikipedia.org/wiki/Trigonometric_functions}.
+For further explanation regarding trigonemtric functions, see
+\htmladdnormallink{Wikipedia's page on trigonometric functions}{https://en.wikipedia.org/wiki/Trigonometric_functions}.
 
 \subsubsection{cos}
 
 \label{Operation:cos} Produces a cosine function of the input.
 
-\includegraphics{images/cosine}
+\operatorKey{cosine}
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
 \item From the \emph{Functions (``function'')} toolbar; or 
-\item By typing the letters "cos" on the canvas and then pressing the
+\item By typing the letters ``cos'' on the canvas and then pressing the
 Enter key.
 \end{itemize}
 For example, connecting a ``time'' block to this function, and then
 to a graph, will produce a cosine wave. For further explanation regarding
-trigonemtric functions, see \url{https://en.wikipedia.org/wiki/Trigonometric_functions}.
+trigonemtric functions, see \htmladdnormallink{Wikipedia's page on trigonometric functions}{https://en.wikipedia.org/wiki/Trigonometric_functions}.
 
 \subsubsection{tan}
 
-\label{Operation:tan} Produces a tangent function of the input.
+\operatorKey{tan}
 
-\includegraphics{images/tan}
+\label{Operation:tan} Produces a tangent function of the input.
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
 \item From the \emph{Functions (``function'')} toolbar; or 
-\item By typing the letters "tan" on the canvas and then pressing the
+\item By typing the letters ``tan'' on the canvas and then pressing the
 Enter key.
 \end{itemize}
 For example, connecting a ``time'' block to this function, and then
 to a graph, will produce a tangent graph. For further explanation
-regarding trigonemtric functions, see \url{https://en.wikipedia.org/wiki/Trigonometric_functions}.
+regarding trigonemtric functions, see \htmladdnormallink{Wikipedia's page on trigonometric functions}{https://en.wikipedia.org/wiki/Trigonometric_functions}.
 
 \subsubsection{asin}
+
+\operatorKey{sin-1}
 
 \label{Operation:asin} Produces an arc sine function of the input,
 or the inverse of the sine function.
 
-\includegraphics{images/sin-1}
-
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
 \item From the \emph{Functions (``function'')} toolbar; or 
-\item By typing the letters "asin" on the canvas and then pressing the
+\item By typing the letters ``asin'' on the canvas and then pressing the
 Enter key.
 \end{itemize}
-For further explanation regarding trigonemtric functions, see \url{https://en.wikipedia.org/wiki/Trigonometric_functions}.
+For further explanation regarding trigonemtric functions, see \htmladdnormallink{Wikipedia's page on trigonometric functions}{https://en.wikipedia.org/wiki/Trigonometric_functions}.
 
 \subsubsection{acos}
+
+\operatorKey{cos-1}
 
 \label{Operation:acos} Produces an arc cosine function of the input,
 or the inverse of the cosine function.
 
-\includegraphics{images/cos-1}
-
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
 \item From the \emph{Functions (``function'')} toolbar; or 
-\item By typing the letters "acos" on the canvas and then pressing the
+\item By typing the letters ``acos'' on the canvas and then pressing the
 Enter key.
 \end{itemize}
-For further explanation regarding trigonemtric functions, see \url{https://en.wikipedia.org/wiki/Trigonometric_functions}.
+For further explanation regarding trigonemtric functions, see \htmladdnormallink{Wikipedia's page on trigonometric functions}{https://en.wikipedia.org/wiki/Trigonometric_functions}.
 
 \subsubsection{atan}
+
+\operatorKey{tan-1}
 
 \label{Operation:atan} Produces an arc tangent function of the input,
 or the inverse of the tangent function.
 
-\includegraphics{images/tan-1}
-
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
 \item From the \emph{Functions (``function'')} toolbar; or 
-\item By typing the letters "atan" on the canvas and then pressing the
+\item By typing the letters ``atan'' on the canvas and then pressing the
 Enter key.
 \end{itemize}
-For further explanation regarding trigonemtric functions, see \url{https://en.wikipedia.org/wiki/Trigonometric_functions}.
+For further explanation regarding trigonemtric functions, see \htmladdnormallink{Wikipedia's page on trigonometric functions}{https://en.wikipedia.org/wiki/Trigonometric_functions}.
 
 \subsubsection{sinh}
 
-\label{Operation:sinh} hyperbolic sine function $\frac{e^{x}-e^{-x}}{2}$ 
+\operatorKey{sinh}
 
-\includegraphics{images/sinh}
+\label{Operation:sinh} hyperbolic sine function $\frac{e^{x}-e^{-x}}{2}$ 
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
 \item From the \emph{Functions (``function'')} toolbar; or 
-\item By typing the letters "sinh" on the canvas and then pressing the
+\item By typing the letters ``sinh'' on the canvas and then pressing the
 Enter key.
 \end{itemize}
 
 \subsubsection{cosh}
 
-\label{Operation:cosh} hyperbolic cosine function $\frac{e^{x}+e^{-x}}{2}$ 
+\operatorKey{cosh}
 
-\includegraphics{images/cosh}
+\label{Operation:cosh} hyperbolic cosine function $\frac{e^{x}+e^{-x}}{2}$ 
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
 \item From the \emph{Functions (``function'')} toolbar; or 
-\item By typing the letters "cosh" on the canvas and then pressing the
+\item By typing the letters ``cosh'' on the canvas and then pressing the
 Enter key.
 \end{itemize}
 
 \subsubsection{tanh}
 
-\label{Operation:tanh} hyperbolic tangent function $\frac{e^{x}-e^{-x}}{e^{x}+e^{-x}}$ 
+\operatorKey{tanh}
 
-\includegraphics{images/tanh}
+\label{Operation:tanh} hyperbolic tangent function $\frac{e^{x}-e^{-x}}{e^{x}+e^{-x}}$ 
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
 \item From the \emph{Functions (``function'')} toolbar; or 
-\item By typing the letters "tanh" on the canvas and then pressing the
+\item By typing the letters ``tanh'' on the canvas and then pressing the
 Enter key.
 \end{itemize}
 
 \subsubsection{abs $|x|$}
 
+\operatorKey{abs}
+
 \label{Operation:abs} absolute value function. Returns the magnitude
 of any entered variable.
-
-\includegraphics{images/abs}
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
 \item From the \emph{Functions (``function'')} toolbar; or 
-\item By typing the letters "abs" on the canvas and then pressing the
+\item By typing the letters ``abs'' on the canvas and then pressing the
 Enter key.
 \end{itemize}
 
 \subsubsection{floor $\lfloor x\rfloor$}
 
+\operatorKey{floor}
+
 \label{Operation:floor} The greatest integer less than or equal to
 $x$. 
-
-\includegraphics{images/floor}
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
 \item From the \emph{Functions (``function'')} toolbar; or 
-\item By typing the letters "floor" on the canvas and then pressing the
+\item By typing the letters ``floor'' on the canvas and then pressing the
 Enter key.
 \end{itemize}
 
 \subsubsection{frac}
 
-\label{Operation:frac} Fractional part of $x$, ie $x-\lfloor x\rfloor$.
+\operatorKey{frac}
 
-\includegraphics{images/frac}
+\label{Operation:frac} Fractional part of $x$, ie $x-\lfloor x\rfloor$.
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
 \item From the \emph{Functions (``function'')} toolbar; or 
-\item By typing the letters "frac" on the canvas and then pressing the
+\item By typing the letters ``frac'' on the canvas and then pressing the
 Enter key.
 \end{itemize}
 
 \subsubsection{not $\neg$}
 
+\operatorKey{not}
+
 \label{Operation:not_} The output is 1 or 0, depending on whether
 $x\le0.5$ is true (1) or false (0) respectively.
-
-\includegraphics{images/not}
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
 \item From the \emph{Functions (``function'')} toolbar; or 
-\item By typing the letters "not\_" (the word not, \emph{followed by an
+\item By typing the letters ``not\_'' (the word not, \emph{followed by an
 underscore}) on the canvas and then pressing the Enter key. The underscore
 is needed because ``not'' is a reserved word in \emph{C++,} the
 programming language in which \emph{Ravel} is written.
@@ -885,21 +750,23 @@ programming language in which \emph{Ravel} is written.
 
 \subsubsection{Gamma $\Gamma$}
 
+\operatorKey{Gamma}
+
 \label{Operation:Gamma} Returns the Gamma function of its argument:
 \[
 \Gamma(x)=\int_{0}^{\infty}t^{x-1}e^{-t}dt
 \]
 
-\includegraphics{images/Gamma}
-
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
 \item From the \emph{Functions (``function'')} toolbar; or 
-\item By typing the letters "gamma" on the canvas and then pressing the
+\item By typing the letters ``gamma'' on the canvas and then pressing the
 Enter key.
 \end{itemize}
 
 \subsubsection{Factorial !}
+
+\operatorKey{Factorial}
 
 \label{Operation:fact} Returns the factorial of its argument: 
 \begin{eqnarray*}
@@ -907,12 +774,10 @@ Enter key.
 n! & = & \prod_{i=1}^{n}i\\
 \end{eqnarray*}
 
-\includegraphics{images/Factorial}
-
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
 \item From the \emph{Functions (``function'')} toolbar; or 
-\item By typing the letters "fact" on the canvas and then pressing the
+\item By typing the letters ``fact'' on the canvas and then pressing the
 Enter key.
 \end{itemize}
 Note: 
@@ -924,9 +789,10 @@ which is how it is implemented in Minsky.
 \emph{Minsky} provides this function because of its relationship to
 the derivative of the Gamma function (and factorials).
 
-\subsection{copy}
+\subsubsection{copy}\label{Operation:copy} This just copies its input to its output,
+which is redundant on wiring diagrams, but is needed for internal
+purposes.
 
-<<<<<<< HEAD
 \subsection{differentiate $d/dt$}\label{Operation:differentiate}
 Symbolically differentiates its input with respect to system time,
 producing d/dt[input].  For further explanation regarding
@@ -936,7 +802,7 @@ differentiation, see
 \subsection{User defined
   function}\label{Operation:userFunction}\label{UserFunction}
 
-A user defined function is a functioned defined by an algebraic
+A user defined function is a function defined by an algebraic
 expression. Support for this feature is courtesy of the wonderful
 \htmladdnormallink{exprtk}{http://www.partow.net/programming/exprtk/index.html}
 library developed by Arash Partow.
@@ -954,62 +820,55 @@ arguments can be wired on the canvas. User defined functions can call
 other user defined functions, so specifiying more than 2 parameters
 can be a useful thing to do.
 
-\subsection{copy}\label{Operation:copy} This just copies its input to its output,
-=======
-\label{Operation:copy} This just copies its input to its output,
->>>>>>> f85cdaddca17eacc1fd534ee1eccdb509c5807e0
-which is redundant on wiring diagrams, but is needed for internal
-purposes.
-
 \subsection{Tensor operations}
 
 \label{Operations: Reduction}\ref{Operations: Reduction}
 
 \subsubsection{sum $\sum$}
 
-\label{Operation:sum} Sum along a given axis.
+\operatorKey{sum}
 
-\includegraphics{images/sum}
+\label{Operation:sum} Sum along a given axis.
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
-\item From the \emph{Reductions Operations (``reduction'')} toolbar \includegraphics{images/sum};
+\item From the \emph{Reductions Operations (``reduction'')} toolbar \buttonIcon{sum};
 or 
-\item By typing the letters "sum" on the canvas and then pressing the
+\item By typing the letters ``sum'' on the canvas and then pressing the
 Enter key.
 \end{itemize}
 The same result can be achieved by collapsing the relevant Ravel axis
-after choosing \includegraphics{images/sum} from the ``Set next
+after choosing $\Sigma$ from the ``Set next
 aggregation'' context menu.
 
 \subsubsection{product $\prod$}
 
-\label{Operation:product} Multiply along a given axis.
+\operatorKey{product}
 
-\includegraphics{images/product}
+\label{Operation:product} Multiply along a given axis.
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
-\item From the \emph{Reductions Operations (``reduction'')} toolbar \includegraphics{images/sum};
+\item From the \emph{Reductions Operations (``reduction'')} toolbar \buttonIcon{sum};
 or 
-\item By typing the letters "product" on the canvas and then pressing
+\item By typing the letters ``product'' on the canvas and then pressing
 the Enter key.
 \end{itemize}
 The same result can be achieved by collapsing the relevant Ravel axis
-after choosing \includegraphics{images/product} from the ``Set next
+after choosing $\Pi$ from the ``Set next
 aggregation'' context menu.
 
 \subsubsection{infimum}
 
-\label{Operation:infimum} Return the least value along a given axis.
+\operatorKey{infimum}
 
-\includegraphics{images/infimum}
+\label{Operation:infimum} Return the least value along a given axis.
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
-\item From the \emph{Reductions Operations (``reduction'')} toolbar \includegraphics{images/sum};
+\item From the \emph{Reductions Operations (``reduction'')} toolbar \buttonIcon{sum};
 or 
-\item By typing the letters "infimum" on the canvas and then pressing
+\item By typing the letters ``infimum'' on the canvas and then pressing
 the Enter key.
 \end{itemize}
 
@@ -1018,43 +877,43 @@ the Enter key.
 \label{Operation:supremum} Return the greatest value along a given
 axis.
 
-\includegraphics{images/supremum}
+\operatorKey{supremum}
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
-\item From the \emph{Reductions Operations (``reduction'')} toolbar \includegraphics{images/sum};
+\item From the \emph{Reductions Operations (``reduction'')} toolbar \buttonIcon{sum};
 or 
-\item By typing the letters "supremum" on the canvas and then pressing
+\item By typing the letters ``supremum'' on the canvas and then pressing
 the Enter key.
 \end{itemize}
 
 \subsubsection{any}
 
+\operatorKey{any}
+
 \label{Operation:any} Return 1 if any value along a given axis is
 nonzero, otherwise return 0 if all are zero.
 
-\includegraphics{images/any}
-
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
-\item From the Reductions Operations toolbar \includegraphics{images/sum};
+\item From the Reductions Operations toolbar \buttonIcon{sum};
 or 
-\item By typing the letters "any" on the canvas and then pressing the
+\item By typing the letters ``any'' on the canvas and then pressing the
 Enter key.
 \end{itemize}
 
 \subsubsection{all}
 
+\operatorKey{all}
+
 \label{Operation:all} Return 1 if all values along a given axis are
 nonzero, otherwise return 0 if any are zero.
 
-\includegraphics{images/all}
-
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
-\item From the \emph{Reductions Operations (``reduction'')} toolbar \includegraphics{images/sum};
+\item From the \emph{Reductions Operations (``reduction'')} toolbar \buttonIcon{sum};
 or 
-\item By typing the letters "all" on the canvas and then pressing the
+\item By typing the letters ``all'' on the canvas and then pressing the
 Enter key.
 \end{itemize}
 
@@ -1063,13 +922,13 @@ Enter key.
 \label{Operation:infIndex} Return the index of the least value along
 a given axis.
 
-\includegraphics{images/infindex}
+\operatorKey{infindex}
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
-\item From the \emph{Reductions Operations (``reduction'')} toolbar \includegraphics{images/sum};
+\item From the \emph{Reductions Operations (``reduction'')} toolbar \buttonIcon{sum};
 or 
-\item By typing the letters "infIndex" on the canvas and then pressing
+\item By typing the letters ``infIndex'' on the canvas and then pressing
 the Enter key.
 \end{itemize}
 
@@ -1078,28 +937,32 @@ the Enter key.
 \label{Operation:supIndex} Return the index of the greatest value
 along a given axis.
 
-\includegraphics{images/supindex}
+\operatorKey{supindex}
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
-\item From the \emph{Reductions Operations (``reduction'')} toolbar \includegraphics{images/sum};
+\item From the \emph{Reductions Operations (``reduction'')} toolbar \buttonIcon{sum};
 or 
-\item By typing the letters "supIndex" on the canvas and then pressing
+\item By typing the letters ``supIndex'' on the canvas and then pressing
 the Enter key.
 \end{itemize}
 
 \subsubsection{running sum $\sum+$}
 
+\operatorKey{runningSum}
+
 \label{Operation:runningSum} Computes the running sum of the input
 tensor along a given axis.
 
-\includegraphics{images/runningSum}
+The optional numerical argument (in the ``edit'' dialog) can be used
+to specify a window over which the running sum is performed. If
+negative, the window is over the entire dimension.
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
-\item From the \emph{Scan Operations (``scan'') }toolbar \includegraphics{images/runningSum};
+\item From the \emph{Scan Operations (``scan'') }toolbar \buttonIcon{runningSum};
 or 
-\item By typing the letters "runningSum" on the canvas and then pressing
+\item By typing the letters ``runningSum'' on the canvas and then pressing
 the Enter key.
 \end{itemize}
 For example, take this rank 2 tensor:
@@ -1127,16 +990,20 @@ via a Ravel.
 
 \subsubsection{running product $\prod+$}
 
+\operatorKey{runningProduct}
+
 \label{Operation:runningProduct} Computes the running product of
 the input tensor along a given axis.
 
-\includegraphics{images/runningProduct}
+The optional numerical argument (in the ``edit'' dialog) can be used
+to specify a window over which the running sum is performed. If
+negative, the window is over the entire dimension.
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
-\item From the \emph{Scan Operations (``scan'')} toolbar \includegraphics{images/runningSum};
+\item From the \emph{Scan Operations (``scan'')} toolbar \buttonIcon{runningSum};
 or 
-\item By typing the letters "runningProduct" on the canvas and then pressing
+\item By typing the letters ``runningProduct'' on the canvas and then pressing
 the Enter key.
 \end{itemize}
 For example, take this rank 2 tensor:
@@ -1168,13 +1035,13 @@ defined via a Ravel.
 \label{Operation:difference}\label{Operation:differencePlus} Computes
 the nearest neighbour difference along a given direction.
 
-\includegraphics{images/difference}\includegraphics{images/differencePlus}
+\operatorKey{difference}\operatorKey{differencePlus}
 
 These operators can be placed on the canvas in two ways:
 \begin{itemize}
-\item From the \emph{Scan Operations (``scan'')} toolbar \includegraphics{images/runningSum};
+\item From the \emph{Scan Operations (``scan'')} toolbar \buttonIcon{runningSum};
 or 
-\item By typing the letters "difference" or \textquotedbl differencePlus\textquotedbl{}
+\item By typing the letters ``difference'' or ``differencePlus''
 on the canvas and then pressing the Enter key.
 \end{itemize}
 The optional argument ($\delta$) can be used to specify the number
@@ -1193,16 +1060,16 @@ specify the axis along which the difference operation is calculated.
 
 \subsubsection{inner product $\cdot$}
 
+\operatorKey{innerProduct}
+
 \label{Operation:innerProduct} Calculates the inner product of two
 tensors.
 
-\includegraphics{images/innerProduct}
-
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
-\item From the \emph{Tensor Operations (``tensor'')} toolbar \includegraphics{images/innerProduct};
+\item From the \emph{Tensor Operations (``tensor'')} toolbar \buttonIcon{innerProduct};
 or 
-\item By typing the letters "innerProduct" on the canvas and then pressing
+\item By typing the letters ``innerProduct'' on the canvas and then pressing
 the Enter key.
 \end{itemize}
 It computes 
@@ -1214,16 +1081,16 @@ of $x$ and $y$ respectively.
 
 \subsubsection{outer product $\otimes$}
 
+\operatorKey{outerProduct}
+
 \label{Operation:outerProduct} Calculates the inner product of two
 tensors.
 
-\includegraphics{images/outerProduct}
-
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
-\item From the \emph{Tensor Operations (``tensor'')} toolbar \includegraphics{images/innerProduct};
+\item From the \emph{Tensor Operations (``tensor'')} toolbar \buttonIcon{innerProduct};
 or 
-\item By typing the letters "outerProduct" on the canvas and then pressing
+\item By typing the letters ``outerProduct'' on the canvas and then pressing
 the Enter key.
 \end{itemize}
 It computes: 
@@ -1236,13 +1103,13 @@ where $r_{x}$ and $r_{y}$ are the ranks of $x$ and $y$ respectively.
 
 \label{Operation:index}
 
-\includegraphics{images/index}
+\operatorKey{index}
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
-\item From the \emph{Tensor Operations (``tensor'')} toolbar \includegraphics{images/innerProduct};
+\item From the \emph{Tensor Operations (``tensor'')} toolbar \buttonIcon{innerProduct};
 or 
-\item By typing the letters "index" on the canvas and then pressing the
+\item By typing the letters ``index'' on the canvas and then pressing the
 Enter key.
 \end{itemize}
 Returns the index within the hypecube where the input is true (ie
@@ -1268,7 +1135,8 @@ Dimension and argument parameters are unused.
 
 \label{Operation:gather}
 
-<<<<<<< HEAD
+\operatorKey{gather}
+
 Gather collects the values at index locations of the first argument, indexed by the second
 argument. If the index argument is a scalar, the output tensor's rank
 is one less than the first argument's rank, ie 
@@ -1289,42 +1157,27 @@ If the index value is outside the range of the
 \htmlref{x-vector}{x-vector} along the axis being gathered, then NAN
 is assigned to that tensor element, and the x-vector gets a default
 assigned element (empty string, NaN or not-a-date).
-=======
-Gather collects the values at index locations indexed by the second
-argument.
-
-\includegraphics{images/gather}
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
-\item From the \emph{Tensor Operations (``tensor'')} toolbar \includegraphics{images/innerProduct};
+\item From the \emph{Tensor Operations (``tensor'')} toolbar \buttonIcon{innerProduct};
 or 
-\item By typing the letters "gather" on the canvas and then pressing the
+\item By typing the letters ``gather'' on the canvas and then pressing the
 Enter key.
 \end{itemize}
-The output tensor has shape $[i_{0},\ldots i_{ir},a_{0},\ldots a_{j-1},a_{j+1},\ldots a_{ar}]$
-where $[a_{0},\ldots,a_{ar}]$ is the shape of the first argument,
-and $[i_{0},\ldots,i_{ir}]$ is the shape of the second second (index)
-argument, and $j$ is the axis along which the gather is performed.
 
-If the index is not an integer, the gather will linearly interpolate
-between the values on either side. So, for example, $x[2.5]=0.5(x[2]+x[3])$.
-
-If the index value is outside the range of the vector along the axis
-being gathered, then NAN is assigned to that tensor element.
->>>>>>> f85cdaddca17eacc1fd534ee1eccdb509c5807e0
 
 \subsubsection{Meld}
 
 \label{Operation:meld}
 
-\includegraphics{images/meld}
+\operatorKey{meld}
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
-\item From the \emph{Tensor Operations (``tensor'')} toolbar \includegraphics{images/innerProduct};
+\item From the \emph{Tensor Operations (``tensor'')} toolbar \buttonIcon{innerProduct};
 or 
-\item By typing the letters "meld" on the canvas and then pressing the
+\item By typing the letters ``meld'' on the canvas and then pressing the
 Enter key.
 \end{itemize}
 The meld operation is used to insert additional values in an existing
@@ -1336,13 +1189,13 @@ would use Meld to combine them.
 
 \label{Operation:merge}
 
-\includegraphics{images/merge}
+\operatorKey{merge}
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
-\item From the \emph{Tensor Operations (``tensor'')} toolbar \includegraphics{images/innerProduct};
+\item From the \emph{Tensor Operations (``tensor'')} toolbar \buttonIcon{innerProduct};
 or 
-\item By typing the letters "merge" on the canvas and then pressing the
+\item By typing the letters ``merge'' on the canvas and then pressing the
 Enter key.
 \end{itemize}
 Merge combines two Ravels sharing \emph{n} dimensions to produce a
@@ -1352,36 +1205,36 @@ For example, the file below creates two 2-dimensional Ravels, one
 with sales in dollars and the other with sales by each salesperson
 as a percentage of total sales.
 
-\includegraphics[width=10cm]{images/MergeExample01TwoVariables}
+\noindent\includegraphics[width=\textwidth]{images/MergeExample01TwoVariables}
 
 Sales\textsubscript{SalesPerson\textsuperscript{\$}and SalesPerson\textsuperscript{\%}}share
 the same dimensions (SalesPerson and Date), and they can be separately
 displayed as in the next figure.
 
-\includegraphics[width=10cm]{images/MergeExample02TwoVariablesSeparate}
+\noindent\includegraphics[width=\textwidth]{images/MergeExample02TwoVariablesSeparate}
 
 Using the Merge operator, you can create one new Ravel containing
 information from both the \$ sales and the \% of total sales analysis:
 
-\includegraphics[width=10cm]{images/MergeExample02TwoVariablesEditForm\lyxdot svg}
+\noindent\includegraphics[width=\textwidth]{images/MergeExample02TwoVariablesEditForm}
 
 The merged Ravel has 3 dimensions, with the extra dimension Analysis
 now containing the Sales by dollar amount and Sales as a percentage
 of total sales as entries on the Analysis axis.
 
-\includegraphics[width=15cm]{images/MergeExample03TwoVariablesMerged}
+\noindent\includegraphics[width=\textwidth]{images/MergeExample03TwoVariablesMerged}
 
 \subsubsection{Slice}
 
 \label{Operation:slice}
 
-\includegraphics{images/slice}
+\operatorKey{slice}
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
-\item From the \emph{Tensor Operations (``tensor'')} toolbar \includegraphics{images/innerProduct};
+\item From the \emph{Tensor Operations (``tensor'')} toolbar \buttonIcon{innerProduct};
 or 
-\item By typing the letters "slice" on the canvas and then pressing the
+\item By typing the letters ``slice'' on the canvas and then pressing the
 Enter key.
 \end{itemize}
 Slice will cut off a tensor along a given axis by the argument, as
@@ -1396,17 +1249,17 @@ elements from the end of that axis. For example $\mathrm{slice}(\{x_{1},x_{2},\l
 
 \label{Operation:size}
 
-\includegraphics{images/size}
+\operatorKey{size}
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
-\item From the \emph{Tensor Operations (``tensor'')} toolbar \includegraphics{images/innerProduct};
+\item From the \emph{Tensor Operations (``tensor'')} toolbar \buttonIcon{innerProduct};
 or 
-\item By typing the letters "size" on the canvas and then pressing the
+\item By typing the letters ``size'' on the canvas and then pressing the
 Enter key.
 \end{itemize}
 Size refers to the number of elements along a named dimension given
-by the operation axisargument - eg a $3\times2$ rank 2 tensor with
+by the operation axisargument---eg a $3\times2$ rank 2 tensor with
 named axes ``0'' and ``1'', size(``1'')==2.
 
 If the axis argument is left blank, the size returns the total number
@@ -1418,13 +1271,13 @@ case.
 
 \label{Operation:shape}
 
-\includegraphics{images/shape}
+\operatorKey{shape}
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
-\item From the \emph{Tensor Operations (``tensor'')} toolbar \includegraphics{images/innerProduct};
+\item From the \emph{Tensor Operations (``tensor'')} toolbar \buttonIcon{innerProduct};
 or 
-\item By typing the letters "shape" on the canvas and then pressing the
+\item By typing the letters ``shape'' on the canvas and then pressing the
 Enter key.
 \end{itemize}
 Returns a vector of axis sizes. Coupling this operation with a \ref{Operation:gather}
@@ -1436,13 +1289,13 @@ operation and variable would allow you interactively select axis size.
 
 \label{Operation:mean}
 
-\includegraphics{images/mean}
+\operatorKey{mean}
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
-\item From the \emph{Statistics (``statistics'')} toolbar \includegraphics{images/mean};
+\item From the \emph{Statistics (``statistics'')} toolbar \buttonIcon{mean};
 or 
-\item By typing the letters "mean" on the canvas and then pressing the
+\item By typing the letters ``mean'' on the canvas and then pressing the
 Enter key
 \end{itemize}
 Returns the mean (or average) along a named dimension of all elements
@@ -1452,13 +1305,14 @@ counted.
 
 \subsubsection{Median}
 
+\operatorKey{median}
 \label{Operation:median}
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
-\item From the \emph{Statistics (``statistics'')} toolbar \includegraphics{images/mean};
+\item From the \emph{Statistics (``statistics'')} toolbar \buttonIcon{mean};
 or 
-\item By typing the letters "median" on the canvas and then pressing the
+\item By typing the letters ``median'' on the canvas and then pressing the
 Enter key
 \end{itemize}
 Returns the median along a named dimension of all elements present.
@@ -1469,13 +1323,13 @@ present in the tensor.
 
 \label{Operation:stdDev}
 
-\includegraphics{images/median}
+\operatorKey{stdDev}
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
-\item From the \emph{Statistics (``statistics'')} toolbar \includegraphics{images/mean};
+\item From the \emph{Statistics (``statistics'')} toolbar \buttonIcon{mean};
 or 
-\item By typing the letters "stdDev" on the canvas and then pressing the
+\item By typing the letters ``stdDev'' on the canvas and then pressing the
 Enter key
 \end{itemize}
 Returns the standard deviation along a named dimension of all elements
@@ -1492,13 +1346,13 @@ are not counted.
 
 \label{Operation:moment}
 
-\includegraphics{images/moment}
+\operatorKey{moment}
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
-\item From the \emph{Statistics (``statistics'')} toolbar \includegraphics{images/mean};
+\item From the \emph{Statistics (``statistics'')} toolbar \buttonIcon{mean};
 or 
-\item By typing the letters "moment" on the canvas and then pressing the
+\item By typing the letters ``moment'' on the canvas and then pressing the
 Enter key
 \end{itemize}
 Returns the $k$-th moment about the mean along a named dimension
@@ -1522,13 +1376,13 @@ Also
 
 \label{Operation:histogram}
 
-\includegraphics{images/histogram}
+\operatorKey{histogramKey}
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
-\item From the \emph{Statistics (``statistics'')} toolbar \includegraphics{images/mean};
+\item From the \emph{Statistics (``statistics'')} toolbar \buttonIcon{mean};
 or 
-\item By typing the letters "histogram" on the canvas and then pressing
+\item By typing the letters ``histogram'' on the canvas and then pressing
 the Enter key
 \end{itemize}
 Computes the histogram along a named dimension of all elements present.
@@ -1547,15 +1401,16 @@ argument to the operation.
 
 \label{Operation:covariance}
 
-\includegraphics{images/covariance}
+\operatorKey{covariance}
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
-\item From the \emph{Statistics (``statistics'')} toolbar \includegraphics{images/mean};
+\item From the \emph{Statistics (``statistics'')} toolbar \buttonIcon{mean};
 or 
-\item By typing the letters "covariance" on the canvas and then pressing
+\item By typing the letters ``covariance'' on the canvas and then pressing
 the Enter key
 \end{itemize}
+
 Computes the covariance of two tensors along named dimension. If the
 inputs are of rank $N$ and $M$ respectively, the output will be
 a $(N-1)\times(M-1)$ rank tensor, where the $(i,j)$ element is the
@@ -1581,22 +1436,17 @@ is
 \mathrm{cov}(x,y)=\frac{1}{N-1}\sum_{i}(x_{i}-\langle x\rangle)(y_{i}-\langle y\rangle)
 \]
 
-<<<<<<< HEAD
-   \subsection{Correlation coefficient $\rho$}\label{Operation:correlation}
-=======
->>>>>>> f85cdaddca17eacc1fd534ee1eccdb509c5807e0
-
-\subsubsection{Correlation coefficient $\rho$}
+\subsubsection{Correlation coefficient $\rho$}\label{Operation:correlation}
 
 \label{Operation:rho}
 
-\includegraphics{images/rhoCorrelationCoefficient}
+\operatorKey{rhoCorrelationCoefficient}
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
-\item From the \emph{Statistics (``statistics'')} toolbar \includegraphics{images/mean};
+\item From the \emph{Statistics (``statistics'')} toolbar \buttonIcon{mean};
 or 
-\item By typing the letters "correlation" on the canvas and then pressing
+\item By typing the letters ``correlation'' on the canvas and then pressing
 the Enter key
 \end{itemize}
 See \ref{Operation:covariance} for the interpretation of tensor valued
@@ -1611,9 +1461,9 @@ arguments. The correlation coefficient is defined as
 
 \label{SwitchIcon}
 
-\includegraphics{images/switch}
+\operatorKey{switchKey}
 
-The operator can be placed on the canvas by clicking on its icon \includegraphics{images/switch}on
+The operator can be placed on the canvas by clicking on its icon \buttonIcon{switch}on
 the widget bar.
 
 A switch block (also known as a case block, or select in the Fortran
@@ -1642,11 +1492,11 @@ You can add or remove cases through the context menu.
 
 \label{Operation:userFunction}\label{UserFunction}
 
+\operatorKey{userFunction}
+
 A user defined function is a functioned defined by an algebraic expression.
 Support for this feature is courtesy of the wonderful \htmladdnormallink{exprtk}{http://www.partow.net/programming/exprtk/index.html}
 library developed by Arash Partow.
-
-\includegraphics{images/userFunction}
 
 A user defined function has a {\em name}, {\em parameters} and
 an {\em expression}. Example expressions are things like \verb'x+y'
@@ -1681,7 +1531,7 @@ of financial transactions. The row entries are flows in differential
 equations for the stocks. For example, the Godley Table shown in the
 next figure:
 
-\includegraphics{images/GodleyTableImages}
+\noindent\includegraphics[width=\textwidth]{images/GodleyTableImages}
 
 generates the following set of differential equations:
 
@@ -1702,11 +1552,11 @@ For complete details see \ref{Godley-Tables}.
 
 \subsubsection{Creating a Godley Table}
 
-To insert a Godley Table into a model, click on the Godley icon \includegraphics{images/GodleyIcon}on
+To insert a Godley Table into a model, click on the Godley icon \buttonIcon{GodleyIcon}on
 the Operations bar. This attaches a Godley Table to your cursor. Click
 where you wish to place it on the canvas and this object will be inserted:
 
-\includegraphics{images/GodleyTableIconMode}
+\noindent\includegraphics[width=\textwidth]{images/GodleyTableIconMode}
 
 You can edit this object by either double-clicking on the icon, or
 by choosing ``Edit Godley Table'' from its context menu.
@@ -1715,7 +1565,7 @@ by choosing ``Edit Godley Table'' from its context menu.
 
 The Godley-Table-specific commands in the context menu are:
 
-\begin{tabular}{|c|c|}
+\begin{tabular}{|c|p{0.65\textwidth}|}
 \hline 
 Command & Effect\tabularnewline
 \hline 
@@ -1750,7 +1600,7 @@ Rotate GodleyIcon & This command has been deprecated and will be deleted in a fu
 
 This commands bring up a dedicated window for editing a Godley Table:
 
-\includegraphics{images/GodleyTableEditWindow}
+\noindent\includegraphics[width=\textwidth]{images/GodleyTableEditWindow}
 
 \paragraph{Defining Stocks and Flows}
 
@@ -1788,7 +1638,7 @@ to zero.
 
 Three stocks and flows have been defined in the following figure. 
 
-\includegraphics{images/GodleyTableEditMode3StocksAndFlows}
+\noindent\includegraphics[width=\textwidth]{images/GodleyTableEditMode3StocksAndFlows}
 
 \paragraph{Initial Conditions}
 
@@ -1800,7 +1650,7 @@ This row must also sum to zero, to ensure stock-flow consistency.
 This toggle command converts the canvas display of the Godley table
 from the icon to a double-entry bookkeeping view:
 
-\includegraphics{images/GodleyTableEditMode}
+\noindent\includegraphics[width=\textwidth]{images/GodleyTableEditMode}
 
 \subsubsection{Row/Col buttons}
 
@@ -1808,7 +1658,7 @@ This toggle command adds row and column buttons to a double-entry
 bookkeeping view of the table on the canvas, so that it can be edited
 on the canvas as an alternative to editing in the dedicated window.
 
-\includegraphics{images/GodleyTableEditModeButtons}
+\noindent\includegraphics[width=\textwidth]{images/GodleyTableEditModeButtons}
 
 \subsubsection{Display Variables}
 
@@ -1816,7 +1666,7 @@ This toggle command places the stocks (bank accounts) and flows (financial
 transactions) entered in a Godley Table as variables on the Design
 canvas, attached to the Godley Table icon itself.
 
-\includegraphics{images/GodleyTableIconModeShowVariables}
+\noindent\includegraphics[width=\textwidth]{images/GodleyTableIconModeShowVariables}
 
 \subsubsection{Copy Stock/Flow Variables}
 
@@ -1827,7 +1677,7 @@ flows can then be defined using \emph{Minsky}'s mathematical operators
 The next figure shows the result of using both these commands to place
 all stocks and flows on the canvas.
 
-\includegraphics{images/GodleyTableImagesStocksFlowsOnCanvas}
+\noindent\includegraphics[width=\textwidth]{images/GodleyTableImagesStocksFlowsOnCanvas}
 
 \subsubsection{Create multiple related Godley Tables}
 
@@ -1841,7 +1691,7 @@ figure shows an expanded Godley Table for the Banking Sector, with
 additional Tables added for the Non-bank private sector, the Central
 Bank, and the Treasury.
 
-\includegraphics[width=15cm]{images/GodleyTableImagesMultiTablesUnfinished}
+\noindent\includegraphics[width=\textwidth]{images/GodleyTableImagesMultiTablesUnfinished}
 
 As well as auto-completing much of the additional Godley Tables, the
 system indicates the need for additional accounts that are not part
@@ -1851,7 +1701,7 @@ while the deficit indicates the need to add the Treasury's account
 at the Central Bank, the ``Consolidated Revenue Fund'', as an additional
 liability of the Central Bank.
 
-\includegraphics[width=15cm]{images/GodleyTableImagesMultiTablesFinished}
+\noindent\includegraphics[width=\textwidth]{images/GodleyTableImagesMultiTablesFinished}
 
 The inverted wedge next to the Equity column supports \emph{nonfinancial
 }assets---things like houses, and shares valued in excess of their
@@ -1866,7 +1716,7 @@ completion of a multi-Godley-Table model. Entries can be copied from
 one cell and pasted into another, and Flows in the model can be inserted
 into a Godley Table cell as a positive or a negative entry:
 
-\includegraphics[width=15cm]{images/GodleyTableContextMenu}
+\noindent\includegraphics[width=\textwidth]{images/GodleyTableContextMenu}
 
 It is also possible to record all as-yet-unclassified flows as additions
 to or substractions from the Equity of the relevant sector---which
@@ -1885,13 +1735,13 @@ purposes.
 
 \label{IntOp} Creates an integration (or stock) variable.
 
-\includegraphics{images/integral}
+\operatorKey{integrate}
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
-\item From the integrate widget \includegraphics{images/integral} on the
+\item From the integrate widget \buttonIcon{integrate} on the
 toolbar; or 
-\item By typing the letters "integrate" on the canvas and then pressing
+\item By typing the letters ``integrate'' on the canvas and then pressing
 the Enter key.
 \end{itemize}
 Integral blocks require two inputs: the flow being integrated, which
@@ -1903,7 +1753,7 @@ input, labelled $0$.
 
 The integral-block-specific commands on the context menu are:
 
-\begin{tabular}{|c|c|}
+\noindent\begin{tabular}{|c|p{0.68\textwidth}|}
 \hline 
 Command & Effect\tabularnewline
 \hline 
@@ -1920,7 +1770,7 @@ Rotate IntOp & Rotate the combined integral block plus name\tabularnewline
 \end{tabular}
 
 Editable attributes include the variable's name and its initial value
-at $t=0$.The main role of the Edit form is to provide the name for
+at $t=0$. The main role of the Edit form is to provide the name for
 the integrated variable---other details included on the form can
 be controlled from elsewhere in the program. Type the name you want
 to give the variable into the Name field and press Enter or click
@@ -1930,22 +1780,24 @@ all instances''.
 The flows to be integrated are connected to the top port of the integral
 block, labelled `$f$'. The bottom port, labelled `0', can optionally
 be connected to a constant, parameter or variable, which is used to
-specify the initial value of the integral.
+specify the initial value of the integral, following the same rules as
+the \htmlref{variable initial value field}{var:init}.
 
 \subsection{differentiate $d/dt$}
+
+\operatorKey{differential}
 
 \label{Operation:differentiate} Symbolically differentiates its input
 with respect to system time, producing d/dt{[}input{]}. For further
 explanation regarding differentiation, see \href{https://en.wikipedia.org/wiki/Derivative}{this wikipedia page}.
 
-\includegraphics{images/differential}
 
 \section{Variables and Parameters}
 
 \label{Variables}\label{Variable:constant}\label{VarConstant}\label{Variable:parameter}
 \label{Variable:flow}\label{Variable:integral}\label{Variable:stock}
 
-\includegraphics{images/var}
+\operatorKey{var}
 
 Variables represent values in a calculation, and come in a number
 of varieties: 
@@ -1957,9 +1809,11 @@ constant.
 represent the same value, as with all other named variables, so changing
 the value of one parameter, either through its edit menu, or through
 a slider, will affect all the others of that name.
-\item [{Parameters}] are used to import data from a CSV file\ref{CSV import},
+
+Parameters are used to import data from a CSV file\ref{CSV import},
 which is how external data is imported into Ravel for analysis.
-\item [{Parameters}] can also be used to generate arrays of numbers for
+
+Parameters can also be used to generate arrays of numbers for
 use in a \emph{Ravel} file using built-in formulas which are placed
 in the ``Initial value'' field of the parameter definition form.
 See \ref{tensor-init}.
@@ -1986,14 +1840,18 @@ and so on.
 
 Variable names uniquely identify variables. Multiple icons on the
 canvas with the same name at the same level all refer to the same
-variable. Variable names have scope, which is either global---accessible
-throughout a document at all levels---or local, in which case it
-is specific to a group \ref{Group}. A variable which is local to
-a group can be used as a formula in several locations in a file. For
-example, if you use a, b anc c as constants in a polynomial $a+bx+cx^{2}$
-and make them local to a group, then the group can be used in several
-parts of a document, with the argument x and the values of a,b and
-c being different in every instance.
+variable. Variable names can have local scope\index{local scope}, in which case it
+is specific to the \htmlref{group}{Group} in which it is contained,
+othewise its scope is determined by the innermost containing group
+that has a local variable of that name. If no such variable exists,
+its scope is global.
+
+A variable which is local to a group can be used as a formula in
+several locations in a file. For example, if you use a, b anc c as
+constants in a polynomial $a+bx+cx^{2}$ and make them local to a
+group, then the group can be used in several parts of a document, with
+the argument x and the values of a,b and c being different in every
+instance.
 
 \subsection{Initial conditions}
 
@@ -2082,7 +1940,7 @@ may change some layout details):
 Quick instructions: 
 \begin{itemize}
 \item Data is typically (but not always) stored in the rightmost columns
-of a CSV file. Click to set the top left cell of the data. Columns
+of a CSV file. Shift click to set the top left cell of the data. Columns
 to the left will be marked as axes. 
 \item Select ``axis'' in the Dimension dropdown to include a column as
 an axis. Column data turns blue. 
@@ -2127,7 +1985,7 @@ columns. So the first thing to do is tell it where the data is located.
 This is one function of the context menu for data importing. The options
 are:
 
-\begin{tabular}{|c|c|}
+\noindent\begin{tabular}{|c|p{0.5\textwidth}|}
 \hline 
 Command & Effect\tabularnewline
 \hline 
@@ -2185,9 +2043,7 @@ red, indicating that its data will not be imported into \emph{Ravel}:
 
 In this example, the axis names has not been correctly inferred. Whilst,
 one can manually edit the axis names in the ``Name'' line, a quick
-shortcut is to drag ``Header'' and drop it on ``Name''. There
-is also a right-click (context) menu option to use the Header to name
-the columns.
+shortcut is to select ``Populate column labels'' from the context menu. 
 \begin{center}
 \resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogAxesNamed}} 
 \par\end{center}
@@ -2211,7 +2067,7 @@ will be filled in with sensible defaults.
 \par\end{center}
 
 \begin{table}
-\begin{tabular}{|c|l|}
+\begin{tabular}{|c|p{.8\textwidth}|}
 \hline 
 Code  & Description \tabularnewline
 \hline 
@@ -2220,6 +2076,7 @@ abbreviated form or the full name.\tabularnewline
 \%b or \%B  & The month name according to the current locale, in abbreviated form
 or the full name.\tabularnewline
 \%d  & Day of month in range 01 to 31\tabularnewline
+\%e  & Day of month in range 1 to 31\tabularnewline
 \%H  & Hour in range 0 to 23\tabularnewline
 \%I  & Hour in range 1 to 12\tabularnewline
 \%m  & Month as a decimal number (01 to 12)\tabularnewline
@@ -2245,6 +2102,12 @@ the format YYYY-MM-DD HH:MM:SS+ZZ (ISO format), use a format string
 ``\verb|%Y-%m-%d %H:%M:%S+%Z|''. Similarly, for quarterly data
 expressed like 1972-Q1, use ``\verb+%Y-Q%Q+''. Note that only \%Y
 and \%y can be mixed with \%Q (nothing else makes sense anyway).
+
+Note that if your month data uses month names instead of numerical
+month representation, the it is important you select \%d or \%e
+depending on whether your day data has leading zeros or not.  This is
+unfortunately a restriction of the underlying date import routine,
+which may change in the future.
 
 Even in the current settings, you may still get a message ``exhausted
 memory --- try reducing the rank'', or a similar message about hitting
@@ -2287,7 +2150,7 @@ for analysis of trends in the data.
 The browser can be accessed in two ways:
 \begin{itemize}
 \item From the Insert Menu; or 
-\item From the \includegraphics{images/var}widget, which brings up a horizontal
+\item From the \buttonIcon{var} widget, which brings up a horizontal
 menu for defining, constants, parameters and variables. Click on the
 final option on this menu, ``Browser'', to bring up the window. 
 \end{itemize}
@@ -2365,7 +2228,7 @@ them, and there is a context-menu command to straighten a curved line.
 
 \label{Group}
 
-\includegraphics[width=2cm]{images/group}
+\operatorKey{group}
 
 Grouping gives the capability to create reusable modules, or subroutines
 that can dramatically simplify more complicated systems. Groups may
@@ -2427,12 +2290,9 @@ sharing of models.
 
 \label{PlotWidget}
 
-\includegraphics{images/plotWidget}
+\operatorKey{plotWidget}
 
 The plot widget embeds a plot into the canvas.
-\begin{center}
-\includegraphics{images/Plot} 
-\par\end{center}
 
 Around the outside of the plot are a number of input ports that can
 be wired:
@@ -2483,7 +2343,7 @@ The plot context menu is:
 
 \subsubsection{Description}
 
-Description bring up a text window (\ref{Notes}) into which you can
+Description bring up a \htmlref{text window}{Notes} into which you can
 enter text to describe a plot. The Short Description field becomes
 a ``Hint'' that is displayed when the mouse hovers over a plot.
 If you check the Bookmark field, the Short Description becomes a bookmark
@@ -2506,9 +2366,7 @@ over time.
 The format of a plot is controlled by the Plot Window Options form.
 Titles, axis labels, plot type and other features of a plot are controlled
 through this form.
-\begin{description}
-\item [{\includegraphics{images/plotOptions}}]~
-\end{description}
+\includegraphics[height=0.9\textheight]{images/plotOptions}
 
 \subsubsection{Set options as default}
 
@@ -2527,7 +2385,7 @@ to the input ports, their names will appear above each formatting
 bar. This menu can also be accessed from the Pen Styles button on
 the Options form.
 
-\includegraphics{images/PlotPenStyles}
+\includegraphics[height=0.65\textheight]{images/PlotPenStyles}
 
 \subsubsection{Export as CSV}
 
@@ -2537,7 +2395,7 @@ This command exports the data from a Plot as a csv file.
 
 \label{Sheet}
 
-\includegraphics{images/SheetBlank'}
+\operatorKey{sheet}
 
 The Sheet widget displays data as in a typical spreadsheet program.
 
@@ -2550,7 +2408,7 @@ Ravel axes---is shown, while the first entry in the third and higher
 order dimensions are shown at the head of the sheet. You can alter
 the displayed data by manipulating the Ravel attached to the sheet.
 
-\includegraphics{images/sheetBasics}
+\includegraphics[width=\textwidth]{images/sheetBasics}
 
 To use the Sheet widget, simply attach a variable or Ravel to it via
 a wire. The input is on the left-hand side of the sheet widget box.
@@ -2558,17 +2416,10 @@ This sheet displays the input data as a number (in the case of a variable
 being simulated in a \emph{Minsky} model) or an array of data (in
 the case of a Ravel). Note that only one wire can be connected to
 a sheet, as the sheet can only display a single input value--however,
-the \emph{Ravel} commands \ref{Operation:meld} and \ref{Operation:merge}enable
+the \emph{Ravel} operators \htmlref{\emph{meld}}{Operation:meld} and
+\htmlref{\emph{merge}}{Operation:merge} enable
 you to combine data from several Ravels to allow them to be displayed
 in a single sheet.
-
-If you have \emph{Ravel}\texttrademark{} installed, you will see a
-small \htmlref{Ravel}{Ravel} icon in the top left corner. Clicking
-this causes a ravel window to pop up, allowing you to manipulate the
-input data to the sheet, so as to change slices or rotate a multidimensional
-datacube. \emph{This feature will be deprecated in future releases
-of Ravel, and replaced by Sheets and Plots being embedded in Ravels
-themselves}.
 
 By default, a Sheet outputs the beginning of the data series. The
 context menu allows you to specify that the data displayed comes from
@@ -2576,13 +2427,13 @@ the Head of the data (the default), its Tail (the final entries in
 the data series), or the Head and Tail. The next figure shows the
 Head and Tail displayed for the rows of this sheet.
 
-\includegraphics[width=15cm]{images/SheetHeadTailSmallBusiness}
+\includegraphics[width=\textwidth]{images/SheetHeadTailSmallBusiness}
 
 \section{Note Widget}
 
 \label{Notes}\label{Item}
 
-\includegraphics{images/NoteWidget}
+\operatorKey{NoteWidget}
 
 The note widget places the text line ``Enter your note here'' on
 the canvas.
@@ -2592,15 +2443,15 @@ the canvas.
 Double-clicking on the text, or choosing Description from the context
 menu, brings up the note form:
 
-\includegraphics[width=10cm]{images/NoteWindow}
+\noindent\includegraphics[width=\textwidth]{images/NoteWindow}
 
 The Short Description field becomes a tool-tip for this note, and
-also doubles as a Bookmark (\ref{Bookmarks}) should you check the
+also doubles as a \htmlref{Bookmark}{Bookmarks} should you check the
 Bookmark? box. 
 
 Notes allow arbitrary text to be placed on the canvas for explanatory
 purposes. Anything that can be entered on the keyboard can be placed
-here, including unicode characters, and LaTeX formatting is supported. 
+here, including unicode characters, and \LaTeX{} formatting is supported. 
 
 \includegraphics{images/Note+Text}
 
@@ -2672,7 +2523,7 @@ on the canvas when a Godley Table is displayed in Edit Mode).
 \item [{Edit/Copy var}] allows individual stock and flow variables to
 be copied or edited. 
 \item [{Export to file}] export table contents as either CSV data, or
-as a LaTeX table, for importing into other software, such as a spreadsheet
+as a \LaTeX{} table, for importing into other software, such as a spreadsheet
 or word processor. 
 \end{description}
 \item [{Groups}] %
@@ -2722,16 +2573,16 @@ $\leftarrow,\rightarrow,\uparrow,\downarrow$  & adjust sliders, adjust Ravel sli
 The following keystrokes insert an operation
 
 \begin{tabular}{rl}
-\verb-+- & add\tabularnewline
-\verb+-+ & subtract \tabularnewline
-\verb+*+ & multiply\tabularnewline
-\verb++/ & divide\tabularnewline
-\verb+^+ & pow\tabularnewline
-\parbox[t]{}{\verb+%+ \& percent operator\\
- } & + \tabularnewline
-\verb+=+ & Godley table\tabularnewline
-\verb+@+ & plot\tabularnewline
-\verb+#+ & start a text comment, finish with return\tabularnewline
+  \verb-+- & add\\
+  \verb+-+ & subtract \\
+  \verb+*+ & multiply\\
+  \verb++/ & divide\\
+  \verb+^+ & pow\\
+  \verb+%+ & percent operator\\
+  \verb+&+ & integral\\
+  \verb+=+ & Godley table\\
+  \verb+@+ & plot\\
+  \verb+#+ & start a text comment, finish with return\\
 \end{tabular}
 
 Typing any other character, followed by the Return key, will insert
@@ -2766,7 +2617,7 @@ Dimensional analysis is the idea of attaching units of measurement
 (eg metre or second) to the quantities being computed. It provides
 an additional constraint that the system must satisfy, reducing the
 chance of wiring errors. Two different units being added together
-will throw up an error - you cannot add 2 metres to 3 kilograms. But
+will throw up an error --- you cannot add 2 metres to 3 kilograms. But
 it should be possible add 2 metres to 3 feet, and get the correct
 answer. You may need to explicitly add a multiply operation to convert
 from one unit to another, for example, dividing the 3 feet by 3.281
@@ -2776,7 +2627,7 @@ before adding it to the 2 metres, providing a total of 2.914 meters.
 
 To attach units to quantities in \emph{Minsky}, you use the units
 field of the variable/parameters/constants edit dialog box. Each word
-typed in this box describes a separate unit. ``\^{\ensuremath{+}}''
+typed in this box describes a separate unit. \verb+^+
 followed by an integer is used to represent a power. Finally, a single
 ``/'' indicates that the following units are on the denominator,
 dividing the first set of units by the second. So to represent the
@@ -2829,11 +2680,16 @@ data requires the installation of \emph{Ravel}.
 
 \label{Ravel}\emph{Ravel} the program is a commercial data analysis
 extension to the Open Source system dynamics program \emph{Minsky}.
-It inherits all of \emph{Minsky}'s features and adds the Ravel\texttrademark \textcircledP ,
+It inherits all of \emph{Minsky}'s features and adds the
+Ravel\texttrademark,
+% removed \textcircledP as it refers to sound recordings only. Ravel
+% is not a sound recording.
+%\textcircledP
 a graphical object for the manipulation and analysis of multidimensional
 data. If you are using \emph{Minsky} and would like to check out \emph{Ravel},
-go to \emph{Ravel}'s Patreon page \url{https://www.patreon.com/ravelation}and
-sign up. The monthly fee is US\textbackslash\$7, and there is a
+go to \htmladdnormallinkfoot{\emph{Ravel}'s Patreon
+  page}{https://www.patreon.com/hpcoder} and
+sign up. The monthly fee is US\$7, and there is a
 7-day trial period during which you can experiment with using \emph{Ravel}
 before the fee is applied.
 
@@ -2862,51 +2718,54 @@ have full access to its commands.
 
 \label{Ravel-GUI Object}
 
-A Ravel is inserted onto the wiring canvas by clicking on the \includegraphics{images/RavelWidget}widget
+A Ravel is inserted onto the wiring canvas by clicking on the \buttonIcon{RavelIcon}widget
 from the toolbar. The first Ravel inserted into a document appears
 in Edit mode as shown below, with indicative Axis names:
 
 \includegraphics{images/RavelBlank}
 
 The essential step in using a Ravel is to attach data to it via the
-triangular input port. See \ref{CSV import} for how to import data.
-When a data file is attached to the input port of a Ravel, a multi-arrowed
-object fills the Ravel rectangle. If there are seven dimensions or
-more to the data, it will appear as shown below, with arrows in a
-pastel shade and axes labels not shown unless your mouse is hovering
-over an axis:
+triangular input port. See \htmlref{importing CSV files}{CSV import}
+for how to import data.  When a data file is attached to the input
+port of a Ravel, a multi-arrowed object fills the Ravel rectangle. If
+there are seven dimensions or more to the data, it will appear as
+shown below, with arrows in a pastel shade and axes labels not shown
+unless your mouse is hovering over an axis:
 
-\includegraphics[width=10cm]{images/RavelDataImporting01}
+\begin{center}
+\includegraphics[width=.7\textwidth]{images/RavelDataImporting01}
+\end{center}
 
-With six or less dimensions it will appear as shown below, with full-colour
+With six or fewer dimensions it will appear as shown below, with full-colour
 axes and axis labels shown:
 
-\includegraphics[width=10cm]{images/RavelDataImporting02}
+\begin{center}
+  \includegraphics[width=.7\textwidth]{images/RavelDataImporting02}
+\end{center}
 
 The arrows are the dimensions of the data; the dots are selectors
-for specific values on each dimension. When a CSV import parameter
-(\ref{CSV import}) is first attached to a Ravel, all the selector
+for specific values on each dimension. When a \htmlref{CSV import parameter}{CSV import} is first attached to a Ravel, all the selector
 dots are in the centre of the Ravel, so that all the data in the Ravel
-is outputted to any Variable, Sheet or Plot attached to it. The next
+is output to any Variable, Sheet or Plot attached to it. The next
 figure shows all 4 selectors being used so that the Ravel outputs
 the annualized rate of inflation for the USA in June 2022.
 
-\includegraphics[width=10cm]{images/RavelSingleDataPointSelected}
+\noindent\includegraphics[width=\textwidth]{images/RavelSingleDataPointSelected}
 
 If the selector dot remains in the centre for one dimension, then
-a column of data for that dimension is outputted from the Ravel:
+a column of data for that dimension is output from the Ravel:
 
-\includegraphics[width=15cm]{images/RavelDataSeriesSelected}
+\noindent\includegraphics[width=\textwidth]{images/RavelDataSeriesSelected}
 
 With two selector dots remaining in the centre, an array of data is
-outputted. This results in multiple countries' inflation rates being
+output. This results in multiple countries' inflation rates being
 plotted:
 
-\includegraphics[width=15cm]{images/RavelData2SeriesSelected}
+\noindent\includegraphics[width=\textwidth]{images/RavelData2SeriesSelected}
 
 Clearly a number of countries had extreme rates of inflation at various
 times between the 1970s and the mid-1990s. There are Ravel functions
-which can be used to isolate these countries (see \ref{Operations}),
+which can be used to isolate these countries (see \htmlref{\emph{Operations}}{Operations}),
 but it is also easy to identify them visually by moving the selector
 dot along the Reference Area axis. You can do this by either:
 \begin{itemize}
@@ -2936,10 +2795,10 @@ mode, and all subsequent Ravels are inserted in iconized mode).
 
 \includegraphics[width=15cm]{images/RavelDataLockedSubsets}
 
-This selection employed one context-menu feature of a Ravel---''Pick
+This selection employed one context-menu feature of a Ravel---``Pick
 Axis Slices'' was used on the Reference area axis to choose countries
 which had annual inflation rate of above 40\% between 1955 and 2024---and
-one Ravel-specific widget, the Lock (\ref{Lock}), which creates a
+one Ravel-specific widget, the \htmlref{Lock}{Lock}, which creates a
 subset of the data which can be allocated to a variable. The selection
 on the Ravel can then be changed without altering the subset selected
 by the Lock.
@@ -2978,12 +2837,12 @@ in the second plot, which means that Date data now generates the x-axis
 information. The y-axis information is therefore the rate of inflation
 on a specified date. The second plot in the figure below shows the
 annual inflation rates for Japan and the USA at the highest point
-for the inflation data since WWII. Since this date follows the Oil
-Embargo \url{https://en.wikipedia.org/wiki/1973_oil_crisis} imposed
-by OPEC members after the Yom Kippur War \url{https://en.wikipedia.org/wiki/Yom_Kippur_War},
+for the inflation data since WWII. Since this date follows the \htmladdnormallinkfoot{Oil
+Embargo}{https://en.wikipedia.org/wiki/1973\_oil\_crisis} imposed
+by OPEC members after the \htmladdnormallinkfoot{Yom Kippur War}{https://en.wikipedia.org/wiki/Yom\_Kippur\_War},
 this implies that the main cause of the inflationary surge was the
-four-fold increase in oil prices (from US\textbackslash\$2.50 a
-barrel to \textbackslash\$10) caused by the embargo.
+four-fold increase in oil prices (from US\$2.50 a
+barrel to \$10) caused by the embargo.
 
 \includegraphics[width=15cm]{images/CPI_SubsetsAxisRotation}
 
@@ -2996,7 +2855,7 @@ is chosen on the Data axis, and all other axes apart from Date are
 aggregated by the Sum function (the default aggregation method). The
 Ravel therefore outputs total sales by date.
 
-\includegraphics[width=15cm]{images/SmallBusinessAggregation}
+\noindent\includegraphics[width=\textwidth]{images/SmallBusinessAggregation}
 
 The available aggregations are: Sum, Product, Average, Minimum, Maximum,
 and Standard Deviation. The default setting is Sum. The other options
@@ -3004,7 +2863,7 @@ can be set via the Context (right-mouse click) menu for Ravels.
 
 \subsection{Context menu for Ravels}
 
-\begin{tabular}{|c|c|}
+\begin{tabular}{|c|p{.7\textwidth}|}
 \hline 
 Command & Effect\tabularnewline
 \hline 
@@ -3060,7 +2919,7 @@ to any axis to select a subset of data which is contiguous. In the
 next figure, calipers have been applied to extract the last 15 days'
 of data from this Ravel.
 
-\includegraphics[width=15cm]{images/SmallBusinessCalipers}
+\noindent\includegraphics[width=\textwidth]{images/SmallBusinessCalipers}
 
 When a caliper is initially created, it spans the entire range of
 a given dimension. It is applied to sections of that data by moving
@@ -3094,10 +2953,10 @@ that data as (for example) different dates are chosen using the selector
 dot. Dynamic sorting alters the order so that the axis is resorted
 when (for example) a different date is selected. In the next figure,
 dynamic sorting is applied to the Reference Area axis for the rate
-of inflation. The output is also put through a Slice \ref{Operation:slice}
+of inflation. The output is also put through a \htmlref{Slice}{Operation:slice}
 operator, so that only the top 5 countries are output.
 
-\includegraphics[width=15cm]{images/CPI_SubsetsDynamicSorting}
+\noindent\includegraphics[width=\textwidth]{images/CPI_SubsetsDynamicSorting}
 
 \subsubsection{Pick axis slices}
 
@@ -3120,7 +2979,7 @@ of a plot.
 
 \label{Lock}
 
-\includegraphics{images/Lock}
+\operatorKey{Lock}
 
 Locks can only be attached to the output of Ravels. The Lock widget
 is used to fix the output of a Ravel to a particular configuration
@@ -3163,20 +3022,20 @@ for the Ravel containing household debt data. The plot and the regression
 analysis therefore compare United States house price changes to the
 change in the change in household debt.
 
-\includegraphics[width=15cm]{images/RavelLinking}
+\noindent\includegraphics[width=\textwidth]{images/RavelLinking}
 
 When the selector dot for Country is moved to another country, the
 graph and the correlation result for household debt and house prices
 for that country replaces the information shown for the USA.
 
-\includegraphics[width=15cm]{images/RavelLinking2ndCountry}
+\noindent\includegraphics[width=\textwidth]{images/RavelLinking2ndCountry}
 
 Linking can be refined using the context menu for Ravels---rather
 than for the canvas. If your mouse is over one of the selected Ravels
 rather than the canvas, the context menu option is ``Lock specific
 handles''. That brings up the detailed lock menu:
 
-\includegraphics[width=12cm]{images/RavelLockSpecificHandles}
+\noindent\includegraphics[width=\textwidth]{images/RavelLockSpecificHandles}
 
 It is thus possible to turn on or off selecting of the same slices,
 arrow orientation, calipers and sort order if desired, while still
@@ -3226,7 +3085,8 @@ is computed.
 
 The Simulation Menu invokes the Simulation Parameters form.
 
-\includegraphics{images/SimulationParameters}
+\noindent\includegraphics[width=\textwidth]{images/SimulationParameters}
+
 \begin{itemize}
 \item Time unit allows one to specify units for the time dimension for dimensional
 analysis. eg ``year'', ``s'' etc. 
@@ -3243,14 +3103,9 @@ data points for smooth plots.
 \item An iteration is the time between updates to plots. Increasing the
 number of solver steps per iteration decreases the overhead involved
 in updating the display, at the expense of smoothness of the plots.
-Screen refresh is the period between screen updates, in ms. If an
-iteration takes less than this time, the screen refresh is postponed
-until the time has expired. 100ms is fast enough for a smooth animation
-of the simulation - increasing this value will improve simulation
-performance at the cost of a jerky animation of the simulation. 
 \item Start time is the value of the system $t$ variable when the system
 is reset. 
-\item Run until time can be used to pause the simulation ince t reaches
+\item Run until time can be used to pause the simulation once $t$ reaches
 a certain value. Setting this to ``Infinity'' causes the simulation
 to run indefinitely, or until some arithmetic error occurs. 
 \item The algorithm is adaptive, so the step size will vary according to
@@ -3293,7 +3148,7 @@ the replay. This button is a toggle button, so clicking it again returns
 The Run buttons respectively: 
 \begin{enumerate}
 \item Start a simulation--when started the button changes to a pause icon,
-allowing you to pause the simulation \htmladdimg{NewItem23.png}. 
+allowing you to pause the simulation \buttonIcon{NewItem23.png}. 
 \item Stop a simulation and reset the simulation time to zero 
 \item Step through the simulation one iteration at a time. 
 \item Reverse checkbox changes the simulation time direction. Bear in mind
@@ -3360,7 +3215,7 @@ table we call a Godley Table, which looks like the following onscreen:
 \par\end{center}
 
 Use this table to enter the bank accounts and financial flows in your
-model. We discuss this later in \ref{Godley-Tables}.
+model. We discuss this \htmlref{later}{Godley-Tables}.
 \item [{Integration}] \buttonIcon{int.eps}.\label{Integrate} This inserts
 a variable whose value depends on the integral of other variables
 in the system. This is the essential element for defining a dynamic

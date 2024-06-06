@@ -4,14 +4,15 @@
 \label{Introduction-Minsky}
 
 \emph{Minsky} is a system-dynamics program. If you are familiar with
-these programs, please go to \ref{intro:experienced-system-dynamics}.
-If you are not, please go to \ref{intro:new-system-dynamics}
+these programs, please go to \htmlref{\emph{If you are experienced in system dynamics}}{intro:experienced-system-dynamics}.
+If you are not, please go to \htmlref{\emph{If you are new to system dynamics}}{intro:new-system-dynamics}
 
 \section{If you are new to system dynamics}
 
 \label{intro:new-system-dynamics}
 
-\emph{Minsky} is one of many ``system dynamics'' programs \url{https://en.wikipedia.org/wiki/System_dynamics}.
+\emph{Minsky} is one of many \htmladdnormallinkfoot{``system
+  dynamics'' programs}{https://en.wikipedia.org/wiki/System\_dynamics}.
 These programs allow a dynamic model of a system to be constructed,
 not by writing mathematical equations or computer code, but by laying
 out a model in a block diagram, which can then be simulated. These
@@ -49,16 +50,16 @@ tailored to producing numerical simulations of models.
 \subsection{Block diagram example}
 
 One of the very first models of a dynamic system was developed independently
-by the mathematicians Lokta \url{https://www.jstor.org/stable/84156}
-and Volterra \url{https://www-nature-com.libproxy.ucl.ac.uk/articles/118558a0}
-and is now known as the Lotka-Volterra model \url{https://en.wikipedia.org/wiki/Lotka%E2%80%93Volterra_equations}.
+by the mathematicians \htmladdnormallinkfoot{Lokta}{https://www.jstor.org/stable/84156}
+and \htmladdnormallinkfoot{Volterra}{https://www-nature-com.libproxy.ucl.ac.uk/articles/118558a0}
+and is now known as the \htmladdnormallinkfoot{Lotka-Volterra model}{https://en.wikipedia.org/wiki/Lotka\%E2\%80\%93Volterra\_equations}.
 This model simulates interacting populations of predators and prey,
 which had been seen to display fluctuations that either could not
 be explained by exogenous shocks, or which displayed counterintuitive
 responses to exogenous shocks---such as the observed increase in
 the proportion of predators (sharks, rays, etc.) in the fishing catch
-in the Adriatic Sea during WWI, when biologists had expected the proportion
-of predators to fall (see \url{https://en.wikipedia.org/wiki/Lotka%E2%80%93Volterra_equations#History}).
+in the Adriatic Sea during WWI, when biologists had expected the \htmladdnormallinkfoot{proportion
+of predators to fall}{https://en.wikipedia.org/wiki/Lotka\%E2\%80\%93Volterra\_equations\#History}.
 
 The basic dynamics of the predator-prey model are that the number
 of prey is assumed to grow exponentially in the absence of predators,
@@ -74,9 +75,9 @@ as our example of predators, the initial dynamic equations are :
 \]
 
 When interaction between predators and prey is considered, the simplest
-assumption is that predators reduce the growth rate of prey (r) by
+assumption is that predators reduce the growth rate of prey ($r$) by
 some constant $\left(\rho\right)$ times how many predators there
-are, while prey reduce the death rate of predators (f) by another
+are, while prey reduce the death rate of predators ($f$) by another
 constant $\left(\phi\right)$ times how many prey there are:
 
 \[
@@ -104,7 +105,7 @@ and inorganic \ldots it appeared, from the nature of the solution
 obtained, improbable that undamped, permanent oscillations would arise
 \ldots{} It was, therefore, with considerable surprise that the writer,
 on applying his method to certain special cases, found these to lead
-to undamped, and hence indefinitely continued, oscillations. (\url{https://www.jstor.org/stable/84156}).
+to \htmladdnormallinkfoot{undamped, and hence indefinitely continued, oscillations}{https://www.jstor.org/stable/84156}.
 
 The mathematical reason for this phenomenon is fairly easily derived
 by mathematical stability analysis. For a system as simple as this,
@@ -127,15 +128,15 @@ Rabbits and Foxes.
 
 The next figure shows this model in \emph{Minsky}, with the initial
 conditions set up so that they differ slightly from the equilibrium.
-To see how to build a model like this step by step, click on \ref{Minsky model building}:
+To see how to build a model like this step by step, see \htmlref{Minsky model building}{Minsky model building}:
 
-\includegraphics[width=15cm]{images/PredatorPreyRabbitsFoxes}
+\noindent\includegraphics[width=\textwidth]{images/PredatorPreyRabbitsFoxes}
 
 Programs like Vensim and Simulink have been in existence for decades,
 and they are now mature products that provide everything their user-base
 of management consultants and engineers want for modeling and analyzing
 complex dynamic systems. So why has \emph{Minsky} been developed?
-The key reason is its unique feature of Godley Tables \ref{Godley-Tables},
+The key reason is its unique feature of \htmlref{Godley Tables}{Godley-Tables},
 which allow dynamic equations to be developed for monetary transactions
 via double-entry bookkeeping tables.
 
@@ -143,7 +144,8 @@ via double-entry bookkeeping tables.
 
 \label{intro:experienced-system-dynamics}
 
-As an experienced system dynamics user (or if you've just read \ref{Introduction-Minsky}),
+As an experienced system dynamics user (or if you've just read the
+\htmlref{Introduction to Minsky}{Introduction-Minsky}),
 the most important thing you need to know is what \emph{Minsky} provides
 that other system dynamics programs do not. That boils down to one
 feature: The Godley Table. 
@@ -152,11 +154,11 @@ feature: The Godley Table.
 
 \label{Godley-Tables}
 
-Godley tables are a unique feature of \emph{Minsky.} They are based
+Godley tables are a unique feature of \emph{Minsky}. They are based
 on what could be called the world's first GUI (``Graphical User Interface''),
 the accountant's double-entry bookkeeping table.
 
-Double-entry was invented in 15th century Italy \url{https://www.janegleesonwhite.com/double}
+Double-entry was invented in \htmladdnormallinkfoot{15th century Italy}{https://www.janegleesonwhite.com/double}
 to enable accurate recording of financial transactions. The essence
 of this method is (a) to classify all of an entity's accounts as either
 Assets or Liabilities, with the difference between them representing
@@ -177,12 +179,43 @@ the entries in rows are flows. \emph{The symbolic sum of a column
 is thus the rate of change of the associated stock}. \emph{Minsky}
 takes a table like the next figure:
 
-\includegraphics[width=15cm]{images/GodleyTableSingle}
+\noindent\includegraphics[width=\textwidth]{images/GodleyTableSingle}
 
 And converts it into a set of dynamic equations, which by construction
 are ``stock-flow consistent'':
 
-\includegraphics{images/GodleyTableSingleEquations}
+%\noindent\includegraphics[width=\textwidth]{images/GodleyTableSingleEquations}
+\begin{eqnarray*}
+\mathrm{Consume}&=&0\\
+\mathrm{Wages}&=&0\\
+\mathrm{Tax}&=&0\\
+\mathrm{Spend}_{G}&=&0\\
+\mathrm{Spend}_{B}&=&0\\
+\mathrm{Int}_{L}&=&0\\
+\mathrm{Int}_{B^{\mathrm{{NB}}}}&=&0\\
+\mathrm{Int}_{B^{B}}&=&0\\
+\mathrm{Credit}&=&0\\
+\mathrm{BondSale}_{T^{B}}&=&0\\
+\mathrm{BondSale}_{B^{\mathrm{{NB}}}}&=&0\\
+\mathrm{Banks}_{E}(0)&=&0\\
+\frac{ d \mathrm{Banks}_{E}}{dt} &=&\mathrm{Int}_{L}+\mathrm{Int}_{B^{B}}-\mathrm{Spend}_{B}\\
+\mathrm{Bonds}_{B}(0)&=&0\\
+\frac{ d \mathrm{Bonds}_{B}}{dt} &=&\mathrm{BondSale}_{T^{B}}-\mathrm{BondSale}_{B^{\mathrm{{NB}}}}\\
+\mathrm{Consumers}(0)&=&0\\
+\frac{ d \mathrm{Consumers}}{dt} &=&\mathrm{Wages}+0.6\times
+                                     \mathrm{Spend}_{G}+0.2\times
+                                     \mathrm{Int}_{B^{\mathrm{{NB}}}}-\\
+  &&\left(0.7\times \mathrm{Tax}+0.2\times \mathrm{BondSale}_{B^{\mathrm{{NB}}}}+\mathrm{Consume}\right)\\
+\mathrm{Firms}(0)&=&0\\
+\frac{ d \mathrm{Firms}}{dt} &=&\mathrm{Credit}+0.4\times
+                                 \mathrm{Spend}_{G}+0.8\times
+                                 \mathrm{Int}_{B^{\mathrm{{NB}}}}+\mathrm{Consume}+\mathrm{Spend}_{B}-\\
+  &&\left(\mathrm{Int}_{L}+\mathrm{Wages}+0.3\times \mathrm{Tax}+0.8\times \mathrm{BondSale}_{B^{\mathrm{{NB}}}}\right)\\
+\mathrm{Loans}(0)&=&0\\
+\frac{ d \mathrm{Loans}}{dt} &=&\mathrm{Credit}\\
+\mathrm{Reserves}(0)&=&0\\
+\frac{ d \mathrm{Reserves}}{dt} &=&\mathrm{Spend}_{G}+\mathrm{Int}_{B^{B}}+\mathrm{Int}_{B^{\mathrm{{NB}}}}-\left(\mathrm{Tax}+\mathrm{BondSale}_{T^{B}}\right)\\
+\end{eqnarray*}
 
 The model is completed by defining the flows on the canvas.
 
@@ -198,7 +231,7 @@ of the Central Bank, and that can be shown in \emph{Minsky} by adding
 an additional Godley Table, naming it \emph{Central Bank}, and recording
 Reserves as a Liability:
 
-\includegraphics{images/GodleyTableSecondIncomplete}
+\noindent\includegraphics[width=\textwidth]{images/GodleyTableSecondIncomplete}
 
 At this stage, the financial transactions have been entered only once---against
 the Central Bank's Liability of Reserves. Each transaction has to
@@ -206,14 +239,14 @@ be entered a second time to complete its record, but at present there
 are no available accounts in which to record the transactions a second
 time.
 
-\includegraphics{images/GodleyTableSecondIncomplete}
+\noindent\includegraphics[width=\textwidth]{images/GodleyTableSecondIncomplete}
 
 Bond purchases by the Central Bank indicate the need for to show bonds
 owned by the Central Bank as an asset, while the other transactions
 indicate the need to show the Treasury's account at the Central Bank,
 the ``Consolidated Revenue Fund'', as an additional liability:
 
-\includegraphics{images/GodleyTableSecondComplete}
+\noindent\includegraphics[width=\textwidth]{images/GodleyTableSecondComplete}
 
 This is an inherently better way to generate a dynamic model of financial
 flows than the flowchart method used by all other system dynamics
@@ -264,7 +297,7 @@ etc.
 \end{itemize}
 These unusual features are best illustrated by building a simple model
 in \emph{Minsky}. The next section explains how to build a simpler
-version of the predator-prey model shown in \ref{intro:new-system-dynamics}.
+version of the \htmlref{predator-prey model}{intro:new-system-dynamics}.
 
 \subsection{Building a predator-prey model in Minsky}
 
@@ -273,7 +306,7 @@ version of the predator-prey model shown in \ref{intro:new-system-dynamics}.
 The first step in building the Rabbits and Foxes model in \emph{Minsky}
 is to insert two integral blocks on the canvas---one for Rabbits
 and the other for Foxes. An integral block is inserted by clicking
-on the \includegraphics{images/integral} operator \ref{Variable:integral}.
+on the \htmlref{\buttonIcon{integrate} operator}{Variable:integral}.
 To alter its name from the generic ``int1'', either double-click
 on the widget, which brings up the context menu for integral blocks,
 or hover the mouse over the block and click the right-mouse button,
@@ -282,7 +315,9 @@ to choose ``Rename all instances'' from the context menu). Name
 the two variables Rabbits and Foxes respectively, and you will have
 the following objects on your canvas:
 
+\begin{center}
 \includegraphics{images/PredatorPreyRabbitsFoxesIntegralsOnly}
+\end{center}
 
 As is typical of dynamic models, the rates of change of the variables
 Rabbits and Foxes depends on their current values. You therefore need
@@ -295,19 +330,19 @@ Next add the parameters that determine the rates of growth and death
 of the two species. The non-zero equilibrium is set by the zeros of
 $\left(r-\rho\times Foxes\right)$ and $\left(-f+\phi\times Rabbits\right)$.
 
-\includegraphics{images/PredatorPreyRabbitsFoxes03ParametersAdded}
+\noindent\includegraphics[width=\textwidth]{images/PredatorPreyRabbitsFoxes03ParametersAdded}
 
 Finally, the equations for the rates of growth of the two species
 are wired up, and the model can be simulated.
 
-\includegraphics{images/PredatorPreyRabbitsFoxes04Equations}
+\noindent\includegraphics[width=\textwidth]{images/PredatorPreyRabbitsFoxes04Equations}
 
 If you don't want to display the complete equations on the canvas,
 you can use grouping to hide the complexity. The next figure illustrates
 several ways to use groups, and the feature that groups become transparent
 (and can be edited \emph{in situ}) as the zoom level increases.
 
-\includegraphics[width=15cm]{images/PredatorPreyRabbitsFoxes05Grouping}
+\noindent\includegraphics[width=\textwidth]{images/PredatorPreyRabbitsFoxes05Grouping}
 
 \subsection{Building monetary models in \emph{Minsky}}
 
@@ -317,7 +352,7 @@ in the Godley Table, and then define the flows on the canvas. \emph{Minsky}
 automatically generates the differential equations for you.
 
 Building the model starts with placing a Godley Table on the canvas
-by clicking on the Godley Table operator \includegraphics{images/GodleyIcon}.
+by clicking on the Godley Table operator \buttonIcon{GodleyIcon}.
 The figure below shows a single Godley Table on the canvas, which
 has been labelled ``Banking Sector'' using the context menu ``Title''
 command.
@@ -327,7 +362,7 @@ command.
 Next either double-click on the icon, or choose ``Open Godley Table''
 from the context menu, to bring up the Godley Table form:
 
-\includegraphics{images/GodleyTableEditWindow}
+\noindent\includegraphics[width=\textwidth]{images/GodleyTableEditWindow}
 
 We'll build a model of private money creation in this first example.
 
@@ -341,13 +376,13 @@ from the context menu, and you will see the table displayed as follows
 (you will need to resize the table using the Resizing arrows, which
 are visible when your mouse is hovering over the table)
 
-\includegraphics{images/MonetaryModel01GodleyTable02}
+\noindent\includegraphics[width=\textwidth]{images/MonetaryModel01GodleyTable02}
 
 Now enter numbers into the ``Initial Conditions'' row. Put 90 in
 \emph{Reserves}, 10 in \emph{Loans}, 80 in \emph{Deposits}, and 20
 in \emph{BanksEquity}. 
 
-\includegraphics{images/MonetaryModel01GodleyTable03InitialConditions}
+\noindent\includegraphics[width=\textwidth]{images/MonetaryModel01GodleyTable03InitialConditions}
 
 Then add three flows to the model: Net Bank Loans (which can be negative
 if people in the aggregate are paying their debts down rather than
@@ -358,14 +393,14 @@ which we'll introduce later), and Bank Spending ``Spend\_B'' (the
 subscript is to distinguish Bank Spending from Government Spending,which
 we'll introduce later).
 
-\includegraphics{images/MonetaryModel01GodleyTable04AddFlows}
+\noindent\includegraphics[width=\textwidth]{images/MonetaryModel01GodleyTable04AddFlows}
 
 Next, return to the canvas and use the Godley Table context menu commands
 \emph{Copy flow variables} and \emph{Copy stock variables} to copy
 all flows and stocks and place them on the canvas, where they can
 be defined.
 
-\includegraphics{images/MonetaryModel01GodleyTable05DefineFlows01}
+\noindent\includegraphics[width=\textwidth]{images/MonetaryModel01GodleyTable05DefineFlows01}
 
 The easiest flow to define is \emph{Interest}, since this is the rate
 of interest times \emph{Loans}. To define this, first define the parameter
@@ -376,13 +411,14 @@ form will appear. Put 0.05 as the Initial Value, 0.2 as the \emph{Slide
 Bounds: Max}, 0.02 as the \emph{Min}, and 0.01 as the \emph{Slider
 Step Size}.
 
-\includegraphics{images/MonetaryModel01GodleyTable05DefineFlows03}
+% \noindent\includegraphics[width=\textwidth]{images/MonetaryModel01GodleyTable05DefineFlows03}
+\noindent\includegraphics{images/MonetaryModel01GodleyTable05DefineFlows03}
 
-Wire this parameter and \emph{Loans }up to a multiply block \includegraphics{images/multiply}\ref{Operation:multiply}
+Wire this parameter and \emph{Loans }up to a multiply block \htmlref{\buttonIcon{multiply}}{Operation:multiply}
 and attach it to the flow Interest, and you have defined the first
 of three flows in this extremely simple model.
 
-\includegraphics{images/MonetaryModel01GodleyTable05DefineFlows04}
+\noindent\includegraphics[width=\textwidth]{images/MonetaryModel01GodleyTable05DefineFlows04}
 
 Now define \emph{Spend}\textsubscript{\emph{B}} as a multiple \emph{Bank}\textsubscript{\emph{Spend}}\emph{}\textsuperscript{\emph{Rate}}
 of the \emph{Banks}\textsubscript{\emph{Equity}}. Give the parameter
@@ -395,18 +431,18 @@ off firms, etc. Set Max to 0.5, Min to 0.1, and the Step Size to 0.05.
 
 Your canvas should now look like this:
 
-\includegraphics{images/MonetaryModel01GodleyTable05DefineFlows05}
+\noindent\includegraphics[width=\textwidth]{images/MonetaryModel01GodleyTable05DefineFlows05}
 
 This is sufficient to build a model of just financial stocks and flows,
 if you edit \emph{Credit} to give it a Max, Min and Step Size in keeping
 with the other magnitudes in the model--say a Max of 10, Min of -10,
-and Step Size of 1. Add two Plots \includegraphics{images/plotWidget}\ref{PlotWidget},
+and Step Size of 1. Add two Plots \htmlref{\buttonIcon{plotWidget}}{PlotWidget},
 one for Stocks and one for Flows, attach the Stocks and Flows to their
 inputs, put a copy of \emph{Credit} at the top of the model for ease
 of access, click on the Run button \textifsymbol[ifgeo]{100}, and
 vary the value of \emph{Credit }to see what happens:
 
-\includegraphics{images/MonetaryModel01GodleyTable06Simulate01}
+\noindent\includegraphics[width=\textwidth]{images/MonetaryModel01GodleyTable06Simulate01}
 
 To link this very simple model to economic concepts, make the ``Friedmanite''
 assumption that GDP equals Money times Velocity. Define Money as the
@@ -420,7 +456,7 @@ by itself and put through a percentage operator. Run the model and
 vary \emph{Credit}\textsubscript{\emph{Ratio}} using the arrow keys
 as you run a simulation.
 
-\includegraphics{images/MonetaryModel01GodleyTable07GDP}
+\noindent\includegraphics[width=\textwidth]{images/MonetaryModel01GodleyTable07GDP}
 
 Much more sophisticated models can be built using \emph{Minsky}, including
 models that mix the flowchart method with Godley Tables to generate
