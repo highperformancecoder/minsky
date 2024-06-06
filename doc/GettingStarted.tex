@@ -73,7 +73,7 @@ simulation system.
 \item [{Save}] Save the current file.
 \item [{Save As}] Save the current file under a new name.
 \item [{Insert File as Group}] Insert a \emph{Ravel/Minsky} file directly
-into the current model as a Group \ref{Group}.
+into the current model as a \htmlref{Group}{Group}.
 \item [{Dimensional Analysis}] As processing networks
 get more complex, it is useful to attach units to the
 data. Dimensional analysis then checks that the mathematical
@@ -145,12 +145,12 @@ also be selected. Note that, compatible with X-windows, selecting
 automatically performs a copy, so the copy operation is strictly redundant,
 but provided for users familiar with systems where an explicit copy
 request is required. Cut deletes the selected items. Paste will paste
-the items in the clipboard as a Group \ref{Group} into the current
+the items in the clipboard as a \htmlref{Group}{Group} into the current
 model. \emph{Ravel} supports the Windows-standard shortcut keys of
 control-C for copy, control-X for cut (which deletes the entity at
 the current location and creates a copy for pasting elsewhere) and
 control-V for paste.
-\item[Group selection] \label{edit:group} Create a Group \ref{Group} using
+\item[Group selection] \label{edit:group} Create a \htmlref{Group}{Group} using
 the contents of the selection. Groups allow you to organise more complicated
 systems components into aggregated modules that make the overall system
 more comprehensible. In \emph{Ravel}, groups can be used to, for example,
@@ -195,11 +195,11 @@ menu.
 
 \label{Insert}
 
-This menu contains all the mathematical operator blocks\ref{Operations}
+This menu contains all the mathematical \htmlref{operator blocks}{Operations}
 used in \emph{Ravel}, and enables you to place those operators on
 the Canvas. You can get the same effect by clicking on the Design
 Icons. A Ravel can be inserted from this menu, as can Plots, Sheets
-and \emph{Minsky}-specific tools like Godley Tables \ref{Godley-Tables}.
+and \emph{Minsky}-specific tools like \htmlref{Godley Tables}{Godley-Tables}.
 
 \subsubsection{Options}
 
@@ -234,8 +234,8 @@ The default is white.
 \subsubsection{Simulation}
 
 These commands are specific to \emph{Minsky} and control how a model
-is simulated. They are covered in the \emph{Minsky} component of this
-manual \ref{Introduction-Minsky}. 
+is simulated. They are covered in the \htmlref{\emph{Minsky} component of this
+manual}{Introduction-Minsky}. 
 
 \subsubsection{Help}
 
@@ -308,7 +308,8 @@ model.
 
 \label{tabs:wiring}
 
-The Wiring Tab is where a \emph{Ravel} document is designed: see \ref{DesignCanvas}
+The Wiring Tab is where a \emph{Ravel} document is designed: see
+\htmlref{\emph{Design Canvas}}{DesignCanvas}
 for its components.
 
 \subsubsection{Equations tab}
@@ -318,7 +319,7 @@ for its components.
 This displays the mathematical representation of the document, which
 enables you to see the complete mathematical logic in a document.
 You can also export a full \LaTeX{} rendition of the document (from the
-File:Export Canvas command) to a \LaTeX-capable editor \ref{Export}.
+File:Export Canvas command) to a \htmlref{\LaTeX-capable editor}{Export}.
 
 \subsubsection{Summary Tab}
 
@@ -355,8 +356,8 @@ values assigned to them.
 Most of these fields are editable. Changing a variable's name will
 do a \emph{replace all instances} operation to update all variables
 of the same name. Changing a variable's definition will replace the
-wiring graph leading into the variable by a user defined function
-\ref{Operation:userFunction} containing your edited string. At some
+wiring graph leading into the variable by a \htmlref{user defined function}
+{Operation:userFunction} containing your edited string. At some
 future point, functionality will be added to convert a user defined
 function into a wiring graph.
 
@@ -375,7 +376,7 @@ For example, you may wish to provide different reports on the same
 data for the Accounting and Marketing sections of your company.
 
 Multiple publication tabs can be created by clicking the `+' tab.
-See \ref{tabs:Publication} for full details.
+See \htmlref{\emph{Publication tabs}}{tabs:Publication} for full details.
 
 \subsection{Design Canvas}
 
@@ -383,7 +384,7 @@ See \ref{tabs:Publication} for full details.
 
 The Design Canvas is where you develop your model. It has two components:
 \begin{itemize}
-\item The Operations \ref{Operations} icons, which give access to all of
+\item The \htmlref{Operations}{Operations} icons, which give access to all of
 \emph{Ravel}'s objects and mathematical operations; and
 \item The canvas itself, which is a space on which these objects and operations
 can be placed and connected by wires to perform data analysis, modelling,
@@ -407,7 +408,7 @@ the canvas as $10000\time10000$ pixels in size.
 \subsubsection{Wires}
 
 The wires in a model connect blocks together to define equations.
-For details see \ref{Wires}
+For details see \htmlref{\emph{Wires}}{Wires}
 
 \subsubsection{Design Icons}
 
@@ -425,14 +426,14 @@ to a variable for further analysis.
 \item [{Import data}] \buttonIcon{importData.eps} Opens an import CSV
 file dialog, which allows a CSV file to be loaded into a parameter
 in Ravel (the default name of the parameter is the name of the file
-being imported). See \emph{Importing CSV files} \ref{CSV import}for
+being imported). See \htmlref{\emph{Importing CSV files}}{CSV import} for
 full details. After a data file is imported, the next step is to attach
 it to a Ravel.
 \item [{Ravel}] \buttonIcon{RavelIcon} This places a Ravel on the
 wiring canvas. The first time this is done in a document, the Ravel
 is displayed full-size in Edit mode, and a sample set of dimensions
 are displayed. Subsequent Ravels are displayed in icon mode. For full
-details on using a Ravel see \ref{Ravel-GUI Object}.
+details on using a Ravel see \htmlref{\emph{Ravel GUI}}{Ravel-GUI Object}.
 \item [{Lock}] \buttonIcon{Lock} Lock widgets are used with
 Ravels. A lock keeps a record of the current state of a Ravel: the
 items selected on its axes, the effect of calipers in selecting data
@@ -440,7 +441,7 @@ ranges, and so on. You can then manipulate the Ravel without changing
 the output from the Lock, which can be assigned to a variable for
 further use. You can also impose the state of a Lock on its associated
 Ravel---this is useful if you wish to fine tune the output from the
-Lock. See \ref{Lock} for full details. The output of a Lock will
+Lock. See \htmlref{\emph{Lock}}{Lock} for full details. The output of a Lock will
 change whenever the attached data file changes.
 \item [{Variable}] \buttonIcon{var.eps} \label{Variable}
 This is a pop-up menu, which gives access to the form that creates
@@ -453,50 +454,50 @@ its relationship with other entities in your model. Click on it and
 a variable definition window will appear:
 \item [{\includegraphics[width=10cm]{images/VariableDefinitionForm}}]~
 \end{description}
-See \ref{Variables} for full details on using this form.
+See \htmlref{Variables}{Variables} for full details on using this form.
 \begin{description}
 \item [{Plot widget}] \buttonIcon{plot.eps} Add Plots to the canvas.
-See \ref{PlotWidget} for full details.
+See \htmlref{Plot widget}{PlotWidget} for full details.
 \item [{Sheet widget}] \buttonIcon{sheet.eps} Add a Sheet---for the
-display of numerical data to the canvas. See \ref{Sheet} for full
+display of numerical data to the canvas. See \htmlref{Sheet}{Sheet} for full
 details.
-\item [{Notes}] Add textual annotations to a document. See \ref{Notes}
+\item [{Notes}] Add textual annotations to a document. See \htmlref{Notes}{Notes}
 for full details.
 \item [{Time}] \buttonIcon{time.eps} embeds a reference to the simulation
 time on the Canvas. This is a \emph{Minsky}-specific feature.
 \item [{Fundamental}] constants. These include e, $\pi$, 0, 1 and the
-percentage operator. See \ref{Special-constants} for full details.
+percentage operator. See \htmlref{Special constants}{Special-constants} for full details.
 \item [{Binary operations}] \buttonIcon{BinaryButton.png}. These execute
 the stated binary mathematical operations: operations that require
 two (or more) inputs. Where appropriate, each input port to a binary
 operator can take multiple wires---so that to add five numbers together,
 for example, you can wire 1 input to one port on the Add block, and
 the other four to the other port. The same applies to the subtract,
-multiply, and divide blocks. See \ref{Binary-Operations} for full
+multiply, and divide blocks. See \htmlref{Binary Operations}{Binary-Operations} for full
 details.
 \item [{Unary functions}] \buttonIcon{sqrt.eps} These are a fairly standard
 complement of mathematical functions which take only one input--though
-this input can have multiple dimensions. See \ref{Functions/Unary-Operators}
+this input can have multiple dimensions. See \htmlref{Unary functions}{Functions/Unary-Operators}
 for details.
 \item [{Reduction operations}] \buttonIcon{sum.eps} This menu contains
 operations such as sum, product, any, all, etc., that reduce a vector
-to a scalar, or reduce the rank of a tensor. See \ref{Operations: Reduction}
+to a scalar, or reduce the rank of a tensor. See \htmlref{Tensor operations}{Operations: Reduction}
 for details.
 \item [{Scans}] \buttonIcon{runningSum.eps} This menu contains operations
-running sum, running product, and the difference operators. See \ref{Operations: Reduction}
+running sum, running product, and the difference operators. See \htmlref{Tensor operations}{Operations: Reduction}
 for details.
 \item [{Miscellaneous tensor operations}] \buttonIcon{outerProduct.eps}
 Any other tensor function not covered elsewhere.
 \item [{Switch}] \buttonIcon{switchIcon.eps} Add \htmlref{a piecewise-defined
-function block}{SwitchIcon} to the canvas. See \ref{SwitchIcon}
+function block}{SwitchIcon} to the canvas. See \htmlref{Switch}{SwitchIcon}
 for details.
 \item [{User defined function}] \buttonIcon{userFunction.eps} You can
 define your own function using an algebraic expression, such as \verb+exp(-x^2+y)+.
-See\ref{Operation:userFunction}for details.
+See \htmlref{User defined functions}{Operation:userFunction}for details.
 \item [{Godley Table}] \buttonIcon{NewItem29.eps}. \label{GodleyTable}
 This is the fundamental element of \emph{Minsky} that is not found
-(yet) in any other system dynamics program. It is covered in the \emph{Minsky}
-chapter of this manual \ref{Introduction-Minsky}.
+(yet) in any other system dynamics program. It is covered in the \htmlref{\emph{Minsky}
+chapter of this manual}{Introduction-Minsky}.
 \item [{Integration}] \buttonIcon{int.eps}. This inserts a variable whose
 value depends on the integral of other variables in the system. It
 is discussed further in the \emph{Minsky} section of the manual.
@@ -508,7 +509,7 @@ which is explained in the \emph{Minsky} section of this manual.
 \section{Working with \emph{Ravel}}
 
 Data analysis is performed in Ravel by connecting components using
-wires \ref{Wires} on the Wiring canvas.
+\htmlref{wires}{Wires} on the Wiring canvas.
 
 \subsection{Components in \emph{Ravel}}
 

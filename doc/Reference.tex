@@ -45,7 +45,8 @@ File menu, and choose the format LaTeX. For details see \htmlref{\emph{Working w
 \subsection{Summary}
 
 The Summary Tab shows the equations in your data analysis or model
-in a structured tabular layout. For details see \ref{tabs:Summary}.
+in a structured tabular layout. For details see \htmlref{\emph{Summary
+    tab}}{tabs:Summary}.
 
 \subsection{Phillips Diagram}
 
@@ -182,7 +183,7 @@ for different segments of the data.
 \end{description}
 Ravels can be linked with other Ravels that share the same dimension(s).
 This means that any operation applies to one Ravel is applied to all
-Ravels in the linked set. For more details see \ref{Linking-Ravels}.
+Ravels in the linked set. For more details see \htmlref{\emph{Linking Ravels}}{Linking-Ravels}.
 
 \subsection{Lock}
 
@@ -196,7 +197,7 @@ context menu), alterations can be made to the source Ravel without
 altering the output of the Lock. This makes it possible to take multiple
 slices of the data from one Ravel, and to assign those slices to variables
 so that they can be further analyzed by \emph{Ravel}. For details
-see \ref{Lock}
+see \htmlref{\emph{Lock}}{Lock}
 
 \subsection{Variable}
 
@@ -205,7 +206,7 @@ see \ref{Lock}
 \end{center}
     
 This operator activates a pop-up menu for defining variables, parameters
-and constants. For details see \ref{Variables}.
+and constants. For details see \htmlref{\emph{Variables}}{Variables}.
 
 \subsection{Plot}
 \begin{center}
@@ -213,7 +214,7 @@ and constants. For details see \ref{Variables}.
 \end{center}
 
 This operator inserts a Plot onto the Wiring canvas. For details see
-\ref{PlotWidget}.
+\htmlref{\emph{Plot Widget}}{PlotWidget}.
 
 \subsection{Sheet}
 \begin{center}
@@ -221,7 +222,7 @@ This operator inserts a Plot onto the Wiring canvas. For details see
 \end{center}
 
 This operator inserts a Sheet onto the Wiring canvas. For details
-see \ref{Sheet}.
+see \htmlref{\emph{Sheet}}{Sheet}.
 
 \subsection{time $t$}
 \operatorKey{time}
@@ -822,7 +823,7 @@ can be a useful thing to do.
 
 \subsection{Tensor operations}
 
-\label{Operations: Reduction}\ref{Operations: Reduction}
+\label{Operations: Reduction}
 
 \subsubsection{sum $\sum$}
 
@@ -1280,8 +1281,9 @@ or
 \item By typing the letters ``shape'' on the canvas and then pressing the
 Enter key.
 \end{itemize}
-Returns a vector of axis sizes. Coupling this operation with a \ref{Operation:gather}
-operation and variable would allow you interactively select axis size.
+Returns a vector of axis sizes. Coupling this operation with a
+\htmlref{gather}{Operation:gather} operation and variable would allow
+you interactively select axis size.
 
 \subsection{Statistical Operations}
 
@@ -1449,7 +1451,7 @@ or
 \item By typing the letters ``correlation'' on the canvas and then pressing
 the Enter key
 \end{itemize}
-See \ref{Operation:covariance} for the interpretation of tensor valued
+See \htmlref{covariance}{Operation:covariance} for the interpretation of tensor valued
 arguments. The correlation coefficient is defined as
 
 \[
@@ -1548,7 +1550,7 @@ placed on the canvas, each stock has an output but no input. Flows,
 on the other hand, have both inputs and outputs, and have to be fully
 defined on the canvas itself.
 
-For complete details see \ref{Godley-Tables}.
+For complete details see \htmlref{Godley tables}{Godley-Tables}.
 
 \subsubsection{Creating a Godley Table}
 
@@ -1810,13 +1812,13 @@ represent the same value, as with all other named variables, so changing
 the value of one parameter, either through its edit menu, or through
 a slider, will affect all the others of that name.
 
-Parameters are used to import data from a CSV file\ref{CSV import},
+Parameters are used to import data from a \htmlref{CSV file}{CSV import},
 which is how external data is imported into Ravel for analysis.
 
 Parameters can also be used to generate arrays of numbers for
 use in a \emph{Ravel} file using built-in formulas which are placed
 in the ``Initial value'' field of the parameter definition form.
-See \ref{tensor-init}.
+See \htmlref{tensor valued initial conditions}{tensor-init}.
 \item [{Flow variables}] have an input port that defines how the value
 is to be calculated. Only one flow variable of a given name can have
 its input port connected, as they all refer to the same quantity.
@@ -2422,8 +2424,7 @@ Or spelling it out in full:
 \end{itemize}
 Note that metre and m are distinctly different units in \emph{Minsky}.
 
-Note -- setting the time dimension is done in the simulation menu
-\ref{Group}.
+Note -- setting the time dimension is done in the \htmlref{simulation menu}{RungeKutta}.
 
 All function objects require dimensionless inputs. You can use dimensional
 analysis to avoid, for example, incorrectly feeding a degree measurement
