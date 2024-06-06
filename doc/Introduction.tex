@@ -31,15 +31,18 @@ This is a blank Ravel---a Ravel with no data attached to it. The
 axes are indicative examples, and will be replaced by the dimensions
 of your data, once you attach a data parameter to the Ravel:
 
-\includegraphics{images/RavelBlank}
+\begin{center}
+  \includegraphics{images/RavelBlank}
+\end{center}
 
 To use a Ravel, you first need to import a data file--at present
 this must be a CSV file (other data sources will be added in later
 releases). Once the data is imported \ref{CSV import}, the data object
 can be attached to a Ravel. This is a Ravel with data attached:
-\begin{flushleft}
+
+\begin{center}
 \includegraphics{images/01RavelDataInflation} 
-\par\end{flushleft}
+\end{center}
 
 There are many ways to manipulate and display data directly from a
 Ravel. This is a Ravel with data attached and selected for graphing:
@@ -49,32 +52,37 @@ the Reference area axis via the \emph{Pick axis slices} command; Monthly
 data is chosen from the Frequency axis; and Calipers are applied to
 the Date axis to select data from 1960 till 2024.
 
-\includegraphics[width=10cm]{images/01BRavelDataInflationSelected}
+\begin{center}
+\includegraphics[width=\textwidth]{images/01BRavelDataInflationSelected}
+\end{center}
 
 Ravel the object itself makes it far easier to drill down into and
 visualise data than using either a spreadsheet, or the Pivot Tables
 that standard Business Intelligence program use.
 
 \emph{Ravel} the program enables easy analysis of data using self-documenting
-flowchart formulas.This is a Ravel with data selected--for six countries,
+flowchart formulas. This is a Ravel with data selected--for six countries,
 on the annualised monthly inflation rate, for dates from January 2001
 till January 2024--and assigned to a variable (``Post2000'').
-\noindent \begin{flushleft}
-\resizebox{10cm}{!}{\includegraphics{images/02RavelDataInflationGraphed}} 
-\par\end{flushleft}
+
+\begin{center}
+  \includegraphics{images/02RavelDataInflationGraphed}
+\end{center}
 
 The data is analyzed by (a) working out the average inflation rate
 for the selected countries, and (b) subtracting the average from the
 actual inflation rate for each country.
 
 The average inflation rate is calculated using the formula shown below,
-where the \includegraphics{images/mean}operator works out the average
+where the \buttonIcon{mean}operator works out the average
 inflation rate over time for the six countries in the variable \emph{Post2000}
 to generate the variable \emph{Inflation}\textsubscript{\emph{Average}}.
 This average is then subtracted from the country-specific data in
 \emph{Post2000}:
 
-\resizebox{10cm}{!}{\includegraphics{images/03Formula}} 
+\begin{center}
+  \includegraphics[width=\textwidth]{images/03Formula}
+\end{center}
 
 This one formula is applied to every country in the Ravel (six countries
 in this case) and every quarterly data point (80 quarters). Doing
@@ -83,9 +91,10 @@ cell reference formula and replicating it across 480 cells.
 
 This example shows average inflation outcomes for the six countries,
 and the deviation of each of them from the average.
+
 \begin{center}
-\resizebox{10cm}{!}{\includegraphics{images/03RavelDataInflationAnalyzed}} 
-\par\end{center}
+  \includegraphics{images/03RavelDataInflationAnalyzed}
+\end{center}
 
 This illustrates the capacity of Ravel to rapidly provide insights
 from data--in this case, that the best-performing country during

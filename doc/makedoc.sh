@@ -4,7 +4,7 @@ pdflatex -interaction=batchmode Ravel
 if [ $? -ne 0 ]; then exit 1; fi
 
 pdflatex -interaction=batchmode Ravel
-latex2html -local_icons -white -info "" -contents Ravel.html Ravel
+latex2html -local_icons -white -info "" -html_version math -contents Ravel.html Ravel
 if [ $? -ne 0 ]; then exit 1; fi
 
 # copy images, and mutate table of contents after latex2html suitable
