@@ -127,8 +127,6 @@ namespace minsky
       }
 
     // draw bounding box ports
-    const float x = -0.5*w, dx=w/(2*m_numLines+1); // x location of ports
-    const float y=0.5*h, dy = h/m_numLines;
     
     size_t i=0;
     // draw bounds input ports
@@ -140,14 +138,16 @@ namespace minsky
         drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i/2)%palette.size()].colour, orient[i]);
         
       }
-        
+
+    const float xLeft = -0.5*w, dx=w/(2*m_numLines+1); // x location of ports
+    const float dy = h/m_numLines;
     // draw y data ports
     for (; i<m_numLines+nBoundsPorts; ++i)
       {
         const float y=0.5*(dy-h) + (i-nBoundsPorts)*dy;
         if (!justDataChanged)
-          m_ports[i]->moveTo(x*z + this->x(), y*z + this->y()+0.5*yoffs);
-        drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-nBoundsPorts)%palette.size()].colour, 0);
+          m_ports[i]->moveTo(xLeft*z + this->x(), y*z + this->y()+0.5*yoffs);
+        drawTriangle(cairo, xLeft+0.5*w, y+0.5*h+yoffs, palette[(i-nBoundsPorts)%palette.size()].colour, 0);
       }
     
     // draw RHS y data ports
@@ -160,21 +160,18 @@ namespace minsky
       }
 
     // draw x data ports
+    const float yBottom=0.5*h;
     for (; i<4*m_numLines+nBoundsPorts; ++i)
       {
         const float x=dx-0.5*w + (i-2*m_numLines-nBoundsPorts)*dx;
         if (!justDataChanged)
-          m_ports[i]->moveTo(x*z + this->x(), y*z + this->y()+0.5*yoffs);
-        drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-2*m_numLines-nBoundsPorts)%palette.size()].colour, -0.5*M_PI);
+          m_ports[i]->moveTo(x*z + this->x(), yBottom*z + this->y()+0.5*yoffs);
+        drawTriangle(cairo, x+0.5*w, yBottom+0.5*h+yoffs, palette[(i-2*m_numLines-nBoundsPorts)%palette.size()].colour, -0.5*M_PI);
       }
 
     cairo_translate(cairo, portSpace, yoffs);
     cairo_set_line_width(cairo,1);
-    double gw=w-2*portSpace, gh=h-portSpace;
-    //TODO Urgh - fix up the const_casts here. Maybe pass plotType as parameter to draw
-    auto& pt=const_cast<Plot*>(static_cast<const Plot*>(this))->plotType;
-    if (plotType!=automatic)
-      pt=static_cast<Plot::PlotType>(plotType);
+    const double gw=w-2*portSpace, gh=h-portSpace;
 
     Plot::draw(cairo,gw,gh);
     if (mouseFocus && legend)
@@ -322,8 +319,8 @@ namespace minsky
   void PlotWidget::mouseMove(float x,float y)
   {
     const double z=Item::zoomFactor();
-    const double w=0.5*iWidth()*z, h=0.5*iHeight()*z;
-    const double dx=x-this->x(), dy=y-this->y();
+    //const double w=0.5*iWidth()*z, h=0.5*iHeight()*z;
+    //const double dx=x-this->x(), dy=y-this->y();
     const double gw=iWidth()*z-2*portSpace;
     double gh=iHeight()*z-portSpace;
     if (!title.empty()) gh=iHeight()*z-portSpace-titleHeight;
@@ -559,8 +556,6 @@ namespace minsky
   
   void PlotWidget::addConstantCurves()
   {
-    size_t extraPen=2*m_numLines;
-
     std::vector<std::vector<std::pair<double,std::string>>> newXticks;
     
     // determine if any of the incoming vectors has a ptime-based xVector
@@ -581,10 +576,13 @@ namespace minsky
 
     formatter=defaultFormatter;
 
+    if (plotType!=automatic)
+      Plot::plotType=plotType;
+
     size_t pen=0;
     bool noLhsPens=true; // track whether any left had side ports are connected
     clearPensOnLabelling=true; // arrange for penLabels to be cleared first time an entry is added
-    OnStackExit setClearPensOnLabellingFalse([this]{clearPensOnLabelling=false;});
+    const OnStackExit setClearPensOnLabellingFalse([this]{clearPensOnLabelling=false;});
     
     for (size_t port=0; port<yvars.size(); ++port)
       for (size_t i=0; i<yvars[port].size(); ++i)

@@ -59,10 +59,6 @@ namespace minsky
     void guessSpecAndLoadFile();
     /// common implementation of loading the initial sequence of lines
     void loadFileFromName(const std::string& fname);
-    
-    /// Return file name after downloading a CSV file from the
-    /// web. Result is cached for 5 minutes.
-    static std::string loadWebFile(const std::string& url); 
     void reportFromFile(const std::string& input, const std::string& output) const;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
     /// return column mouse is over

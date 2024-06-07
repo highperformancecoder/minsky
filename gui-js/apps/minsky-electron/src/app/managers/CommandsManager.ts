@@ -7,12 +7,12 @@ import {
   InitializePopupWindowPayload,
   electronMenuBarHeightForWindows, HandleDescriptionPayload,
   importCSVvariableName,
-  minsky, GodleyIcon, Group, IntOp, Item, Lock, Ravel, VariableBase, Wire, Utility
+  minsky, GodleyIcon, Group, IntOp, Item, Lock, Ravel, VariableBase, Wire, Utility, DownloadCSVPayload
 } from '@minsky/shared';
 import { app, dialog, ipcMain, Menu, MenuItem, SaveDialogOptions,} from 'electron';
 import { existsSync, renameSync, unlinkSync } from 'fs';
 import JSON5 from 'json5';
-import { join, dirname } from 'path';
+import { extname, join, dirname } from 'path';
 import { tmpdir } from 'os';
 import { HelpFilesManager } from './HelpFilesManager';
 import { WindowManager } from './WindowManager';
@@ -20,6 +20,7 @@ import { StoreManager } from './StoreManager';
 import { RecentFilesManager } from './RecentFilesManager';
 import ProgressBar from 'electron-progressbar';
 import {spawn} from 'child_process';
+import decompress from 'decompress';
 
 export class CommandsManager {
   static activeGodleyWindowItems = new Map<string, CanvasItem>();
@@ -593,10 +594,6 @@ export class CommandsManager {
       classType = (await minsky.canvas.getWireAt(x,y)) ? 'Wires' : 'DesignCanvas';
     }
 
-    if (!classType) {
-      return;
-    }
-
     this.loadHelpFile(classType);
     return;
   }
@@ -1127,8 +1124,13 @@ export class CommandsManager {
     default:
       // nothing to do - TODO implement handlers for MacOS and Linux
     }
+
+    let progress=new ProgressBar({text:"Downloading Ravel",value: 0, indeterminate:false, closeOnComplete: true,});
+
     // handler for when download completed
     item.once('done', (event,state)=>{
+      progress.close();
+
       if (state==='completed') {
         dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
           message: 'Ravel plugin updated successfully - restart Ravel to use',
@@ -1144,6 +1146,19 @@ export class CommandsManager {
         webContents.close();
       }
     });
+
+    // handler for updating progress bar
+    item.on('updated',(event,state)=>{
+      switch (state) {
+      case 'progressing':
+        if (!progress?.isCompleted())
+          progress.value=100*item.getReceivedBytes()/item.getTotalBytes();
+        break;
+      case 'interrupted':
+        //item.resume();
+        break;
+      }
+    });
   }
 
   // handler for downloading Minsky
@@ -1154,6 +1169,8 @@ export class CommandsManager {
 
     // handler for when download completed
     item.once('done', (event,state)=>{
+      progress.close();
+
       if (state==='completed') {
         switch (process.platform) {
         case 'win32':
@@ -1186,14 +1203,83 @@ export class CommandsManager {
       }
     });
   }
-  
-  static upgrade() {
-    let window=WindowManager.createWindow({
+
+  static startCSVDownload(payload: DownloadCSVPayload) {
+    const window=this.createDownloadWindow();
+
+    return new Promise<string>((resolve, reject) => {
+      window.webContents.session.on('will-download', (e,i,w) => this.downloadCSV(e,i,w, resolve, reject));
+      window.webContents.downloadURL(payload.url);
+    });
+  }
+
+
+  static downloadCSV(event,item,webContents, downloadResolve, downloadReject) {
+    const extension = extname(item.getFilename());
+    let savePath = join(tmpdir(),`downloaded${extension}`);
+    item.setSavePath(savePath);
+
+    let progress = new ProgressBar({text:"Downloading CSV File",value: 0, indeterminate:false, closeOnComplete: true});
+
+    // handler for when download completed
+    item.once('done', (event,state)=>{
+      if (state !== 'completed') {
+        const message = `CSV file download failed: ${state}`;
+
+        dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
+          message: message,
+          type: 'error',
+        });
+
+        downloadReject(message);
+      }
+      progress.close();
+      webContents.close();
+
+      if(extension === '.zip') {
+        decompress(savePath, tmpdir()).then(files => {
+          if(files.length > 0) {
+            // preferentially find csv or txt file, use first file otherwise
+            const csvFile = files.find(f => extname(f.path) === '.csv') || files.find(f => extname(f.path) === '.txt') || files[0];
+            const innerExtension = extname(csvFile.path);
+            savePath = join(tmpdir(),`downloaded${innerExtension}`);
+            renameSync(join(tmpdir(),csvFile.path),savePath);
+
+            downloadResolve(savePath);
+          } else {
+            downloadReject('Empty zip provided.');
+          }
+      });
+      } else {
+        downloadResolve(savePath);
+      }
+    });
+
+    // handler for updating progress bar
+    item.on('updated',(event,state) => {
+      switch (state) {
+      case 'progressing':
+        if (!progress?.isCompleted())
+          progress.value=100*item.getReceivedBytes()/item.getTotalBytes();
+        break;
+      case 'interrupted':
+        //item.resume();
+        break;
+      }
+    });
+  }
+
+  static createDownloadWindow() {
+    return WindowManager.createWindow({
       width: 500,
       height: 700,
-      title: '',
+      title: 'Download CSV',
       modal: false,
     });
+  }
+  
+  static upgrade() {
+    const window=this.createDownloadWindow();
 
     // handler for when user has logged in to initiate upgrades.
     window.webContents.on('did-navigate',async ()=>{
@@ -1210,8 +1296,8 @@ export class CommandsManager {
         let ravelFile=params.get('ravel-asset');
         if (minskyFile) {
           let minskyVersionRE=/(\d+)\.(\d+)\.(\d+)([.-])/;
-          let [all,major,minor,patch]=minskyVersionRE.exec(minskyFile);
-          let [currAll,currMajor,currMinor,currPatch,terminator]=minskyVersionRE.exec(await minsky.minskyVersion());
+          let [,major,minor,patch]=minskyVersionRE.exec(minskyFile);
+          let [,currMajor,currMinor,currPatch,terminator]=minskyVersionRE.exec(await minsky.minskyVersion());
           if (major>currMajor || major===currMajor &&
               (minor>currMinor || minor===currMinor && patch>currPatch) ||
               terminator==='-' && // currently a beta release, so install if release nos match (since betas precede releases)

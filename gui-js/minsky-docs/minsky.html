@@ -7,16 +7,17 @@
       // extract query portion to set the content URL
       function setContent()
       {
-        if (location.search)
+        // only allow links to within this documentation to be passed in (prevent XSS).
+        if (location.search && location.search.slice(1).startsWith("Ravel/"))
           document.getElementById("content").src=location.search.slice(1);
         else
-          document.getElementById("content").src=minsky/minsky.html;
+          document.getElementById("content").src=Ravel/Ravel.html;
       }
     </script>
   </head>
 
   <body onload="setContent()" bgcolor="white">
-    <iframe src="minsky/minsky.html" align="left"  name="toc"
+    <iframe src="Ravel/Ravel.html" align="left"  name="toc"
     width="30%" height="1000"></iframe>
     <iframe align="right" width="69%"
     height="1000" name="content" id="content"></iframe>

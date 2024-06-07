@@ -1,0 +1,5955 @@
+#LyX file created by tex2lyx 2.3
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin C:/Users/debun/OneDrive/Documents/GitHub/minsky/doc/
+\textclass book
+\use_default_options false
+\maintain_unincluded_children false
+\language english
+\language_package none
+\inputencoding auto
+\fontencoding default
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 0
+\use_package cancel 0
+\use_package esint 1
+\use_package mathdots 0
+\use_package mathtools 0
+\use_package mhchem 0
+\use_package stackrel 0
+\use_package stmaryrd 0
+\use_package undertilde 0
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 0
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 2
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Chapter
+User defined functions
+\end_layout
+
+\begin_layout Standard
+
+\begin_inset CommandInset label
+LatexCommand label
+name "ExprTk"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ Much of this chapter is exerpted from 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+htmladdnormallink
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+{
+\end_layout
+
+\end_inset
+
+exprtk's read.txt file
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+{
+\end_layout
+
+\end_inset
+
+https://github.com/ArashPartow/exprtk/blob/master/readme.txt
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Introduction
+\end_layout
+
+\begin_layout Standard
+The 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+htmladdnormallink
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+{
+\end_layout
+
+\end_inset
+
+C++ Mathematical Expression Toolkit Library (ExprTk)
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+{
+\end_layout
+
+\end_inset
+
+https://www.partow.net/programming/exprtk/index.html
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+}
+\end_layout
+
+\end_inset
+
+ is a simple to use, easy to integrate and extremely efficient run-time mathematical expression parsing and evaluation engine. The parsing engine supports numerous forms of functional and logic processing semantics and is easily extensible.
+\end_layout
+
+\begin_layout Standard
+With Minsky's user defined functions, expressions can refer to Minsky variables accessible from the current scope (ie local Minsky variables will hide global variables), and also parameters declared as part of the function name. One can also call other user defined functions, which is the only way a user defined function with more than 2 parameters can be used. For 0-2 parameters, user defined functions can be wired into a Minsky computation.
+\end_layout
+
+\begin_layout Standard
+ExprTk identifiers (such as variable names and function names) consist of alphanumeric characters plus '_' and '.'. They must start with a letter. Minsky is reserving the underscore and full stop to act as an escape sequence, in order to refer to the full range of possible Minsky variable identifiers, including all unicode characters. This section will be updated once that feature is in place — for now, please avoid using those characters in identifiers.
+\end_layout
+
+\begin_layout Section
+Capabilities
+\end_layout
+
+\begin_layout Standard
+The ExprTk expression evaluator supports the following fundamental arithmetic operations, functions and processes:
+\end_layout
+
+\begin_layout Description
+Types: Scalar, Vector, String
+\end_layout
+
+\begin_layout Description
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+Basic operators:
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'+, -, *, /, %, ^'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Description
+Assignment: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb':=, +=, -=, *=, /=, %='
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Description
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+Equalities 
+\backslash
+& Inequalities:
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'=, ==, <>, !=, <, <=, >, >='
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Description
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+Logic operators:
+\end_layout
+
+\end_inset
+
+ and, mand, mor, nand, nor, not, or, shl, shr, xnor, xor, true, false
+\end_layout
+
+\begin_layout Description
+Functions: abs, avg, ceil, clamp, equal, erf, erfc, exp, expm1, floor, frac, log, log10, log1p, log2, logn, max, min, mul, ncdf, nequal, root, round, roundn, sgn, sqrt, sum, swap, trunc
+\end_layout
+
+\begin_layout Description
+Trigonometry: acos, acosh, asin, asinh, atan, atanh, atan2, cos, cosh, cot, csc, sec, sin, sinc, sinh, tan, tanh, hypot, rad2deg, deg2grad, deg2rad, grad2deg
+\end_layout
+
+\begin_layout Description
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+Control structures:
+\end_layout
+
+\end_inset
+
+ if-then-else, ternary conditional, switch-case, return-statement
+\end_layout
+
+\begin_layout Description
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+Loop statements:
+\end_layout
+
+\end_inset
+
+ while, for, repeat-until, break, continue
+\end_layout
+
+\begin_layout Description
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+String processing:
+\end_layout
+
+\end_inset
+
+ in, like, ilike, concatenation
+\end_layout
+
+\begin_layout Description
+Optimisations: constant-folding, simple strength reduction and dead code elimination
+\end_layout
+
+\begin_layout Description
+Calculus: numerical integration and differentiation
+\end_layout
+
+\begin_layout Section
+Example expressions
+\end_layout
+
+\begin_layout Standard
+The following is a short listing of infix format based mathematical expressions that can be parsed and evaluated using the ExprTk library.
+\end_layout
+
+\begin_layout Itemize
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'sqrt(1 - (3 / x^2))'
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'clamp(-1, sin(2 * pi * x) + cos(y / 2 * pi), +1)'
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'sin(2.34e-3 * x)'
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'if(((x[2] + 2) == 3) and ((y + 5) <= 9),1 + w, 2 / z)'
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'inrange(-2,m,+2) == if(({-2 <= m} and [m <= +2]),1,0)'
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'({1/1}*[1/2]+(1/3))-{1/4}^[1/5]+(1/6)-({1/7}+[1/8]*(1/9))'
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'a * exp(2.2 / 3.3 * t) + c'
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'z := x + sin(2.567 * pi / y)'
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'u := 2.123 * {pi * z} / (w := x + cos(y / pi))'
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'2x + 3y + 4z + 5w == 2 * x + 3 * y + 4 * z + 5 * w'
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'3(x + y) / 2.9 + 1.234e+12 == 3 * (x + y) / 2.9 + 1.234e+12'
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'(x + y)3.3 + 1 / 4.5 == [x + y] * 3.3 + 1 / 4.5'
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'(x + y[i])z + 1.1 / 2.7 == (x + y[i]) * z + 1.1 / 2.7'
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'(sin(x / pi) cos(2y) + 1) == (sin(x / pi) * cos(2 * y) + 1)'
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'75x^17 + 25.1x^5 - 35x^4 - 15.2x^3 + 40x^2 - 15.3x + 1'
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'(avg(x,y) <= x + y ? x - y : x * y) + 2.345 * pi / x'
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'while (x <= 100) { x -= 1; }'
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"x <= 'abc123' and (y in 'AString') or ('1x2y3z' != z)"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"((x + 'abc') like '*123*') or ('a123b' ilike y)"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Itemize
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'sgn(+1.2^3.4z / -5.6y) <= {-7.8^9 / -10.11x }'
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Section
+Copyright notice
+\end_layout
+
+\begin_layout Standard
+Free use of the C++ Mathematical Expression Toolkit Library is permitted under the guidelines and in accordance with the most current version of the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+htmladdnormallink
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+{
+\end_layout
+
+\end_inset
+
+MIT License
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+}
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+{
+\end_layout
+
+\end_inset
+
+http://www.opensource.org/licenses/MIT
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+Built-in operations & functions
+\end_layout
+
+\begin_layout Subsection
+Arithmetic & Assignment Operators
+\end_layout
+
+\begin_layout Standard
+
+\begin_inset Tabular 
+<lyxtabular version="3" rows="12" columns="2">
+<features rotate="0" tabularvalignment="middle" tabularwidth="0pt">
+<column alignment="center" valignment="top">
+<column alignment="none" valignment="top" width="80text%">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+OPERATOR 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+DEFINITION 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'+'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Addition between x and y. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'x + y'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Subtraction between x and y. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'x - y'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Multiplication between x and y. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'x * y'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Division between x and y. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'x / y'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'%'
+\end_layout
+
+\end_inset
+
+& Modulus of x with respect to y. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'x % y'
+\end_layout
+
+\end_inset
+
+)
+\begin_inset Newline newline
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\begin_inset Formula $x^y$
+\end_inset
+
+. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'x ^ y'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+:
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Assign the value of x to y. Where y is either a variable or vector type. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'y := x'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
++
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Increment x by the value of the expression on the right hand side. Where x is either a variable or vector type. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'x += abs(y - z)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+-
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Decrement x by the value of the expression on the right hand side. Where x is either a variable or vector type. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'x[i] -= abs(y + z)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+*
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Assign the multiplication of x by the value of the expression on the righthand side to x. Where x is either a variable or vector type. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'x *= abs(y / z)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+/
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Assign the division of x by the value of the expression on the right-hand side to x. Where x is either a variable or vector type. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'x[i + j] /= abs(y * z)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'%='
+\end_layout
+
+\end_inset
+
+& Assign x modulo the value of the expression on the right hand side to x. Where x is either a variable or vector type. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'x[2] %= y ^ 2'
+\end_layout
+
+\end_inset
+
+)
+\begin_inset Newline newline
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Equalities & Inequalities
+\end_layout
+
+\begin_layout Standard
+
+\begin_inset Tabular 
+<lyxtabular version="3" rows="7" columns="2">
+<features rotate="0" tabularvalignment="middle" tabularwidth="0pt">
+<column alignment="center" valignment="top">
+<column alignment="none" valignment="top" width="80text%">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+OPERATOR 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+DEFINITION
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'=='
+\end_layout
+
+\end_inset
+
+ or 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+True only if x is strictly equal to y. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'x == y'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'<>'
+\end_layout
+
+\end_inset
+
+ or 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+True only if x does not equal y. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'x <> y'
+\end_layout
+
+\end_inset
+
+ or x != 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+True only if x is less than y. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'x < y'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+<
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+True only if x is less than or equal to y. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'x <= y'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+True only if x is greater than y. (eg: x > 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+>
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+True only if x greater than or equal to y. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'x >= y'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Boolean Operations
+\end_layout
+
+\begin_layout Standard
+
+\begin_inset Tabular 
+<lyxtabular version="3" rows="14" columns="2">
+<features rotate="0" tabularvalignment="middle" tabularwidth="0pt">
+<column alignment="center" valignment="top">
+<column alignment="none" valignment="top" width="80text%">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+OPERATOR
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+DEFINITION
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+tru
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+True state or any value other than zero (typically 1).
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+fals
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+False state, value of exactly zero.
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+an
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Logical AND, True only if x and y are both true. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'x and y'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+man
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Multi-input logical AND, True only if all inputs are true. Left to right short-circuiting of expressions. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'mand(x > y, z < w, u or v, w and x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+mo
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Multi-input logical OR, True if at least one of the inputs are true. Left to right short-circuiting of expressions. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'mor(x > y, z < w, u or v, w and x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+nan
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Logical NAND, True only if either x or y is false. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'x nand y'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+no
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Logical NOR, True only if the result of x or y is false (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'x nor y'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+no
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Logical NOT, Negate the logical sense of the input. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'not(x and y) == x nand y'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+o
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Logical OR, True if either x or y is true. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'x or y'
+\end_layout
+
+\end_inset
+
+)
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+xo
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Logical XOR, True only if the logical states of x and y differ. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'x xor y'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+xno
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Logical XNOR, True iff the biconditional of x and y is satisfied. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'x xnor y'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+'
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Similar to OR but with left to right expression short circuiting optimisation. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'(x | y) == (y or x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+General Purpose Functions
+\end_layout
+
+\begin_layout Standard
+
+\begin_inset Tabular 
+<lyxtabular version="3" rows="35" columns="2">
+<features rotate="0" tabularvalignment="middle" tabularwidth="0pt">
+<column alignment="center" valignment="top">
+<column alignment="none" valignment="top" width="80text%">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+FUNCTION 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+DEFINITION
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+ab
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Absolute value of x. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'abs(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+av
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Average of all the inputs. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'avg(x,y,z,w,u,v) == (x + y + z + w + u + v) / 6'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+cei
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Smallest integer that is greater than or equal to x.
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+clam
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Clamp x in range between r0 and r1, where r0 < r1. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'clamp(r0,x,r1)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+equa
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Equality test between x and y using normalised epsilon
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+er
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Error function of x. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'erf(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+erf
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Complimentary error function of x. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'erfc(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+ex
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\begin_inset Formula $e^x$
+\end_inset
+
+ (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'exp(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+expm
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\begin_inset Formula $e^{x-1}$
+\end_inset
+
+ where 
+\begin_inset Formula $x$
+\end_inset
+
+ is very small. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'expm1(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+floo
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Largest integer that is less than or equal to x. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'floor(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+fra
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Fractional portion of x. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'frac(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+hypo
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\begin_inset Formula $\sqrt{x^2+y^2}$
+\end_inset
+
+ (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'hypot(x,y) = sqrt(x*x + y*y)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+iclam
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Inverse-clamp x outside of the range r0 and r1. Where r0 < r1. If x is within the range it will snap to the closest bound. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'iclamp(r0,x,r1)'
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset Formula \begin{math}
+=\left\{\begin{array}{ccc}
+r0 & \mathrm{if} & x\le r0\\
+x & \mathrm{if} & r0\le x \le r1\\
+r1 & \mathrm{if} & x\ge r1\\
+\end{array}\right.
+\end{math}
+\end_inset
+
+ )
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+inrang
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+In-range returns 'true' when 
+\begin_inset Formula $x$
+\end_inset
+
+ is within the range 
+\begin_inset Formula $[r_0,r_1]$
+\end_inset
+
+. Where 
+\begin_inset Formula $r_0 < r_1$
+\end_inset
+
+. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'inrange(r0,x,r1)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+lo
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Natural logarithm 
+\begin_inset Formula $\ln x$
+\end_inset
+
+. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'log(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+log1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\begin_inset Formula $\log_{10}x$
+\end_inset
+
+. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'log10(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+log1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\begin_inset Formula $\ln (1+x)$
+\end_inset
+
+, where 
+\begin_inset Formula $x$
+\end_inset
+
+ is very small. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'log1p(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+log
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\begin_inset Formula $\log_2x$
+\end_inset
+
+. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'log2(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+log
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\begin_inset Formula $\log_nx$
+\end_inset
+
+, where 
+\begin_inset Formula $n$
+\end_inset
+
+ is a positive integer. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'logn(x,8)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+ma
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Largest value of all the inputs. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'max(x,y,z,w,u,v)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+mi
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Smallest value of all the inputs. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'min(x,y,z,w,u)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+mu
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Product of all the inputs. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'mul(x,y,z,w,u,v,t) == (x * y * z * w * u * v * t)'
+\end_layout
+
+\end_inset
+
+)
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+ncd
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Normal cumulative distribution function. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'ncdf(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+nequa
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Not-equal test between 
+\begin_inset Formula $x$
+\end_inset
+
+ and 
+\begin_inset Formula $y$
+\end_inset
+
+ using normalised epsilon
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+po
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\begin_inset Formula $x^y$
+\end_inset
+
+. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'pow(x,y) == x ^ y'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+roo
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\begin_inset Formula $\sqrt[n]{x}$
+\end_inset
+
+, where 
+\begin_inset Formula $n$
+\end_inset
+
+ is a positive integer. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'root(x,3) == x^(1/3)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+roun
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Round 
+\begin_inset Formula $x$
+\end_inset
+
+ to the nearest integer. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'round(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+round
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Round 
+\begin_inset Formula $x$
+\end_inset
+
+ to 
+\begin_inset Formula $n$
+\end_inset
+
+ decimal places (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'roundn(x,3)'
+\end_layout
+
+\end_inset
+
+) where 
+\begin_inset Formula $n > 0$
+\end_inset
+
+ is an integer. (eg: roundn(1.2345678,4) == 1.234
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+sg
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Sign of 
+\begin_inset Formula $x$
+\end_inset
+
+, 
+\begin_inset Formula $-1$
+\end_inset
+
+ where 
+\begin_inset Formula $x < 0$
+\end_inset
+
+, +1 where 
+\begin_inset Formula $x > 0$
+\end_inset
+
+, else zero. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'sgn(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+sqr
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\begin_inset Formula $\sqrt{x}$
+\end_inset
+
+, where 
+\begin_inset Formula $x >= 0$
+\end_inset
+
+. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'sqrt(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+su
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Sum of all the inputs. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'sum(x,y,z,w,u,v,t) == (x + y + z + w + u + v + t)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+swa
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+<=
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Swap the values of the variables x and y and return the current value of y. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'swap(x,y)'
+\end_layout
+
+\end_inset
+
+ or x <=> 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+trun
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Integer portion of x. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'trunc(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Trigonometry Functions
+\end_layout
+
+\begin_layout Standard
+
+\begin_inset Tabular 
+<lyxtabular version="3" rows="22" columns="2">
+<features rotate="0" tabularvalignment="middle" tabularwidth="0pt">
+<column alignment="center" valignment="top">
+<column alignment="none" valignment="top" width="80text%">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+FUNCTION 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+DEFINITION
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+aco
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Arc cosine of x expressed in radians. Interval 
+\begin_inset Formula $[-1,+1]$
+\end_inset
+
+ (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'acos(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+acos
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Inverse hyperbolic cosine of x expressed in radians. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'acosh(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+asi
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Arc sine of x expressed in radians. Interval 
+\begin_inset Formula $[-1,+1]$
+\end_inset
+
+ (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'asin(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+asin
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Inverse hyperbolic sine of x expressed in radians. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'asinh(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+ata
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Arc tangent of x expressed in radians. Interval 
+\begin_inset Formula $[-1,+1]$
+\end_inset
+
+ (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'atan(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+atan
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Arc tangent of 
+\begin_inset Formula $(x / y)$
+\end_inset
+
+ expressed in radians. 
+\begin_inset Formula $[-\pi,+\pi]$
+\end_inset
+
+ (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'atan2(x,y)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+atan
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Inverse hyperbolic tangent of 
+\begin_inset Formula $x$
+\end_inset
+
+ expressed in radians. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'atanh(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+co
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Cosine of 
+\begin_inset Formula $x$
+\end_inset
+
+. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'cos(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+cos
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Hyperbolic cosine of 
+\begin_inset Formula $x$
+\end_inset
+
+. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'cosh(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+co
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Cotangent of 
+\begin_inset Formula $x$
+\end_inset
+
+. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'cot(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+cs
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Cosecant of 
+\begin_inset Formula $x$
+\end_inset
+
+. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'csc(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+se
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Secant of 
+\begin_inset Formula $x$
+\end_inset
+
+. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'sec(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+si
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Sine of 
+\begin_inset Formula $x$
+\end_inset
+
+. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'sin(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+sin
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Sine cardinal of 
+\begin_inset Formula $x$
+\end_inset
+
+. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'sinc(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+sin
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Hyperbolic sine of 
+\begin_inset Formula $x$
+\end_inset
+
+. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'sinh(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+ta
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Tangent of 
+\begin_inset Formula $x$
+\end_inset
+
+. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'tan(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+tan
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Hyperbolic tangent of 
+\begin_inset Formula $x$
+\end_inset
+
+. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'tanh(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+deg2ra
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Convert 
+\begin_inset Formula $x$
+\end_inset
+
+ from degrees to radians. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'deg2rad(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+deg2gra
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Convert 
+\begin_inset Formula $x$
+\end_inset
+
+ from degrees to gradians. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'deg2grad(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+rad2de
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Convert 
+\begin_inset Formula $x$
+\end_inset
+
+ from radians to degrees. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'rad2deg(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+grad2de
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Convert 
+\begin_inset Formula $x$
+\end_inset
+
+ from gradians to degrees. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'grad2deg(x)'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+String Processing
+\end_layout
+
+\begin_layout Standard
+
+\begin_inset Tabular 
+<lyxtabular version="3" rows="7" columns="2">
+<features rotate="0" tabularvalignment="middle" tabularwidth="0pt">
+<column alignment="center" valignment="top">
+<column alignment="none" valignment="top" width="80text%">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+FUNCTION
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+DEFINITION
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'='
+\end_layout
+
+\end_inset
+
+ , 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'=='
+\end_layout
+
+\end_inset
+
+, 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'!='
+\end_layout
+
+\end_inset
+
+, 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'<>'
+\end_layout
+
+\end_inset
+
+, 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'<='
+\end_layout
+
+\end_inset
+
+, 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'>='
+\end_layout
+
+\end_inset
+
+, 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'<'
+\end_layout
+
+\end_inset
+
+ , 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+All common equality/inequality operators are applicable to strings and are applied in a case sensitive manner. In the following example x, y and z are of type string. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"not((x <= 'AbC') and ('1x2y3z' <> y)) or (z == x)"
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+i
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+True only if 
+\begin_inset Formula $x$
+\end_inset
+
+ is a substring of 
+\begin_inset Formula $y$
+\end_inset
+
+. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'x in y'
+\end_layout
+
+\end_inset
+
+ or 'abc' in 'abcdefgh
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+lik
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+True only if the string x matches the pattern y. Available wildcard characters are `*' and `?' denoting zero or more and zero or one matches respectively. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'x like y'
+\end_layout
+
+\end_inset
+
+ or 'abcdefgh' like 'a?d*h
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+ilik
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+True only if the string x matches the pattern y in a case insensitive manner. Available wildcard characters are '*' and '?' denoting zero or more and zero or one matches respectively. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'x ilike y'
+\end_layout
+
+\end_inset
+
+ or 'a1B2c3D4e5F6g7H' ilike 'a?d*h
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+[r0:r1
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+The closed interval 
+\begin_inset Formula $[r0,r1]$
+\end_inset
+
+ of the specified string. eg: Given a string x with a value of 'abcdefgh' then: 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"x[1:4] == 'bcde'"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"x[ :5] == x[:10 / 2] == 'abcdef'"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"x[2 + 1: ] == x[3:] =='defgh'"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"x[ : ] == x[:] == 'abcdefgh'"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"x[4/2:3+2] == x[2:5] == 'cdef'"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Note: Both r0 and r1 are assumed to be integers, where r0 <= r1. They may also be the result of an expression, in the event they have fractional components truncation will be performed. (eg: 
+\begin_inset Formula $1.67
+                \rightarrow 1$
+\end_inset
+
+)
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+%begin{latexonly}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\begin_inset Tabular 
+<lyxtabular version="3" rows="6" columns="2">
+<features rotate="0" tabularvalignment="middle" tabularwidth="0pt">
+<column alignment="center" valignment="top">
+<column alignment="none" valignment="top" width="80text%">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+FUNCTION
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+DEFINITION
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+%end{latexonly}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+:
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Assign the value of x to y. Where y is a mutable string or string range and x is either a string or a string range. eg: 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'y := x'
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"y := 'abc'"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'y := x[:i + j]'
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"y := '0123456789'[2:7]"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"y := '0123456789'[2i + 1:7]"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"y := (x := '0123456789'[2:7])"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"y[i:j] := x"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"y[i:j] := (x + 'abcdefg'[8 / 4:5])[m:n]"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Standard
+Note: For options 7 and 8 the shorter of the two ranges will denote the number characters that are to be copied.
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Concatenation of x and y. Where x and y are strings or string ranges. eg 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"x + y"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"x + 'abc'"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"x + y[:i + j]"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"x[i:j] + y[2:3] + '0123456789'[2:7]"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"'abc' + x + y"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"'abc' + '1234567'"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"(x + 'a1B2c3D4' + y)[i:2j]"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
++
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Append to x the value of y. Where x is a mutable string and y is either a string or a string range. eg: 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"x += y"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"x += 'abc'"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"x += y[:i + j] + 'abc'"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"x += '0123456789'[2:7]"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+<=
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Swap the values of x and y. Where x and y are mutable strings. (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'x <=> y'
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+%begin{latexonly}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\begin_inset Tabular 
+<lyxtabular version="3" rows="2" columns="2">
+<features rotate="0" tabularvalignment="middle" tabularwidth="0pt">
+<column alignment="center" valignment="top">
+<column alignment="none" valignment="top" width="80text%">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+FUNCTION
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+DEFINITION
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+%end{latexonly}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+[
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" topline="true" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+The string size operator returns the size of the string being actioned. eg: 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"'abc'[] == 3"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"var max_str_length := max(s0[],s1[],s2[],s3[]"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"('abc' + 'xyz')[] == 6"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"(('abc' + 'xyz')[1:4])[] == 4"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Control Structures
+\end_layout
+
+\begin_layout Standard
+
+\begin_inset Tabular 
+<lyxtabular version="3" rows="6" columns="2">
+<features rotate="0" tabularvalignment="middle" tabularwidth="0pt">
+<column alignment="center" valignment="top">
+<column alignment="none" valignment="top" width="80text%">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+STRUCTURE 
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+DEFINITION
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+i
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+If x is true then return y else return z.eg: 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"if (x, y, z)"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"if ((x + 1) > 2y, z + 1, w / v)"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"if (x > y) z;"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"if (x <= 2*y) { z + w };"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+if-els
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+The if-else/else-if statement. Subject to the condition branch the statement will return either the value of the consequent or the alternative branch. eg: 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"if (x > y) z; else w;"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"if (x > y) z; else if (w != u) v;"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"if (x < y) { z; w + 1; } else u;"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\end_layout
+
+\begin_layout Verbatim
+if ((x != y) and (z > w))
+\end_layout
+
+\begin_layout Verbatim
+{   
+\end_layout
+
+\begin_layout Verbatim
+  y := sin(x) / u;
+\end_layout
+
+\begin_layout Verbatim
+  z := w + 1;     
+\end_layout
+
+\begin_layout Verbatim
+}                  
+\end_layout
+
+\begin_layout Verbatim
+else if (x > (z + 1))
+\end_layout
+
+\begin_layout Verbatim
+{                    
+\end_layout
+
+\begin_layout Verbatim
+  w := abs (x - y) + z;
+\end_layout
+
+\begin_layout Verbatim
+  u := (x + 1) > 2y ? 2u : 3u;
+\end_layout
+
+\begin_layout Verbatim
+}
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+switc
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+The first true case condition that is encountered will determine the result of the switch. If none of the case conditions hold true, the default action is assumed as the final return value. This is sometimes also known as a multi-way branch mechanism. eg: 
+\end_layout
+
+\begin_layout Verbatim
+switch                                                 
+\end_layout
+
+\begin_layout Verbatim
+{                                                      
+\end_layout
+
+\begin_layout Verbatim
+  case x > (y + z) : 2 * x / abs(y - z);               
+\end_layout
+
+\begin_layout Verbatim
+  case x < 3       : sin(x + y);                       
+\end_layout
+
+\begin_layout Verbatim
+  default          : 1 + x;                            
+\end_layout
+
+\begin_layout Verbatim
+}            
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+whil
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+The structure will repeatedly evaluate the internal statement(s) 'while' the condition is true. The final statement in the final iteration will be used as the return value of the loop. eg: 
+\end_layout
+
+\begin_layout Verbatim
+while ((x -= 1) > 0)                                   
+\end_layout
+
+\begin_layout Verbatim
+{                                                      
+\end_layout
+
+\begin_layout Verbatim
+  y := x + z;                                          
+\end_layout
+
+\begin_layout Verbatim
+  w := u + y;                                          
+\end_layout
+
+\begin_layout Verbatim
+}               
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+%begin{latexonly}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\begin_inset Tabular 
+<lyxtabular version="3" rows="6" columns="2">
+<features rotate="0" tabularvalignment="middle" tabularwidth="0pt">
+<column alignment="center" valignment="top">
+<column alignment="none" valignment="top" width="80text%">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+FUNCTION
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+DEFINITION
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+%end{latexonly}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+repeat/unti
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+The structure will repeatedly evaluate the internal statement(s) 'until' the condition is true. The final statement in the final iteration will be used as the return value of the loop. eg: 
+\end_layout
+
+\begin_layout Verbatim
+repeat                                               
+\end_layout
+
+\begin_layout Verbatim
+  y := x + z;                                        
+\end_layout
+
+\begin_layout Verbatim
+  w := u + y;                                        
+\end_layout
+
+\begin_layout Verbatim
+until ((x += 1) > 100)                               
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+fo
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+The structure will repeatedly evaluate the internal statement(s) while the condition is true. On each loop iteration, an 'incrementing' expression is evaluated. The conditional is mandatory whereas the initialiser and incrementing expressions are optional. eg: 
+\end_layout
+
+\begin_layout Verbatim
+for (var x := 0; (x < n) and (x != y); x += 1)        
+\end_layout
+
+\begin_layout Verbatim
+{                                                     
+\end_layout
+
+\begin_layout Verbatim
+  y := y + x / 2 - z;                                 
+\end_layout
+
+\begin_layout Verbatim
+  w := u + y;                                         
+\end_layout
+
+\begin_layout Verbatim
+}            
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+break/break[
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Break terminates the execution of the nearest enclosed loop, allowing for the execution to continue on external to the loop. The default break statement will set the return value of the loop to NaN, where as the return based form will set the value to that of the break expression. eg: 
+\end_layout
+
+\begin_layout Verbatim
+while ((i += 1) < 10)                                   
+\end_layout
+
+\begin_layout Verbatim
+{                                                       
+\end_layout
+
+\begin_layout Verbatim
+  if (i < 5)                                            
+\end_layout
+
+\begin_layout Verbatim
+    j -= i + 2;                                         
+\end_layout
+
+\begin_layout Verbatim
+  else if (i % 2 == 0)                                  
+\end_layout
+
+\begin_layout Verbatim
+    break;                                              
+\end_layout
+
+\begin_layout Verbatim
+  else                                                  
+\end_layout
+
+\begin_layout Verbatim
+    break[2i + 3];                                      
+\end_layout
+
+\begin_layout Verbatim
+}            
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+continu
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Continue results in the remaining portion of the nearest enclosing loop body to be skipped. eg: 
+\end_layout
+
+\begin_layout Verbatim
+for (var i := 0; i < 10; i += 1)  
+\end_layout
+
+\begin_layout Verbatim
+{                                 
+\end_layout
+
+\begin_layout Verbatim
+  if (i < 5)                      
+\end_layout
+
+\begin_layout Verbatim
+    continue;                     
+\end_layout
+
+\begin_layout Verbatim
+  j -= i + 2;                     
+\end_layout
+
+\begin_layout Verbatim
+}            
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+%begin{latexonly}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\begin_inset Tabular 
+<lyxtabular version="3" rows="6" columns="2">
+<features rotate="0" tabularvalignment="middle" tabularwidth="0pt">
+<column alignment="center" valignment="top">
+<column alignment="none" valignment="top" width="80text%">
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+FUNCTION
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+DEFINITION
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" topline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+%end{latexonly}
+\end_layout
+
+\begin_layout Plain Layout
+
+\end_layout
+
+\end_inset
+
+retur
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" topline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Return immediately from within the current expression. With the option of passing back a variable number of values (scalar, vector or string). eg: 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"return [1]; "
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"return [x, 'abx'];"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"return [x, x + y,'abx'];"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"return [];"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\end_layout
+
+\begin_layout Verbatim
+if (x < y)                                       
+\end_layout
+
+\begin_layout Verbatim
+    return [x, x - y, 'result-set1', 123.456];      
+\end_layout
+
+\begin_layout Verbatim
+   else                                             
+\end_layout
+
+\begin_layout Verbatim
+    return [y, x + y, 'result-set2'];               
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+?
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Ternary conditional statement, similar to that of the above denoted if-statement. eg: 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"x ? y : z"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"x + 1 > 2y ? z + 1 : (w / v)"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"min(x,y) > z ? (x < y + 1) ? x : y : (w * v)"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Evaluate each sub-expression, then return as the result the value of the last sub-expression. This is sometimes known as multiple sequence point evaluation. eg: 
+\end_layout
+
+\begin_layout Verbatim
+~(i := x + 1, j := y / z, k := sin(w/u)) == (sin(w/u)))
+\end_layout
+
+\begin_layout Verbatim
+~{i := x + 1; j := y / z; k := sin(w/u)} == (sin(w/u)))
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+[*
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+Evaluate any consequent for which its case statement is true. The return value will be either zero or the result of the last consequent to have been evaluated. eg: 
+\end_layout
+
+\begin_layout Verbatim
+[*]                                                     
+\end_layout
+
+\begin_layout Verbatim
+{                                                       
+\end_layout
+
+\begin_layout Verbatim
+  case (x + 1) > (y - 2)    : x := z / 2 + sin(y / pi); 
+\end_layout
+
+\begin_layout Verbatim
+  case (x + 2) < abs(y + 3) : w / 4 + min(5y,9);        
+\end_layout
+
+\begin_layout Verbatim
+  case (x + 3) == (y * 4)   : y := abs(z / 6) + 7y;     
+\end_layout
+
+\begin_layout Verbatim
+}              
+\end_layout
+
+\end_inset
+</cell>
+</row>
+<row>
+<cell alignment="center" valignment="top" bottomline="true" leftline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+[
+\end_layout
+
+\end_inset
+</cell>
+<cell alignment="none" valignment="top" bottomline="true" rightline="true" usebox="none">
+\begin_inset Text
+
+\begin_layout Standard
+The vector size operator returns the size of the vector being actioned. eg: 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"v[]"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Enumerate
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb"max_size := max(v0[],v1[],v2[],v3[])"
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\end_inset
+</cell>
+</row>
+</lyxtabular>
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Note: In the tables above, the symbols x, y, z, w, u and v where appropriate may represent any of one the following:
+\end_layout
+
+\begin_layout Enumerate
+Literal numeric/string value 
+\end_layout
+
+\begin_layout Enumerate
+A variable 
+\end_layout
+
+\begin_layout Enumerate
+A vector element 
+\end_layout
+
+\begin_layout Enumerate
+A vector 
+\end_layout
+
+\begin_layout Enumerate
+A string 
+\end_layout
+
+\begin_layout Enumerate
+An expression comprised of [1], [2] or [3] (eg: 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+\backslash
+verb'2 + x /vec[3])'
+\end_layout
+
+\end_inset
+
+ 
+\end_layout
+
+\begin_layout Section
+Fundamental types
+\end_layout
+
+\begin_layout Standard
+ExprTk supports three fundamental types which can be used freely in expressions. The types are as follows:
+\end_layout
+
+\begin_layout Description
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+Scalar Type
+\end_layout
+
+\end_inset
+
+ The scalar type is a singular numeric value. The underlying type is that used to specialise the ExprTk components (float, double, long double, MPFR et al).
+\end_layout
+
+\begin_layout Description
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+Vector Type
+\end_layout
+
+\end_inset
+
+ The vector type is a fixed size sequence of contiguous scalar values. A vector can be indexed resulting in a scalar value. Operations between a vector and scalar will result in a vector with a size equal to that of the original vector, whereas operations between vectors will result in a vector of size equal to that of the smaller of the two. In both mentioned cases, the operations will occur element-wise.
+\end_layout
+
+\begin_layout Description
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+String Type
+\end_layout
+
+\end_inset
+
+ The string type is a variable length sequence of 8-bit chars. Strings can be assigned and concatenated to one another, they can also be manipulated via sub-ranges using the range definition syntax. Strings however can not interact with scalar or vector types.
+\end_layout
+
+\begin_layout Standard
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+}
+\end_layout
+
+\end_inset
+
+
+\end_layout
+
+\end_body
+\end_document

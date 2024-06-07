@@ -379,7 +379,6 @@ export class CSVDialog extends CppClass {
   async keyPress(a1: minsky__EventInterface__KeyPressArgs): Promise<boolean> {return this.$callMethod('keyPress',a1);}
   async loadFile(): Promise<void> {return this.$callMethod('loadFile');}
   async loadFileFromName(a1: string): Promise<void> {return this.$callMethod('loadFileFromName',a1);}
-  async loadWebFile(a1: string): Promise<string> {return this.$callMethod('loadWebFile',a1);}
   async macOSXRedraw(): Promise<void> {return this.$callMethod('macOSXRedraw');}
   async mouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseDown',a1,a2);}
   async mouseMove(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseMove',a1,a2);}
@@ -2492,6 +2491,7 @@ export class ravel__HandleState extends CppClass {
     this.customOrder=new Sequence<string>(this.$prefix()+'.customOrder');
   }
   async collapsed(...args: boolean[]): Promise<boolean> {return this.$callMethod('collapsed',...args);}
+  async customOrderIsInverted(...args: boolean[]): Promise<boolean> {return this.$callMethod('customOrderIsInverted',...args);}
   async description(...args: string[]): Promise<string> {return this.$callMethod('description',...args);}
   async displayFilterCaliper(...args: boolean[]): Promise<boolean> {return this.$callMethod('displayFilterCaliper',...args);}
   async format(...args: string[]): Promise<string> {return this.$callMethod('format',...args);}

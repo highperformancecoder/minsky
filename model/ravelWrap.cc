@@ -188,15 +188,12 @@ namespace minsky
       {
         auto labels=wrappedRavel.sliceLabels(h);
         xv.emplace_back(handleDescription(h));
-        auto dim=axisDimensions.find(xv.back().name);
-        if (dim!=axisDimensions.end())
+        if (auto dim=axisDimensions.find(xv.back().name);
+            dim!=axisDimensions.end())
           xv.back().dimension=dim->second;
-        else
-          {
-            auto dim=cminsky().dimensions.find(xv.back().name);
-            if (dim!=cminsky().dimensions.end())
-              xv.back().dimension=dim->second;
-          }
+        else if (auto dim=cminsky().dimensions.find(xv.back().name);
+                 dim!=cminsky().dimensions.end())
+          xv.back().dimension=dim->second;
         // else otherwise dimension is a string (default type)
         for (auto& i: labels)
           xv.back().push_back(i);
@@ -438,14 +435,13 @@ namespace minsky
   Dimension::Type Ravel::dimensionType(int handleIndex) const
   {
     auto descr=handleDescription(handleIndex);
-    auto i=axisDimensions.find(descr);
-    if (i!=axisDimensions.end())
+    
+    if (auto i=axisDimensions.find(descr); i!=axisDimensions.end())
       return i->second.type;
-    {
-      auto i=cminsky().dimensions.find(descr);
-      if (i!=cminsky().dimensions.end())
-        return i->second.type;
-    }
+
+    if (auto i=cminsky().dimensions.find(descr); i!=cminsky().dimensions.end())
+      return i->second.type;
+
     return Dimension::string;
   }
   

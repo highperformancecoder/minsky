@@ -509,7 +509,7 @@ namespace minsky
   
   void Minsky::populateMissingDimensions() {
     // populate from variable value table first, then override by ravels
-    bool incompatibleMessageDisplayed;
+    bool incompatibleMessageDisplayed=false;
     for (auto& v: variableValues)
       populateMissingDimensionsFromVariable(*v.second, incompatibleMessageDisplayed);
     model->recursiveDo

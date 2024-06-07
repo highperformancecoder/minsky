@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="28pt" height="26pt" viewBox="0 0 28 26" version="1.1">
+<defs>
+<g>
+<symbol overflow="visible" id="glyph0-0">
+<path style="stroke:none;" d="M 1.167969 0 L 1.167969 -7 L 8.167969 -7 L 8.167969 0 Z M 1.75 -0.582031 L 7.582031 -0.582031 L 7.582031 -6.417969 L 1.75 -6.417969 Z M 1.75 -0.582031 "/>
+</symbol>
+<symbol overflow="visible" id="glyph0-1">
+<path style="stroke:none;" d="M 5.636719 -6.785156 L 5.636719 0.859375 L 4.734375 0.859375 L 4.734375 -5.984375 L 1.613281 -5.984375 L 1.613281 0.859375 L 0.710938 0.859375 L 0.710938 -6.785156 Z M 5.636719 -6.785156 "/>
+</symbol>
+<symbol overflow="visible" id="glyph0-2">
+<path style="stroke:none;" d="M 5.84375 -1.03125 L 5.335938 -0.523438 L 3.394531 -2.484375 L 1.453125 -0.523438 L 0.949219 -1.03125 L 2.90625 -2.972656 L 0.949219 -4.914063 L 1.453125 -5.417969 L 3.394531 -3.460938 L 5.335938 -5.417969 L 5.84375 -4.914063 L 3.882813 -2.972656 Z M 5.84375 -1.03125 "/>
+</symbol>
+</g>
+</defs>
+<g id="surface535243">
+<g style="fill:rgb(0%,0%,0%);fill-opacity:1;">
+  <use xlink:href="#glyph0-1" x="7" y="15.625"/>
+  <use xlink:href="#glyph0-2" x="13.416667" y="15.625"/>
+</g>
+<path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,100%);stroke-opacity:1;stroke-miterlimit:10;" d="M -12 -12 L -12 12 L 12 12 L 14 0 L 12 -12 Z M -12 -12 " transform="matrix(1,0,0,1,13,13)"/>
+</g>
+</svg>

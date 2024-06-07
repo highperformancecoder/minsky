@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="28pt" height="26pt" viewBox="0 0 28 26" version="1.1">
+<g id="surface520958">
+<path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M -5 -5 L 5 5 M -5 5 L 5 -5 " transform="matrix(1,0,0,1,13,13)"/>
+<path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M -5.003125 -5.001562 L 4.996875 4.998438 M -5.003125 4.998438 L 4.996875 -5.001562 " transform="matrix(0.5,0,0,0.5,7.4,20.2)"/>
+<path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,0%);stroke-opacity:1;stroke-miterlimit:10;" d="M -5.003125 -4.998438 L 4.996875 5.001562 M -5.003125 5.001562 L 4.996875 -4.998438 " transform="matrix(0.5,0,0,0.5,7.4,5.8)"/>
+<path style="fill:none;stroke-width:1;stroke-linecap:butt;stroke-linejoin:miter;stroke:rgb(0%,0%,100%);stroke-opacity:1;stroke-miterlimit:10;" d="M -12 -12 L -12 12 L 12 12 L 14 0 L 12 -12 Z M -12 -12 " transform="matrix(1,0,0,1,13,13)"/>
+</g>
+</svg>

@@ -1,0 +1,1639 @@
+#LyX 2.3 created this file. For more info see http://www.lyx.org/
+\lyxformat 544
+\begin_document
+\begin_header
+\save_transient_properties true
+\origin unavailable
+\textclass book
+\use_default_options false
+\maintain_unincluded_children false
+\language english
+\language_package none
+\inputencoding auto
+\fontencoding default
+\font_roman "default" "default"
+\font_sans "default" "default"
+\font_typewriter "default" "default"
+\font_math "auto" "auto"
+\font_default_family default
+\use_non_tex_fonts false
+\font_sc false
+\font_osf false
+\font_sf_scale 100 100
+\font_tt_scale 100 100
+\use_microtype false
+\use_dash_ligatures true
+\graphics default
+\default_output_format default
+\output_sync 0
+\bibtex_command default
+\index_command default
+\paperfontsize default
+\spacing single
+\use_hyperref false
+\papersize default
+\use_geometry false
+\use_package amsmath 1
+\use_package amssymb 0
+\use_package cancel 0
+\use_package esint 1
+\use_package mathdots 0
+\use_package mathtools 0
+\use_package mhchem 0
+\use_package stackrel 0
+\use_package stmaryrd 0
+\use_package undertilde 0
+\cite_engine basic
+\cite_engine_type default
+\biblio_style plain
+\use_bibtopic false
+\use_indices false
+\paperorientation portrait
+\suppress_date false
+\justification true
+\use_refstyle 0
+\use_minted 0
+\index Index
+\shortcut idx
+\color #008000
+\end_index
+\secnumdepth 3
+\tocdepth 3
+\paragraph_separation indent
+\paragraph_indentation default
+\is_math_indent 0
+\math_numbering_side default
+\quotes_style english
+\dynamic_quotes 0
+\papercolumns 1
+\papersides 2
+\paperpagestyle default
+\tracking_changes false
+\output_changes false
+\html_math_output 0
+\html_css_as_file 0
+\html_be_strict false
+\end_header
+
+\begin_body
+
+\begin_layout Chapter
+Introduction to Minsky
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "Introduction-Minsky"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Minsky
+\emph default
+ is a system-dynamics program.
+ If you are familiar with these programs, please go to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "intro:experienced-system-dynamics"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ If you are not, please go to 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "intro:new-system-dynamics"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Section
+If you are new to system dynamics
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "intro:new-system-dynamics"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Minsky
+\emph default
+ is one of many 
+\begin_inset Quotes eld
+\end_inset
+
+system dynamics
+\begin_inset Quotes erd
+\end_inset
+
+ programs 
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+https://en.wikipedia.org/wiki/System_dynamics
+\end_layout
+
+\end_inset
+
+.
+ These programs allow a dynamic model of a system to be constructed, not
+ by writing mathematical equations or computer code, but by laying out a
+ model in a block diagram, which can then be simulated.
+ These programs are now one of the main tools used by engineers to design
+ complex products, and by management consultants to advise on corporate
+ management, product marketing, local government projects, etc.
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Minsky
+\emph default
+ has many features in common with these programs, and adds another unique
+ means to create dynamic equations—the 
+\begin_inset Quotes eld
+\end_inset
+
+Godley Table
+\begin_inset Quotes erd
+\end_inset
+
+—that is superior to block diagrams for modelling monetary flows.
+ 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "Godley-Tables"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+The main advantages of the block diagram representation of dynamic equations
+ over a list of equations are:
+\end_layout
+
+\begin_layout Itemize
+They make the causal relationships in a complex model obvious.
+ It takes a specialized mind to be able to see the causal relations in a
+ large set of mathematical equations; the same equations laid out as diagrams
+ can be read by anyone who can read a stock and flow diagram—and that's
+ most of us; 
+\end_layout
+
+\begin_layout Itemize
+The block diagram paradigm makes it possible to structure a complex model
+ via groups.
+ For example, the fuel delivery system in a car can be treated as one group,
+ the engine as another, the exhaust as yet another.
+ This reduces visual complexity, and also makes it possible for different
+ components of a complex model to be designed by different teams, and then
+ 
+\begin_inset Quotes eld
+\end_inset
+
+wired together
+\begin_inset Quotes erd
+\end_inset
+
+ at a later stage.
+\end_layout
+
+\begin_layout Standard
+Though these programs differ in appearance, they all work the same way:
+ variables in a set of equations are linked by wires to mathematical operators.
+ What would otherwise be a long list of equations is converted into a block
+ diagram, and the block diagram makes the causal chain in the equations
+ explicit and visually obvious.
+ They are also explicitly tailored to producing numerical simulations of
+ models.
+\end_layout
+
+\begin_layout Subsection
+Block diagram example
+\end_layout
+
+\begin_layout Standard
+One of the very first models of a dynamic system was developed independently
+ by the mathematicians Lokta 
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+https://www.jstor.org/stable/84156
+\end_layout
+
+\end_inset
+
+ and Volterra 
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+https://www-nature-com.libproxy.ucl.ac.uk/articles/118558a0
+\end_layout
+
+\end_inset
+
+ and is now known as the Lotka-Volterra model 
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+https://en.wikipedia.org/wiki/Lotka%E2%80%93Volterra_equations
+\end_layout
+
+\end_inset
+
+.
+ This model simulates interacting populations of predators and prey, which
+ had been seen to display fluctuations that either could not be explained
+ by exogenous shocks, or which displayed counterintuitive responses to exogenous
+ shocks—such as the observed increase in the proportion of predators (sharks,
+ rays, etc.) in the fishing catch in the Adriatic Sea during WWI, when biologists
+ had expected the proportion of predators to fall (see 
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+https://en.wikipedia.org/wiki/Lotka%E2%80%93Volterra_equations#History
+\end_layout
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Standard
+The basic dynamics of the predator-prey model are that the number of prey
+ is assumed to grow exponentially in the absence of predators, while the
+ number of predators is assumed to fall exponentially in the absence of
+ prey.
+ Using Rabbits as our example of prey and Foxes as our example of predators,
+ the initial dynamic equations are :
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\begin{array}{c}
+\frac{d}{dt}Rabbits=r\times Rabbits\\
+\frac{d}{dt}Foxes=-f\times Foxes
+\end{array}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+When interaction between predators and prey is considered, the simplest
+ assumption is that predators reduce the growth rate of prey (r) by some
+ constant 
+\begin_inset Formula $\left(\rho\right)$
+\end_inset
+
+ times how many predators there are, while prey reduce the death rate of
+ predators (f) by another constant 
+\begin_inset Formula $\left(\phi\right)$
+\end_inset
+
+ times how many prey there are:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\begin{array}{c}
+\frac{d}{dt}Rabbits=\left(r-\rho\times Foxes\right)\times Rabbits\\
+\frac{d}{dt}Foxes=\left(-f+\phi\times Rabbits\right)\times Foxes
+\end{array}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The non-zero equilibrium of this system is easily calculated by setting
+ the differential equations to zero:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\begin{array}{c}
+Rabbit_{Eq}=\frac{f}{\phi}\\
+Fox_{Eq}=\frac{r}{\rho}
+\end{array}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Mathematicians initially expected that this model would converge to this
+ equilibrium over time, but this was not the case:
+\end_layout
+
+\begin_layout Quotation
+Periodic phenomena play an important role in nature, both organic and inorganic
+ \SpecialChar ldots
+it appeared, from the nature of the solution obtained, improbable that
+ undamped, permanent oscillations would arise \SpecialChar ldots
+ It was, therefore, with considera
+ble surprise that the writer, on applying his method to certain special
+ cases, found these to lead to undamped, and hence indefinitely continued,
+ oscillations.
+ (
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+https://www.jstor.org/stable/84156
+\end_layout
+
+\end_inset
+
+).
+\end_layout
+
+\begin_layout Quotation
+The mathematical reason for this phenomenon is fairly easily derived by
+ mathematical stability analysis.
+ For a system as simple as this, the main advantage of a system dynamics
+ program is that it enables the numerical simulation of this model.
+ To do this, this system 
+\emph on
+of ordinary differential equations
+\emph default
+ needs to be converted into 
+\emph on
+integral equations,
+\emph default
+ since numerical integration is a more accurate process than numerical different
+iation.
+ In mathematical form, these integral equations are:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Formula 
+\[
+\begin{array}{c}
+Rabbits=Rabbits_{0}+\int\left(\left(r-\rho\times Foxes\right)\times Rabbits\right)\\
+Foxes=Foxes_{0}+\int\left(\left(-f+\phi\times Rabbits\right)\times Foxes\right)
+\end{array}
+\]
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Here 
+\begin_inset Formula $Rabbits_{0}$
+\end_inset
+
+and 
+\begin_inset Formula $Foxes_{0}$
+\end_inset
+
+ represent the initial number of Rabbits and Foxes.
+\end_layout
+
+\begin_layout Standard
+The next figure shows this model in 
+\emph on
+Minsky
+\emph default
+, with the initial conditions set up so that they differ slightly from the
+ equilibrium.
+ To see how to build a model like this step by step, click on 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "Minsky model building"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/PredatorPreyRabbitsFoxes.svg
+	width 15cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Programs like Vensim and Simulink have been in existence for decades, and
+ they are now mature products that provide everything their user-base of
+ management consultants and engineers want for modeling and analyzing complex
+ dynamic systems.
+ So why has 
+\emph on
+Minsky
+\emph default
+ been developed? The key reason is its unique feature of Godley Tables 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "Godley-Tables"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, which allow dynamic equations to be developed for monetary transactions
+ via double-entry bookkeeping tables.
+\end_layout
+
+\begin_layout Section
+If you are experienced in system dynamics
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "intro:experienced-system-dynamics"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+As an experienced system dynamics user (or if you've just read 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "Introduction-Minsky"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+), the most important thing you need to know is what 
+\emph on
+Minsky
+\emph default
+ provides that other system dynamics programs do not.
+ That boils down to one feature: The Godley Table.
+ 
+\end_layout
+
+\begin_layout Subsection
+Godley Tables
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "Godley-Tables"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Godley tables are a unique feature of 
+\emph on
+Minsky.
+
+\emph default
+ They are based on what could be called the world's first GUI (
+\begin_inset Quotes eld
+\end_inset
+
+Graphical User Interface
+\begin_inset Quotes erd
+\end_inset
+
+), the accountant's double-entry bookkeeping table.
+\end_layout
+
+\begin_layout Standard
+Double-entry was invented in 15th century Italy 
+\begin_inset Flex URL
+status open
+
+\begin_layout Plain Layout
+
+https://www.janegleesonwhite.com/double
+\end_layout
+
+\end_inset
+
+ to enable accurate recording of financial transactions.
+ The essence of this method is (a) to classify all of an entity's accounts
+ as either Assets or Liabilities, with the difference between them representing
+ the Equity of the entity; and (b) to record every transaction twice, once
+ as a Credit 
+\begin_inset Formula $\left(CR\right)$
+\end_inset
+
+and once as a Debit 
+\begin_inset Formula $\left(DR\right)$
+\end_inset
+
+, where the definitions of Credit and Debit entries for Assets, Liabilities
+ and Equity are designed to ensure that the transaction was accurately recorded.
+ Minsky uses this GUI to generate stock-flow consistent models of financial
+ flows, but by default uses plus 
+\begin_inset Formula $\left(+\right)$
+\end_inset
+
+ and minus 
+\begin_inset Formula $\left(-\right)$
+\end_inset
+
+ operators (though the accountant's convention of Credit 
+\begin_inset Formula $\left(CR\right)$
+\end_inset
+
+and Debit 
+\begin_inset Formula $\left(DR\right)$
+\end_inset
+
+ can be chosen via the Options menu).
+ This system guarantees that, no matter how complex the model is, the equations
+ are internally consistent.
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Minsky
+\emph default
+ uses this GUI to generate systems of ordinary differential equations to
+ model financial flows.
+ The columns specify stocks, while the entries in rows are flows.
+ 
+\emph on
+The symbolic sum of a column is thus the rate of change of the associated
+ stock
+\emph default
+.
+ 
+\emph on
+Minsky
+\emph default
+ takes a table like the next figure:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/GodleyTableSingle.svg
+	width 15cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+And converts it into a set of dynamic equations, which by construction are
+ 
+\begin_inset Quotes eld
+\end_inset
+
+stock-flow consistent
+\begin_inset Quotes erd
+\end_inset
+
+:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/GodleyTableSingleEquations.svg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The model is completed by defining the flows on the canvas.
+\end_layout
+
+\begin_layout Standard
+In addition, because one entity's financial asset is another's financial
+ liability, 
+\emph on
+Minsky
+\emph default
+ enables the construction of a multi-sectoral view of financial transactions.
+ The wedge next to every account name is used on other tables to search
+ for Assets that have not yet been recorded as a Liability, and vice versa.
+ For example, the previous Table recorded the financial system from the
+ point of view of the Banking Sector, for which Reserves—the deposit accounts
+ of private banks at the Central Bank–are an Asset.
+ Reserves are also a liability of the Central Bank, and that can be shown
+ in 
+\emph on
+Minsky
+\emph default
+ by adding an additional Godley Table, naming it 
+\emph on
+Central Bank
+\emph default
+, and recording Reserves as a Liability:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/GodleyTableSecondIncomplete.svg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+At this stage, the financial transactions have been entered only once—against
+ the Central Bank's Liability of Reserves.
+ Each transaction has to be entered a second time to complete its record,
+ but at present there are no available accounts in which to record the transacti
+ons a second time.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/GodleyTableSecondIncomplete.svg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Bond purchases by the Central Bank indicate the need for to show bonds owned
+ by the Central Bank as an asset, while the other transactions indicate
+ the need to show the Treasury's account at the Central Bank, the 
+\begin_inset Quotes eld
+\end_inset
+
+Consolidated Revenue Fund
+\begin_inset Quotes erd
+\end_inset
+
+, as an additional liability:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/GodleyTableSecondComplete.svg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This is an inherently better way to generate a dynamic model of financial
+ flows than the flowchart method used by all other system dynamics programs,
+ for at least four reasons: 
+\end_layout
+
+\begin_layout Itemize
+All financial transactions are flows between entities.
+ The tabular layout captures this in a very natural way: each row shows
+ where a flow originates, and where it ends up;
+\end_layout
+
+\begin_layout Itemize
+The program imposes the rules of double-entry bookkeeping, in which entries
+ on each row balance to zero according to the 
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+{
+\end_layout
+
+\end_inset
+
+
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+
+\backslash
+em
+\end_layout
+
+\end_inset
+
+ accounting equation
+\begin_inset ERT
+status collapsed
+
+\begin_layout Plain Layout
+
+}
+\end_layout
+
+\end_inset
+
+ 
+\begin_inset Formula $(Assets=Liabilities+Equity)$
+\end_inset
+
+.
+ If you don't ensure that each flow starts somewhere and ends somewhere,
+ then the program will identify your mistake;
+\end_layout
+
+\begin_layout Itemize
+The double-entry perspective assists in the completion of a model, since
+ the requirement of a matching entry for each transaction indicates the
+ accounts that are needed to complete the accounting; and
+\end_layout
+
+\begin_layout Itemize
+Double-entry bookkeeping acts as a prohibition against recording invalid
+ transactions.
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Minsky
+\emph default
+ thus adds an element to the system dynamics toolkit which is essential
+ for modeling the monetary flows that are an intrinsic aspect of a market
+ economy.
+\end_layout
+
+\begin_layout Subsection
+
+\emph on
+Minsky
+\emph default
+'s unusual system dynamics features
+\end_layout
+
+\begin_layout Standard
+
+\emph on
+Minsky
+\emph default
+ differs from conventional system dynamics models in various ways:
+\end_layout
+
+\begin_layout Itemize
+Most programs store their mathematical formulas within a text block, which
+ must be opened to see its equation.
+ The mathematics of a 
+\emph on
+Minsky
+\emph default
+ model is shown explicitly on the design canvas;
+\end_layout
+
+\begin_layout Itemize
+Most programs require every entity used to build an equation to be wired
+ to the block in which the equation is defined, while each entity is shown
+ only once on the design canvas.
+ This generates the familiar system dynamics 
+\begin_inset Quotes eld
+\end_inset
+
+spaghetti diagram
+\begin_inset Quotes erd
+\end_inset
+
+, as even practitioners—rather than merely critics—often describe their
+ models.
+ 
+\emph on
+Minsky
+\emph default
+ enables entities to be shown multiple times on the design canvas, which
+ substantially reduces the number of wires needed to build a model.
+ 
+\emph on
+Minsky
+\emph default
+'s equations therefore resemble small 
+\begin_inset Quotes eld
+\end_inset
+
+spider webs
+\begin_inset Quotes erd
+\end_inset
+
+, rather than large bowls of spaghetti.
+ This makes it easier to understand what a model does; and
+\end_layout
+
+\begin_layout Itemize
+Most programs show the end results of a simulation.
+ 
+\emph on
+Minsky
+\emph default
+ shows simulations dynamically, and the numerical values of parameters and
+ variables are shown on the parameters and variables themselves.
+ Parameters can be altered during a simulation, which enables them to be
+ used as a 
+\begin_inset Quotes eld
+\end_inset
+
+control panel
+\begin_inset Quotes erd
+\end_inset
+
+ for simulation of policy proposals, etc.
+\end_layout
+
+\begin_layout Standard
+These unusual features are best illustrated by building a simple model in
+ 
+\emph on
+Minsky
+\emph default
+.
+ The next section explains how to build a simpler version of the predator-prey
+ model shown in 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "intro:new-system-dynamics"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Subsection
+Building a predator-prey model in Minsky
+\end_layout
+
+\begin_layout Standard
+\begin_inset CommandInset label
+LatexCommand label
+name "Minsky model building"
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The first step in building the Rabbits and Foxes model in 
+\emph on
+Minsky
+\emph default
+ is to insert two integral blocks on the canvas—one for Rabbits and the
+ other for Foxes.
+ An integral block is inserted by clicking on the 
+\begin_inset Graphics
+	filename images/integral.svg
+
+\end_inset
+
+ operator 
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "Variable:integral"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+.
+ To alter its name from the generic 
+\begin_inset Quotes eld
+\end_inset
+
+int1
+\begin_inset Quotes erd
+\end_inset
+
+, either double-click on the widget, which brings up the context menu for
+ integral blocks, or hover the mouse over the block and click the right-mouse
+ button, and choose 
+\begin_inset Quotes eld
+\end_inset
+
+Edit
+\begin_inset Quotes erd
+\end_inset
+
+ to bring up the edit form (another method is to choose 
+\begin_inset Quotes eld
+\end_inset
+
+Rename all instances
+\begin_inset Quotes erd
+\end_inset
+
+ from the context menu).
+ Name the two variables Rabbits and Foxes respectively, and you will have
+ the following objects on your canvas:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/PredatorPreyRabbitsFoxesIntegralsOnly.svg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+As is typical of dynamic models, the rates of change of the variables Rabbits
+ and Foxes depends on their current values.
+ You therefore need to copy the variable names, which you do using the context
+ menu command 
+\begin_inset Quotes eld
+\end_inset
+
+Copy item
+\begin_inset Quotes erd
+\end_inset
+
+.
+ Do this and place both on the canvas:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/PredatorPreyRabbitsFoxes02.svg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Next add the parameters that determine the rates of growth and death of
+ the two species.
+ The non-zero equilibrium is set by the zeros of 
+\begin_inset Formula $\left(r-\rho\times Foxes\right)$
+\end_inset
+
+ and 
+\begin_inset Formula $\left(-f+\phi\times Rabbits\right)$
+\end_inset
+
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/PredatorPreyRabbitsFoxes03ParametersAdded.svg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Finally, the equations for the rates of growth of the two species are wired
+ up, and the model can be simulated.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/PredatorPreyRabbitsFoxes04Equations.svg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+If you don't want to display the complete equations on the canvas, you can
+ use grouping to hide the complexity.
+ The next figure illustrates several ways to use groups, and the feature
+ that groups become transparent (and can be edited 
+\emph on
+in situ
+\emph default
+) as the zoom level increases.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/PredatorPreyRabbitsFoxes05Grouping.svg
+	width 15cm
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Subsection
+Building monetary models in 
+\emph on
+Minsky
+\end_layout
+
+\begin_layout Standard
+Monetary models are actually simpler to build in 
+\emph on
+Minsky
+\emph default
+ than block diagram models, because all you have to do is to name the accounts
+ in the Godley Table, and then define the flows on the canvas.
+ 
+\emph on
+Minsky
+\emph default
+ automatically generates the differential equations for you.
+\end_layout
+
+\begin_layout Standard
+Building the model starts with placing a Godley Table on the canvas by clicking
+ on the Godley Table operator 
+\begin_inset Graphics
+	filename images/GodleyIcon.png
+
+\end_inset
+
+.
+ The figure below shows a single Godley Table on the canvas, which has been
+ labelled 
+\begin_inset Quotes eld
+\end_inset
+
+Banking Sector
+\begin_inset Quotes erd
+\end_inset
+
+ using the context menu 
+\begin_inset Quotes eld
+\end_inset
+
+Title
+\begin_inset Quotes erd
+\end_inset
+
+ command.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/MonetaryModel01GodleyTable01.svg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Next either double-click on the icon, or choose 
+\begin_inset Quotes eld
+\end_inset
+
+Open Godley Table
+\begin_inset Quotes erd
+\end_inset
+
+ from the context menu, to bring up the Godley Table form:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/GodleyTableEditWindow.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+We'll build a model of private money creation in this first example.
+\end_layout
+
+\begin_layout Subsubsection
+Modelling private money creation
+\end_layout
+
+\begin_layout Standard
+Add four Stocks to this table: 
+\emph on
+Reserves 
+\emph default
+and 
+\emph on
+Loans
+\emph default
+ as Assets, 
+\emph on
+Deposits
+\emph default
+ as a Liability, and 
+\emph on
+Banks
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+
+\emph on
+Equity
+\end_layout
+
+\end_inset
+
+
+\emph default
+ as the Equity of the Banks (type Banks_{Equity} to subscript the word Equity).
+ Go back to the Design canvas and choose 
+\begin_inset Quotes eld
+\end_inset
+
+Editor mode
+\begin_inset Quotes erd
+\end_inset
+
+ from the context menu, and you will see the table displayed as follows
+ (you will need to resize the table using the Resizing arrows, which are
+ visible when your mouse is hovering over the table)
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/MonetaryModel01GodleyTable02.svg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Now enter numbers into the 
+\begin_inset Quotes eld
+\end_inset
+
+Initial Conditions
+\begin_inset Quotes erd
+\end_inset
+
+ row.
+ Put 90 in 
+\emph on
+Reserves
+\emph default
+, 10 in 
+\emph on
+Loans
+\emph default
+, 80 in 
+\emph on
+Deposits
+\emph default
+, and 20 in 
+\emph on
+BanksEquity
+\emph default
+.
+ 
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/MonetaryModel01GodleyTable03InitialConditions.svg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Then add three flows to the model: Net Bank Loans (which can be negative
+ if people in the aggregate are paying their debts down rather than taking
+ on new debt), Interest Payments, and Bank Spending.
+ Call Net Bank Loans 
+\begin_inset Quotes eld
+\end_inset
+
+Credit
+\begin_inset Quotes erd
+\end_inset
+
+, Interest Payments 
+\begin_inset Quotes eld
+\end_inset
+
+Interest_L
+\begin_inset Quotes erd
+\end_inset
+
+ (the subscript is to distinguish interest on loans from interest on bonds,
+ which we'll introduce later), and Bank Spending 
+\begin_inset Quotes eld
+\end_inset
+
+Spend_B
+\begin_inset Quotes erd
+\end_inset
+
+ (the subscript is to distinguish Bank Spending from Government Spending,which
+ we'll introduce later).
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/MonetaryModel01GodleyTable04AddFlows.svg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Next, return to the canvas and use the Godley Table context menu commands
+ 
+\emph on
+Copy flow variables
+\emph default
+ and 
+\emph on
+Copy stock variables
+\emph default
+ to copy all flows and stocks and place them on the canvas, where they can
+ be defined.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/MonetaryModel01GodleyTable05DefineFlows01.svg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+The easiest flow to define is 
+\emph on
+Interest
+\emph default
+, since this is the rate of interest times 
+\emph on
+Loans
+\emph default
+.
+ To define this, first define the parameter 
+\emph on
+Int
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+
+\emph on
+Rate
+\end_layout
+
+\end_inset
+
+
+\begin_inset script superscript
+
+\begin_layout Plain Layout
+
+\emph on
+Loans
+\end_layout
+
+\end_inset
+
+
+\emph default
+: just type Int_{Rate}^{Loans} on the canvas and, once you've finished entering
+ the text, the Variable/Parameter definition form will appear.
+ Put 0.05 as the Initial Value, 0.2 as the 
+\emph on
+Slide Bounds: Max
+\emph default
+, 0.02 as the 
+\emph on
+Min
+\emph default
+, and 0.01 as the 
+\emph on
+Slider Step Size
+\emph default
+.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/MonetaryModel01GodleyTable05DefineFlows03.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Wire this parameter and 
+\emph on
+Loans 
+\emph default
+up to a multiply block 
+\begin_inset Graphics
+	filename images/multiply.svg
+
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "Operation:multiply"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+ and attach it to the flow Interest, and you have defined the first of three
+ flows in this extremely simple model.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/MonetaryModel01GodleyTable05DefineFlows04.svg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Now define 
+\emph on
+Spend
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+
+\emph on
+B
+\end_layout
+
+\end_inset
+
+
+\emph default
+ as a multiple 
+\emph on
+Bank
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+
+\emph on
+Spend
+\end_layout
+
+\end_inset
+
+
+\begin_inset script superscript
+
+\begin_layout Plain Layout
+
+\emph on
+Rate
+\end_layout
+
+\end_inset
+
+
+\emph default
+ of the 
+\emph on
+Banks
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+
+\emph on
+Equity
+\end_layout
+
+\end_inset
+
+
+\emph default
+.
+ Give the parameter a small Initial Value—say 0.2—which means that Banks
+ spend 20% of their equity into the economy every year—this represents paying
+ dividends, wages and bonuses to households, buying goods and services off
+ firms, etc.
+ Set Max to 0.5, Min to 0.1, and the Step Size to 0.05.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/MonetaryModel01GodleyTable05DefineFlows04.png
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Your canvas should now look like this:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/MonetaryModel01GodleyTable05DefineFlows05.svg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+This is sufficient to build a model of just financial stocks and flows,
+ if you edit 
+\emph on
+Credit
+\emph default
+ to give it a Max, Min and Step Size in keeping with the other magnitudes
+ in the model–say a Max of 10, Min of -10, and Step Size of 1.
+ Add two Plots 
+\begin_inset Graphics
+	filename images/plotWidget.png
+
+\end_inset
+
+
+\begin_inset CommandInset ref
+LatexCommand ref
+reference "PlotWidget"
+plural "false"
+caps "false"
+noprefix "false"
+
+\end_inset
+
+, one for Stocks and one for Flows, attach the Stocks and Flows to their
+ inputs, put a copy of 
+\emph on
+Credit
+\emph default
+ at the top of the model for ease of access, click on the Run button ▶,
+ and vary the value of 
+\emph on
+Credit 
+\emph default
+to see what happens:
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/MonetaryModel01GodleyTable06Simulate01.svg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+To link this very simple model to economic concepts, make the 
+\begin_inset Quotes eld
+\end_inset
+
+Friedmanite
+\begin_inset Quotes erd
+\end_inset
+
+ assumption that GDP equals Money times Velocity.
+ Define Money as the sum of Deposits plus 
+\emph on
+Banks
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+
+\emph on
+Equity
+\end_layout
+
+\end_inset
+
+
+\emph default
+, and define 
+\emph on
+Velocity
+\emph default
+ as a parameter with an Initial Value of 2, Max of 4, Min of 0.5, and Step
+ Size of 0.1.
+ Define a parameter 
+\emph on
+Credit
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+
+\emph on
+Ratio
+\end_layout
+
+\end_inset
+
+
+\emph default
+ and give it an Initial Value of 0, Max of 0.1, Min of minus 0.1, and Step
+ Size of 0.01.
+ Also define the percentage growth rate as the differential of GDP divided
+ by itself and put through a percentage operator.
+ Run the model and vary 
+\emph on
+Credit
+\begin_inset script subscript
+
+\begin_layout Plain Layout
+
+\emph on
+Ratio
+\end_layout
+
+\end_inset
+
+
+\emph default
+ using the arrow keys as you run a simulation.
+\end_layout
+
+\begin_layout Standard
+\begin_inset Graphics
+	filename images/MonetaryModel01GodleyTable07GDP.svg
+
+\end_inset
+
+
+\end_layout
+
+\begin_layout Standard
+Much more sophisticated models can be built using 
+\emph on
+Minsky
+\emph default
+, including models that mix the flowchart method with Godley Tables to generate
+ models of both the physical and monetary systems.
+\end_layout
+
+\end_body
+\end_document

@@ -1,194 +1,1403 @@
-%!PS-Adobe-2.0 EPSF-2.0
-%%Title: /home/scratch/github/minsky/doc/images/plot.eps
-%%Creator: XV version 3.10a-jumboFix+Enh of 20081216 (interim!)  -  by John Bradley
-%%BoundingBox: 289 380 323 411
+%!PS-Adobe-3.0
+%%Creator: cairo 1.15.10 (http://cairographics.org)
+%%CreationDate: Mon May 27 11:25:00 2024
 %%Pages: 1
-%%DocumentFonts:
+%%DocumentData: Clean7Bit
+%%LanguageLevel: 3
+%%DocumentMedia: 67x67mm 189 189 0 () ()
+%%BoundingBox: 0 0 189 189
 %%EndComments
+%%BeginProlog
+/languagelevel where
+{ pop languagelevel } { 1 } ifelse
+3 lt { /Helvetica findfont 12 scalefont setfont 50 500 moveto
+  (This print job requires a PostScript Language Level 3 printer.) show
+  showpage quit } if
+/q { gsave } bind def
+/Q { grestore } bind def
+/cm { 6 array astore concat } bind def
+/w { setlinewidth } bind def
+/J { setlinecap } bind def
+/j { setlinejoin } bind def
+/M { setmiterlimit } bind def
+/d { setdash } bind def
+/m { moveto } bind def
+/l { lineto } bind def
+/c { curveto } bind def
+/h { closepath } bind def
+/re { exch dup neg 3 1 roll 5 3 roll moveto 0 rlineto
+      0 exch rlineto 0 rlineto closepath } bind def
+/S { stroke } bind def
+/f { fill } bind def
+/f* { eofill } bind def
+/n { newpath } bind def
+/W { clip } bind def
+/W* { eoclip } bind def
+/BT { } bind def
+/ET { } bind def
+/BDC { mark 3 1 roll /BDC pdfmark } bind def
+/EMC { mark /EMC pdfmark } bind def
+/cairo_store_point { /cairo_point_y exch def /cairo_point_x exch def } def
+/Tj { show currentpoint cairo_store_point } bind def
+/TJ {
+  {
+    dup
+    type /stringtype eq
+    { show } { -0.001 mul 0 cairo_font_matrix dtransform rmoveto } ifelse
+  } forall
+  currentpoint cairo_store_point
+} bind def
+/cairo_selectfont { cairo_font_matrix aload pop pop pop 0 0 6 array astore
+    cairo_font exch selectfont cairo_point_x cairo_point_y moveto } bind def
+/Tf { pop /cairo_font exch def /cairo_font_matrix where
+      { pop cairo_selectfont } if } bind def
+/Td { matrix translate cairo_font_matrix matrix concatmatrix dup
+      /cairo_font_matrix exch def dup 4 get exch 5 get cairo_store_point
+      /cairo_font where { pop cairo_selectfont } if } bind def
+/Tm { 2 copy 8 2 roll 6 array astore /cairo_font_matrix exch def
+      cairo_store_point /cairo_font where { pop cairo_selectfont } if } bind def
+/g { setgray } bind def
+/rg { setrgbcolor } bind def
+/d1 { setcachedevice } bind def
+/cairo_data_source {
+  CairoDataIndex CairoData length lt
+    { CairoData CairoDataIndex get /CairoDataIndex CairoDataIndex 1 add def }
+    { () } ifelse
+} def
+/cairo_flush_ascii85_file { cairo_ascii85_file status { cairo_ascii85_file flushfile } if } def
+/cairo_image { image cairo_flush_ascii85_file } def
+/cairo_imagemask { imagemask cairo_flush_ascii85_file } def
+/cairo_set_page_size {
+  % Change paper size, but only if different from previous paper size otherwise
+  % duplex fails. PLRM specifies a tolerance of 5 pts when matching paper size
+  % so we use the same when checking if the size changes.
+  /setpagedevice where {
+    pop currentpagedevice
+    /PageSize known {
+      2 copy
+      currentpagedevice /PageSize get aload pop
+      exch 4 1 roll
+      sub abs 5 gt
+      3 1 roll
+      sub abs 5 gt
+      or
+    } {
+      true
+    } ifelse
+    {
+      2 array astore
+      2 dict begin
+        /PageSize exch def
+        /ImagingBBox null def
+      currentdict end
+      setpagedevice
+    } {
+      pop pop
+    } ifelse
+  } {
+    pop
+  } ifelse
+} def
 %%EndProlog
-
+%%BeginSetup
+%%EndSetup
 %%Page: 1 1
-
-% remember original state
-/origstate save def
-
-% build a temporary dictionary
-20 dict begin
-
-% define string to hold a scanline's worth of data
-/pix 102 string def
-
-% define space for color conversions
-/grays 34 string def  % space for gray scale line
-/npixls 0 def
-/rgbindx 0 def
-
-% lower left corner
-289 380 translate
-
-% size of image (on paper, in 1/72inch coords)
-33.98400 31.03200 scale
-
-% define 'colorimage' if it isn't defined
-%   ('colortogray' and 'mergeprocs' come from xwd2ps
-%     via xgrab)
-/colorimage where   % do we know about 'colorimage'?
-  { pop }           % yes: pop off the 'dict' returned
-  {                 % no:  define one
-    /colortogray {  % define an RGB->I function
-      /rgbdata exch store    % call input 'rgbdata'
-      rgbdata length 3 idiv
-      /npixls exch store
-      /rgbindx 0 store
-      0 1 npixls 1 sub {
-        grays exch
-        rgbdata rgbindx       get 20 mul    % Red
-        rgbdata rgbindx 1 add get 32 mul    % Green
-        rgbdata rgbindx 2 add get 12 mul    % Blue
-        add add 64 idiv      % I = .5G + .31R + .18B
-        put
-        /rgbindx rgbindx 3 add store
-      } for
-      grays 0 npixls getinterval
-    } bind def
-
-    % Utility procedure for colorimage operator.
-    % This procedure takes two procedures off the
-    % stack and merges them into a single procedure.
-
-    /mergeprocs { % def
-      dup length
-      3 -1 roll
-      dup
-      length
-      dup
-      5 1 roll
-      3 -1 roll
-      add
-      array cvx
-      dup
-      3 -1 roll
-      0 exch
-      putinterval
-      dup
-      4 2 roll
-      putinterval
-    } bind def
-
-    /colorimage { % def
-      pop pop     % remove 'false 3' operands
-      {colortogray} mergeprocs
-      image
-    } bind def
-  } ifelse          % end of 'false' case
-
-
-
-34 31 8			% dimensions of data
-[34 0 0 -31 0 31]		% mapping matrix
-{currentfile pix readhexstring pop}
-false 3 colorimage
-
-fffffffffffffffffffffffffffffffbfbfb848484ffffffffffffffffffffffffffffff
-ffffffffffff868686f9f9f9ffffffffffffffffffffffffffffffffffff919191eeeeee
-ffffffffffffffffffffffffffffffffffff9c9c9ce3e3e3ffffffffffff
-fffffffffffffffffffffffffffffffbfbfb848484ffffffffffffffffffffffffffffff
-ffffffffffff868686f9f9f9ffffffffffffffffffffffffffffffffffff919191eeeeee
-ffffffffffffffffffffffffffffffffffff9c9c9ce3e3e3ffffffffffff
-fffffffffffffffffffffffffffffffbfbfb848484ffffffffffffffffffffffffffffff
-ffffffffffff868686f9f9f9ffffffffffffffffffffffffffffffffffff919191eeeeee
-ffffffffffffffffffffffffffffffffffff9c9c9ce3e3e3ffffffffffff
-fffffffffffffffffffffffffffffffbfbfb848484ffffffffffffffffffffffffffffff
-ffffffffffff868686f9f9f9ffffffffffffffffffffffffffffffffffff919191eeeeee
-ffffffffffffffffffffffffffffffffffff9c9c9ce3e3e3ffffffffffff
-dfdfdfdfdfdfe0dbdbed7c7cf63f3ff25454976d6ddfdfdfdfdfdfdfdfdfdfdfdfdfdfdf
-dfdfdfdfdfdf848484dbdbdbdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdf8d8d8dd2d2d2
-dfdfdfdfdfdfdfdfdfe4b9b9ea9595e99b9b959595cacacadfdfdfdfdfdf
-9f9f9fa29a9ae52a2aff0000ff0000ff0000fa0505b875759f9f9f9f9f9f9f9f9f9f9f9f
-9f9f9f9f9f9f8181819e9e9e9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f8484849b9b9b
-9f9f9f9f9f9f9f9f9fd54646ff0000f70c0c8787879898989f9f9f9f9f9f
-ffffffff6767ff0000ff1919ffa8a8fe5b5bff0000ff1010ffe1e1ffffffffffffffffff
-ffffffffffff868686f9f9f9ffffffffffffffffffffffffffffffffffff919191eeeeee
-ffffffffffffffc9c9ff0505ff0000ff14149c9c9ce3e3e3ffffffffffff
-ffc0c0ff0101ff0808ffd0d0fffffffbfafad92929ff0000ff4c4cffffffffffffffffff
-ffffffffffff868686f9f9f9ffffffffffffffffffffffffffffffffffff919191eeeeee
-fffffffffbfbff2c2cff0000ff6f6fffefef9c9c9ce3e3e3ffffffffffff
-ff3333ff0000ff8383fffffffffffffbfbfb8f7878ff0f0fff0000ffbcbcffffffffffff
-ffffffffffff868686f9f9f9ffffffffffffffffffffffffffffffffffff919191eeeeee
-ffffffff9999ff0000ff2323fff7f7ffffff9c9c9ce3e3e3ffffffffffff
-ff0000ff1b1bfff6f6fffffffffffffbfbfb848484ff8787ff0000ff3a3affffffffffff
-ffffffffffff868686f9f9f9ffffffffffffffffffffffffffffffffffff919191eeeeee
-fff9f9ff1d1dff0000ffaaaaffffffffffff9c9c9ce3e3e3ffffffffffff
-ff0000ff9292fffffffffffffffffffbfbfb848484fff3f3ff1414ff0000ffc1c1ffffff
-ffffffffffff868686f9f9f9ffffffffffffffffffffffffffffffffffff919191eeeeee
-ff9e9eff0000ff2c2cfffefeffffffffffff9c9c9ce3e3e3ffffffffffff
-6b089cccc4f7fffffffffffffffffffbfbfb848484ffffffff7f7fff0000ff4f4fffffff
-ffffffffffff868686f9f9f9ffffffffffffffffffffffffdcdcff7979ff1e1ee91313fe
-1e05e64d00b2a166c4f8f8ffffffffffffff9c9c9ce3e3e3ffffffffffff
-0000ff0000ff5050ffdfdffffffffffbfbfb848484ffffffffe9e9ff0707ff0303ffdede
-ffffffffffff868686f9f9f9ffffffffffffededff6666ff0404ff0000ff0000ff0000ff
-0000ff0000ff0000ff1e1eff7575ff8282ff9c9c9ce3e3e3ffffffffffff
-7367f30d0dff0000ff0c0cff9999fffbfbfb848484ffffffffffffff5f5fff0000ff7676
-ffffffffffff868686f9f9f9ffffffb6b6ff1919ff0000ff0505ff6161ff6b6bade4465c
-dc00239a4eb32e2eff0000ff0000ff1414ff9c9c9ce3e3e3ffffffffffff
-bfbfbfadadc54141e90000ff0000ff3d3dea79798bbfbfbfbfbfbfcd9797ff0000fa0e0e
-c1b9b9bfbfbf838383b7b7be5353e30101ff0000ff2e2ef0a2a2c9bfbfbf957979fe0303
-fe0404c5adadbdbdbf5555e31919f62626f28e8e8eb1b1b1bfbfbfbfbfbf
-bfbfbfbfbfbfbfbfbf7c7cd50b0bfb0000ff0d0df28383d3bfbfbfbfbfbff22727ff0000
-d77979bfbfbf66669e2020f40000ff0404fe6666ddbdbdbfbfbfbfbfbfbfc54343ff0000
-e94141bfbfbfbfbfbfbfbfbfbfbfbfbfbfbf8e8e8eb1b1b1bfbfbfbfbfbf
-ffffffffffffffffffffffffdedeff3b3bfe0000ff0000ff3e3effa6a6ffe18caae60019
-b226735151ff0101ff0000ff2727ffcacafffffffffffffffffffffff9f9f50e0eff0000
-ffc1c1ffffffffffffffffffffffffffffff9c9c9ce3e3e3ffffffffffff
-fffffffffffffffffffffffffffffff9f9fb4d4db81313ff0000ff0000ff0000ff0000ff
-0000ff0000ff0505fb7878fcf6f6ffffffffffffffffffffffffffffa4a4ff0000fc2b2b
-ffffffffffffffffffffffffffffffffffff9c9c9ce3e3e3ffffffffffff
-fffffffffffffffffffffffffffffffbfbfb848484f2f2ff9393ff4646ff1919ff170bf3
-3b00c4842da8797991f9f9f9ffffffffffffffffffffffffffffffff3333ff0000f59292
-ffffffffffffffffffffffffffffffffffff9c9c9ce3e3e3ffffffffffff
-fffffffffffffffffffffffffffffffbfbfb848484ffffffffffffffffffffffffffe5e5
-ff0606ff0303977373f9f9f9ffffffffffffffffffffffffffbbbbff0000f50d0defe7e7
-ffffffffffffffffffffffffffffffffffff9c9c9ce3e3e3ffffffffffff
-fffffffffffffffffffffffffffffffbfbfb848484ffffffffffffffffffffffffffffff
-ff6464ff0000d23232f9f9f9ffffffffffffffffffffffffff3b3bff0000c54c4ceeeeee
-ffffffffffffffffffffffffffffffffffff9c9c9ce3e3e3ffffffffffff
-fffffffffffffffffffffffffffffffbfbfb848484ffffffffffffffffffffffffffffff
-ffdedeff0707fe0101fac7c7ffffffffffffffffffffababff0000ff1515978a8aeeeeee
-ffffffffffffffffffffffffffffffffffff9c9c9ce3e3e3ffffffffffff
-fffffffffffffffffffffffffffffffbfbfb848484ffffffffffffffffffffffffffffff
-ffffffff7474ff0000fe2d2dfff6f6ffffffffe8e8ff1919ff0000ff9797919191eeeeee
-ffffffffffffffffffffffffffffffffffff9c9c9ce3e3e3ffffffffffff
-fffffffffffffffffffffffffffffffbfbfb848484ffffffffffffffffffffffffffffff
-fffffffff4f4ed1414ff0000ff4242ffafafff2d2dff0000ff4040fffdfd919191eeeeee
-ffffffffffffffffffffffffffffffffffff9c9c9ce3e3e3ffffffffffff
-9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9e9e9e8181819f9f9f9f9f9f9f9f9f9f9f9f9f9f9f
-9f9f9f9f9f9f956d6df60f0fff0000ff0000ff0000ef1a1aa791919f9f9f8484849b9b9b
-9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f9f8787879898989f9f9f9f9f9f
-dfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdcdcdc838383dfdfdfdfdfdfdfdfdfdfdfdfdfdfdf
-dfdfdfdfdfdf848484dfc6c6f16161f63c3cef6c6ce1d3d3dfdfdfdfdfdf8d8d8dd2d2d2
-dfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdfdf959595cacacadfdfdfdfdfdf
-fffffffffffffffffffffffffffffffbfbfb848484ffffffffffffffffffffffffffffff
-ffffffffffff868686f9f9f9ffffffffffffffffffffffffffffffffffff919191eeeeee
-ffffffffffffffffffffffffffffffffffff9c9c9ce3e3e3ffffffffffff
-fffffffffffffffffffffffffffffffbfbfb848484ffffffffffffffffffffffffffffff
-ffffffffffff868686f9f9f9ffffffffffffffffffffffffffffffffffff919191eeeeee
-ffffffffffffffffffffffffffffffffffff9c9c9ce3e3e3ffffffffffff
-fffffffffffffffffffffffffffffffbfbfb848484ffffffffffffffffffffffffffffff
-ffffffffffff868686f9f9f9ffffffffffffffffffffffffffffffffffff919191eeeeee
-ffffffffffffffffffffffffffffffffffff9c9c9ce3e3e3ffffffffffff
-fffffffffffffffffffffffffffffffbfbfb848484ffffffffffffffffffffffffffffff
-ffffffffffff868686f9f9f9ffffffffffffffffffffffffffffffffffff919191eeeeee
-ffffffffffffffffffffffffffffffffffff9c9c9ce3e3e3ffffffffffff
-fffffffffffffffffffffffffffffffbfbfb848484ffffffffffffffffffffffffffffff
-ffffffffffff868686f9f9f9ffffffffffffffffffffffffffffffffffff919191eeeeee
-ffffffffffffffffffffffffffffffffffff9c9c9ce3e3e3ffffffffffff
-
+%%BeginPageSetup
+%%PageMedia: 67x67mm
+%%PageBoundingBox: 0 0 189 189
+189 189 cairo_set_page_size
+%%EndPageSetup
+q 0 0 189 189 rectclip
+1 0 0 -1 0 189 cm q
+0 g
+12.613 174.984 m 5.188 185.719 l 12.313 188.031 l f
+175.512 174.984 m 175.813 188.031 l 182.938 185.719 l f
+1 0 0 rg
+13.238 175.777 m 0.922 180.094 l 5.328 186.156 l f
+13.238 10.473 m 5.328 0.094 l 0.922 6.156 l f
+0 0.6 0 rg
+174.887 175.777 m 182.797 186.156 l 187.203 180.094 l f
+174.887 10.473 m 187.203 6.156 l 182.797 0.094 l f
+0 g
+13.75 95 m 1.25 91.25 l 1.25 98.75 l f
+1 0 0 rg
+176.25 95 m 188.75 98.75 l 188.75 91.25 l f
+0 g
+63.75 176.25 m 60 188.75 l 67.5 188.75 l f
+1 0 0 rg
+126.25 176.25 m 122.5 188.75 l 130 188.75 l f
+Q q
+13.75 1.25 162.5 175 re W n
+0 g
+1.25 w
+0 J
+0 j
+[] 0.0 d
+10 M q 1 0 0 1 0 0 cm
+13.75 1.25 162.5 175 re S Q
+Q q
+24 169 2 7.25 re W n
+0 g
+1.25 w
+0 J
+0 j
+[] 0.0 d
+10 M q 1 0 0 1 0 0 cm
+25.355 176.25 m 25.355 169.25 l S Q
+Q q
+0 g
+25.602 166.168 1.543 0.5 re f
+30.059 168.199 m 28.078 168.199 l 28.078 167.785 l 28.813 167.785 l 28.813
+ 165.055 l 28.078 165.055 l 28.078 164.684 l 28.352 164.684 28.555 164.645
+ 28.688 164.566 c 28.82 164.488 28.891 164.34 28.91 164.113 c 29.336 164.113
+ l 29.336 167.785 l 30.059 167.785 l h
+30.059 168.199 m f
+Q q
+53.75 169 1.25 7.25 re W n
+0 g
+1.25 w
+0 J
+0 j
+[] 0.0 d
+10 M q 1 0 0 1 0 0 cm
+54.375 176.25 m 54.375 169.25 l S Q
+Q q
+0 g
+54.617 166.168 1.547 0.5 re f
+59.309 166.164 m 59.301 166.898 59.195 167.434 58.984 167.77 c 58.77 168.113
+ 58.441 168.277 58.004 168.285 c 57.551 168.277 57.219 168.109 57.012 167.762
+ c 56.797 167.414 56.695 166.887 56.699 166.168 c 56.695 165.438 56.801 
+164.898 57.016 164.559 c 57.23 164.223 57.559 164.051 58.004 164.047 c 58.449
+ 164.051 58.773 164.227 58.988 164.578 c 59.195 164.934 59.301 165.461 59.309
+ 166.164 c h
+58.605 167.406 m 58.652 167.273 58.691 167.102 58.715 166.898 c 58.734 
+166.691 58.746 166.449 58.75 166.164 c 58.746 165.887 58.734 165.648 58.715
+ 165.438 c 58.691 165.238 58.652 165.066 58.605 164.926 c 58.547 164.789
+ 58.469 164.68 58.375 164.605 c 58.277 164.539 58.156 164.504 58.004 164.5
+ c 57.852 164.504 57.73 164.539 57.633 164.605 c 57.535 164.68 57.457 164.789
+ 57.398 164.93 c 57.34 165.07 57.301 165.246 57.285 165.453 c 57.262 165.668
+ 57.25 165.906 57.258 166.168 c 57.25 166.457 57.262 166.691 57.281 166.883
+ c 57.301 167.078 57.34 167.25 57.398 167.395 c 57.445 167.535 57.52 167.648
+ 57.621 167.723 c 57.715 167.801 57.844 167.836 58.004 167.836 c 58.156 
+167.836 58.277 167.801 58.375 167.727 c 58.469 167.66 58.547 167.551 58.605
+ 167.406 c h
+58.605 167.406 m f
+60.141 167.418 0.656 0.781 re f
+64.141 166.906 m 64.133 167.105 64.105 167.289 64.047 167.453 c 63.984 
+167.621 63.895 167.766 63.781 167.887 c 63.664 168.016 63.523 168.113 63.352
+ 168.18 c 63.18 168.25 62.992 168.277 62.781 168.285 c 62.586 168.277 62.391
+ 168.258 62.203 168.219 c 62.008 168.176 61.848 168.121 61.711 168.055 c
+ 61.711 167.477 l 61.75 167.477 l 61.789 167.512 61.852 167.547 61.93 167.582
+ c 62.008 167.625 62.094 167.664 62.191 167.691 c 62.293 167.738 62.391 
+167.766 62.484 167.781 c 62.57 167.805 62.672 167.816 62.789 167.809 c 62.895
+ 167.816 63 167.797 63.109 167.75 c 63.211 167.719 63.297 167.652 63.375
+ 167.566 c 63.441 167.488 63.492 167.395 63.527 167.281 c 63.563 167.18 
+63.578 167.055 63.582 166.902 c 63.578 166.766 63.559 166.648 63.523 166.551
+ c 63.48 166.461 63.426 166.383 63.352 166.316 c 63.273 166.254 63.176 166.203
+ 63.063 166.176 c 62.945 166.148 62.82 166.137 62.684 166.129 c 62.531 166.137
+ 62.387 166.145 62.238 166.164 c 62.086 166.188 61.965 166.215 61.883 166.227
+ c 61.883 164.129 l 64.113 164.129 l 64.113 164.605 l 62.41 164.605 l 62.41
+ 165.691 l 62.469 165.688 62.531 165.68 62.602 165.676 c 62.66 165.672 62.719
+ 165.668 62.777 165.668 c 62.98 165.668 63.156 165.688 63.305 165.719 c 
+63.445 165.758 63.586 165.828 63.719 165.926 c 63.855 166.027 63.957 166.156
+ 64.031 166.305 c 64.102 166.461 64.133 166.664 64.141 166.906 c h
+64.141 166.906 m f
+Q q
+82.5 169 2.5 7.25 re W n
+0 g
+1.25 w
+0 J
+0 j
+[] 0.0 d
+10 M q 1 0 0 1 0 0 cm
+83.395 176.25 m 83.395 169.25 l S Q
+Q q
+0 g
+86.227 166.164 m 86.219 166.898 86.113 167.434 85.902 167.77 c 85.688 168.113
+ 85.359 168.277 84.922 168.285 c 84.469 168.277 84.137 168.109 83.93 167.762
+ c 83.715 167.414 83.613 166.887 83.617 166.168 c 83.613 165.438 83.719 
+164.898 83.938 164.559 c 84.148 164.223 84.477 164.051 84.922 164.047 c 
+85.367 164.051 85.695 164.227 85.906 164.578 c 86.113 164.934 86.219 165.461
+ 86.227 166.164 c h
+85.523 167.406 m 85.57 167.273 85.609 167.102 85.633 166.898 c 85.656 166.691
+ 85.664 166.449 85.668 166.164 c 85.664 165.887 85.656 165.648 85.633 165.438
+ c 85.609 165.238 85.57 165.066 85.523 164.926 c 85.465 164.789 85.387 164.68
+ 85.293 164.605 c 85.195 164.539 85.074 164.504 84.922 164.5 c 84.77 164.504
+ 84.648 164.539 84.551 164.605 c 84.453 164.68 84.375 164.789 84.316 164.93
+ c 84.258 165.07 84.219 165.246 84.203 165.453 c 84.18 165.668 84.172 165.906
+ 84.176 166.168 c 84.172 166.457 84.18 166.691 84.199 166.883 c 84.219 167.078
+ 84.258 167.25 84.316 167.395 c 84.367 167.535 84.438 167.648 84.539 167.723
+ c 84.633 167.801 84.762 167.836 84.922 167.836 c 85.074 167.836 85.195 
+167.801 85.293 167.727 c 85.387 167.66 85.465 167.551 85.523 167.406 c h
+85.523 167.406 m f
+Q q
+111.25 169 2.5 7.25 re W n
+0 g
+1.25 w
+0 J
+0 j
+[] 0.0 d
+10 M q 1 0 0 1 0 0 cm
+112.414 176.25 m 112.414 169.25 l S Q
+Q q
+0 g
+115.242 166.164 m 115.238 166.898 115.133 167.434 114.922 167.77 c 114.707
+ 168.113 114.379 168.277 113.941 168.285 c 113.484 168.277 113.156 168.109
+ 112.949 167.762 c 112.734 167.414 112.633 166.887 112.637 166.168 c 112.633
+ 165.438 112.738 164.898 112.953 164.559 c 113.168 164.223 113.496 164.051
+ 113.941 164.047 c 114.383 164.051 114.711 164.227 114.926 164.578 c 115.133
+ 164.934 115.238 165.461 115.242 166.164 c h
+114.539 167.406 m 114.59 167.273 114.629 167.102 114.652 166.898 c 114.672
+ 166.691 114.684 166.449 114.688 166.164 c 114.684 165.887 114.672 165.648
+ 114.652 165.438 c 114.629 165.238 114.59 165.066 114.539 164.926 c 114.484
+ 164.789 114.406 164.68 114.313 164.605 c 114.215 164.539 114.094 164.504
+ 113.941 164.5 c 113.789 164.504 113.668 164.539 113.57 164.605 c 113.473
+ 164.68 113.395 164.789 113.336 164.93 c 113.277 165.07 113.238 165.246 
+113.223 165.453 c 113.199 165.668 113.188 165.906 113.195 166.168 c 113.188
+ 166.457 113.199 166.691 113.219 166.883 c 113.238 167.078 113.277 167.25
+ 113.336 167.395 c 113.383 167.535 113.457 167.648 113.559 167.723 c 113.652
+ 167.801 113.781 167.836 113.941 167.836 c 114.094 167.836 114.215 167.801
+ 114.313 167.727 c 114.406 167.66 114.484 167.551 114.539 167.406 c h
+114.539 167.406 m f
+116.078 167.418 0.656 0.781 re f
+120.074 166.906 m 120.07 167.105 120.043 167.289 119.984 167.453 c 119.918
+ 167.621 119.832 167.766 119.719 167.887 c 119.602 168.016 119.461 168.113
+ 119.289 168.18 c 119.117 168.25 118.93 168.277 118.719 168.285 c 118.523
+ 168.277 118.328 168.258 118.141 168.219 c 117.945 168.176 117.785 168.121
+ 117.648 168.055 c 117.648 167.477 l 117.688 167.477 l 117.727 167.512 117.789
+ 167.547 117.867 167.582 c 117.945 167.625 118.031 167.664 118.129 167.691
+ c 118.23 167.738 118.328 167.766 118.422 167.781 c 118.508 167.805 118.609
+ 167.816 118.727 167.809 c 118.832 167.816 118.938 167.797 119.047 167.75
+ c 119.148 167.719 119.234 167.652 119.313 167.566 c 119.379 167.488 119.43
+ 167.395 119.465 167.281 c 119.5 167.18 119.516 167.055 119.52 166.902 c
+ 119.516 166.766 119.496 166.648 119.461 166.551 c 119.418 166.461 119.363
+ 166.383 119.289 166.316 c 119.211 166.254 119.113 166.203 119 166.176 c
+ 118.883 166.148 118.758 166.137 118.621 166.129 c 118.469 166.137 118.324
+ 166.145 118.176 166.164 c 118.023 166.188 117.902 166.215 117.82 166.227
+ c 117.82 164.129 l 120.051 164.129 l 120.051 164.605 l 118.348 164.605 
+l 118.348 165.691 l 118.406 165.688 118.469 165.68 118.539 165.676 c 118.598
+ 165.672 118.656 165.668 118.715 165.668 c 118.918 165.668 119.094 165.688
+ 119.242 165.719 c 119.383 165.758 119.523 165.828 119.656 165.926 c 119.793
+ 166.027 119.895 166.156 119.969 166.305 c 120.035 166.461 120.07 166.664
+ 120.074 166.906 c h
+120.074 166.906 m f
+Q q
+140 169 2.5 7.25 re W n
+0 g
+1.25 w
+0 J
+0 j
+[] 0.0 d
+10 M q 1 0 0 1 0 0 cm
+141.43 176.25 m 141.43 169.25 l S Q
+Q q
+0 g
+144.031 168.199 m 142.051 168.199 l 142.051 167.785 l 142.789 167.785 l
+ 142.789 165.055 l 142.051 165.055 l 142.051 164.684 l 142.324 164.684 142.531
+ 164.645 142.66 164.566 c 142.793 164.488 142.867 164.34 142.887 164.113
+ c 143.313 164.113 l 143.313 167.785 l 144.031 167.785 l h
+144.031 168.199 m f
+Q q
+169 169 2.25 7.25 re W n
+0 g
+1.25 w
+0 J
+0 j
+[] 0.0 d
+10 M q 1 0 0 1 0 0 cm
+170.445 176.25 m 170.445 169.25 l S Q
+Q q
+171 164 3 4.75 re W n
+0 g
+173.047 168.199 m 171.063 168.199 l 171.063 167.785 l 171.801 167.785 l
+ 171.801 165.055 l 171.063 165.055 l 171.063 164.684 l 171.336 164.684 171.543
+ 164.645 171.676 164.566 c 171.805 164.488 171.879 164.34 171.898 164.113
+ c 172.324 164.113 l 172.324 167.785 l 173.047 167.785 l h
+173.047 168.199 m f
+Q q
+174 167 1 1.75 re W n
+0 g
+174.113 167.418 0.652 0.781 re f
+Q q
+175 164 1.25 4.75 re W n
+0 g
+178.109 166.906 m 178.102 167.105 178.074 167.289 178.016 167.453 c 177.953
+ 167.621 177.863 167.766 177.75 167.887 c 177.633 168.016 177.492 168.113
+ 177.32 168.18 c 177.152 168.25 176.961 168.277 176.75 168.285 c 176.555
+ 168.277 176.359 168.258 176.176 168.219 c 175.98 168.176 175.816 168.121
+ 175.68 168.055 c 175.68 167.477 l 175.719 167.477 l 175.758 167.512 175.824
+ 167.547 175.902 167.582 c 175.98 167.625 176.063 167.664 176.16 167.691
+ c 176.262 167.738 176.359 167.766 176.453 167.781 c 176.539 167.805 176.645
+ 167.816 176.762 167.809 c 176.863 167.816 176.969 167.797 177.078 167.75
+ c 177.18 167.719 177.27 167.652 177.348 167.566 c 177.41 167.488 177.465
+ 167.395 177.496 167.281 c 177.531 167.18 177.547 167.055 177.551 166.902
+ c 177.547 166.766 177.527 166.648 177.492 166.551 c 177.449 166.461 177.395
+ 166.383 177.32 166.316 c 177.242 166.254 177.145 166.203 177.035 166.176
+ c 176.918 166.148 176.789 166.137 176.652 166.129 c 176.5 166.137 176.355
+ 166.145 176.207 166.164 c 176.059 166.188 175.934 166.215 175.852 166.227
+ c 175.852 164.129 l 178.082 164.129 l 178.082 164.605 l 176.379 164.605
+ l 176.379 165.691 l 176.438 165.688 176.5 165.68 176.57 165.676 c 176.629
+ 165.672 176.688 165.668 176.746 165.668 c 176.949 165.668 177.125 165.688
+ 177.273 165.719 c 177.414 165.758 177.555 165.828 177.688 165.926 c 177.824
+ 166.027 177.926 166.156 178 166.305 c 178.07 166.461 178.102 166.664 178.109
+ 166.906 c h
+178.109 166.906 m f
+Q q
+13.75 161 7.25 1.5 re W n
+0 g
+1.25 w
+0 J
+0 j
+[] 0.0 d
+10 M q 1 0 0 1 0 0 cm
+13.75 161.664 m 20.25 161.664 l S Q
+Q q
+0 g
+13.992 165.582 1.547 0.5 re f
+18.453 167.613 m 16.469 167.613 l 16.469 167.199 l 17.207 167.199 l 17.207
+ 164.469 l 16.469 164.469 l 16.469 164.098 l 16.742 164.098 16.949 164.059
+ 17.082 163.98 c 17.211 163.902 17.285 163.754 17.305 163.527 c 17.73 163.527
+ l 17.73 167.199 l 18.453 167.199 l h
+18.453 167.613 m f
+Q q
+13.75 124 7.25 2 re W n
+0 g
+1.25 w
+0 J
+0 j
+[] 0.0 d
+10 M q 1 0 0 1 0 0 cm
+13.75 125.211 m 20.25 125.211 l S Q
+Q q
+0 g
+13.992 129.129 1.547 0.496 re f
+18.684 129.125 m 18.676 129.855 18.57 130.395 18.359 130.73 c 18.145 131.07
+ 17.816 131.238 17.379 131.242 c 16.926 131.238 16.594 131.066 16.387 130.719
+ c 16.172 130.375 16.07 129.848 16.074 129.129 c 16.07 128.395 16.176 127.859
+ 16.391 127.516 c 16.605 127.18 16.934 127.008 17.379 127.004 c 17.824 127.008
+ 18.148 127.184 18.363 127.535 c 18.57 127.895 18.676 128.422 18.684 129.125
+ c h
+17.98 130.363 m 18.027 130.23 18.066 130.063 18.09 129.855 c 18.109 129.652
+ 18.121 129.406 18.125 129.125 c 18.121 128.844 18.109 128.605 18.09 128.395
+ c 18.066 128.195 18.027 128.023 17.98 127.883 c 17.922 127.746 17.844 127.641
+ 17.75 127.566 c 17.652 127.496 17.531 127.465 17.379 127.457 c 17.227 127.465
+ 17.105 127.496 17.008 127.566 c 16.91 127.641 16.832 127.746 16.773 127.887
+ c 16.715 128.031 16.676 128.207 16.66 128.41 c 16.637 128.625 16.625 128.863
+ 16.633 129.129 c 16.625 129.418 16.637 129.652 16.656 129.84 c 16.676 130.035
+ 16.715 130.207 16.773 130.355 c 16.82 130.496 16.895 130.609 16.996 130.68
+ c 17.09 130.758 17.219 130.793 17.379 130.793 c 17.531 130.793 17.652 130.758
+ 17.75 130.688 c 17.844 130.617 17.922 130.512 17.98 130.363 c h
+17.98 130.363 m f
+19.516 130.379 0.656 0.781 re f
+23.516 129.867 m 23.508 130.066 23.48 130.246 23.422 130.414 c 23.359 130.578
+ 23.27 130.727 23.156 130.848 c 23.039 130.973 22.898 131.07 22.727 131.141
+ c 22.555 131.207 22.367 131.238 22.156 131.242 c 21.961 131.238 21.766 
+131.219 21.578 131.18 c 21.383 131.137 21.223 131.082 21.086 131.012 c 21.086
+ 130.438 l 21.125 130.438 l 21.164 130.473 21.227 130.504 21.305 130.539
+ c 21.383 130.582 21.469 130.621 21.566 130.652 c 21.668 130.695 21.766 
+130.727 21.859 130.738 c 21.945 130.766 22.047 130.773 22.164 130.77 c 22.27
+ 130.773 22.375 130.754 22.484 130.711 c 22.586 130.676 22.672 130.613 22.75
+ 130.523 c 22.816 130.445 22.867 130.355 22.902 130.242 c 22.938 130.141
+ 22.953 130.012 22.957 129.859 c 22.953 129.723 22.934 129.605 22.898 129.508
+ c 22.855 129.422 22.801 129.344 22.727 129.273 c 22.648 129.211 22.551 
+129.164 22.438 129.133 c 22.32 129.109 22.195 129.094 22.059 129.09 c 21.906
+ 129.094 21.762 129.105 21.613 129.125 c 21.461 129.148 21.34 129.172 21.258
+ 129.188 c 21.258 127.086 l 23.488 127.086 l 23.488 127.566 l 21.785 127.566
+ l 21.785 128.648 l 21.844 128.645 21.906 128.641 21.977 128.637 c 22.035
+ 128.629 22.094 128.625 22.152 128.625 c 22.355 128.625 22.531 128.645 22.68
+ 128.68 c 22.82 128.719 22.961 128.785 23.094 128.883 c 23.23 128.988 23.332
+ 129.113 23.406 129.266 c 23.477 129.422 23.508 129.621 23.516 129.867 c
+ h
+23.516 129.867 m f
+Q q
+13.75 88 7.25 2 re W n
+0 g
+1.25 w
+0 J
+0 j
+[] 0.0 d
+10 M q 1 0 0 1 0 0 cm
+13.75 88.75 m 20.25 88.75 l S Q
+Q q
+0 g
+16.582 92.664 m 16.578 93.395 16.469 93.934 16.258 94.27 c 16.047 94.613
+ 15.719 94.777 15.277 94.781 c 14.824 94.777 14.492 94.605 14.289 94.262
+ c 14.07 93.914 13.969 93.387 13.977 92.668 c 13.969 91.938 14.078 91.398
+ 14.293 91.059 c 14.508 90.719 14.836 90.551 15.277 90.543 c 15.723 90.551
+ 16.051 90.727 16.266 91.078 c 16.469 91.434 16.578 91.961 16.582 92.664
+ c h
+15.879 93.902 m 15.93 93.773 15.969 93.602 15.992 93.395 c 16.012 93.191
+ 16.02 92.945 16.023 92.664 c 16.02 92.387 16.012 92.145 15.992 91.938 c
+ 15.969 91.734 15.93 91.566 15.879 91.422 c 15.82 91.285 15.742 91.18 15.648
+ 91.105 c 15.551 91.039 15.43 91.004 15.277 91 c 15.125 91.004 15.004 91.039
+ 14.906 91.105 c 14.809 91.18 14.73 91.285 14.672 91.43 c 14.613 91.57 14.574
+ 91.746 14.563 91.949 c 14.535 92.164 14.527 92.406 14.531 92.668 c 14.527
+ 92.957 14.535 93.191 14.555 93.383 c 14.574 93.578 14.613 93.746 14.672
+ 93.895 c 14.723 94.035 14.797 94.148 14.898 94.223 c 14.992 94.301 15.117
+ 94.332 15.277 94.332 c 15.43 94.332 15.551 94.301 15.648 94.227 c 15.742
+ 94.156 15.82 94.051 15.879 93.902 c h
+15.879 93.902 m f
+Q q
+13.75 51.25 7.25 1.75 re W n
+0 g
+1.25 w
+0 J
+0 j
+[] 0.0 d
+10 M q 1 0 0 1 0 0 cm
+13.75 52.289 m 20.25 52.289 l S Q
+Q q
+0 g
+16.582 56.203 m 16.578 56.938 16.469 57.473 16.258 57.809 c 16.047 58.152
+ 15.719 58.316 15.277 58.324 c 14.824 58.316 14.492 58.148 14.289 57.801
+ c 14.07 57.453 13.969 56.926 13.977 56.207 c 13.969 55.477 14.078 54.938
+ 14.293 54.598 c 14.508 54.262 14.836 54.09 15.277 54.086 c 15.723 54.09
+ 16.051 54.266 16.266 54.617 c 16.469 54.973 16.578 55.5 16.582 56.203 c
+ h
+15.879 57.445 m 15.93 57.313 15.969 57.141 15.992 56.938 c 16.012 56.73
+ 16.02 56.488 16.023 56.203 c 16.02 55.926 16.012 55.688 15.992 55.477 c
+ 15.969 55.277 15.93 55.105 15.879 54.965 c 15.82 54.828 15.742 54.719 15.648
+ 54.645 c 15.551 54.578 15.43 54.543 15.277 54.539 c 15.125 54.543 15.004
+ 54.578 14.906 54.645 c 14.809 54.719 14.73 54.828 14.672 54.969 c 14.613
+ 55.109 14.574 55.285 14.563 55.492 c 14.535 55.707 14.527 55.945 14.531
+ 56.207 c 14.527 56.496 14.535 56.73 14.555 56.922 c 14.574 57.117 14.613
+ 57.289 14.672 57.434 c 14.723 57.574 14.797 57.688 14.898 57.762 c 14.992
+ 57.84 15.117 57.875 15.277 57.875 c 15.43 57.875 15.551 57.84 15.648 57.766
+ c 15.742 57.699 15.82 57.59 15.879 57.445 c h
+15.879 57.445 m f
+17.418 57.457 0.652 0.781 re f
+21.414 56.945 m 21.41 57.145 21.379 57.328 21.32 57.492 c 21.258 57.66 
+21.168 57.805 21.059 57.926 c 20.941 58.055 20.797 58.152 20.629 58.219 
+c 20.457 58.289 20.266 58.316 20.055 58.324 c 19.859 58.316 19.664 58.297
+ 19.48 58.258 c 19.285 58.215 19.125 58.16 18.988 58.094 c 18.988 57.516
+ l 19.027 57.516 l 19.066 57.551 19.129 57.586 19.207 57.621 c 19.285 57.664
+ 19.367 57.703 19.465 57.73 c 19.566 57.777 19.664 57.805 19.758 57.82 c
+ 19.848 57.844 19.949 57.855 20.066 57.848 c 20.168 57.855 20.277 57.836
+ 20.383 57.789 c 20.484 57.758 20.574 57.691 20.652 57.605 c 20.715 57.527
+ 20.77 57.434 20.805 57.32 c 20.836 57.219 20.852 57.094 20.855 56.941 c
+ 20.852 56.805 20.832 56.688 20.797 56.59 c 20.754 56.5 20.699 56.422 20.629
+ 56.355 c 20.551 56.293 20.453 56.242 20.34 56.215 c 20.223 56.188 20.094
+ 56.176 19.957 56.168 c 19.809 56.176 19.66 56.184 19.516 56.203 c 19.363
+ 56.227 19.242 56.254 19.156 56.266 c 19.156 54.168 l 21.391 54.168 l 21.391
+ 54.645 l 19.684 54.645 l 19.684 55.73 l 19.742 55.727 19.809 55.719 19.875
+ 55.715 c 19.934 55.711 19.992 55.707 20.051 55.707 c 20.258 55.707 20.434
+ 55.727 20.578 55.758 c 20.719 55.797 20.863 55.867 20.992 55.965 c 21.129
+ 56.066 21.234 56.195 21.305 56.344 c 21.375 56.5 21.41 56.703 21.414 56.945
+ c h
+21.414 56.945 m f
+Q q
+13.75 15 7.25 2 re W n
+0 g
+1.25 w
+0 J
+0 j
+[] 0.0 d
+10 M q 1 0 0 1 0 0 cm
+13.75 15.836 m 20.25 15.836 l S Q
+Q q
+0 g
+16.352 21.785 m 14.371 21.785 l 14.371 21.371 l 15.109 21.371 l 15.109 
+18.641 l 14.371 18.641 l 14.371 18.27 l 14.645 18.27 14.848 18.23 14.98 
+18.152 c 15.113 18.074 15.188 17.922 15.203 17.699 c 15.629 17.699 l 15.629
+ 21.371 l 16.352 21.371 l h
+16.352 21.785 m f
+Q q
+24 1 2 14 re W n
+q
+24 1 2 14 re W n
+% Fallback Image: x=24 y=1 w=2 h=14 res=300ppi size=1593
+[ 2.16 0 0 -14.16 24 15.16 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 9
+  /Height 59
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 9 0 0 -59 0 59 ]
+>>
+cairo_image
+ Gb"[2*sr,S"W^m"5_4K;_:enqKL/$n1UDTS)CTrC57kIFAW-`r!2QL![K~>
+Q
+Q q
+53 1 2 14 re W n
+q
+53 1 2 14 re W n
+% Fallback Image: x=53 y=1 w=2 h=14 res=300ppi size=1593
+[ 2.16 0 0 -14.16 53 15.16 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 9
+  /Height 59
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 9 0 0 -59 0 59 ]
+>>
+cairo_image
+ Gb"[2*sr,S"g)']5`L>G_:SboUd@F9e$=KH%Oc[M57fptAW-`r!3=\X[K~>
+Q
+Q q
+82 1 3 14 re W n
+q
+82 1 3 14 re W n
+% Fallback Image: x=82 y=1 w=3 h=14 res=300ppi size=2301
+[ 3.12 0 0 -14.16 82 15.16 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 13
+  /Height 59
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 13 0 0 -59 0 59 ]
+>>
+cairo_image
+ Gb"[2*si2[$C\I+JI[bbaM>TairB4>5R'ShBP:!R&0q5nTg4m0pB/5pW4#RK-te?V!'#FmZ
+ N~>
+Q
+Q q
+111 1 3 14 re W n
+q
+111 1 3 14 re W n
+% Fallback Image: x=111 y=1 w=3 h=14 res=300ppi size=2301
+[ 3.12 0 0 -14.16 111 15.16 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 13
+  /Height 59
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 13 0 0 -59 0 59 ]
+>>
+cairo_image
+ Gb"[2*si2[$L5/'JJ!teaM>TaiW'+M5R'ShBP:ij&0q>qTg4mPp&i,gW4#RK-te?V!:qG#H
+ i~>
+Q
+Q q
+140 1 3 14 re W n
+q
+140 1 3 14 re W n
+% Fallback Image: x=140 y=1 w=3 h=14 res=300ppi size=2301
+[ 3.12 0 0 -14.16 140 15.16 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 13
+  /Height 59
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 13 0 0 -59 0 59 ]
+>>
+cairo_image
+ Gb"[2*si2[$>R-RJH_,YaM>S6k5YVh5R'ShBP;c/&>T@FTg4kRpB/58W4#RK-te?V!)0qg[
+ /~>
+Q
+Q q
+169 1 3 14 re W n
+q
+169 1 3 14 re W n
+% Fallback Image: x=169 y=1 w=3 h=14 res=300ppi size=2301
+[ 3.12 0 0 -14.16 169 15.16 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 13
+  /Height 59
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 13 0 0 -59 0 59 ]
+>>
+cairo_image
+ Gb"[2*si2[$ECT;JLus,aM>S6mJmB%5R'ShBP:'T&>TCGTg4mhpB/6'W4#RK-te?V!!'KnH
+ i~>
+Q
+Q q
+13 15 164 2 re W n
+q
+13 15 164 2 re W n
+% Fallback Image: x=13 y=15 w=164 h=2 res=300ppi size=18468
+[ 164.16 0 0 -2.16 13 17.16 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 684
+  /Height 9
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 684 0 0 -9 0 9 ]
+>>
+cairo_image
+ Gb"0RYmQ(Z'ZP,ohkOL%#jhMAH@mDFRNnQ2'P_;rBlIpG!hhq1Mhi>8[!>M%R%MRt:N8XK6
+ f3!N;K]ShUi_T[74tFo9CL*o%1e4&hsp2m@D!O$aRq'6pB7\lqpr2;MJG2N%D64hO)hXTl-
+ 1)Pi8GQk90><_[uYaH$,QIF?[cL:L\cG[3,R?K6*aKmZIOQK<aj*N$RT)3-!MsgC_^"M<ok
+ >E1O04UQ2_=jZWbM](D$IYrkZ?q0`8r.&]5\QHm.+^].,(N>lf<uGba/?QIYs4P-&=C>D8?
+ KeM#[]jYd~>
+Q
+Q q
+24 17 2 34 re W n
+q
+24 17 2 34 re W n
+% Fallback Image: x=24 y=17 w=2 h=34 res=300ppi size=3834
+[ 2.16 0 0 -34.08 24 51.08 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 9
+  /Height 142
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 9 0 0 -142 0 142 ]
+>>
+cairo_image
+ Gb"[2s8S5[5k*q9-tAJrar"]K,R+7^cTh:~>
+Q
+Q q
+53 17 2 34 re W n
+q
+53 17 2 34 re W n
+% Fallback Image: x=53 y=17 w=2 h=34 res=300ppi size=3834
+[ 2.16 0 0 -34.08 53 51.08 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 9
+  /Height 142
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 9 0 0 -142 0 142 ]
+>>
+cairo_image
+ Gb"[2s8V?^5k+FG-tAJrar"]K,R+7r3C!B~>
+Q
+Q q
+82 17 3 34 re W n
+q
+82 17 3 34 re W n
+% Fallback Image: x=82 y=17 w=3 h=34 res=300ppi size=5538
+[ 3.12 0 0 -34.08 82 51.08 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 13
+  /Height 142
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 13 0 0 -142 0 142 ]
+>>
+cairo_image
+ Gb"[2s8Sqo5]HH^"H7@j3MW*Ac7!=i1WmPQ!<DL%F]/~>
+Q
+Q q
+111 17 3 34 re W n
+q
+111 17 3 34 re W n
+% Fallback Image: x=111 y=17 w=3 h=34 res=300ppi size=5538
+[ 3.12 0 0 -34.08 111 51.08 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 13
+  /Height 142
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 13 0 0 -142 0 142 ]
+>>
+cairo_image
+ Gb"[2s8VKb5]H*T"H7@j3MW*Ac7!=i1WmPQ!<<7qG&I~>
+Q
+Q q
+140 17 3 34 re W n
+q
+140 17 3 34 re W n
+% Fallback Image: x=140 y=17 w=3 h=34 res=300ppi size=5538
+[ 3.12 0 0 -34.08 140 51.08 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 13
+  /Height 142
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 13 0 0 -142 0 142 ]
+>>
+cairo_image
+ Gb"[2s8U"85]H]e"H7@j3MW*Ac7!=i1WmPQ!<<l9Fl<~>
+Q
+Q q
+169 17 3 34 re W n
+q
+169 17 3 34 re W n
+% Fallback Image: x=169 y=17 w=3 h=34 res=300ppi size=5538
+[ 3.12 0 0 -34.08 169 51.08 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 13
+  /Height 142
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 13 0 0 -142 0 142 ]
+>>
+cairo_image
+ Gb"[2s8V]h5]G^I"H7@j3MW*Ac7!=i1WmPQ!<=KVF]/~>
+Q
+Q q
+13 51 164 2 re W n
+q
+13 51 164 2 re W n
+% Fallback Image: x=13 y=51 w=164 h=2 res=300ppi size=18468
+[ 164.16 0 0 -2.16 13 53.16 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 684
+  /Height 9
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 684 0 0 -9 0 9 ]
+>>
+cairo_image
+ Gb"0RbmFJ['ZTZGb]`CU(EmAFT7o?LfiUm215;N6V6#q[VM<GCq+.^7@5XrkC:n1;kJ*H\9
+ tr.'MGbp6PZ7!e/p**Q_S<Z)r8<>4KV/23&_mu5X*+J=;Lgo\BCrnpN6;#h[e_l7.U0ZsR^
+ 3?bLqFkc^'j>M?$ecP#Cb;mpr!\]_!Ua*_&?]/"aC4?Lu.<\p"=*:Ni_Z')cWL3\SJC0Yeq
+ "G&0CD[*H5flY1j/Jrq-&&!Sj@BVJVZ2X"fd>Z6`^LQu&$>fkSB7X),mY'.-pplh=GdB$l\
+ 'EY!A;TJO,o00knROS0.i?hn+P@=Isb"a?I<]E*7LmgITtrrHI"@c.[~>
+Q
+Q q
+24 53 2 35 re W n
+q
+24 53 2 35 re W n
+% Fallback Image: x=24 y=53 w=2 h=35 res=300ppi size=3942
+[ 2.16 0 0 -35.04 24 88.04 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 9
+  /Height 146
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 9 0 0 -146 0 146 ]
+>>
+cairo_image
+ Gb"[2s8S5[5k*q9-tAJrar"]K1/JhgqVGPN~>
+Q
+Q q
+53 53 2 35 re W n
+q
+53 53 2 35 re W n
+% Fallback Image: x=53 y=53 w=2 h=35 res=300ppi size=3942
+[ 2.16 0 0 -35.04 53 88.04 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 9
+  /Height 146
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 9 0 0 -146 0 146 ]
+>>
+cairo_image
+ Gb"[2s8V?^5k+FG-tAJrar"]K1/Jhg%c^lf~>
+Q
+Q q
+82 53 3 35 re W n
+q
+82 53 3 35 re W n
+% Fallback Image: x=82 y=53 w=3 h=35 res=300ppi size=5694
+[ 3.12 0 0 -35.04 82 88.04 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 13
+  /Height 146
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 13 0 0 -146 0 146 ]
+>>
+cairo_image
+ Gb"[2s8Sqo5]HH^"H7@j3MW*Ac7!=i1WlC<#69p;UZ2~>
+Q
+Q q
+111 53 3 35 re W n
+q
+111 53 3 35 re W n
+% Fallback Image: x=111 y=53 w=3 h=35 res=300ppi size=5694
+[ 3.12 0 0 -35.04 111 88.04 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 13
+  /Height 146
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 13 0 0 -146 0 146 ]
+>>
+cairo_image
+ Gb"[2s8VKb5]H*T"H7@j3MW*Ac7!=i1WlC<#6<j2V$?~>
+Q
+Q q
+140 53 3 35 re W n
+q
+140 53 3 35 re W n
+% Fallback Image: x=140 y=53 w=3 h=35 res=300ppi size=5694
+[ 3.12 0 0 -35.04 140 88.04 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 13
+  /Height 146
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 13 0 0 -146 0 146 ]
+>>
+cairo_image
+ Gb"[2s8U"85]H]e"H7@j3MW*Ac7!=i1WlC<#6<GpUic~>
+Q
+Q q
+169 53 3 35 re W n
+q
+169 53 3 35 re W n
+% Fallback Image: x=169 y=53 w=3 h=35 res=300ppi size=5694
+[ 3.12 0 0 -35.04 169 88.04 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 13
+  /Height 146
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 13 0 0 -146 0 146 ]
+>>
+cairo_image
+ Gb"[2s8V]h5]G^I"H7@j3MW*Ac7!=i1WlC<#6<%YUZ2~>
+Q
+Q q
+13 88 164 2 re W n
+q
+13 88 164 2 re W n
+% Fallback Image: x=13 y=88 w=164 h=2 res=300ppi size=18468
+[ 164.16 0 0 -2.16 13 90.16 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 684
+  /Height 9
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 684 0 0 -9 0 9 ]
+>>
+cairo_image
+ Gb"0LYtDoA'SbRO7qSZ*5_J'XY$P=j%c*CN'HOba/IAC.D/>^o#_dk&Bfe9g*5j&lQZKb"O
+ >[[AANB2n%fAFV5%@:.5--+g?Gu_S;t&_;HZ'>=nF2\$3?FcRH\Ze]Y67'(!5B*3bPTYp:C
+ VO/-J%D"$dP_:giLeS\;Q,*L*,r)LYN9MgUeh8rqcP.'7;7t2m-B8XenXu$;7js1#4<1h.j
+ rOX0D;9[Hnm*,]k!E)`FZlgiIDLn.Ql21H`Ol?&%le'TdZA!:1;F/ak:3WGT+j?r]ncei`S
+ soFLr%Dh`c3n/&ulG^)Yp+7GXoK#7ZJ-,Ipu5.7Q!m?_^5B=_)F]%)c(<akCKl396Ni9p~>
+Q
+Q q
+24 90 2 34 re W n
+q
+24 90 2 34 re W n
+% Fallback Image: x=24 y=90 w=2 h=34 res=300ppi size=3834
+[ 2.16 0 0 -34.08 24 124.08 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 9
+  /Height 142
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 9 0 0 -142 0 142 ]
+>>
+cairo_image
+ Gb"[2s8S5[5k*q9-tAJrar"]K,R+7^cTh:~>
+Q
+Q q
+53 90 2 34 re W n
+q
+53 90 2 34 re W n
+% Fallback Image: x=53 y=90 w=2 h=34 res=300ppi size=3834
+[ 2.16 0 0 -34.08 53 124.08 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 9
+  /Height 142
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 9 0 0 -142 0 142 ]
+>>
+cairo_image
+ Gb"[2s8V?^5k+FG-tAJrar"]K,R+7r3C!B~>
+Q
+Q q
+82 90 3 34 re W n
+q
+82 90 3 34 re W n
+% Fallback Image: x=82 y=90 w=3 h=34 res=300ppi size=5538
+[ 3.12 0 0 -34.08 82 124.08 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 13
+  /Height 142
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 13 0 0 -142 0 142 ]
+>>
+cairo_image
+ Gb"[2s8Sqo5]HH^"H7@j3MW*Ac7!=i1WmPQ!<DL%F]/~>
+Q
+Q q
+111 90 3 34 re W n
+q
+111 90 3 34 re W n
+% Fallback Image: x=111 y=90 w=3 h=34 res=300ppi size=5538
+[ 3.12 0 0 -34.08 111 124.08 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 13
+  /Height 142
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 13 0 0 -142 0 142 ]
+>>
+cairo_image
+ Gb"[2s8VKb5]H*T"H7@j3MW*Ac7!=i1WmPQ!<<7qG&I~>
+Q
+Q q
+140 90 3 34 re W n
+q
+140 90 3 34 re W n
+% Fallback Image: x=140 y=90 w=3 h=34 res=300ppi size=5538
+[ 3.12 0 0 -34.08 140 124.08 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 13
+  /Height 142
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 13 0 0 -142 0 142 ]
+>>
+cairo_image
+ Gb"[2s8U"85]H]e"H7@j3MW*Ac7!=i1WmPQ!<<l9Fl<~>
+Q
+Q q
+169 90 3 34 re W n
+q
+169 90 3 34 re W n
+% Fallback Image: x=169 y=90 w=3 h=34 res=300ppi size=5538
+[ 3.12 0 0 -34.08 169 124.08 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 13
+  /Height 142
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 13 0 0 -142 0 142 ]
+>>
+cairo_image
+ Gb"[2s8V]h5]G^I"H7@j3MW*Ac7!=i1WmPQ!<=KVF]/~>
+Q
+Q q
+13 124 164 2 re W n
+q
+13 124 164 2 re W n
+% Fallback Image: x=13 y=124 w=164 h=2 res=300ppi size=18468
+[ 164.16 0 0 -2.16 13 126.16 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 684
+  /Height 9
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 684 0 0 -9 0 9 ]
+>>
+cairo_image
+ Gb"0R4\N[h'ZTZjNm(7(1Y",B=6ShQkhobrX\`7pisQ;R#rY?(:+Z_TTh9#>*!?L\&\2q"[
+ TrA)nNL+$Ijt]?Ds/u_+iJrZ'SY<=e?8QOs4+T3J+2roKR`O]-b097'd!R6'u98@8*YM2(a
+ ni,hJ-Z8<ET'$XdSk2PSW"aD[uH?gpOVSn/;hP89fcBQfMK4h<d#7f+l)BJmJ%529k0+X+t
+ k5>sI#<6VWfWp07p]io..q4Zn*ZmMXmSY6\2/HMoi,pXK)U[Z>[6"lcZ$iiSN*[gJ&&=u+q
+ aXSf2(<hkr.E0fja:IWE3HhS/%`5A:%TCD=j\`\3]((`U,!;6]4;"#XPC<'Q?2lk0tbmILs
+ S(/VHC$k<~>
+Q
+Q q
+24 126 2 35 re W n
+q
+24 126 2 35 re W n
+% Fallback Image: x=24 y=126 w=2 h=35 res=300ppi size=3942
+[ 2.16 0 0 -35.04 24 161.04 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 9
+  /Height 146
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 9 0 0 -146 0 146 ]
+>>
+cairo_image
+ Gb"[2s8S5[5k*q9-tAJrar"]K1/JhgqVGPN~>
+Q
+Q q
+53 126 2 35 re W n
+q
+53 126 2 35 re W n
+% Fallback Image: x=53 y=126 w=2 h=35 res=300ppi size=3942
+[ 2.16 0 0 -35.04 53 161.04 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 9
+  /Height 146
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 9 0 0 -146 0 146 ]
+>>
+cairo_image
+ Gb"[2s8V?^5k+FG-tAJrar"]K1/Jhg%c^lf~>
+Q
+Q q
+82 126 3 35 re W n
+q
+82 126 3 35 re W n
+% Fallback Image: x=82 y=126 w=3 h=35 res=300ppi size=5694
+[ 3.12 0 0 -35.04 82 161.04 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 13
+  /Height 146
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 13 0 0 -146 0 146 ]
+>>
+cairo_image
+ Gb"[2s8Sqo5]HH^"H7@j3MW*Ac7!=i1WlC<#69p;UZ2~>
+Q
+Q q
+111 126 3 35 re W n
+q
+111 126 3 35 re W n
+% Fallback Image: x=111 y=126 w=3 h=35 res=300ppi size=5694
+[ 3.12 0 0 -35.04 111 161.04 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 13
+  /Height 146
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 13 0 0 -146 0 146 ]
+>>
+cairo_image
+ Gb"[2s8VKb5]H*T"H7@j3MW*Ac7!=i1WlC<#6<j2V$?~>
+Q
+Q q
+140 126 3 35 re W n
+q
+140 126 3 35 re W n
+% Fallback Image: x=140 y=126 w=3 h=35 res=300ppi size=5694
+[ 3.12 0 0 -35.04 140 161.04 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 13
+  /Height 146
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 13 0 0 -146 0 146 ]
+>>
+cairo_image
+ Gb"[2s8U"85]H]e"H7@j3MW*Ac7!=i1WlC<#6<GpUic~>
+Q
+Q q
+169 126 3 35 re W n
+q
+169 126 3 35 re W n
+% Fallback Image: x=169 y=126 w=3 h=35 res=300ppi size=5694
+[ 3.12 0 0 -35.04 169 161.04 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 13
+  /Height 146
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 13 0 0 -146 0 146 ]
+>>
+cairo_image
+ Gb"[2s8V]h5]G^I"H7@j3MW*Ac7!=i1WlC<#6<%YUZ2~>
+Q
+Q q
+13 161 164 2 re W n
+q
+13 161 164 2 re W n
+% Fallback Image: x=13 y=161 w=164 h=2 res=300ppi size=18468
+[ 164.16 0 0 -2.16 13 163.16 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 684
+  /Height 9
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 684 0 0 -9 0 9 ]
+>>
+cairo_image
+ Gb"0Q3sri$&;B'o7T*EJ<EtVI&TJ&5fEbr[Ld[t/+[e^00k,<6@3Ja/,'%87/se[Ck+nE[P
+ (E*;T&qN!Wb/@NP8?[r7T?&:$h(n##nQJB53(TB_g",qOuk8sp'I>SGM=t/MQ9sdp"a:VQZ
+ BH[i@PmQiaJ>8'crs1gV^YkN*uUf0>8mO"8tEjXHmZ[6aB]oZIPJe<aj*NF!b+FQ+g7D>9t
+ V7.p2%SX,>;$R="JNT@lI(<tC&CGkfSR#7o_5p$f,q'"fgt^(@s)mmk:Zr-lag'9fQ8P-*k
+ ?[L+NrX'^\!kNM~>
+Q
+Q q
+24 163 2 14 re W n
+q
+24 163 2 14 re W n
+% Fallback Image: x=24 y=163 w=2 h=14 res=300ppi size=1593
+[ 2.16 0 0 -14.16 24 177.16 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 9
+  /Height 59
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 9 0 0 -59 0 59 ]
+>>
+cairo_image
+ Gb"[2s8S5[5k*o#h&._9EZg=/%RL`Hg4jpB>+2#c"T*`Y<sKjM2d@55cCAkY1&;b)(p$"3+
+ ZQ6lUE^rk#g32-"oocNC9%~>
+Q
+Q q
+53 163 2 14 re W n
+q
+53 163 2 14 re W n
+% Fallback Image: x=53 y=163 w=2 h=14 res=300ppi size=1593
+[ 2.16 0 0 -14.16 53 177.16 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 9
+  /Height 59
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 9 0 0 -59 0 59 ]
+>>
+cairo_image
+ Gb"[2s8V?^5k+D1h&./)nfWnQ%T3kXk(X)/>$@-n"=o"]5R/F!1gCo2cCFD/0rc'-(lU`h.
+ 6+)tUE_Z*#R^Rk"orB+Bfl~>
+Q
+Q q
+82 163 3 14 re W n
+q
+82 163 3 14 re W n
+% Fallback Image: x=82 y=163 w=3 h=14 res=300ppi size=2301
+[ 3.12 0 0 -14.16 82 177.16 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 13
+  /Height 59
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 13 0 0 -59 0 59 ]
+>>
+cairo_image
+ Gb"[2s8V3Z5]H0V"H^WK\9ndFF$5)2JH<b^A`--sJ9$r(1*;/7.9-dA(_E],"jYfaXLK"jg
+ #AZL&C+GITQhC#=lZ0"&^K'[/@3SenIWQN2oX#I:6]38JlAFXNSpm:@9AQZ:H\fT9d#C9GG
+ 6A"5PP0W\TsM9d&BeBJn\%VJccS6N,m#&S2kX;'ZA)p1<qR-0^+$HM@:&Hi,j'_,_Z7b(6H
+ r6T/ZfN)d4U>~>
+Q
+Q q
+111 163 3 14 re W n
+q
+111 163 3 14 re W n
+% Fallback Image: x=111 y=163 w=3 h=14 res=300ppi size=2301
+[ 3.12 0 0 -14.16 111 177.16 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 13
+  /Height 59
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 13 0 0 -59 0 59 ]
+>>
+cairo_image
+ Gb"[2s8T5"5]H*T"H^WK\RlV9F/=PDJH<ciA71=4J9!R30W]llC!eb*(m(IpL>W2K:.&u*1
+ `*tgq]%HE^c?`]1cHSB+j94rdp.jiKPF7NE3_=,&Y'n:q*/iD%V(5GKR]jQ0Gk&44h"B&iL
+ aocs4oh4I-C2K!C86#;sXJel(]6h3G6X-8Hs1/JW)An$k+U.N[=i2+?1A^*>r9NO9/s7r$M
+ sS!6)&f;#~>
+Q
+Q q
+140 163 3 14 re W n
+q
+140 163 3 14 re W n
+% Fallback Image: x=140 y=163 w=3 h=14 res=300ppi size=2301
+[ 3.12 0 0 -14.16 140 177.16 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 13
+  /Height 59
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 13 0 0 -59 0 59 ]
+>>
+cairo_image
+ Gb"[2s8U"85]G[H"H^cOK#II0JDbf,AUndOC2l$P36&t,$qP]i%O01J,pd89Nfk"m!<N>oP
+ (92,b%YnsK#ge!q4'6Rc4kjiJO%3m"pP8l&BB;%!YCl^NfMmK+G^7X3rTct!5RkO^A~>
+Q
+Q q
+169 163 3 14 re W n
+q
+169 163 3 14 re W n
+% Fallback Image: x=169 y=163 w=3 h=14 res=300ppi size=2301
+[ 3.12 0 0 -14.16 169 177.16 ] concat
+/cairo_ascii85_file currentfile /ASCII85Decode filter def
+/DeviceGray setcolorspace
+<<
+  /ImageType 1
+  /Width 13
+  /Height 59
+  /Interpolate false
+  /BitsPerComponent 8
+  /Decode [ 0 1 ]
+  /DataSource cairo_ascii85_file /FlateDecode filter
+  /ImageMatrix [ 13 0 0 -59 0 59 ]
+>>
+cairo_image
+ Gb"[2s8V]h5]H9Y"H^cOL<NL_E.2ma^c7gkq%sY_@q/dK,X%1n&SIl%OrQ5I8VrB+!J(\O5
+ `cB8b]WsfT2?*oS24g'1kI\.5fOZG"pT&Ya,C$#&=ec@NhS3ML^#UqrY#M:Nu0P(~>
+Q
+Q Q
 showpage
-
-% stop using temporary dictionary
-end
-
-% restore original state
-origstate restore
-
 %%Trailer
+%%EOF

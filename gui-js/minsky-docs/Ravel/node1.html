@@ -1,0 +1,241 @@
+
+<!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
+<HTML>
+<HEAD>
+<TITLE>Introduction</TITLE>
+<META NAME="description" CONTENT="Introduction">
+<META NAME="keywords" CONTENT="Ravel">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-15">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2017.2">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="Ravel.css">
+
+<LINK REL="next" HREF="node2.html">
+<LINK REL="previous" HREF="Ravel.html">
+<LINK REL="up" HREF="Ravel.html">
+<LINK REL="next" HREF="node2.html">
+</HEAD>
+
+<BODY  bgcolor="#ffffff">
+<!--Navigation Panel-->
+<A NAME="tex2html278"
+  HREF="node2.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html274"
+  HREF="Ravel.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html268"
+  HREF="Ravel.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html276"
+  HREF="Ravel.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html279"
+  HREF="node2.html">Getting Started with Ravel</A>
+<B> Up:</B> <A NAME="tex2html275"
+  HREF="Ravel.html">Minsky Simulation Engine</A>
+<B> Previous:</B> <A NAME="tex2html269"
+  HREF="Ravel.html">Minsky Simulation Engine</A>
+ &nbsp; <B>  <A NAME="tex2html277"
+  HREF="Ravel.html">Contents</A></B> 
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H1><A NAME="SECTION00100000000000000000">
+Introduction</A>
+</H1>
+
+<P>
+<A NAME="Introduction"></A><I>Ravel</I> is a data analysis program which
+is an alternative to spreadsheets and existing business intelligence
+programs (Tableau, Power BI, etc.). It has two key features that distinguish
+it from all other programs in this space: 
+
+<UL>
+<LI>The Ravel, a visual representation of multidimensional data that is
+far easier to use than Pivot Tables; and
+</LI>
+<LI>Equations that are written as flowcharts, rather than the obscure
+cell references of spreadsheets.
+</LI>
+</UL>
+It also includes the system-dynamics engine <A HREF="node216.html#Introduction-Minsky"><I>Minsky</I></A>.
+
+<P>
+Unlike spreadsheets, which are fundamentally limited to two dimensions
+(rows and columns), <I>Ravel</I> supports an effectively unlimited
+number of dimensions. <I>Ravel</I>'s key feature--also called a
+Ravel--is a visual tool for manipulating and analysing multidimensional
+data, which can handle as many dimensions as your data contains. By
+contrast, to handle more than 2 dimensions in a spreadsheet, the go to
+tool is a <EM>Pivot table</EM>, which provides some sort of control over
+the slice through the multidimensional <EM>hypercube</EM>. Needless the
+say, pivot tables are not for the faint of heart!
+
+<P>
+Ravel is primarily focussed on numerical data, although it is possible
+to analyse purely symbolic data in <A HREF="node193.html#counter">``counter mode''</A>.
+
+<P>
+This is a blank Ravel--a Ravel with no data attached to it. The
+axes are indicative examples, and will be replaced by the dimensions
+of your data, once you attach a data parameter to the Ravel:
+
+<P>
+
+  <IMG
+ ALIGN="BOTTOM" SRC="img30.png"
+ ALT="\includegraphics{images/RavelBlank}% WIDTH=410 HEIGHT=401 ">
+
+<P>
+To use a Ravel, you first need to import a data file-at present
+this must be a CSV file (other data sources will be added in later
+releases). Once the data is <A HREF="node189.html#CSV_import">imported</A>, the data object
+can be attached to a Ravel. This is a Ravel with data attached:
+
+<P>
+
+<IMG
+ ALIGN="BOTTOM" SRC="img31.png"
+ ALT="\includegraphics{images/01RavelDataInflation}% WIDTH=394 HEIGHT=436 ">
+
+<P>
+There are many ways to manipulate and display data directly from a
+Ravel. This is a Ravel with data attached and selected for graphing:
+the ``Year on Year Changes'' data is selected from the Unit of Measure
+axis; two countries (Japan and the United States) are selected from
+the Reference area axis via the <I>Pick axis slices</I> command; Monthly
+data is chosen from the Frequency axis; and Calipers are applied to
+the Date axis to select data from 1960 till 2024.
+
+<P>
+
+<IMG
+ ALIGN="BOTTOM" SRC="img32.png"
+ ALT="\includegraphics[width=\textwidth]{images/01BRavelDataInflationSelected}% WIDTH=556 HEIGHT=295 ">
+
+<P>
+Ravel the object itself makes it far easier to drill down into and
+visualise data than using either a spreadsheet, or the Pivot Tables
+that standard Business Intelligence program use.
+
+<P>
+<I>Ravel</I> the program enables easy analysis of data using self-documenting
+flowchart formulas. This is a Ravel with data selected-for six countries,
+on the annualised monthly inflation rate, for dates from January 2001
+till January 2024-and assigned to a variable (``Post2000'').
+
+<P>
+
+  <IMG
+ ALIGN="BOTTOM" SRC="img33.png"
+ ALT="\includegraphics{images/02RavelDataInflationGraphed}% WIDTH=641 HEIGHT=874 ">
+
+<P>
+The data is analyzed by (a) working out the average inflation rate
+for the selected countries, and (b) subtracting the average from the
+actual inflation rate for each country.
+
+<P>
+The average inflation rate is calculated using the formula shown below,
+where the 
+  <IMG
+ ALIGN="BOTTOM" SRC="img28.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/mean}}% WIDTH=15 HEIGHT=14 ">
+  operator works out the average
+inflation rate over time for the six countries in the variable <I>Post2000</I>
+to generate the variable <I>Inflation</I><SUB><I>Average</I></SUB>.
+This average is then subtracted from the country-specific data in
+<I>Post2000</I>:
+
+<P>
+
+  <IMG
+ ALIGN="BOTTOM" SRC="./03Formula.png"
+ ALT="Image 03Formula% WIDTH=1281 HEIGHT=205 ">
+
+<P>
+This one formula is applied to every country in the Ravel (six countries
+in this case) and every quarterly data point (80 quarters). Doing
+the same analysis with a spreadsheet would require writing an obscure
+cell reference formula and replicating it across 480 cells.
+
+<P>
+This example shows average inflation outcomes for the six countries,
+and the deviation of each of them from the average.
+
+<P>
+
+  <IMG
+ ALIGN="BOTTOM" SRC="img34.png"
+ ALT="\includegraphics{images/03RavelDataInflationAnalyzed}% WIDTH=1160 HEIGHT=1322 ">
+
+<P>
+This illustrates the capacity of Ravel to rapidly provide insights
+from data-in this case, that the best-performing country during
+the post-Covid inflation was Japan, and the worst performing were
+the USA and UK. This is noteworthy, because both the USA and UK sharply
+increased interest rates with the intention of reducing inflation,
+while Japan kept its interest rate constant. Perhaps then, interest
+rates aren't effective at controlling inflation rates? 
+
+<P>
+These examples are drawn from economics, mainly because <I>Ravel</I>'s
+inventor is an economist (and a contrarian one at that). But <I>Ravel</I>
+can analyze any data you give it--marketing data, scientific data,
+production data, whatever. It can also handle enormous data sets,
+far larger than are manageable with Excel.
+
+<P>
+Ravel can handle sparse data--it requires 16 bytes per data point, so
+for example, a 16GB computer will technically be able to handle up to a billion
+data points, although in practice it is unwise to exceed more than
+half that. There is no limit to the number of rows and columns it can
+ingest, subject to the overall limit due to available memory, in
+contrast to Excel's limits of 1,048,576 rows by 16,384 columns. One
+other limit to keep in mind is that the size of the datacube (product
+of sizes of all the dimensions) cannot exceed <IMG
+ ALIGN="MIDDLE" SRC="img29.png"
+ ALT="$1.8\times
+10^{19}$% WIDTH=73 HEIGHT=33 ">. This is something to bear in mind when importing data, as
+the datacube size increases exponentially with the number of
+dimensions.
+
+<P>
+We hope these examples show how easy it is to turn data into information
+using Ravel.
+
+<P>
+<HR>
+<!--Navigation Panel-->
+<A NAME="tex2html278"
+  HREF="node2.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html274"
+  HREF="Ravel.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html268"
+  HREF="Ravel.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html276"
+  HREF="Ravel.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html279"
+  HREF="node2.html">Getting Started with Ravel</A>
+<B> Up:</B> <A NAME="tex2html275"
+  HREF="Ravel.html">Minsky Simulation Engine</A>
+<B> Previous:</B> <A NAME="tex2html269"
+  HREF="Ravel.html">Minsky Simulation Engine</A>
+ &nbsp; <B>  <A NAME="tex2html277"
+  HREF="Ravel.html">Contents</A></B> 
+<!--End of Navigation Panel-->
+
+</BODY>
+</HTML>

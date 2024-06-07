@@ -201,7 +201,6 @@ namespace minsky
           {
           case ClickType::onResize:
             {
-              const EnsureEditorMode e(*item);
               auto w=item->itemRef->width()/item->zoomX;
               auto h=item->itemRef->height()/item->zoomY;
               lasso.x0=x>item->x? x-w: x+w;
@@ -317,7 +316,7 @@ namespace minsky
     zoomTranslate(x,y);
     if (auto item=m_getItemAt(x,y))
       {
-        EnsureEditorMode em(*item);
+        const EnsureEditorMode em(*item);
         if (item->itemRef->onKeyPress(args.keySym,args.utf8,args.state))
           {
             requestRedraw();

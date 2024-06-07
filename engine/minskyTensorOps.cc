@@ -133,7 +133,7 @@ namespace minsky
             for (auto& xv: a2->hypercube().xvectors)
               if (a2Axes.contains(xv.name))
                 hcSpread1.xvectors.push_back(xv);
-            size_t numCommonAxes=common.size();
+            const size_t numCommonAxes=common.size();
             
             // append common dimensions to make up a1 final order
             a1Order.insert(a1Order.end(), common.begin(), common.end());
@@ -171,9 +171,9 @@ namespace minsky
                 auto& xv=pivotArg2->hypercube().xvectors;
                 size_t commonElements=1;
                 for (size_t i=0; i<numCommonAxes; ++i) commonElements*=xv[i].size();
-                size_t p1NumElements=pivotArg1->hypercube().numElements();
-                size_t p1ExtraElements=p1NumElements/commonElements;
-                size_t p2ExtraElements=pivotArg2->hypercube().numElements()/commonElements;
+                const size_t p1NumElements=pivotArg1->hypercube().numElements();
+                const size_t p1ExtraElements=p1NumElements/commonElements;
+                const size_t p2ExtraElements=pivotArg2->hypercube().numElements()/commonElements;
                 for (auto i: pivotArg2->index())
                   {
                     checkCancel();
@@ -187,7 +187,7 @@ namespace minsky
                       checkCancel();
                       auto s=p2i.find(i/p1ExtraElements);
                       if (s!=p2i.end())
-                        if (s->second.count(j))
+                        if (s->second.contains(j))
                           index.insert(i+p1NumElements*j);
                     }
                 m_index=index;
@@ -423,7 +423,7 @@ namespace minsky
       auto idx=arg->index();
       const set<size_t> idxSet(idx.begin(),idx.end());
       set<size_t> newIdx;
-      size_t hcSize=cachedResult.hypercube().numElements();
+      const size_t hcSize=cachedResult.hypercube().numElements();
       for (auto& i: idx)
         {
           checkCancel();
@@ -493,7 +493,7 @@ namespace minsky
   struct GeneralTensorOp<OperationType::differencePlus>: public GeneralTensorOp<OperationType::difference>
   {
     void setArgument(const TensorPtr& a,const ITensor::Args& args) override {
-      ITensor::Args negArg={args.dimension,-args.val};
+      const ITensor::Args negArg={args.dimension,-args.val};
       GeneralTensorOp<OperationType::difference>::setArgument(a,negArg);
     }
     double operator[](std::size_t i) const override
@@ -687,7 +687,7 @@ namespace minsky
           for (size_t i=0; !xv.empty() && i<arg2->size() && i<hc.xvectors[0].size(); ++i)
             {
               double intPart;
-              double fracPart=std::modf((*arg2)[i], &intPart);
+              const double fracPart=std::modf((*arg2)[i], &intPart);
               if (intPart>=0)
                 if (intPart<xvToGather.size()-1)
                   hc.xvectors[0][i]=interpolate(xvToGather[intPart],xvToGather[intPart+1],fracPart);
@@ -753,9 +753,11 @@ namespace minsky
       
       arg1=a1; arg2=a2;
       if (!arg1 || !arg2) return;
-      auto& xv=arg1->hypercube().xvectors;
-      dimension=find_if(xv.begin(), xv.end(), [&](const XVector& i)
-                        {return i.name==args.dimension;})-xv.begin();
+      {
+        auto& xv=arg1->hypercube().xvectors;
+        dimension=find_if(xv.begin(), xv.end(), [&](const XVector& i)
+        {return i.name==args.dimension;})-xv.begin();
+      }
                         
       switch (arg1->rank())
         {
@@ -804,24 +806,6 @@ namespace minsky
           hc.xvectors.push_back(arg1->hypercube().xvectors[dimension]);
           hc.xvectors[0].resize(arg2NumElements);
         }
-//      hc.xvectors.resize(1);
-//      auto& xvToGather=arg1->hypercube().xvectors[dimension];
-//      for (size_t i=0; !xv.empty() && i<arg2->size(); ++i)
-//        {
-//          double intPart;
-//          double fracPart=std::modf((*arg2)[i], &intPart);
-//          if (intPart>=0)
-//            if (intPart<xvToGather.size()-1)
-//              hc.xvectors[0].emplace_back(interpolate(xvToGather[intPart],xvToGather[intPart+1],fracPart));
-//            else if (intPart<xvToGather.size())
-//              hc.xvectors[0].emplace_back(xvToGather[intPart]);
-//            else
-//              hc.xvectors[0].emplace_back(any(xvToGather.dimension.type));
-//          else if (intPart==-1)
-//            hc.xvectors[0].emplace_back(xvToGather[0]);
-//          else
-//            hc.xvectors[0].emplace_back(any(xvToGather.dimension.type));
-//        }
                                 
       hc.xvectors.insert(hc.xvectors.end(), arg1->hypercube().xvectors.begin(), arg1->hypercube().xvectors.begin()+dimension);
       hc.xvectors.insert(hc.xvectors.end(), arg1->hypercube().xvectors.begin()+dimension+1, arg1->hypercube().xvectors.end());
@@ -1125,12 +1109,14 @@ namespace minsky
       m_index=y->index();
       hypercube(y->hypercube());
 
-      auto& xv=m_hypercube.xvectors;
-      dimension=rank()>1? rank(): 0;
-      for (auto i=xv.begin(); i!=xv.end(); ++i)
-        if (i->name==args.dimension)
-          dimension=i-xv.begin();
-
+      {
+        auto& xv=m_hypercube.xvectors;
+        dimension=rank()>1? rank(): 0;
+        for (auto i=xv.begin(); i!=xv.end(); ++i)
+          if (i->name==args.dimension)
+            dimension=i-xv.begin();
+      }
+      
       sumy.setArgument(y,args);
       TensorPtr spreadX;
       if (x)
@@ -1197,7 +1183,6 @@ namespace minsky
       if (dimension<rank())
         {
           auto splitted=hypercube().splitIndex(i);
-          size_t dimIdx=splitted[dimension];
           splitted.erase(splitted.begin()+dimension);
           auto hcIdx=scale.hypercube().linealIndex(splitted);
           return scale.atHCIndex(hcIdx) * (*x)[i] + offset.atHCIndex(hcIdx);
@@ -1675,7 +1660,7 @@ namespace minsky
     assert(result.size()==rhs->size());
   }   
 
-  void TensorEval::eval(double fv[], size_t n, const double sv[])
+  void TensorEval::eval(double* fv, size_t n, const double* sv)
   {
     if (rhs)
       {
@@ -1701,8 +1686,8 @@ namespace minsky
       }
   }
    
-  void TensorEval::deriv(double df[], size_t n, const double ds[],
-                         const double sv[], const double fv[])
+  void TensorEval::deriv(double* df, size_t n, const double* ds,
+                         const double* sv, const double* fv)
   {
     if (result.idx()<0) return;
     if (rhs)

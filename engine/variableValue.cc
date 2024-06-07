@@ -269,7 +269,7 @@ namespace minsky
         else if (fc.name.starts_with("rand"))
           {
             for (size_t i=0; i<r.size(); ++i)
-              r[i]=double(rand())/RAND_MAX;
+              r[i]=double(rand())/RAND_MAX; // NOLINT
           }
         return r;
       }
@@ -493,7 +493,15 @@ namespace minsky
 
     string godleyName;
     string definition=varNode && varNode->rhs? varNode->rhs->latexStr(): "";
-    string udfDefinition=varNode && varNode->rhs? varNode->rhs->matlabStr():"";
+    string udfDefinition;
+    try
+      {
+        udfDefinition=varNode && varNode->rhs? varNode->rhs->matlabStr():"";
+      }
+    catch (const std::exception& ex)
+      {
+        udfDefinition=ex.what(); // if matlabStr fails, insert error message
+      }
     if (auto var=cminsky().definingVar(valueId()))
       {
         if (auto controller=dynamic_pointer_cast<GodleyIcon>(var->controller.lock()))

@@ -88,7 +88,7 @@ namespace minsky
       }
   }
 
-  void EvalGodley::eval(double sv[], const double fv[]) const
+  void EvalGodley::eval(double* sv, const double* fv) const
   {
     for (size_t i=0; i<initIdx.size(); ++i)
       sv[initIdx[i]]=0;

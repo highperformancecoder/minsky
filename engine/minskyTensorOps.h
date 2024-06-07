@@ -171,9 +171,11 @@ namespace minsky
       assert(result.size()==rhs->size());
     } 
     TensorEval(const std::shared_ptr<VariableValue>& dest, const std::shared_ptr<VariableValue>& src);
-               
-    void eval(double fv[], std::size_t,const double sv[]) override;
-    void deriv(double df[],std::size_t,const double ds[],const double sv[],const double fv[]) override;
+
+    // pointer arguments are array arguments
+    void eval(double* fv, std::size_t,const double* sv) override;
+    // pointer arguments are array arguments
+    void deriv(double* df,std::size_t,const double* ds,const double* sv,const double* fv) override;
   };
 }
   

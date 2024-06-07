@@ -76,6 +76,11 @@ export interface HeaderEvent {
   value?: unknown;
 }
 
+export interface DownloadCSVPayload {
+  windowUid: string;
+  url: string;
+}
+
 export enum ClassType {
   Variable = 'Variable',
   VarConstant = 'VarConstant',

@@ -1,13 +1,18 @@
-%!PS-Adobe-3.0 EPSF-3.0
-%%Creator: cairo 1.16.0 (https://cairographics.org)
-%%CreationDate: Tue Mar 19 13:35:54 2024
+%!PS-Adobe-3.0
+%%Creator: cairo 1.15.10 (http://cairographics.org)
+%%CreationDate: Mon May 27 11:25:15 2024
 %%Pages: 1
 %%DocumentData: Clean7Bit
 %%LanguageLevel: 3
-%%BoundingBox: 0 0 244 244
+%%DocumentMedia: 108x108mm 305 305 0 () ()
+%%BoundingBox: 0 0 305 305
 %%EndComments
 %%BeginProlog
-50 dict begin
+/languagelevel where
+{ pop languagelevel } { 1 } ifelse
+3 lt { /Helvetica findfont 12 scalefont setfont 50 500 moveto
+  (This print job requires a PostScript Language Level 3 printer.) show
+  showpage quit } if
 /q { gsave } bind def
 /Q { grestore } bind def
 /cm { 6 array astore concat } bind def
@@ -62,60 +67,110 @@
 /cairo_flush_ascii85_file { cairo_ascii85_file status { cairo_ascii85_file flushfile } if } def
 /cairo_image { image cairo_flush_ascii85_file } def
 /cairo_imagemask { imagemask cairo_flush_ascii85_file } def
+/cairo_set_page_size {
+  % Change paper size, but only if different from previous paper size otherwise
+  % duplex fails. PLRM specifies a tolerance of 5 pts when matching paper size
+  % so we use the same when checking if the size changes.
+  /setpagedevice where {
+    pop currentpagedevice
+    /PageSize known {
+      2 copy
+      currentpagedevice /PageSize get aload pop
+      exch 4 1 roll
+      sub abs 5 gt
+      3 1 roll
+      sub abs 5 gt
+      or
+    } {
+      true
+    } ifelse
+    {
+      2 array astore
+      2 dict begin
+        /PageSize exch def
+        /ImagingBBox null def
+      currentdict end
+      setpagedevice
+    } {
+      pop pop
+    } ifelse
+  } {
+    pop
+  } ifelse
+} def
 %%EndProlog
 %%BeginSetup
 %%EndSetup
 %%Page: 1 1
 %%BeginPageSetup
-%%PageBoundingBox: 0 0 244 244
+%%PageMedia: 108x108mm
+%%PageBoundingBox: 0 0 305 305
+305 305 cairo_set_page_size
 %%EndPageSetup
-q 0 0 244 244 rectclip
-1 0 0 -1 0 244 cm q
+q 0 0 305 305 rectclip
+1 0 0 -1 0 305 cm q
 0 g
-1 w
+13.75 152.5 m 1.25 148.75 l 1.25 156.25 l f
+1.25 w
 0 J
 0 j
 [] 0.0 d
-10 M 12 12 m 232 12 l 232 232 l 12 232 l h
-1 1 m 243 1 l 243 243 l 1 243 l h
-1 1 m S
-129 122 m 129 123.855 128.262 125.637 126.949 126.949 c 125.637 128.262
- 123.855 129 122 129 c 120.145 129 118.363 128.262 117.051 126.949 c 115.738
- 125.637 115 123.855 115 122 c 115 120.145 115.738 118.363 117.051 117.051
- c 118.363 115.738 120.145 115 122 115 c 123.855 115 125.637 115.738 126.949
- 117.051 c 128.262 118.363 129 120.145 129 122 c S
+10 M q 1 0 0 1 0 0 cm
+15 15 m 290 15 l 290 290 l 15 290 l h
+1.25 1.25 m 303.75 1.25 l 303.75 303.75 l 1.25 303.75 l h
+1.25 1.25 m S Q
+q 1 0 0 1 0 0 cm
+161.25 152.5 m 161.25 154.82 160.328 157.047 158.688 158.688 c 157.047 
+160.328 154.82 161.25 152.5 161.25 c 150.18 161.25 147.953 160.328 146.313
+ 158.688 c 144.672 157.047 143.75 154.82 143.75 152.5 c 143.75 150.18 144.672
+ 147.953 146.313 146.313 c 147.953 144.672 150.18 143.75 152.5 143.75 c 
+154.82 143.75 157.047 144.672 158.688 146.313 c 160.328 147.953 161.25 150.18
+ 161.25 152.5 c S Q
 Q q
-172 172 20 20 re W n
+215 215 25 27 re W n
 q
-172 172 20 20 re W n
-% Fallback Image: x=172 y=172 w=20 h=20 res=300ppi size=21168
-[ 20.16 0 0 -20.16 172 192.16 ] concat
+215 215 25 27 re W n
+% Fallback Image: x=215 y=215 w=25 h=27 res=300ppi size=35595
+[ 25.2 0 0 -27.12 215 242.12 ] concat
 /cairo_ascii85_file currentfile /ASCII85Decode filter def
 /DeviceGray setcolorspace
 <<
   /ImageType 1
-  /Width 84
-  /Height 84
+  /Width 105
+  /Height 113
   /Interpolate false
   /BitsPerComponent 8
   /Decode [ 0 1 ]
   /DataSource cairo_ascii85_file /FlateDecode filter
-  /ImageMatrix [ 84 0 0 -84 0 84 ]
+  /ImageMatrix [ 105 0 0 -113 0 113 ]
 >>
 cairo_image
- Gb"/f4d(LA%*,n$pYZT(JJ38/H?s@2>>%UMDnu4hn.e:>2t"oX%0,`ah@E-Y,i3`fF`hhLr
- @'<j,cLrq'r;,:Vg5lsmK<<PAso;(:S#\NC:nZ?b[Zmj>H=ifa8YN]%p>@#iNr?iBJ[U#)5
- ^5j5gF&P_%Z,tV@\DbAVl@B<ADD;D4?OETZ_&A1Xh#4,3CnlBg^3'P/Pe47k*R4gINp&`:'
- V3$m,n<M*a!/-\REr$8Y)K4;BC#;MuE9.E%Gi7rnB=*3YboXE:X^kUaUC1%Gb%_)IQOUcY>
- =D_Sj>363&t%Ni#+GaW&rh(SQL35Lo$.[CAK:$t@VC+Pug3rE!abV2!!oEm>0?lB^mh&-*D
- $-20`RnGih7%8LV#sl-b+]"L#F(bJ8k5Ga.a8,PN3J'mThTEXPA^@.C%[UIKc/6#ui15epn
- I,(=KIAu)%H`k$IR<IMj#quE3L+DBbs[6ka+W^KHBij7UPftdX.IR4LIa8m*-\:j)<tdfMn
- ^ge<g7T@AuM'Igdi2)[WH/GklPlVmHsa+'n?`?KVs"L[rq7*`HF[ND1]Xu48$82]<oGCq*M
- -r,KgS5WEuDsrK7&Y58kq\Wca6Qr@Onb-P/;B]qHe#1l.agMp"b^->K\:p(.%EV7"#'h`k;
- HrjY4.909hfX/kQYl3ELgLK4~>
+ Gb"/gI8!XP*6/Rp?:5>je%dP58k!hS-!QMn65&+5#\19T1L7,j#\kl4\a`_&r[C;eA$4(ub
+ a*ia.k-GZQ%J3PM(D"f8#(<-MF%So3H;Ueh`9"CkBFK"=nU\JrqCeihr"CfoCe^;3NDAcOX
+ !AV*'&'#aH7]5,Gtl-/WG[IR(FWUTPih?_mJm"XU(B'r>.@mP&Act3UXPsZ7=13S!_$dBo5
+ KU4,93]-?G,&0CtGbJN9'_F1o%:#NZc_<Pm%&;fc.)n;Zs&aFP\&rqR7uMt)8r@YZL*;=8/
+ ga18WN:Uq7=hROn"+/b,kK9Xa2E?8)X7FiM#n/>@mg7VTPb(CBSZ]F.Re,:&e?T4$6_2RaA
+ 6*L7ReTjsXYs[V7ZB@P6UnllbcrLjuC.7l=3:&aK<+3.(:?Pt;Oqq1QY1abJg)EN]/NV0-G
+ !KA7V>-!#mPWU'6tN4ZZB*Bb;JHl@WoI)PF]-5HWO`Xp.Wa@"-nM\6RQ.;kQUWG_Q<I\B1Z
+ -7<(nL:Wq]Jn@R6dM(0+EW%?pAGoTtBB.)3F.2k2mD5s.0_p;eo#@8fOQkC;"ekmh+>P*3&
+ 6WCI`lYY8/?hf"`E9PX';Dl2NhiM-NOpMW3]."#QUH=@;Po>0h>-6rB=+m"!StS-nA$h:i)
+ `T53)>i\!fa\sX&-=gPEm]ZK:0U3OF(W1H7#R[!s;#a__aEOdVk9h&m*k/>*8jl-^t`_(l@
+ O:(B1EK)Ri]<4+hB4*t?<(EM00Y5>=kMj0S]c[\$SrOZ4.]r>AIrb),+B1M0+SAdRT"qjm5
+ it)_-[JeC8:qsQC^nBA(^KYPRY_PJK*i/__"\bdiI$"gb3qoSaq9QJQsOZmHp#^NX#<6YLq
+ ,3'N:BS*Sq-AndNJBpA^EA"K]-`2IM9lcdNFuXPTJ_LhJKNFr5O596s"fs%ksNia(\8^:E$
+ S^Yn2jY`csNdVq:qLC![pMWB,TM(a#[=W)=O5K%L-`)bkOM8[L$4+V!._fK+u;d5A83lF\%
+ 1\ZSdJZj&6g`H;gW$CAJ#eQ,i"3*ffnE=LCokQ2Q=,ET.k[KeidSIOZ,ZId"5kmE=BUcm)Z
+ FOOrr.osO_N/Q0F]gs'K(9*'G-O\3#/l"34ROkCip([@erW8U!/l.D>>ZhX*MM4bE9bj/.q
+ u\A8Q3?kM,P7Ak28`V:2'ekt-OIqlHgY+oUYS<Po/1:hqi;:s[:KSbS=]>a7@3^<%G$80:q
+ B@X"+rYu]c>fQg+U>qY]f*&oXkm:LR,j#2M4ePfS.nBRo)3q"1kju3&=:$6KiQ/q'pLoKfO
+ ko2ZW'OrcQW$bqFg$YIS9d$;VVr.7(`3#A]iBbf*q'DgTjp=2GIDd4VB$,Z_f2G7@dADNpm
+ AMXF7pYVV5PJ"Z6(F2X-9WQ\iN,-A)QX4PU7BO)6]Rb%jFhD_G-2G\bomei"I6&MU&qGg"l
+ <E3:"i\\(*C#9+:22,mqYB(5A)3Yt2eg!+iFDo9kYE.lH+V+o5@keYn5/pr*<0K<](mJq:i
+ iD<S,i:E&qE>;j9)HIiAjX`K>Z6$F2)us2HJ@%M@OBUl[^J?I`<?-k>fjNH#6SDIqW^A5Te
+ F$LNBNOT.OeqOH</>Oc]qM%q:cCtVk/bt.?bPu@YK.NG;T?!L:Y!5SH)0?*'&'#aH7];Jb0
+ Hir:1s~>
 Q
 Q Q
 showpage
 %%Trailer
-end
 %%EOF
