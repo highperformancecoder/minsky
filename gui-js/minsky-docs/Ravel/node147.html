@@ -1,0 +1,102 @@
+
+<!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
+<HTML>
+<HEAD>
+<TITLE>Tensor valued initial conditions</TITLE>
+<META NAME="description" CONTENT="Tensor valued initial conditions">
+<META NAME="keywords" CONTENT="Ravel">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-15">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2017.2">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="Ravel.css">
+
+<LINK REL="next" HREF="node148.html">
+<LINK REL="previous" HREF="node146.html">
+<LINK REL="up" HREF="node144.html">
+<LINK REL="next" HREF="node148.html">
+</HEAD>
+
+<BODY  bgcolor="#ffffff">
+<!--Navigation Panel-->
+<A NAME="tex2html2411"
+  HREF="node148.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html2407"
+  HREF="node144.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html2401"
+  HREF="node146.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html2409"
+  HREF="Ravel.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html2412"
+  HREF="node148.html">Sliders</A>
+<B> Up:</B> <A NAME="tex2html2408"
+  HREF="node144.html">Variables and Parameters</A>
+<B> Previous:</B> <A NAME="tex2html2402"
+  HREF="node146.html">Initial conditions</A>
+ &nbsp; <B>  <A NAME="tex2html2410"
+  HREF="Ravel.html">Contents</A></B> 
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION00433000000000000000">
+Tensor valued initial conditions</A>
+</H2>
+
+<P>
+<A NAME="tensor-init"></A><A NAME="1918"></A>
+
+<P>
+<I>Ravel</I> provides a simple functional language which allows for
+the generation of tensor-valued operations. This enables <I>Ravel</I>
+to work with hypothetical as well as actual data--for example, hypothetical
+sales volumes for a new product from zero to 500,000 sales per year
+can be generated using the iota formula by putting the expression
+``iota(500001)'' in the initial value field for the variable <I>Sales</I>.
+This generates an axis/dimension named 0 with values from 0 to 500,000. 
+
+<P>
+These functions take the form <EM>func</EM><IMG
+ ALIGN="MIDDLE" SRC="img232.png"
+ ALT="$(n_{1},n_{2},\ldots,n_{r})$% WIDTH=108 HEIGHT=31 ">
+where <IMG
+ ALIGN="BOTTOM" SRC="img233.png"
+ ALT="$r$% WIDTH=11 HEIGHT=14 "> is the desired rank, and <IMG
+ ALIGN="MIDDLE" SRC="img234.png"
+ ALT="$n_{1},n_{2},$% WIDTH=49 HEIGHT=29 "> etc are the dimensions
+of the tensor. Available functions include:
+
+<P>
+<BR>
+<IMG
+ ALIGN="BOTTOM" SRC="img235.png"
+ ALT="\begin{tabular}{\vert r\vert l\vert}
+\hline
+name &amp; description\tabularnewline
+...
+...d with random numbers in the range $[0,1)$\tabularnewline
+\hline
+\end{tabular}% WIDTH=445 HEIGHT=117 ">
+<BR><A NAME="1933"></A><A NAME="1934"></A><A NAME="1935"></A><A NAME="1936"></A><A NAME="1937"></A>
+
+<UL>
+<LI><code>eye</code> is equivalent to <code>one</code> for vectors. 
+</LI>
+<LI><code>rand</code> generates different random numbers each time the simulation
+is reset, and uses the clib <code>rand()</code> function. 
+</LI>
+</UL>
+
+<P>
+<BR><HR>
+
+</BODY>
+</HTML>

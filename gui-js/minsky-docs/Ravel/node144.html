@@ -1,0 +1,156 @@
+
+<!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
+<HTML>
+<HEAD>
+<TITLE>Variables and Parameters</TITLE>
+<META NAME="description" CONTENT="Variables and Parameters">
+<META NAME="keywords" CONTENT="Ravel">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-15">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2017.2">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="Ravel.css">
+
+<LINK REL="next" HREF="node150.html">
+<LINK REL="previous" HREF="node50.html">
+<LINK REL="up" HREF="node43.html">
+<LINK REL="next" HREF="node145.html">
+</HEAD>
+
+<BODY  bgcolor="#ffffff">
+<!--Navigation Panel-->
+<A NAME="tex2html2370"
+  HREF="node145.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html2366"
+  HREF="node43.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html2360"
+  HREF="node143.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html2368"
+  HREF="Ravel.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html2371"
+  HREF="node145.html">Variable names</A>
+<B> Up:</B> <A NAME="tex2html2367"
+  HREF="node43.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html2361"
+  HREF="node143.html">differentiate</A>
+ &nbsp; <B>  <A NAME="tex2html2369"
+  HREF="Ravel.html">Contents</A></B> 
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H1><A NAME="SECTION00430000000000000000">
+Variables and Parameters</A>
+</H1>
+
+<P>
+<A NAME="Variables"></A><A NAME="Variable:constant"></A><A NAME="VarConstant"></A><A NAME="Variable:parameter"></A><A NAME="Variable:flow"></A><A NAME="Variable:integral"></A><A NAME="Variable:stock"></A>
+<P>
+
+    <IMG
+ ALIGN="BOTTOM" SRC="./var.png"
+ ALT="Image var% WIDTH=51 HEIGHT=36 ">
+
+<P>
+Variables represent values in a calculation, and come in a number
+of varieties: 
+<DL>
+<DT><STRONG>Constants</STRONG></DT>
+<DD>represent an explicit numerical value, and do not have
+a name. Their graphical representation shows the actual value of the
+constant. 
+</DD>
+<DT><STRONG>Parameters</STRONG></DT>
+<DD>are named constants. All instances of a given name
+represent the same value, as with all other named variables, so changing
+the value of one parameter, either through its edit menu, or through
+a slider, will affect all the others of that name.
+
+<P>
+Parameters are used to import data from a <A HREF="node187.html#CSV_import">CSV file</A>,
+which is how external data is imported into Ravel for analysis.
+
+<P>
+Parameters can also be used to generate arrays of numbers for
+use in a <I>Ravel</I> file using built-in formulas which are placed
+in the ``Initial value'' field of the parameter definition form.
+See <A HREF="node147.html#tensor-init">tensor valued initial conditions</A>.
+</DD>
+<DT><STRONG>Flow variables</STRONG></DT>
+<DD>have an input port that defines how the value
+is to be calculated. Only one flow variable of a given name can have
+its input port connected, as they all refer to the same quantity.
+If no input ports are connected, then flow variables act just like
+parameters. 
+</DD>
+<DT><STRONG>Integral variables</STRONG></DT>
+<DD>represent the result of integrating its input
+over time by means of the differential equation solver. The integrand
+is represented by the input to an integral operator that is attached
+to the integral variable. 
+</DD>
+<DT><STRONG>Stock variables</STRONG></DT>
+<DD>are the columns of Godley tables, and represent
+the integral over time of the sum of the flow variables making up
+the column. 
+</DD>
+</DL>
+Variables may be converted between types in the variable edit menu,
+available from the context menu, subject to certain rules. For example,
+a variable whose input is wired anywhere on the canvas cannot be changed
+from ``flow''. Stock variables need to be defined in a Godley table,
+and so on.
+
+<P>
+<BR><HR>
+<!--Table of Child-Links-->
+<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
+
+<UL>
+<LI><A NAME="tex2html2372"
+  HREF="node145.html">Variable names</A>
+<LI><A NAME="tex2html2373"
+  HREF="node146.html">Initial conditions</A>
+<LI><A NAME="tex2html2374"
+  HREF="node147.html">Tensor valued initial conditions</A>
+<LI><A NAME="tex2html2375"
+  HREF="node148.html">Sliders</A>
+<LI><A NAME="tex2html2376"
+  HREF="node149.html">Variable Browser</A>
+</UL>
+<!--End of Table of Child-Links-->
+<HR>
+<!--Navigation Panel-->
+<A NAME="tex2html2370"
+  HREF="node145.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html2366"
+  HREF="node43.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html2360"
+  HREF="node143.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html2368"
+  HREF="Ravel.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html2371"
+  HREF="node145.html">Variable names</A>
+<B> Up:</B> <A NAME="tex2html2367"
+  HREF="node43.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html2361"
+  HREF="node143.html">differentiate</A>
+ &nbsp; <B>  <A NAME="tex2html2369"
+  HREF="Ravel.html">Contents</A></B> 
+<!--End of Navigation Panel-->
+
+</BODY>
+</HTML>

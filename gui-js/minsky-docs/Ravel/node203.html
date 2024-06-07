@@ -1,0 +1,105 @@
+
+<!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
+<HTML>
+<HEAD>
+<TITLE>Example expressions</TITLE>
+<META NAME="description" CONTENT="Example expressions">
+<META NAME="keywords" CONTENT="Ravel">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-15">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2017.2">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="Ravel.css">
+
+<LINK REL="next" HREF="node204.html">
+<LINK REL="previous" HREF="node202.html">
+<LINK REL="up" HREF="node200.html">
+<LINK REL="next" HREF="node204.html">
+</HEAD>
+
+<BODY  bgcolor="#ffffff">
+<!--Navigation Panel-->
+<A NAME="tex2html3125"
+  HREF="node204.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html3121"
+  HREF="node200.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html3115"
+  HREF="node202.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html3123"
+  HREF="Ravel.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html3126"
+  HREF="node204.html">Copyright notice</A>
+<B> Up:</B> <A NAME="tex2html3122"
+  HREF="node200.html">User defined functions</A>
+<B> Previous:</B> <A NAME="tex2html3116"
+  HREF="node202.html">Capabilities</A>
+ &nbsp; <B>  <A NAME="tex2html3124"
+  HREF="Ravel.html">Contents</A></B> 
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H1><A NAME="SECTION00530000000000000000">
+Example expressions</A>
+</H1>
+The following is  a short listing  of infix format  based mathematical
+expressions that can be parsed and evaluated using the ExprTk library.
+
+<P>
+
+<UL>
+<LI><code>sqrt(1 - (3 / x^2))</code>
+</LI>
+<LI><code>clamp(-1, sin(2 * pi * x) + cos(y / 2 * pi), +1)</code>
+</LI>
+<LI><code>sin(2.34e-3 * x)</code>
+</LI>
+<LI><code>if(((x[2] + 2) == 3) and ((y + 5) &lt;= 9),1 + w, 2 / z)</code>
+</LI>
+<LI><code>inrange(-2,m,+2) == if(({-2 &lt;= m} and [m &lt;= +2]),1,0)</code>
+</LI>
+<LI><code>({1/1}*[1/2]+(1/3))-{1/4}^[1/5]+(1/6)-({1/7}+[1/8]*(1/9))</code>
+</LI>
+<LI><code>a * exp(2.2 / 3.3 * t) + c</code>
+</LI>
+<LI><code>z := x + sin(2.567 * pi / y)</code>
+</LI>
+<LI><code>u := 2.123 * {pi * z} / (w := x + cos(y / pi))</code>
+</LI>
+<LI><code>2x + 3y + 4z + 5w == 2 * x + 3 * y + 4 * z + 5 * w</code>
+</LI>
+<LI><code>3(x + y) / 2.9 + 1.234e+12 == 3 * (x + y) / 2.9 + 1.234e+12</code>
+</LI>
+<LI><code>(x + y)3.3 + 1 / 4.5 == [x + y] * 3.3 + 1 / 4.5</code>
+</LI>
+<LI><code>(x + y[i])z + 1.1 / 2.7 == (x + y[i]) * z + 1.1 / 2.7</code>
+</LI>
+<LI><code>(sin(x / pi) cos(2y) + 1) == (sin(x / pi) * cos(2 * y) + 1)</code>
+</LI>
+<LI><code>75x^17 + 25.1x^5 - 35x^4 - 15.2x^3 + 40x^2 - 15.3x + 1</code>
+</LI>
+<LI><code>(avg(x,y) &lt;= x + y ? x - y : x * y) + 2.345 * pi / x</code>
+</LI>
+<LI><code>while (x &lt;= 100) { x -= 1; }</code>
+</LI>
+<LI><code>x &lt;= 'abc123' and (y in 'AString') or ('1x2y3z' != z)</code>
+</LI>
+<LI><code>((x + 'abc') like '*123*') or ('a123b' ilike y)</code>
+</LI>
+<LI><code>sgn(+1.2^3.4z / -5.6y) &lt;= {-7.8^9 / -10.11x }</code>
+</LI>
+</UL>
+
+<P>
+<BR><HR>
+
+</BODY>
+</HTML>

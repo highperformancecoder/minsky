@@ -1,0 +1,141 @@
+
+<!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
+<HTML>
+<HEAD>
+<TITLE>gather</TITLE>
+<META NAME="description" CONTENT="gather">
+<META NAME="keywords" CONTENT="Ravel">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-15">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2017.2">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="Ravel.css">
+
+<LINK REL="next" HREF="node113.html">
+<LINK REL="previous" HREF="node111.html">
+<LINK REL="up" HREF="node97.html">
+<LINK REL="next" HREF="node113.html">
+</HEAD>
+
+<BODY  bgcolor="#ffffff">
+<!--Navigation Panel-->
+<A NAME="tex2html1976"
+  HREF="node113.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html1972"
+  HREF="node97.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1966"
+  HREF="node111.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html1974"
+  HREF="Ravel.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html1977"
+  HREF="node113.html">Meld</A>
+<B> Up:</B> <A NAME="tex2html1973"
+  HREF="node97.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1967"
+  HREF="node111.html">index</A>
+ &nbsp; <B>  <A NAME="tex2html1975"
+  HREF="Ravel.html">Contents</A></B> 
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H3><A NAME="SECTION0042131500000000000000">
+gather</A>
+</H3>
+
+<P>
+<A NAME="Operation:gather"></A>
+<P>
+
+    <IMG
+ ALIGN="BOTTOM" SRC="img170.png"
+ ALT="\includegraphics[height=10mm]{images/gather}% WIDTH=49 HEIGHT=46 ">
+
+<P>
+Gather collects the values at index locations of the first argument, indexed by the second
+argument. If the index argument is a scalar, the output tensor's rank
+is one less than the first argument's rank, ie 
+<IMG
+ ALIGN="MIDDLE" SRC="img166.png"
+ ALT="$[a_0,\ldots a_{j-1},a_{j+1},\ldots a_{ar}]$% WIDTH=177 HEIGHT=31 "> where <IMG
+ ALIGN="MIDDLE" SRC="img167.png"
+ ALT="$j$% WIDTH=11 HEIGHT=31 "> is the axis
+along which the gather is performed. If the index argument is a
+tensor, however, it's shape is ignored, and the output tensor is the
+same rank as the first argument, and has shape
+<IMG
+ ALIGN="MIDDLE" SRC="img168.png"
+ ALT="$[i, a_0,\ldots a_{j-1},a_{j+1},\ldots a_{ar}]$% WIDTH=189 HEIGHT=31 "> where
+<IMG
+ ALIGN="BOTTOM" SRC="img152.png"
+ ALT="$i$% WIDTH=9 HEIGHT=15 "> is the number of elements in the index argument's hypercube, and <IMG
+ ALIGN="MIDDLE" SRC="img167.png"
+ ALT="$j$% WIDTH=11 HEIGHT=31 "> is the axis along which the gather is performed.
+
+<P>
+If the index is not an integer, the gather will linearly interpolate
+between the values on either side. So, for example,
+<IMG
+ ALIGN="MIDDLE" SRC="img169.png"
+ ALT="$x[2.5] = 0.5 (x[2]+x[3])$% WIDTH=167 HEIGHT=31 ">. The x-vector elements are also linearly
+interpolated if the x-vector is a value or time type dimension, or the
+closest string label if a string type.
+
+<P>
+If the index value is outside the range of the
+<A HREF="node171.html#x-vector">x-vector</A> along the axis being gathered, then NAN
+is assigned to that tensor element, and the x-vector gets a default
+assigned element (empty string, NaN or not-a-date).
+
+<P>
+The operator can be placed on the canvas in two ways:
+
+<UL>
+<LI>From the <I>Tensor Operations (``tensor'')</I> toolbar 
+  <IMG
+ ALIGN="BOTTOM" SRC="img155.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/innerProduct}}% WIDTH=15 HEIGHT=14 ">
+  ;
+or 
+</LI>
+<LI>By typing the letters ``gather'' on the canvas and then pressing the
+Enter key.
+</LI>
+</UL>
+
+<P>
+<HR>
+<!--Navigation Panel-->
+<A NAME="tex2html1976"
+  HREF="node113.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html1972"
+  HREF="node97.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1966"
+  HREF="node111.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html1974"
+  HREF="Ravel.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html1977"
+  HREF="node113.html">Meld</A>
+<B> Up:</B> <A NAME="tex2html1973"
+  HREF="node97.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1967"
+  HREF="node111.html">index</A>
+ &nbsp; <B>  <A NAME="tex2html1975"
+  HREF="Ravel.html">Contents</A></B> 
+<!--End of Navigation Panel-->
+
+</BODY>
+</HTML>

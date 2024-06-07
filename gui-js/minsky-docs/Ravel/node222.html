@@ -1,0 +1,209 @@
+
+<!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
+<HTML>
+<HEAD>
+<TITLE>Modelling private money creation</TITLE>
+<META NAME="description" CONTENT="Modelling private money creation">
+<META NAME="keywords" CONTENT="Ravel">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-15">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2017.2">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="Ravel.css">
+
+<LINK REL="previous" HREF="node221.html">
+<LINK REL="up" HREF="node221.html">
+</HEAD>
+
+<BODY  bgcolor="#ffffff">
+<!--Navigation Panel-->
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next_g.png"> 
+<A NAME="tex2html3357"
+  HREF="node221.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html3353"
+  HREF="node221.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html3359"
+  HREF="Ravel.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Up:</B> <A NAME="tex2html3358"
+  HREF="node221.html">Building monetary models in</A>
+<B> Previous:</B> <A NAME="tex2html3354"
+  HREF="node221.html">Building monetary models in</A>
+ &nbsp; <B>  <A NAME="tex2html3360"
+  HREF="Ravel.html">Contents</A></B> 
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H3><A NAME="SECTION00624100000000000000">
+Modelling private money creation</A>
+</H3>
+
+<P>
+Add four Stocks to this table: <I>Reserves </I>and <I>Loans</I> as
+Assets, <I>Deposits</I> as a Liability, and <I>Banks</I><SUB><I>Equity</I></SUB>
+as the Equity of the Banks (type Banks_{Equity} to subscript the
+word Equity). Go back to the Design canvas and choose ``Editor mode''
+from the context menu, and you will see the table displayed as follows
+(you will need to resize the table using the Resizing arrows, which
+are visible when your mouse is hovering over the table)
+
+<P>
+<IMG
+ ALIGN="BOTTOM" SRC="img336.png"
+ ALT="\includegraphics[width=\textwidth]{images/MonetaryModel01GodleyTable02}% WIDTH=555 HEIGHT=147 ">
+
+<P>
+Now enter numbers into the ``Initial Conditions'' row. Put 90 in
+<I>Reserves</I>, 10 in <I>Loans</I>, 80 in <I>Deposits</I>, and 20
+in <I>BanksEquity</I>. 
+
+<P>
+<IMG
+ ALIGN="BOTTOM" SRC="img337.png"
+ ALT="\includegraphics[width=\textwidth]{images/MonetaryModel01GodleyTable03InitialConditions}% WIDTH=555 HEIGHT=147 ">
+
+<P>
+Then add three flows to the model: Net Bank Loans (which can be negative
+if people in the aggregate are paying their debts down rather than
+taking on new debt), Interest Payments, and Bank Spending. Call Net
+Bank Loans ``Credit'', Interest Payments ``Interest_L'' (the
+subscript is to distinguish interest on loans from interest on bonds,
+which we'll introduce later), and Bank Spending ``Spend_B'' (the
+subscript is to distinguish Bank Spending from Government Spending,which
+we'll introduce later).
+
+<P>
+<IMG
+ ALIGN="BOTTOM" SRC="img338.png"
+ ALT="\includegraphics[width=\textwidth]{images/MonetaryModel01GodleyTable04AddFlows}% WIDTH=555 HEIGHT=213 ">
+
+<P>
+Next, return to the canvas and use the Godley Table context menu commands
+<I>Copy flow variables</I> and <I>Copy stock variables</I> to copy
+all flows and stocks and place them on the canvas, where they can
+be defined.
+
+<P>
+<IMG
+ ALIGN="BOTTOM" SRC="img339.png"
+ ALT="\includegraphics[width=\textwidth]{images/MonetaryModel01GodleyTable05DefineFlows01}% WIDTH=556 HEIGHT=365 ">
+
+<P>
+The easiest flow to define is <I>Interest</I>, since this is the rate
+of interest times <I>Loans</I>. To define this, first define the parameter
+<I>Int</I><SUB><I>Rate</I></SUB><SUP><I>Loans</I></SUP>:
+just type Int_{Rate}&#94;{Loans} on the canvas and,
+once you've finished entering the text, the Variable/Parameter definition
+form will appear. Put 0.05 as the Initial Value, 0.2 as the <I>Slide
+Bounds: Max</I>, 0.02 as the <I>Min</I>, and 0.01 as the <I>Slider
+Step Size</I>.
+
+<P>
+<IMG
+ ALIGN="BOTTOM" SRC="./MonetaryModel01GodleyTable05DefineFlows03.png"
+ ALT="Image MonetaryModel01GodleyTable05DefineFlows03% WIDTH=505 HEIGHT=688 ">
+
+<P>
+Wire this parameter and <I>Loans </I>up to a multiply block <A HREF="node61.html#Operation:multiply">
+  <IMG
+ ALIGN="BOTTOM" SRC="img334.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/multiply}}% WIDTH=15 HEIGHT=14 "></A>
+and attach it to the flow Interest, and you have defined the first
+of three flows in this extremely simple model.
+
+<P>
+<IMG
+ ALIGN="BOTTOM" SRC="./MonetaryModel01GodleyTable05DefineFlows04.png"
+ ALT="Image MonetaryModel01GodleyTable05DefineFlows04% WIDTH=506 HEIGHT=690 ">
+
+<P>
+Now define <I>Spend</I><SUB><I>B</I></SUB> as a multiple <I>Bank</I><SUB><I>Spend</I></SUB><SUP><I>Rate</I></SUP>
+of the <I>Banks</I><SUB><I>Equity</I></SUB>. Give the parameter
+a small Initial Value--say 0.2--which means that Banks spend 20%
+of their equity into the economy every year--this represents paying
+dividends, wages and bonuses to households, buying goods and services
+off firms, etc. Set Max to 0.5, Min to 0.1, and the Step Size to 0.05.
+
+<P>
+<IMG
+ ALIGN="BOTTOM" SRC="./MonetaryModel01GodleyTable05DefineFlows04.png"
+ ALT="Image MonetaryModel01GodleyTable05DefineFlows04% WIDTH=506 HEIGHT=690 ">
+
+<P>
+Your canvas should now look like this:
+
+<P>
+<IMG
+ ALIGN="BOTTOM" SRC="img340.png"
+ ALT="\includegraphics[width=\textwidth]{images/MonetaryModel01GodleyTable05DefineFlows05}% WIDTH=556 HEIGHT=366 ">
+
+<P>
+This is sufficient to build a model of just financial stocks and flows,
+if you edit <I>Credit</I> to give it a Max, Min and Step Size in keeping
+with the other magnitudes in the model-say a Max of 10, Min of -10,
+and Step Size of 1. Add two Plots <A HREF="node154.html#PlotWidget">
+  <IMG
+ ALIGN="BOTTOM" SRC="img335.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/plotWidget}}% WIDTH=20 HEIGHT=14 "></A>,
+one for Stocks and one for Flows, attach the Stocks and Flows to their
+inputs, put a copy of <I>Credit</I> at the top of the model for ease
+of access, click on the Run button [ifgeo]100, and
+vary the value of <I>Credit </I>to see what happens:
+
+<P>
+<IMG
+ ALIGN="BOTTOM" SRC="img341.png"
+ ALT="\includegraphics[width=\textwidth]{images/MonetaryModel01GodleyTable06Simulate01}% WIDTH=555 HEIGHT=559 ">
+
+<P>
+To link this very simple model to economic concepts, make the ``Friedmanite''
+assumption that GDP equals Money times Velocity. Define Money as the
+sum of Deposits plus <I>Banks</I><SUB><I>Equity</I></SUB>,
+and define <I>Velocity</I> as a parameter with an Initial Value of
+2, Max of 4, Min of 0.5, and Step Size of 0.1. Define a parameter
+<I>Credit</I><SUB><I>Ratio</I></SUB> and give it an Initial
+Value of 0, Max of 0.1, Min of minus 0.1, and Step Size of 0.01. Also
+define the percentage growth rate as the differential of GDP divided
+by itself and put through a percentage operator. Run the model and
+vary <I>Credit</I><SUB><I>Ratio</I></SUB> using the arrow keys
+as you run a simulation.
+
+<P>
+<IMG
+ ALIGN="BOTTOM" SRC="img342.png"
+ ALT="\includegraphics[width=\textwidth]{images/MonetaryModel01GodleyTable07GDP}% WIDTH=555 HEIGHT=868 ">
+
+<P>
+Much more sophisticated models can be built using <I>Minsky</I>, including
+models that mix the flowchart method with Godley Tables to generate
+models of both the physical and monetary systems.
+<HR>
+<!--Navigation Panel-->
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next_g.png"> 
+<A NAME="tex2html3357"
+  HREF="node221.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html3353"
+  HREF="node221.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html3359"
+  HREF="Ravel.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Up:</B> <A NAME="tex2html3358"
+  HREF="node221.html">Building monetary models in</A>
+<B> Previous:</B> <A NAME="tex2html3354"
+  HREF="node221.html">Building monetary models in</A>
+ &nbsp; <B>  <A NAME="tex2html3360"
+  HREF="Ravel.html">Contents</A></B> 
+<!--End of Navigation Panel-->
+
+</BODY>
+</HTML>

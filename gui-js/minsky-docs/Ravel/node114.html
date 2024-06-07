@@ -1,0 +1,123 @@
+
+<!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
+<HTML>
+<HEAD>
+<TITLE>Merge</TITLE>
+<META NAME="description" CONTENT="Merge">
+<META NAME="keywords" CONTENT="Ravel">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-15">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2017.2">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="Ravel.css">
+
+<LINK REL="next" HREF="node115.html">
+<LINK REL="previous" HREF="node113.html">
+<LINK REL="up" HREF="node97.html">
+<LINK REL="next" HREF="node115.html">
+</HEAD>
+
+<BODY  bgcolor="#ffffff">
+<!--Navigation Panel-->
+<A NAME="tex2html2000"
+  HREF="node115.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html1996"
+  HREF="node97.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html1990"
+  HREF="node113.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html1998"
+  HREF="Ravel.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html2001"
+  HREF="node115.html">Slice</A>
+<B> Up:</B> <A NAME="tex2html1997"
+  HREF="node97.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1991"
+  HREF="node113.html">Meld</A>
+ &nbsp; <B>  <A NAME="tex2html1999"
+  HREF="Ravel.html">Contents</A></B> 
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H3><A NAME="SECTION0042131700000000000000">
+Merge</A>
+</H3>
+
+<P>
+<A NAME="Operation:merge"></A>
+<P>
+
+    <IMG
+ ALIGN="BOTTOM" SRC="img172.png"
+ ALT="\includegraphics[height=10mm]{images/merge}% WIDTH=49 HEIGHT=46 ">
+
+<P>
+The operator can be placed on the canvas in two ways:
+
+<UL>
+<LI>From the <I>Tensor Operations (``tensor'')</I> toolbar 
+  <IMG
+ ALIGN="BOTTOM" SRC="img155.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/innerProduct}}% WIDTH=15 HEIGHT=14 ">
+  ;
+or 
+</LI>
+<LI>By typing the letters ``merge'' on the canvas and then pressing the
+Enter key.
+</LI>
+</UL>
+Merge combines two Ravels sharing <I>n</I> dimensions to produce a
+new Ravel with <I>n+1</I> dimensions.
+
+<P>
+For example, the file below creates two 2-dimensional Ravels, one
+with sales in dollars and the other with sales by each salesperson
+as a percentage of total sales.
+
+<P>
+<IMG
+ ALIGN="BOTTOM" SRC="img173.png"
+ ALT="\includegraphics[width=\textwidth]{images/MergeExample01TwoVariables}% WIDTH=554 HEIGHT=237 ">
+
+<P>
+Sales<SUB>SalesPerson<SUP>$</SUP>and SalesPerson<SUP>%</SUP></SUB>share
+the same dimensions (SalesPerson and Date), and they can be separately
+displayed as in the next figure.
+
+<P>
+<IMG
+ ALIGN="BOTTOM" SRC="img174.png"
+ ALT="\includegraphics[width=\textwidth]{images/MergeExample02TwoVariablesSeparate}% WIDTH=555 HEIGHT=566 ">
+
+<P>
+Using the Merge operator, you can create one new Ravel containing
+information from both the $ sales and the % of total sales analysis:
+
+<P>
+<IMG
+ ALIGN="BOTTOM" SRC="img175.png"
+ ALT="\includegraphics[width=\textwidth]{images/MergeExample02TwoVariablesEditForm}% WIDTH=554 HEIGHT=280 ">
+
+<P>
+The merged Ravel has 3 dimensions, with the extra dimension Analysis
+now containing the Sales by dollar amount and Sales as a percentage
+of total sales as entries on the Analysis axis.
+
+<P>
+<IMG
+ ALIGN="BOTTOM" SRC="img176.png"
+ ALT="\includegraphics[width=\textwidth]{images/MergeExample03TwoVariablesMerged}% WIDTH=555 HEIGHT=190 ">
+
+<P>
+<BR><HR>
+
+</BODY>
+</HTML>

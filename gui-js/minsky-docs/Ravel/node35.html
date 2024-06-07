@@ -1,0 +1,193 @@
+
+<!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
+<HTML>
+<HEAD>
+<TITLE>Slicing, Dicing and Rotating Data</TITLE>
+<META NAME="description" CONTENT="Slicing, Dicing and Rotating Data">
+<META NAME="keywords" CONTENT="Ravel">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-15">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2017.2">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="Ravel.css">
+
+<LINK REL="next" HREF="node36.html">
+<LINK REL="previous" HREF="node34.html">
+<LINK REL="up" HREF="node34.html">
+<LINK REL="next" HREF="node36.html">
+</HEAD>
+
+<BODY  bgcolor="#ffffff">
+<!--Navigation Panel-->
+<A NAME="tex2html754"
+  HREF="node36.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html750"
+  HREF="node34.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html744"
+  HREF="node34.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html752"
+  HREF="Ravel.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html755"
+  HREF="node36.html">Attaching Variables to Ravels</A>
+<B> Up:</B> <A NAME="tex2html751"
+  HREF="node34.html">An Overview of Ravel</A>
+<B> Previous:</B> <A NAME="tex2html745"
+  HREF="node34.html">An Overview of Ravel</A>
+ &nbsp; <B>  <A NAME="tex2html753"
+  HREF="Ravel.html">Contents</A></B> 
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H1><A NAME="SECTION00310000000000000000">
+Slicing, Dicing and Rotating Data</A>
+</H1>
+
+<P>
+A Ravel is a graphical representation of multi-dimensional data. Unlike
+a spreadsheet, which has only two dimensions, a Ravel can have as
+many dimensions as your data. You manipulate the axes of a Ravel to
+select the components of your data that you wish to see, and those
+components are then the output of the Ravel, which can be graphed
+or displayed directly, or attached to variables which can be further
+analysed using the flowchart equation capabilities of <I>Ravel</I>.
+The Ravel below loads data from the <A NAME="tex2html5"
+  HREF="https://data.bis.org/bulkdownload"><I>Bank of International Settlements</I></A>
+on house prices. This data has four dimensions:
+<DL>
+<DT><STRONG>Date</STRONG></DT>
+<DD>Quarterly data from 1927 till 2024: 388 entries 
+</DD>
+<DT><STRONG>Unit of Measure</STRONG></DT>
+<DD>House Price Index where 2010 = 100; 2 entries 
+</DD>
+<DT><STRONG>Value</STRONG></DT>
+<DD>Nominal or Real (CPI-deflated) prices: 2 entries 
+</DD>
+<DT><STRONG>Reference Area</STRONG></DT>
+<DD>Country or Region: 62 entries 
+</DD>
+</DL>
+
+<P>
+<IMG
+ ALIGN="BOTTOM" SRC="img69.png"
+ ALT="\includegraphics{images/tut00Ravel}% WIDTH=396 HEIGHT=442 ">
+
+<P>
+When a Ravel is first attached to data, it outputs the entire data
+set--which is indicated by the dimension count <I>4D</I> in the
+lower right quadrant of this Ravel. You can see this by attaching
+a Sheet to the output port of the Ravel:
+
+<P>
+<IMG
+ ALIGN="BOTTOM" SRC="img70.png"
+ ALT="\includegraphics[width=\textwidth]{images/tut01Ravel4DwithSheet}% WIDTH=556 HEIGHT=159 ">
+
+<P>
+The right-pointing axis of the Ravel determines what is shown on the
+rows of the sheet, while the down-pointing Axes of the Ravel determine
+what is shown by the columns. At present these are Reference Area
+by Value, and the sheet shows a slice of that data for the first entry
+in the Date and Value axes-1927-Q3, and Nominal (unadjusted for
+inflation).
+
+<P>
+It would be more useful to see the data by Reference Area by Date.
+To get that view, click the left mouse button on the arrowhead of
+the Date axis, hold the button down, and rotate the axis into the
+down direction, which is currently occupied by the Value axis. When
+you release the mouse button, the Date axis will replace the Unit
+of measure axis in the down direction, and the data in the Sheet will
+now have countries by rows and Quarters by columns.
+
+<P>
+<IMG
+ ALIGN="BOTTOM" SRC="img71.png"
+ ALT="\includegraphics[width=\textwidth]{images/tut02HPI4DwithSheetRotatedCountryDate}% WIDTH=556 HEIGHT=159 ">
+
+<P>
+The Sheet is still blank, because there is no data for the current
+selections-there is no data for Index for Nominal House Prices in
+the very first Quarters of the data (in the years 1927 and 1928) for
+the first countries in the file in alphabetical order.
+
+<P>
+To see data immediately, you can take advantage of a feature of the
+Sheet: it can display the first few rows and columns of data (the
+default setting), which we call the Head, the last few (the Tail),
+or a few of both (Head and Tail). To show the last few rows and columns,
+right-click on the Sheet and choose Row Slices/Tail and Column Slices/Tail".
+That will then show you the last countries in the data file in alphabetical
+order, and the last quarters in the data file.
+
+<P>
+The data still shows the Nominal Index data, since these are the first
+entries in the other two axes. You can control the entry shown using
+the selector dots on those two axes: these are the coloured dots that
+are currently within the inner circle of the Ravel. Selector dots
+can be moved:
+
+<UL>
+<LI>By using the mouse. Click on a dot and drag it to the required selection;
+or 
+</LI>
+<LI>By using the arrow keys. Use the mouse to move the cursor so that
+it is hovering over an axis; then use the up or right arrow key to
+move the dot out towards the arrowhead on an axis, or the down or
+left arrow key to move back towards the center. 
+</LI>
+</UL>
+To see the Real (CPI-adjusted) annual rate of change of house prices,
+use the selector dot on those two axes. That selection is shown below-where
+Date has also been rotated to the rows so that Countries are shown
+by the columns. This already gives one interesting insight: house
+prices were on average falling across advanced countries in 2023.
+
+<P>
+<IMG
+ ALIGN="BOTTOM" SRC="img72.png"
+ ALT="\includegraphics[width=\textwidth]{images/tut04HPI4DwithSheetRotatedCountryDateRealChange}% WIDTH=556 HEIGHT=159 ">
+
+<P>
+To really develop insights from your data, you attach the output of
+the Ravel to variables, and analyse them using <I>Ravel</I>'s flowchart
+mathematics formulas.
+
+<P>
+<HR>
+<!--Navigation Panel-->
+<A NAME="tex2html754"
+  HREF="node36.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html750"
+  HREF="node34.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html744"
+  HREF="node34.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html752"
+  HREF="Ravel.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html755"
+  HREF="node36.html">Attaching Variables to Ravels</A>
+<B> Up:</B> <A NAME="tex2html751"
+  HREF="node34.html">An Overview of Ravel</A>
+<B> Previous:</B> <A NAME="tex2html745"
+  HREF="node34.html">An Overview of Ravel</A>
+ &nbsp; <B>  <A NAME="tex2html753"
+  HREF="Ravel.html">Contents</A></B> 
+<!--End of Navigation Panel-->
+
+</BODY>
+</HTML>

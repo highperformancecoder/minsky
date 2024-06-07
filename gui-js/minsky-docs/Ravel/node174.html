@@ -1,0 +1,227 @@
+
+<!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
+<HTML>
+<HEAD>
+<TITLE>Introduction to the Ravel GUI Object</TITLE>
+<META NAME="description" CONTENT="Introduction to the Ravel GUI Object">
+<META NAME="keywords" CONTENT="Ravel">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-15">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2017.2">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="Ravel.css">
+
+<LINK REL="next" HREF="node175.html">
+<LINK REL="previous" HREF="node173.html">
+<LINK REL="up" HREF="node172.html">
+<LINK REL="next" HREF="node175.html">
+</HEAD>
+
+<BODY  bgcolor="#ffffff">
+<!--Navigation Panel-->
+<A NAME="tex2html2759"
+  HREF="node175.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html2755"
+  HREF="node172.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html2749"
+  HREF="node173.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html2757"
+  HREF="Ravel.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html2760"
+  HREF="node175.html">Ravel-specific capabilities</A>
+<B> Up:</B> <A NAME="tex2html2756"
+  HREF="node172.html">Ravel</A>
+<B> Previous:</B> <A NAME="tex2html2750"
+  HREF="node173.html">Installing Ravel</A>
+ &nbsp; <B>  <A NAME="tex2html2758"
+  HREF="Ravel.html">Contents</A></B> 
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION004142000000000000000">
+Introduction to the Ravel GUI Object</A>
+</H2>
+
+<P>
+<A NAME="Ravel-GUI_Object"></A>
+<P>
+A Ravel is inserted onto the wiring canvas by clicking on the 
+  <IMG
+ ALIGN="BOTTOM" SRC="img44.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/RavelIcon}}% WIDTH=13 HEIGHT=14 ">
+  widget
+from the toolbar. The first Ravel inserted into a document appears
+in Edit mode as shown below, with indicative Axis names:
+
+<P>
+<IMG
+ ALIGN="BOTTOM" SRC="img30.png"
+ ALT="\includegraphics{images/RavelBlank}% WIDTH=410 HEIGHT=401 ">
+
+<P>
+The essential step in using a Ravel is to attach data to it via the
+triangular input port. See <A HREF="node187.html#CSV_import">importing CSV files</A>
+for how to import data.  When a data file is attached to the input
+port of a Ravel, a multi-arrowed object fills the Ravel rectangle. If
+there are seven dimensions or more to the data, it will appear as
+shown below, with arrows in a pastel shade and axes labels not shown
+unless your mouse is hovering over an axis:
+
+<P>
+
+<IMG
+ ALIGN="BOTTOM" SRC="img259.png"
+ ALT="\includegraphics[width=.7\textwidth]{images/RavelDataImporting01}% WIDTH=389 HEIGHT=268 ">
+
+<P>
+With six or fewer dimensions it will appear as shown below, with full-colour
+axes and axis labels shown:
+
+<P>
+
+  <IMG
+ ALIGN="BOTTOM" SRC="img260.png"
+ ALT="\includegraphics[width=.7\textwidth]{images/RavelDataImporting02}% WIDTH=389 HEIGHT=431 ">
+
+<P>
+The arrows are the dimensions of the data; the dots are selectors
+for specific values on each dimension. When a <A HREF="node187.html#CSV_import">CSV import parameter</A> is first attached to a Ravel, all the selector
+dots are in the centre of the Ravel, so that all the data in the Ravel
+is output to any Variable, Sheet or Plot attached to it. The next
+figure shows all 4 selectors being used so that the Ravel outputs
+the annualized rate of inflation for the USA in June 2022.
+
+<P>
+<IMG
+ ALIGN="BOTTOM" SRC="img261.png"
+ ALT="\includegraphics[width=\textwidth]{images/RavelSingleDataPointSelected}% WIDTH=556 HEIGHT=419 ">
+
+<P>
+If the selector dot remains in the centre for one dimension, then
+a column of data for that dimension is output from the Ravel:
+
+<P>
+<IMG
+ ALIGN="BOTTOM" SRC="img262.png"
+ ALT="\includegraphics[width=\textwidth]{images/RavelDataSeriesSelected}% WIDTH=555 HEIGHT=274 ">
+
+<P>
+With two selector dots remaining in the centre, an array of data is
+output. This results in multiple countries' inflation rates being
+plotted:
+
+<P>
+<IMG
+ ALIGN="BOTTOM" SRC="img263.png"
+ ALT="\includegraphics[width=\textwidth]{images/RavelData2SeriesSelected}% WIDTH=556 HEIGHT=274 ">
+
+<P>
+Clearly a number of countries had extreme rates of inflation at various
+times between the 1970s and the mid-1990s. There are Ravel functions
+which can be used to isolate these countries (see <A HREF="node50.html#Operations"><I>Operations</I></A>),
+but it is also easy to identify them visually by moving the selector
+dot along the Reference Area axis. You can do this by either:
+
+<UL>
+<LI>Clicking on the selector dot with the mouse and dragging it along
+the axis; or
+</LI>
+<LI>Hovering the mouse over the axis and using the arrow keys. The up-arrow
+and right-arrow move you forward along a data axis from the first
+entry to the last; the down and left arrow keys move you backward.
+</LI>
+</UL>
+Eyeballing the data indicates that a 40% annual inflation rate is
+the dividing line between countries which did and did not experience
+a hyperinflation in the post-WWII period (defined as from 1955 onwards
+to exclude WWII-influenced price disturbances--for instance, those
+associated with the Russian occupation of Austria ending in 1955).
+That set of countries (Argentina, Brazil, Bulgaria, Chile, Colombia,
+Croatia, Czechia, Estonia, Iceland, Indonesia, Israel, Latvia, Lithuania,
+Mexico, North Macedonia, Peru, Philippines, Poland, Romania, Serbia,
+Slovakia, Slovenia and Turkey) are identified in the next figure as
+``HyperInflation'' countries, while the remainder are ``NormalInflation''
+countries. Except for Iceland, Israel, the Philippines, and Turkey,
+the hyperinflation countries were either South American, or countries
+which underwent the transition from socialism to capitalism in the
+1990s. This figure also shows the iconized version of a Ravel, which
+is generated by toggling ``Editor mode'' on the context menu (also,
+by default, the first Ravel inserted into a document is in Editor
+mode, and all subsequent Ravels are inserted in iconized mode).
+
+<P>
+<IMG
+ ALIGN="BOTTOM" SRC="img264.png"
+ ALT="\includegraphics[width=15cm]{images/RavelDataLockedSubsets}% WIDTH=680 HEIGHT=709 ">
+
+<P>
+This selection employed one context-menu feature of a Ravel--``Pick
+Axis Slices'' was used on the Reference area axis to choose countries
+which had annual inflation rate of above 40% between 1955 and 2024--and
+one Ravel-specific widget, the <A HREF="node184.html#Lock">Lock</A>, which creates a
+subset of the data which can be allocated to a variable. The selection
+on the Ravel can then be changed without altering the subset selected
+by the Lock.
+
+<P>
+Now that the data is sensibly divided, it is feasible to calculate
+average inflation rates for normal countries. This is done by choosing
+``Av'' on the context menu command ``Set next aggregation'', and
+then dragging the Reference Area axis in to the centre of the Ravel.
+
+<P>
+<IMG
+ ALIGN="BOTTOM" SRC="img265.png"
+ ALT="\includegraphics[width=15cm]{images/CPI_SubsetsAverages}% WIDTH=679 HEIGHT=547 ">
+
+<P>
+It is now possible to compare the inflation of individual countries
+to the average for all normal inflation countries. In the next figure,
+the USA and Japan were selected using Pick axis slices, and their
+data is graphed against the average. This shows that Japan's inflation
+rate exceeded America's--and the average--until 1975, after which
+Japan's inflation rate has been consistently lower than that of the
+USA and the average.
+
+<P>
+<IMG
+ ALIGN="BOTTOM" SRC="img266.png"
+ ALT="\includegraphics[width=15cm]{images/CPI_SubsetsAverageVsSelection}% WIDTH=679 HEIGHT=323 ">
+
+<P>
+<HR>
+<!--Navigation Panel-->
+<A NAME="tex2html2759"
+  HREF="node175.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html2755"
+  HREF="node172.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html2749"
+  HREF="node173.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html2757"
+  HREF="Ravel.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html2760"
+  HREF="node175.html">Ravel-specific capabilities</A>
+<B> Up:</B> <A NAME="tex2html2756"
+  HREF="node172.html">Ravel</A>
+<B> Previous:</B> <A NAME="tex2html2750"
+  HREF="node173.html">Installing Ravel</A>
+ &nbsp; <B>  <A NAME="tex2html2758"
+  HREF="Ravel.html">Contents</A></B> 
+<!--End of Navigation Panel-->
+
+</BODY>
+</HTML>

@@ -1,0 +1,153 @@
+
+<!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
+<HTML>
+<HEAD>
+<TITLE>Covariance</TITLE>
+<META NAME="description" CONTENT="Covariance">
+<META NAME="keywords" CONTENT="Ravel">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-15">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2017.2">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="Ravel.css">
+
+<LINK REL="next" HREF="node125.html">
+<LINK REL="previous" HREF="node123.html">
+<LINK REL="up" HREF="node118.html">
+<LINK REL="next" HREF="node125.html">
+</HEAD>
+
+<BODY  bgcolor="#ffffff">
+<!--Navigation Panel-->
+<A NAME="tex2html2125"
+  HREF="node125.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html2121"
+  HREF="node118.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html2115"
+  HREF="node123.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html2123"
+  HREF="Ravel.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html2126"
+  HREF="node125.html">Correlation coefficient</A>
+<B> Up:</B> <A NAME="tex2html2122"
+  HREF="node118.html">Statistical Operations</A>
+<B> Previous:</B> <A NAME="tex2html2116"
+  HREF="node123.html">Histogram</A>
+ &nbsp; <B>  <A NAME="tex2html2124"
+  HREF="Ravel.html">Contents</A></B> 
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H3><A NAME="SECTION004214600000000000000">
+Covariance</A>
+</H3>
+
+<P>
+<A NAME="Operation:covariance"></A>
+<P>
+
+    <IMG
+ ALIGN="BOTTOM" SRC="img198.png"
+ ALT="\includegraphics[height=10mm]{images/covariance}% WIDTH=49 HEIGHT=46 ">
+
+<P>
+The operator can be placed on the canvas in two ways:
+
+<UL>
+<LI>From the <I>Statistics (``statistics'')</I> toolbar 
+  <IMG
+ ALIGN="BOTTOM" SRC="img28.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/mean}}% WIDTH=15 HEIGHT=14 ">
+  ;
+or 
+</LI>
+<LI>By typing the letters ``covariance'' on the canvas and then pressing
+the Enter key
+</LI>
+</UL>
+
+<P>
+Computes the covariance of two tensors along named dimension. If the
+inputs are of rank <IMG
+ ALIGN="BOTTOM" SRC="img192.png"
+ ALT="$N$% WIDTH=18 HEIGHT=15 "> and <IMG
+ ALIGN="BOTTOM" SRC="img193.png"
+ ALT="$M$% WIDTH=21 HEIGHT=15 "> respectively, the output will be
+a <IMG
+ ALIGN="MIDDLE" SRC="img194.png"
+ ALT="$(N-1)\times(M-1)$% WIDTH=134 HEIGHT=31 "> rank tensor, where the <IMG
+ ALIGN="MIDDLE" SRC="img195.png"
+ ALT="$(i,j)$% WIDTH=36 HEIGHT=31 "> element is the
+covariance of the <IMG
+ ALIGN="BOTTOM" SRC="img152.png"
+ ALT="$i$% WIDTH=9 HEIGHT=15 ">-th slice of the first argument along the named
+dimension, and the <IMG
+ ALIGN="MIDDLE" SRC="img167.png"
+ ALT="$j$% WIDTH=11 HEIGHT=31 ">-th slice along the named dimension. As such,
+it is conformant with the definition of <TT>cov</TT> function in Octave,
+but not with the equivalently named function in Matlab: 
+quoteCompatibility Note:: Octave always treats rows of X and Y as multivariate
+random variables. For two inputs, however, MATLAB treats X and Y as
+two univariate distributions regardless of their shapes, and will
+calculate covariance whenever the number of elements in X and Y are
+equal. This will result in a 2x2 matrix. Code relying on MATLAB's
+definition will need to be changed when running in Octave. 
+
+If only a single argument <IMG
+ ALIGN="BOTTOM" SRC="img88.png"
+ ALT="$x$% WIDTH=13 HEIGHT=14 "> is supplied to the covariance, then
+the result is equivalent to cov<IMG
+ ALIGN="MIDDLE" SRC="img196.png"
+ ALT="$(x,x)$% WIDTH=41 HEIGHT=31 ">, ie each slice is covaried
+with each other slice.
+
+<P>
+The formula for covariance between stochastic variables <IMG
+ ALIGN="BOTTOM" SRC="img88.png"
+ ALT="$x$% WIDTH=13 HEIGHT=14 "> and <IMG
+ ALIGN="MIDDLE" SRC="img89.png"
+ ALT="$y$% WIDTH=12 HEIGHT=29 ">
+is 
+<IMG
+ SRC="img197.png"
+ ALT="\begin{displaymath}
+\mathrm{cov}(x,y)=\frac{1}{N-1}\sum_{i}(x_{i}-\langle x\rangle)(y_{i}-\langle y\rangle)
+\end{displaymath}% WIDTH=421 HEIGHT=48 ">
+
+<P>
+<HR>
+<!--Navigation Panel-->
+<A NAME="tex2html2125"
+  HREF="node125.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html2121"
+  HREF="node118.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html2115"
+  HREF="node123.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html2123"
+  HREF="Ravel.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html2126"
+  HREF="node125.html">Correlation coefficient</A>
+<B> Up:</B> <A NAME="tex2html2122"
+  HREF="node118.html">Statistical Operations</A>
+<B> Previous:</B> <A NAME="tex2html2116"
+  HREF="node123.html">Histogram</A>
+ &nbsp; <B>  <A NAME="tex2html2124"
+  HREF="Ravel.html">Contents</A></B> 
+<!--End of Navigation Panel-->
+
+</BODY>
+</HTML>

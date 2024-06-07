@@ -1,0 +1,222 @@
+
+<!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
+<HTML>
+<HEAD>
+<TITLE>Quick instructions</TITLE>
+<META NAME="description" CONTENT="Quick instructions">
+<META NAME="keywords" CONTENT="Ravel">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-15">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2017.2">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="Ravel.css">
+
+<LINK REL="next" HREF="node189.html">
+<LINK REL="previous" HREF="node187.html">
+<LINK REL="up" HREF="node187.html">
+<LINK REL="next" HREF="node189.html">
+</HEAD>
+
+<BODY  bgcolor="#ffffff">
+<!--Navigation Panel-->
+<A NAME="tex2html2931"
+  HREF="node189.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html2927"
+  HREF="node187.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html2921"
+  HREF="node187.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html2929"
+  HREF="Ravel.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html2932"
+  HREF="node189.html">Temporal data</A>
+<B> Up:</B> <A NAME="tex2html2928"
+  HREF="node187.html">Importing data into a</A>
+<B> Previous:</B> <A NAME="tex2html2922"
+  HREF="node187.html">Importing data into a</A>
+ &nbsp; <B>  <A NAME="tex2html2930"
+  HREF="Ravel.html">Contents</A></B> 
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION004151000000000000000">
+Quick instructions</A>
+</H2>
+
+<P>
+
+<UL>
+<LI>Data is typically (but not always) stored in the rightmost columns
+of a CSV file. Shift click to set the top left cell of the data. Columns
+to the left will be marked as axes. 
+</LI>
+<LI>Select ``axis'' in the Dimension dropdown to include a column as
+an axis. Column data turns blue. 
+</LI>
+<LI>Select ``ignore'' in the Dimension dropdown to exclude a column.
+Column data turns red. 
+</LI>
+<LI>Select ``data'' in the Dimension dropdown to treat a column as a
+data column. Column data turns black. 
+</LI>
+<LI>Select Type for included axis columns. Select one of three types: 
+<DL>
+<DT><STRONG>string</STRONG></DT>
+<DD>most general type, data treated as is. 
+</DD>
+<DT><STRONG>value</STRONG></DT>
+<DD>value data must be numerical, e.g. 1, 2, and not quoted
+(as in ``1'', ``2'', etc.)
+</DD>
+<DT><STRONG>time</STRONG></DT>
+<DD>data must refer to date-time data. The format field may
+be used to control interpretation of this data, though if this field
+is left blank, Ravel will interpret the data format itself. Blank
+format assumes data contains year/month/day/hour/minute/second separated
+by some non-numerical character. If fewer than 6 numerical fields
+present (from year to second), smallest units are set to minimum value
+(0 or 1 respectively). 
+</DD>
+</DL>
+</LI>
+<LI>Click the OK button. 
+</LI>
+<LI>Data is imported into the parameter. 
+</LI>
+<LI>You may need to set units for the imported data field, which can be
+done via the Edit <IMG
+ ALIGN="BOTTOM" SRC="img79.png"
+ ALT="$\rightarrow$% WIDTH=20 HEIGHT=14 "> Dimensions menu item.
+</LI>
+</UL>
+In the case shown above, the system has automatically guessed that
+the data is 3 dimensional, and that the first 3 columns give the axis
+labels for each dimension (shown in blue), and the 4th column contains
+the data. The first row has been automatically determined to be the
+first row of the file -- with the dimension names are shown in green.
+
+<P>
+In this case, the automatic parsing system has worked things out correctly,
+but often times it needs help from the computer user. An example is
+as follows:
+
+<IMG
+ ALIGN="BOTTOM" SRC="img276.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogFail}}% WIDTH=555 HEIGHT=291 "> 
+
+<P>
+
+<P>
+In this example, <I>Ravel</I> has failed to determine where the data
+starts, probably because of the columns to the right of the ``Price''
+columns. So the first thing to do is tell it where the data is located.
+This is one function of the context menu for data importing. The options
+are:
+
+<P>
+<BR>
+<IMG
+ ALIGN="BOTTOM" SRC="img277.png"
+ ALT="\begin{tabular}{\vert c\vert p{0.5\textwidth}\vert}
+\hline
+Command &amp; Effect\tab...
+...\emph{Ravel} where data begins in the file\tabularnewline
+\hline
+\end{tabular}% WIDTH=560 HEIGHT=238 ">
+<BR>
+
+<IMG
+ ALIGN="BOTTOM" SRC="img278.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogSelectData}}% WIDTH=555 HEIGHT=291 "> 
+
+<P>
+
+<P>
+Note that this causes all columns to the right of ``Price paid''
+to be treated as data, which is not right, since the columns to the
+right of ``Price (text infill)'' are text based columns, not data.
+So we need to mark those columns as either ``axis'' or ``ignore''.
+To do that, click and drag your mouse on the header field, which will
+cause those columns to be selected, like so:
+
+<IMG
+ ALIGN="BOTTOM" SRC="img279.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogSelectedColumns}}% WIDTH=555 HEIGHT=291 "> 
+
+<P>
+
+<P>
+Then in the dimensions row, select ``axis'', which flips the selected
+columns:
+
+<IMG
+ ALIGN="BOTTOM" SRC="img280.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogSelectedAxes}}% WIDTH=555 HEIGHT=291 "> 
+
+<P>
+
+<P>
+Now the axes index labels are rendered in blue, the axes names in
+green and the data is in black. In this example, some axes have unique
+values, which are not particularly useful to scan over. Other examples
+might have columns that duplicate others, for example when the data
+has been entered via a database program that allows the user to type
+country codes (e.g., LX) rather than the full country name (Luxembourg).
+Only one of these axes is needed to uniquely specify the country,
+so you can exclude the unwanted dimension by choosing ``ignore''
+in the ``Dimension'' row. The deselected columns are rendered in
+red, indicating that its data will not be imported into <I>Ravel</I>:
+
+<IMG
+ ALIGN="BOTTOM" SRC="img281.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogAxesDeselected}}% WIDTH=555 HEIGHT=291 "> 
+
+<P>
+
+<P>
+In this example, the axis names has not been correctly inferred. Whilst,
+one can manually edit the axis names in the ``Name'' line, a quick
+shortcut is to select ``Populate column labels'' from the context menu. 
+
+<IMG
+ ALIGN="BOTTOM" SRC="img282.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogAxesNamed}}% WIDTH=555 HEIGHT=291 "> 
+
+<P>
+
+<P>
+<HR>
+<!--Navigation Panel-->
+<A NAME="tex2html2931"
+  HREF="node189.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html2927"
+  HREF="node187.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html2921"
+  HREF="node187.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html2929"
+  HREF="Ravel.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html2932"
+  HREF="node189.html">Temporal data</A>
+<B> Up:</B> <A NAME="tex2html2928"
+  HREF="node187.html">Importing data into a</A>
+<B> Previous:</B> <A NAME="tex2html2922"
+  HREF="node187.html">Importing data into a</A>
+ &nbsp; <B>  <A NAME="tex2html2930"
+  HREF="Ravel.html">Contents</A></B> 
+<!--End of Navigation Panel-->
+
+</BODY>
+</HTML>
