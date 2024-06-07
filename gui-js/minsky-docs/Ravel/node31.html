@@ -2,8 +2,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Inserting a component</TITLE>
-<META NAME="description" CONTENT="Inserting a component">
+<TITLE>Components in Ravel</TITLE>
+<META NAME="description" CONTENT="Components in Ravel">
 <META NAME="keywords" CONTENT="Ravel">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,80 +16,67 @@
 
 <LINK REL="next" HREF="node32.html">
 <LINK REL="previous" HREF="node30.html">
-<LINK REL="up" HREF="node29.html">
+<LINK REL="up" HREF="node30.html">
 <LINK REL="next" HREF="node32.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html700"
+<A NAME="tex2html705"
   HREF="node32.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html696"
-  HREF="node29.html">
+<A NAME="tex2html701"
+  HREF="node30.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html690"
+<A NAME="tex2html695"
   HREF="node30.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html698"
+<A NAME="tex2html703"
   HREF="Ravel.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html701"
-  HREF="node32.html">Creating an equation</A>
-<B> Up:</B> <A NAME="tex2html697"
-  HREF="node29.html">Working with Ravel</A>
-<B> Previous:</B> <A NAME="tex2html691"
-  HREF="node30.html">Components in Ravel</A>
- &nbsp; <B>  <A NAME="tex2html699"
+<B> Next:</B> <A NAME="tex2html706"
+  HREF="node32.html">Inserting a component</A>
+<B> Up:</B> <A NAME="tex2html702"
+  HREF="node30.html">Working with Ravel</A>
+<B> Previous:</B> <A NAME="tex2html696"
+  HREF="node30.html">Working with Ravel</A>
+ &nbsp; <B>  <A NAME="tex2html704"
   HREF="Ravel.html">Contents</A></B> 
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00242000000000000000">
-Inserting a component</A>
+<H2><A NAME="SECTION00241000000000000000">
+Components in <I>Ravel</I></A>
 </H2>
 
 <P>
-There are five ways to insert a component onto the Canvas: 
+There are several types of components:
 
 <OL>
-<LI>Click on the desired Icon on the Icon Palette, drag the block onto
-the Canvas and click the mouse where you want to insert it
-
-<IMG
- ALIGN="BOTTOM" SRC="NewItem18.png"
- ALT="602%  "> 
-
-<P>
-
+<LI>Parameters, which either load in data from an external CSV file, store
+values typed in by the user, or create arrays of numbers using simple
+formulas entered into the <I>Initial Value</I> field;
 </LI>
-<LI>Choose Insert from the menu and select the desired block there
-
-<P>
-
-<P>
-
+<LI>Ravels, which take data from a parameter and create a multi-dimensional
+graphical rendition of the data; 
 </LI>
-<LI>Right-click on an existing block and choose copy. Then place the copy
-where you want it on the palette.
-
-<IMG
- ALIGN="BOTTOM" SRC="NewItem161.png"
- ALT="472%  "> 
-
-<P>
-
+<LI>Mathematical operators such as plus (+), minus (-), etc. These are
+all aware of the dimensions of your data, so they act on arrays of
+data, rather than single cells as with spreadsheet formulas; 
 </LI>
-<LI>Variables can be inserted by typing the variable name on the canvas,
-and constants can be entered simply by typing the number on the canvas.
-Similarly, operations can be inserted by typing the operator name
-(eg <code>sin</code>, or <code>*</code>). Notes can be inserted by starting
-the note with a <code>#</code> character.
+<LI>Constants, which are given a value by the user;
 </LI>
-<LI>Variables can also be picked from the <A HREF="node149.html#VariableBrowser">Variable Browser</A>
-and placed on the canvas. 
+<LI>Variables whose values are calculated by the program and depend on
+the values of constants, parameters and other variables, and the formulas
+applied to them;
+</LI>
+<LI>Text strings and paragraphs, which can be used to document a model;
+and
+</LI>
+<LI>Groups, which allow components to be grouped into modules that can
+be used to construct more complex models. 
 </LI>
 </OL>
 

@@ -2,8 +2,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>inner product </TITLE>
-<META NAME="description" CONTENT="inner product ">
+<TITLE>difference </TITLE>
+<META NAME="description" CONTENT="difference ">
 <META NAME="keywords" CONTENT="Ravel">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,87 +16,99 @@
 
 <LINK REL="next" HREF="node110.html">
 <LINK REL="previous" HREF="node108.html">
-<LINK REL="up" HREF="node97.html">
+<LINK REL="up" HREF="node98.html">
 <LINK REL="next" HREF="node110.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html1940"
+<A NAME="tex2html1945"
   HREF="node110.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1936"
-  HREF="node97.html">
+<A NAME="tex2html1941"
+  HREF="node98.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1930"
+<A NAME="tex2html1935"
   HREF="node108.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html1938"
+<A NAME="tex2html1943"
   HREF="Ravel.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html1941"
-  HREF="node110.html">outer product</A>
-<B> Up:</B> <A NAME="tex2html1937"
-  HREF="node97.html">Tensor operations</A>
-<B> Previous:</B> <A NAME="tex2html1931"
-  HREF="node108.html">difference</A>
- &nbsp; <B>  <A NAME="tex2html1939"
+<B> Next:</B> <A NAME="tex2html1946"
+  HREF="node110.html">inner product</A>
+<B> Up:</B> <A NAME="tex2html1942"
+  HREF="node98.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1936"
+  HREF="node108.html">running product</A>
+ &nbsp; <B>  <A NAME="tex2html1944"
   HREF="Ravel.html">Contents</A></B> 
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H3><A NAME="SECTION0042131200000000000000">
-inner product <IMG
- ALIGN="BOTTOM" SRC="img23.png"
- ALT="$\cdot $% WIDTH=8 HEIGHT=15 "></A>
+<H3><A NAME="SECTION0042131100000000000000">
+difference <IMG
+ ALIGN="MIDDLE" SRC="img22.png"
+ ALT="$\Delta ^{-},\Delta ^{+}$% WIDTH=59 HEIGHT=34 "></A>
 </H3>
+
+<P>
+<A NAME="Operation:difference"></A><A NAME="Operation:differencePlus"></A> Computes
+the nearest neighbour difference along a given direction.
 
 <P>
 
     <IMG
- ALIGN="BOTTOM" SRC="img160.png"
- ALT="\includegraphics[height=10mm]{images/innerProduct}% WIDTH=49 HEIGHT=46 ">
+ ALIGN="BOTTOM" SRC="img153.png"
+ ALT="\includegraphics[height=10mm]{images/difference}% WIDTH=49 HEIGHT=46 ">
+
+    <IMG
+ ALIGN="BOTTOM" SRC="img154.png"
+ ALT="\includegraphics[height=10mm]{images/differencePlus}% WIDTH=49 HEIGHT=46 ">
 
 <P>
-<A NAME="Operation:innerProduct"></A> Calculates the inner product of two
-tensors.
-
-<P>
-The operator can be placed on the canvas in two ways:
+These operators can be placed on the canvas in two ways:
 
 <UL>
-<LI>From the <I>Tensor Operations (``tensor'')</I> toolbar 
+<LI>From the <I>Scan Operations (``scan'')</I> toolbar 
   <IMG
- ALIGN="BOTTOM" SRC="img155.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/innerProduct}}% WIDTH=15 HEIGHT=14 ">
+ ALIGN="BOTTOM" SRC="img143.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/runningSum}}% WIDTH=15 HEIGHT=14 ">
   ;
 or 
 </LI>
-<LI>By typing the letters ``innerProduct'' on the canvas and then pressing
-the Enter key.
+<LI>By typing the letters ``difference'' or ``differencePlus''
+on the canvas and then pressing the Enter key.
 </LI>
 </UL>
-It computes 
+The optional argument (<IMG
+ ALIGN="BOTTOM" SRC="img149.png"
+ ALT="$\delta$% WIDTH=11 HEIGHT=15 ">) can be used to specify the number
+of neighbours to skip in computing the differences. For example if
+your data is monthly and you want to calculate changes per year, you
+would set <IMG
+ ALIGN="BOTTOM" SRC="img149.png"
+ ALT="$\delta$% WIDTH=11 HEIGHT=15 "> to 12. The length of the dimension being differenced
+is reduced by <IMG
+ ALIGN="BOTTOM" SRC="img149.png"
+ ALT="$\delta$% WIDTH=11 HEIGHT=15 "> in the result.
+
+<P>
+It comes in two different forms which differ only in how the resultant
+x-vector is calculated. <IMG
+ ALIGN="MIDDLE" SRC="img150.png"
+ ALT="$\Delta_{i}^{-}=x_{i}-x_{i-\delta}$% WIDTH=113 HEIGHT=35 ">, and
 <IMG
- SRC="img156.png"
- ALT="\begin{displaymath}
-z_{i_{1},\ldots,i_{r_{x}-1},j_{1},\ldots,j_{r_{y}-1}}=\sum_{...
-...1},k,i_{a+1}\ldots,i_{r_{x}-1}}y_{j_{1},\ldots,j_{r_{y}-1},k},
-\end{displaymath}% WIDTH=487 HEIGHT=45 ">
-where <IMG
- ALIGN="BOTTOM" SRC="img157.png"
- ALT="$a$% WIDTH=12 HEIGHT=14 "> is the given axis, and <IMG
- ALIGN="MIDDLE" SRC="img158.png"
- ALT="$r_{x}$% WIDTH=19 HEIGHT=29 "> and <IMG
- ALIGN="MIDDLE" SRC="img159.png"
- ALT="$r_{y}$% WIDTH=19 HEIGHT=29 "> are the ranks
-of <IMG
- ALIGN="BOTTOM" SRC="img88.png"
- ALT="$x$% WIDTH=13 HEIGHT=14 "> and <IMG
- ALIGN="MIDDLE" SRC="img89.png"
- ALT="$y$% WIDTH=12 HEIGHT=29 "> respectively.
+ ALIGN="MIDDLE" SRC="img151.png"
+ ALT="$\Delta_{i}^{+}=x_{i+\delta}-x_{i}$% WIDTH=113 HEIGHT=35 ">, where <IMG
+ ALIGN="BOTTOM" SRC="img152.png"
+ ALT="$i$% WIDTH=9 HEIGHT=15 "> refers to the x-vector
+index.
+
+<P>
+Where there is more than one dimension to data, the user needs to
+specify the axis along which the difference operation is calculated.
 
 <P>
 <BR><HR>

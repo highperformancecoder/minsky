@@ -2,8 +2,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>differentiate </TITLE>
-<META NAME="description" CONTENT="differentiate ">
+<TITLE>Integral Block context menu</TITLE>
+<META NAME="description" CONTENT="Integral Block context menu">
 <META NAME="keywords" CONTENT="Ravel">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -14,54 +14,76 @@
 
 <LINK REL="STYLESHEET" HREF="Ravel.css">
 
-<LINK REL="previous" HREF="node141.html">
-<LINK REL="up" HREF="node50.html">
+<LINK REL="previous" HREF="node142.html">
+<LINK REL="up" HREF="node142.html">
 <LINK REL="next" HREF="node144.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html2358"
+<A NAME="tex2html2365"
   HREF="node144.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html2354"
-  HREF="node50.html">
+<A NAME="tex2html2361"
+  HREF="node142.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html2350"
+<A NAME="tex2html2357"
   HREF="node142.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html2356"
+<A NAME="tex2html2363"
   HREF="Ravel.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html2359"
-  HREF="node144.html">Variables and Parameters</A>
-<B> Up:</B> <A NAME="tex2html2355"
-  HREF="node50.html">Operations</A>
-<B> Previous:</B> <A NAME="tex2html2351"
-  HREF="node142.html">Integral Block context menu</A>
- &nbsp; <B>  <A NAME="tex2html2357"
+<B> Next:</B> <A NAME="tex2html2366"
+  HREF="node144.html">differentiate</A>
+<B> Up:</B> <A NAME="tex2html2362"
+  HREF="node142.html">integrate</A>
+<B> Previous:</B> <A NAME="tex2html2358"
+  HREF="node142.html">integrate</A>
+ &nbsp; <B>  <A NAME="tex2html2364"
   HREF="Ravel.html">Contents</A></B> 
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004219000000000000000">
-differentiate <IMG
- ALIGN="MIDDLE" SRC="img17.png"
- ALT="$d/dt$% WIDTH=34 HEIGHT=31 "></A>
-</H2>
+<H3><A NAME="SECTION004218100000000000000">
+Integral Block context menu</A>
+</H3>
 
 <P>
-
-    <IMG
- ALIGN="BOTTOM" SRC="img230.png"
- ALT="\includegraphics[height=10mm]{images/differential}% WIDTH=49 HEIGHT=46 ">
+The integral-block-specific commands on the context menu are:
 
 <P>
-<A NAME="Operation:differentiate"></A> Symbolically differentiates its input
-with respect to system time, producing d/dt[input]. For further
-explanation regarding differentiation, see <a href="https://en.wikipedia.org/wiki/Derivative">this wikipedia page</a>.
+<BR>
+<IMG
+ ALIGN="BOTTOM" SRC="img228.png"
+ ALT="\begin{tabular}{\vert c\vert p{0.68\textwidth}\vert}
+\hline
+Command &amp; Effect\ta...
+...tate the combined integral block plus name\tabularnewline
+\hline
+\end{tabular}% WIDTH=547 HEIGHT=141 ">
+<BR>
+
+<P>
+Editable attributes include the variable's name and its initial value
+at <IMG
+ ALIGN="BOTTOM" SRC="img229.png"
+ ALT="$t=0$% WIDTH=39 HEIGHT=14 ">. The main role of the Edit form is to provide the name for
+the integrated variable--other details included on the form can
+be controlled from elsewhere in the program. Type the name you want
+to give the variable into the Name field and press Enter or click
+on OK. You can also name the variable via the context menu item ``Rename
+all instances''.
+
+<P>
+The flows to be integrated are connected to the top port of the integral
+block, labelled `<IMG
+ ALIGN="MIDDLE" SRC="img225.png"
+ ALT="$f$% WIDTH=13 HEIGHT=30 ">'. The bottom port, labelled `0', can optionally
+be connected to a constant, parameter or variable, which is used to
+specify the initial value of the integral, following the same rules as
+the <A HREF="node147.html#var:init">variable initial value field</A>.
 
 <P>
 <BR><HR>

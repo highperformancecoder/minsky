@@ -2,8 +2,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Shape</TITLE>
-<META NAME="description" CONTENT="Shape">
+<TITLE>Size</TITLE>
+<META NAME="description" CONTENT="Size">
 <META NAME="keywords" CONTENT="Ravel">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -14,49 +14,50 @@
 
 <LINK REL="STYLESHEET" HREF="Ravel.css">
 
+<LINK REL="next" HREF="node118.html">
 <LINK REL="previous" HREF="node116.html">
-<LINK REL="up" HREF="node97.html">
+<LINK REL="up" HREF="node98.html">
 <LINK REL="next" HREF="node118.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html2034"
+<A NAME="tex2html2041"
   HREF="node118.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html2030"
-  HREF="node97.html">
+<A NAME="tex2html2037"
+  HREF="node98.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html2026"
+<A NAME="tex2html2031"
   HREF="node116.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html2032"
+<A NAME="tex2html2039"
   HREF="Ravel.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html2035"
-  HREF="node118.html">Statistical Operations</A>
-<B> Up:</B> <A NAME="tex2html2031"
-  HREF="node97.html">Tensor operations</A>
-<B> Previous:</B> <A NAME="tex2html2027"
-  HREF="node116.html">Size</A>
- &nbsp; <B>  <A NAME="tex2html2033"
+<B> Next:</B> <A NAME="tex2html2042"
+  HREF="node118.html">Shape</A>
+<B> Up:</B> <A NAME="tex2html2038"
+  HREF="node98.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html2032"
+  HREF="node116.html">Slice</A>
+ &nbsp; <B>  <A NAME="tex2html2040"
   HREF="Ravel.html">Contents</A></B> 
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H3><A NAME="SECTION0042132000000000000000">
-Shape</A>
+<H3><A NAME="SECTION0042131900000000000000">
+Size</A>
 </H3>
 
 <P>
-<A NAME="Operation:shape"></A>
+<A NAME="Operation:size"></A>
 <P>
 
     <IMG
- ALIGN="BOTTOM" SRC="img182.png"
- ALT="\includegraphics[height=10mm]{images/shape}% WIDTH=49 HEIGHT=46 ">
+ ALIGN="BOTTOM" SRC="img181.png"
+ ALT="\includegraphics[height=10mm]{images/size}% WIDTH=49 HEIGHT=46 ">
 
 <P>
 The operator can be placed on the canvas in two ways:
@@ -69,13 +70,21 @@ The operator can be placed on the canvas in two ways:
   ;
 or 
 </LI>
-<LI>By typing the letters ``shape'' on the canvas and then pressing the
+<LI>By typing the letters ``size'' on the canvas and then pressing the
 Enter key.
 </LI>
 </UL>
-Returns a vector of axis sizes. Coupling this operation with a
-<A HREF="node112.html#Operation:gather">gather</A> operation and variable would allow
-you interactively select axis size.
+Size refers to the number of elements along a named dimension given
+by the operation axisargument--eg a <IMG
+ ALIGN="MIDDLE" SRC="img180.png"
+ ALT="$3\times2$% WIDTH=39 HEIGHT=29 "> rank 2 tensor with
+named axes ``0'' and ``1'', size(``1'')==2.
+
+<P>
+If the axis argument is left blank, the size returns the total number
+of elements present in the tensor. This may be less than the product
+of axis sizes if the data is sparse--which will normally be the
+case.
 
 <P>
 <BR><HR>

@@ -2,8 +2,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Histogram</TITLE>
-<META NAME="description" CONTENT="Histogram">
+<TITLE>-th moment</TITLE>
+<META NAME="description" CONTENT="-th moment">
 <META NAME="keywords" CONTENT="Ravel">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,48 +16,50 @@
 
 <LINK REL="next" HREF="node124.html">
 <LINK REL="previous" HREF="node122.html">
-<LINK REL="up" HREF="node118.html">
+<LINK REL="up" HREF="node119.html">
 <LINK REL="next" HREF="node124.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html2113"
+<A NAME="tex2html2118"
   HREF="node124.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html2109"
-  HREF="node118.html">
+<A NAME="tex2html2114"
+  HREF="node119.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html2103"
+<A NAME="tex2html2108"
   HREF="node122.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html2111"
+<A NAME="tex2html2116"
   HREF="Ravel.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html2114"
-  HREF="node124.html">Covariance</A>
-<B> Up:</B> <A NAME="tex2html2110"
-  HREF="node118.html">Statistical Operations</A>
-<B> Previous:</B> <A NAME="tex2html2104"
-  HREF="node122.html">-th moment</A>
- &nbsp; <B>  <A NAME="tex2html2112"
+<B> Next:</B> <A NAME="tex2html2119"
+  HREF="node124.html">Histogram</A>
+<B> Up:</B> <A NAME="tex2html2115"
+  HREF="node119.html">Statistical Operations</A>
+<B> Previous:</B> <A NAME="tex2html2109"
+  HREF="node122.html">Standard Deviation</A>
+ &nbsp; <B>  <A NAME="tex2html2117"
   HREF="Ravel.html">Contents</A></B> 
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H3><A NAME="SECTION004214500000000000000">
-Histogram</A>
+<H3><A NAME="SECTION004214400000000000000">
+<IMG
+ ALIGN="BOTTOM" SRC="img25.png"
+ ALT="$k$% WIDTH=13 HEIGHT=15 ">-th moment</A>
 </H3>
 
 <P>
-<A NAME="Operation:histogram"></A>
+<A NAME="Operation:moment"></A>
 <P>
 
     <IMG
- ALIGN="BOTTOM" SRC="img191.png"
- ALT="\includegraphics[height=10mm]{images/histogramKey}% WIDTH=49 HEIGHT=46 ">
+ ALIGN="BOTTOM" SRC="img189.png"
+ ALT="\includegraphics[height=10mm]{images/moment}% WIDTH=49 HEIGHT=46 ">
 
 <P>
 The operator can be placed on the canvas in two ways:
@@ -70,26 +72,37 @@ The operator can be placed on the canvas in two ways:
   ;
 or 
 </LI>
-<LI>By typing the letters ``histogram'' on the canvas and then pressing
-the Enter key
+<LI>By typing the letters ``moment'' on the canvas and then pressing the
+Enter key
 </LI>
 </UL>
-Computes the histogram along a named dimension of all elements present.
-If the dimension is not named, then the histogram is over all elements
-present in the tensor. The number of bins is specified by the numeric
-argument to the operation.
+Returns the <IMG
+ ALIGN="BOTTOM" SRC="img25.png"
+ ALT="$k$% WIDTH=13 HEIGHT=15 ">-th moment about the mean along a named dimension
+of all elements present. <IMG
+ ALIGN="BOTTOM" SRC="img25.png"
+ ALT="$k$% WIDTH=13 HEIGHT=15 "> is specified by the numerical argument
+of the operation, which defaults to 1 (hence the result will be 0
+in that case). If the dimension is not named, then the <IMG
+ ALIGN="BOTTOM" SRC="img25.png"
+ ALT="$k$% WIDTH=13 HEIGHT=15 ">-th moment
+is over all elements present in the tensor. Note that missing elements
+are not counted.
 
+<P>
 <IMG
- ALIGN="BOTTOM" SRC="img190.png"
- ALT="\resizebox{\textwidth}{!}{\includegraphics{images/histogram}}% WIDTH=556 HEIGHT=484 ">
+ SRC="img187.png"
+ ALT="\begin{displaymath}
+\langle\Delta x^{k}\rangle=\frac{1}{N}\sum_{i}(x_{i}-\langle x\rangle)^{k}
+\end{displaymath}% WIDTH=370 HEIGHT=48 ">
 
 <P>
-
-<P>
-
-<EM>An example usage of the histogram operation</EM> 
-
-<P>
+Also 
+<IMG
+ SRC="img188.png"
+ ALT="\begin{displaymath}
+\sigma^{2}=\frac{N}{N-1}\langle\Delta x^{2}\rangle
+\end{displaymath}% WIDTH=340 HEIGHT=41 ">
 
 <P>
 <BR><HR>

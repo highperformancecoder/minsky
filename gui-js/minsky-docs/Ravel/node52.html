@@ -2,8 +2,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Ravel</TITLE>
-<META NAME="description" CONTENT="Ravel">
+<TITLE>Import Data</TITLE>
+<META NAME="description" CONTENT="Import Data">
 <META NAME="keywords" CONTENT="Ravel">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,160 +16,56 @@
 
 <LINK REL="next" HREF="node53.html">
 <LINK REL="previous" HREF="node51.html">
-<LINK REL="up" HREF="node50.html">
+<LINK REL="up" HREF="node51.html">
 <LINK REL="next" HREF="node53.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html1208"
+<A NAME="tex2html1213"
   HREF="node53.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1204"
-  HREF="node50.html">
+<A NAME="tex2html1209"
+  HREF="node51.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1198"
+<A NAME="tex2html1203"
   HREF="node51.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html1206"
+<A NAME="tex2html1211"
   HREF="Ravel.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html1209"
-  HREF="node53.html">Lock</A>
-<B> Up:</B> <A NAME="tex2html1205"
-  HREF="node50.html">Operations</A>
-<B> Previous:</B> <A NAME="tex2html1199"
-  HREF="node51.html">Import Data</A>
- &nbsp; <B>  <A NAME="tex2html1207"
+<B> Next:</B> <A NAME="tex2html1214"
+  HREF="node53.html">Ravel</A>
+<B> Up:</B> <A NAME="tex2html1210"
+  HREF="node51.html">Operations</A>
+<B> Previous:</B> <A NAME="tex2html1204"
+  HREF="node51.html">Operations</A>
+ &nbsp; <B>  <A NAME="tex2html1212"
   HREF="Ravel.html">Contents</A></B> 
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00422000000000000000">
-Ravel</A>
+<H2><A NAME="SECTION00421000000000000000">
+Import Data</A>
 </H2>
 
 <P>
-A Ravel is a visual tool for manipulating and analyzing multi-dimensional
-data. For full details on the concept see <A HREF="node172.html#Ravel">Ravel</A>.
-
-<P>
-The Ravel operator 
+The import data operator 
   <IMG
- ALIGN="BOTTOM" SRC="img83.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/ravelIcon}}% WIDTH=13 HEIGHT=14 ">
-  inserts a
-Ravel onto the Wiring canvas. The first Ravel inserted is in Edit
-mode, and has sample axis names and a sample data point selected.
+ ALIGN="BOTTOM" SRC="img78.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/importData}}% WIDTH=12 HEIGHT=12 ">
+   inserts
+a parameter on the canvas called 
+  <IMG
+ ALIGN="BOTTOM" SRC="img82.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/dataImport}}% WIDTH=45 HEIGHT=14 ">
+  ,
+and invokes the data import form. For more details see <A HREF="node188.html#CSV_import">CSV import</A>.
 
 <P>
-<IMG
- ALIGN="BOTTOM" SRC="img84.png"
- ALT="\includegraphics[width=10cm]{images/RavelBlank}% WIDTH=452 HEIGHT=443 ">
-
-<P>
-Subsequent Ravels are inserted in iconized mode.
-
-<P>
-To use a Ravel, it must first have a parameter (or variable) attached
-to it. Normally the parameter will contain data imported from a CSV
-file--for more details see <A HREF="node187.html#CSV_import">CSV import</A>.
-
-<P>
-The key feature of a Ravel is its Axes (or ``Arrows''). A Ravel
-has one axis per dimension of the data attached to it. Axes can be:
-<DL>
-<DT><STRONG>Rotated</STRONG></DT>
-<DD>The right-pointing axis determines what is shown on
-the x-axis of a Plot and columns of a Sheet; the down-pointing axis
-determines what is displayed on the Y-axis of a plot and the rows
-of a sheet.
-</DD>
-<DT><STRONG>Collapsed</STRONG></DT>
-<DD>An axis is collapsed by dragging the arrow head
-back to the centre of the Ravel. This applies an aggregation method
-to the axis, which is determined by the setting for ``Set next aggregation''
-on the context menu. The aggregations are Sum, Product, Average, Standard
-Deviation, Maximum and Minimum. The aggregation type can be changed
-<EM>post facto</EM> unser the ``Axis properties'' context menu. 
-</DD>
-<DT><STRONG>Selected</STRONG></DT>
-<DD>When the selector dot for an Axis is in the centre
-of the Ravel, the entire Ravel axis is output (though this can be a selection
-of values on the axis if ``Pick axis slices'' has been activated).
-When the selector dot is on a particular value on an axis, only that
-value is output.
-</DD>
-<DT><STRONG>Sorted</STRONG></DT>
-<DD>The ``none'' sort order of a Ravel is that of
-the axis as it is attached (usually the order in which it is read from
-a CSV file). The axis can also be sorted in
-either a ``forward'' or ``reverse''  direction. The sorting comparison
-depends on the dimension type -- numerical in the case of ``value'',
-time order in the case of ``time'' and <EM>lexicographic</EM>
-(``alphabetical'') in the case of ``string''.
-</DD>
-<DT><STRONG>Sorted by value</STRONG></DT>
-<DD>When the output of a Ravel is 1-dimensional,
-axes can be sorted by the data values along this 1-dimensional axis.
-The choices are a combination of Forward and Reverse, and Statically
-and Dynamically. A Static sort applies the order of the data for a
-given instance--for example, countries could be sorted by the inflation
-rate for 2022. This sort order is maintained if the selector dot for
-date is altered. For example, with a static sort, choosing 2000 on
-the Date axis would show the inflation rate in 2000, with countries
-sorted according to their inflation rates in 2022. A Dynamic sort
-applies the sort order for each selection. For example, a reverse
-dynamic sort of Country by inflation rates would show countries by
-descending order of their inflation rate in whichever year was chosen
-on the Date axis.
-</DD>
-<DT><STRONG>Picked</STRONG></DT>
-<DD>The context menu option ``Pick axis slices'' invokes
-a pop-down menu showing all the entries on that axis--countries
-for a Country axis, dates for a Time axis, etc. You can select specific
-values by clicking on them, and select multiple values by control-clicking
-on them.
-</DD>
-<DT><STRONG>Calipered</STRONG></DT>
-<DD>``Toggle axis calipers'' brings up a caliper which
-initially spans the entire data range. The ends of the caliper can
-be individually adjusted to select a range of the data, while the
-whole caliper can be moved to select the same number of data points
-for different segments of the data.
-</DD>
-</DL>
-Ravels can be linked with other Ravels that share the same dimension(s).
-This means that any operation applies to one Ravel is applied to all
-Ravels in the linked set. For more details see <A HREF="node186.html#Linking-Ravels"><I>Linking Ravels</I></A>.
-
-<P>
-<HR>
-<!--Navigation Panel-->
-<A NAME="tex2html1208"
-  HREF="node53.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1204"
-  HREF="node50.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1198"
-  HREF="node51.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html1206"
-  HREF="Ravel.html">
-<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
-<BR>
-<B> Next:</B> <A NAME="tex2html1209"
-  HREF="node53.html">Lock</A>
-<B> Up:</B> <A NAME="tex2html1205"
-  HREF="node50.html">Operations</A>
-<B> Previous:</B> <A NAME="tex2html1199"
-  HREF="node51.html">Import Data</A>
- &nbsp; <B>  <A NAME="tex2html1207"
-  HREF="Ravel.html">Contents</A></B> 
-<!--End of Navigation Panel-->
+<BR><HR>
 
 </BODY>
 </HTML>

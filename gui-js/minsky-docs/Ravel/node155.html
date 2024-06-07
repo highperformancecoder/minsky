@@ -2,8 +2,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Plot context menu</TITLE>
-<META NAME="description" CONTENT="Plot context menu">
+<TITLE>Plot widget</TITLE>
+<META NAME="description" CONTENT="Plot widget">
 <META NAME="keywords" CONTENT="Ravel">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -14,49 +14,119 @@
 
 <LINK REL="STYLESHEET" HREF="Ravel.css">
 
+<LINK REL="next" HREF="node165.html">
 <LINK REL="previous" HREF="node154.html">
-<LINK REL="up" HREF="node154.html">
+<LINK REL="up" HREF="node44.html">
 <LINK REL="next" HREF="node156.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html2512"
+<A NAME="tex2html2510"
   HREF="node156.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html2508"
-  HREF="node154.html">
+<A NAME="tex2html2506"
+  HREF="node44.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html2504"
+<A NAME="tex2html2500"
   HREF="node154.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html2510"
+<A NAME="tex2html2508"
   HREF="Ravel.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html2513"
-  HREF="node156.html">Description</A>
-<B> Up:</B> <A NAME="tex2html2509"
-  HREF="node154.html">Plot widget</A>
-<B> Previous:</B> <A NAME="tex2html2505"
-  HREF="node154.html">Plot widget</A>
- &nbsp; <B>  <A NAME="tex2html2511"
+<B> Next:</B> <A NAME="tex2html2511"
+  HREF="node156.html">Plot context menu</A>
+<B> Up:</B> <A NAME="tex2html2507"
+  HREF="node44.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html2501"
+  HREF="node154.html">Groups</A>
+ &nbsp; <B>  <A NAME="tex2html2509"
   HREF="Ravel.html">Contents</A></B> 
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00461000000000000000">
-Plot context menu</A>
-</H2>
+<H1><A NAME="SECTION00460000000000000000">
+Plot widget</A>
+</H1>
 
 <P>
-The plot context menu is:
+<A NAME="PlotWidget"></A>
+<P>
+
+    <IMG
+ ALIGN="BOTTOM" SRC="./plotWidget.png"
+ ALT="Image plotWidget% WIDTH=50 HEIGHT=35 ">
+
+<P>
+The plot widget embeds a plot into the canvas.
+
+<P>
+Around the outside of the plot are a number of input ports that can
+be wired:
+
+<UL>
+<LI>left hand edge Multiple series can be plotted by attaching them as
+inputs to the black input triangle on the middle of the Y1 axis.
+</LI>
+<LI>right hand edge Multiple series can be plotted by attaching them
+as inputs to the red input triangle on the middle of the Y2 axis.
+These are shown on a different scale to the left hand Y1 inputs, which
+allows very different magnitudes to be compared on the one plot. 
+</LI>
+<LI>bottom edge The default for the X-axis is either time--for a <I>Minsky</I>
+simulation model--or the right-pointing axis of a Ravel. XY plots
+can be created by attaching an input to the matching input on the
+X axis: the input to the black triangle will be plotted against the
+variable(s) inputted on the black Y1 input port; and the input to
+the red triangle will be plotted against the variable(s) inputted
+on the red Y2 input port.
+
+<IMG
+ ALIGN="BOTTOM" SRC="img240.png"
+ ALT="\includegraphics{images/plotLissajous}% WIDTH=529 HEIGHT=296 "> 
+
+<P>
+
+<P>
+If only one bottom port is connected, then that controls all pens
+simultaneously, and if no ports are connected, then the simulation
+time is used to provide the <IMG
+ ALIGN="BOTTOM" SRC="img88.png"
+ ALT="$x$% WIDTH=13 HEIGHT=14 "> coordinates 
+</LI>
+<LI>corners Corner ports control the scale. You can wire up variables
+controlling minimum and maximum of the <IMG
+ ALIGN="BOTTOM" SRC="img88.png"
+ ALT="$x$% WIDTH=13 HEIGHT=14 ">, <IMG
+ ALIGN="MIDDLE" SRC="img89.png"
+ ALT="$y$% WIDTH=12 HEIGHT=29 "> and right hand <IMG
+ ALIGN="MIDDLE" SRC="img89.png"
+ ALT="$y$% WIDTH=12 HEIGHT=29 ">
+axes. If left unwired, the scales are determined automatically from
+the data--or set by fields in the Options form. Corner ports can
+also be used to, for example, implement a sliding window graph--so
+that the scale of the graph adapts to the simulation in a <I>Minsky</I>
+model.
+
+<IMG
+ ALIGN="BOTTOM" SRC="img241.png"
+ ALT="\includegraphics{images/plotSlidingWindow}% WIDTH=480 HEIGHT=424 "> 
+
+<P>
+
+<P>
+</LI>
+</UL>
+Plots can be resized using the resize arrows that appear when the
+mouse hovers over a plot. Click on one of these arrows and drag the
+mouse and the plot will be resized.
 
 <P>
 <IMG
- ALIGN="BOTTOM" SRC="./PlotContextMenu.png"
- ALT="Image PlotContextMenu% WIDTH=267 HEIGHT=397 ">
+ ALIGN="BOTTOM" SRC="./plotResize.png"
+ ALT="Image plotResize% WIDTH=178 HEIGHT=176 ">
 
 <P>
 <BR><HR>
@@ -64,25 +134,51 @@ The plot context menu is:
 <A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
 
 <UL>
+<LI><A NAME="tex2html2512"
+  HREF="node156.html">Plot context menu</A>
+<UL>
+<LI><A NAME="tex2html2513"
+  HREF="node157.html">Description</A>
 <LI><A NAME="tex2html2514"
-  HREF="node156.html">Description</A>
+  HREF="node158.html">Expand</A>
 <LI><A NAME="tex2html2515"
-  HREF="node157.html">Expand</A>
+  HREF="node159.html">Make Group Plot</A>
 <LI><A NAME="tex2html2516"
-  HREF="node158.html">Make Group Plot</A>
+  HREF="node160.html">Options</A>
 <LI><A NAME="tex2html2517"
-  HREF="node159.html">Options</A>
+  HREF="node161.html">Set options as default</A>
 <LI><A NAME="tex2html2518"
-  HREF="node160.html">Set options as default</A>
+  HREF="node162.html">Apply default options</A>
 <LI><A NAME="tex2html2519"
-  HREF="node161.html">Apply default options</A>
+  HREF="node163.html">Pen Styles </A>
 <LI><A NAME="tex2html2520"
-  HREF="node162.html">Pen Styles </A>
-<LI><A NAME="tex2html2521"
-  HREF="node163.html">Export as CSV</A>
-</UL>
+  HREF="node164.html">Export as CSV</A>
+</UL></UL>
 <!--End of Table of Child-Links-->
-<BR><HR>
+<HR>
+<!--Navigation Panel-->
+<A NAME="tex2html2510"
+  HREF="node156.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html2506"
+  HREF="node44.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html2500"
+  HREF="node154.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html2508"
+  HREF="Ravel.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html2511"
+  HREF="node156.html">Plot context menu</A>
+<B> Up:</B> <A NAME="tex2html2507"
+  HREF="node44.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html2501"
+  HREF="node154.html">Groups</A>
+ &nbsp; <B>  <A NAME="tex2html2509"
+  HREF="Ravel.html">Contents</A></B> 
+<!--End of Navigation Panel-->
 
 </BODY>
 </HTML>

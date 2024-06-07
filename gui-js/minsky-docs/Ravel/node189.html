@@ -2,8 +2,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Temporal data</TITLE>
-<META NAME="description" CONTENT="Temporal data">
+<TITLE>Quick instructions</TITLE>
+<META NAME="description" CONTENT="Quick instructions">
 <META NAME="keywords" CONTENT="Ravel">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,139 +16,205 @@
 
 <LINK REL="next" HREF="node190.html">
 <LINK REL="previous" HREF="node188.html">
-<LINK REL="up" HREF="node187.html">
+<LINK REL="up" HREF="node188.html">
 <LINK REL="next" HREF="node190.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html2943"
+<A NAME="tex2html2948"
   HREF="node190.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html2939"
-  HREF="node187.html">
+<A NAME="tex2html2944"
+  HREF="node188.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html2933"
+<A NAME="tex2html2938"
   HREF="node188.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html2941"
+<A NAME="tex2html2946"
   HREF="Ravel.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html2944"
-  HREF="node190.html">Duplicate keys</A>
-<B> Up:</B> <A NAME="tex2html2940"
-  HREF="node187.html">Importing data into a</A>
-<B> Previous:</B> <A NAME="tex2html2934"
-  HREF="node188.html">Quick instructions</A>
- &nbsp; <B>  <A NAME="tex2html2942"
+<B> Next:</B> <A NAME="tex2html2949"
+  HREF="node190.html">Temporal data</A>
+<B> Up:</B> <A NAME="tex2html2945"
+  HREF="node188.html">Importing data into a</A>
+<B> Previous:</B> <A NAME="tex2html2939"
+  HREF="node188.html">Importing data into a</A>
+ &nbsp; <B>  <A NAME="tex2html2947"
   HREF="Ravel.html">Contents</A></B> 
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004152000000000000000">
-Temporal data</A>
+<H2><A NAME="SECTION004151000000000000000">
+Quick instructions</A>
 </H2>
 
 <P>
-The Date column is current parsed as strings, which not only will
-be sorted incorrectly, but even if the data were in a YYYYMMDD format
-which is sorted correctly, will not have a uniform temporal spacing.
-It is therefore important to parse the Date column as temporal data,
-which is achieved by changing the column type to ``time'', and specifying
-a format string, which follows strftime conventions with the addition
-of a quarter specifier (<code>%Q</code>). <A NAME="2253"></A><A NAME="strftime_format_specifier"></A>
+
+<UL>
+<LI>Data is typically (but not always) stored in the rightmost columns
+of a CSV file. Shift click to set the top left cell of the data. Columns
+to the left will be marked as axes. 
+</LI>
+<LI>Select ``axis'' in the Dimension dropdown to include a column as
+an axis. Column data turns blue. 
+</LI>
+<LI>Select ``ignore'' in the Dimension dropdown to exclude a column.
+Column data turns red. 
+</LI>
+<LI>Select ``data'' in the Dimension dropdown to treat a column as a
+data column. Column data turns black. 
+</LI>
+<LI>Select Type for included axis columns. Select one of three types: 
+<DL>
+<DT><STRONG>string</STRONG></DT>
+<DD>most general type, data treated as is. 
+</DD>
+<DT><STRONG>value</STRONG></DT>
+<DD>value data must be numerical, e.g. 1, 2, and not quoted
+(as in ``1'', ``2'', etc.)
+</DD>
+<DT><STRONG>time</STRONG></DT>
+<DD>data must refer to date-time data. The format field may
+be used to control interpretation of this data, though if this field
+is left blank, Ravel will interpret the data format itself. Blank
+format assumes data contains year/month/day/hour/minute/second separated
+by some non-numerical character. If fewer than 6 numerical fields
+present (from year to second), smallest units are set to minimum value
+(0 or 1 respectively). 
+</DD>
+</DL>
+</LI>
+<LI>Click the OK button. 
+</LI>
+<LI>Data is imported into the parameter. 
+</LI>
+<LI>You may need to set units for the imported data field, which can be
+done via the Edit <IMG
+ ALIGN="BOTTOM" SRC="img79.png"
+ ALT="$\rightarrow$% WIDTH=20 HEIGHT=14 "> Dimensions menu item.
+</LI>
+</UL>
+In the case shown above, the system has automatically guessed that
+the data is 3 dimensional, and that the first 3 columns give the axis
+labels for each dimension (shown in blue), and the 4th column contains
+the data. The first row has been automatically determined to be the
+first row of the file -- with the dimension names are shown in green.
+
 <P>
-If your temporal data is in the form Y*M*D*H*M*S, where
-* signifies any sequence of non-digit characters, and the year,
-month, day, hour minutes, second fields are regular integers in that
-order, then you can leave the format string blank <A NAME="2261"></A>.
-If some of the fields are missing, eg minutes and seconds, then they
-will be filled in with sensible defaults.
+In this case, the automatic parsing system has worked things out correctly,
+but often times it needs help from the computer user. An example is
+as follows:
 
 <IMG
- ALIGN="BOTTOM" SRC="img283.png"
- ALT="\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogTimeFormat}}% WIDTH=555 HEIGHT=291 "> 
+ ALIGN="BOTTOM" SRC="img276.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogFail}}% WIDTH=555 HEIGHT=291 "> 
 
 <P>
 
 <P>
+In this example, <I>Ravel</I> has failed to determine where the data
+starts, probably because of the columns to the right of the ``Price''
+columns. So the first thing to do is tell it where the data is located.
+This is one function of the context menu for data importing. The options
+are:
+
+<P>
 <BR>
-<A NAME="Strftime_code"></A><A NAME="2271"></A>
-<STRONG>Table 4.1:</STRONG>
-Table of strftime codes
-<BR>
-<P ALIGN=""><IMG
- SRC="img284.png"
- ALT="\begin{table}\begin{tabular}{\vert c\vert p{.8\textwidth}\vert}
+<IMG
+ ALIGN="BOTTOM" SRC="img277.png"
+ ALT="\begin{tabular}{\vert c\vert p{0.5\textwidth}\vert}
 \hline
-Code &amp; D...
-...ne
-\%\% &amp; Literal \% character\tabularnewline
+Command &amp; Effect\tab...
+...\emph{Ravel} where data begins in the file\tabularnewline
 \hline
-\end{tabular}\end{table}% WIDTH=555 HEIGHT=384 ">
-</P>
+\end{tabular}% WIDTH=560 HEIGHT=238 ">
 <BR>
-
-<P>
-A <I>Strftime </I>formatted string consists of escape codes (with
-leading % characters). All other characters are treated as matching
-literally the characters of the input. So to match a date string of
-the format YYYY-MM-DD HH:MM:SS+ZZ (ISO format), use a format string
-``<code>%Y-%m-%d %H:%M:%S+%Z</code>''. Similarly, for quarterly data
-expressed like 1972-Q1, use ``<code>%Y-Q%Q</code>''. Note that only %Y
-and %y can be mixed with %Q (nothing else makes sense anyway).
-
-<P>
-Note that if your month data uses month names instead of numerical
-month representation, the it is important you select %d or %e
-depending on whether your day data has leading zeros or not.  This is
-unfortunately a restriction of the underlying date import routine,
-which may change in the future.
-
-<P>
-Even in the current settings, you may still get a message ``exhausted
-memory -- try reducing the rank'', or a similar message about hitting
-a 20% of physical memory threshold. In some cases, ``titles'' and
-``addresses'' might be pretty much unique for each record, leading
-to a large, but very sparse hypercube. If you remove those columns,
-then you may encounter the ``Duplicate key'' message. In this case,
-you can aggregate over these records--which is desirable anyway
-to analyse trends in aggregate data. You do this by setting ``Duplicate
-Key Action'' to sum (or perhaps average for this example). After
-some additional playing around with dimensions to aggregate over,
-we can get the data imported.
 
 <IMG
- ALIGN="BOTTOM" SRC="img285.png"
- ALT="\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogFinal}}% WIDTH=555 HEIGHT=291 "> 
+ ALIGN="BOTTOM" SRC="img278.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogSelectData}}% WIDTH=555 HEIGHT=291 "> 
+
+<P>
+
+<P>
+Note that this causes all columns to the right of ``Price paid''
+to be treated as data, which is not right, since the columns to the
+right of ``Price (text infill)'' are text based columns, not data.
+So we need to mark those columns as either ``axis'' or ``ignore''.
+To do that, click and drag your mouse on the header field, which will
+cause those columns to be selected, like so:
+
+<IMG
+ ALIGN="BOTTOM" SRC="img279.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogSelectedColumns}}% WIDTH=555 HEIGHT=291 "> 
+
+<P>
+
+<P>
+Then in the dimensions row, select ``axis'', which flips the selected
+columns:
+
+<IMG
+ ALIGN="BOTTOM" SRC="img280.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogSelectedAxes}}% WIDTH=555 HEIGHT=291 "> 
+
+<P>
+
+<P>
+Now the axes index labels are rendered in blue, the axes names in
+green and the data is in black. In this example, some axes have unique
+values, which are not particularly useful to scan over. Other examples
+might have columns that duplicate others, for example when the data
+has been entered via a database program that allows the user to type
+country codes (e.g., LX) rather than the full country name (Luxembourg).
+Only one of these axes is needed to uniquely specify the country,
+so you can exclude the unwanted dimension by choosing ``ignore''
+in the ``Dimension'' row. The deselected columns are rendered in
+red, indicating that its data will not be imported into <I>Ravel</I>:
+
+<IMG
+ ALIGN="BOTTOM" SRC="img281.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogAxesDeselected}}% WIDTH=555 HEIGHT=291 "> 
+
+<P>
+
+<P>
+In this example, the axis names has not been correctly inferred. Whilst,
+one can manually edit the axis names in the ``Name'' line, a quick
+shortcut is to select ``Populate column labels'' from the context menu. 
+
+<IMG
+ ALIGN="BOTTOM" SRC="img282.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogAxesNamed}}% WIDTH=555 HEIGHT=291 "> 
 
 <P>
 
 <P>
 <HR>
 <!--Navigation Panel-->
-<A NAME="tex2html2943"
+<A NAME="tex2html2948"
   HREF="node190.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html2939"
-  HREF="node187.html">
+<A NAME="tex2html2944"
+  HREF="node188.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html2933"
+<A NAME="tex2html2938"
   HREF="node188.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html2941"
+<A NAME="tex2html2946"
   HREF="Ravel.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html2944"
-  HREF="node190.html">Duplicate keys</A>
-<B> Up:</B> <A NAME="tex2html2940"
-  HREF="node187.html">Importing data into a</A>
-<B> Previous:</B> <A NAME="tex2html2934"
-  HREF="node188.html">Quick instructions</A>
- &nbsp; <B>  <A NAME="tex2html2942"
+<B> Next:</B> <A NAME="tex2html2949"
+  HREF="node190.html">Temporal data</A>
+<B> Up:</B> <A NAME="tex2html2945"
+  HREF="node188.html">Importing data into a</A>
+<B> Previous:</B> <A NAME="tex2html2939"
+  HREF="node188.html">Importing data into a</A>
+ &nbsp; <B>  <A NAME="tex2html2947"
   HREF="Ravel.html">Contents</A></B> 
 <!--End of Navigation Panel-->
 

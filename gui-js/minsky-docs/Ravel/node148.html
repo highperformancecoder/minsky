@@ -2,8 +2,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Sliders</TITLE>
-<META NAME="description" CONTENT="Sliders">
+<TITLE>Tensor valued initial conditions</TITLE>
+<META NAME="description" CONTENT="Tensor valued initial conditions">
 <META NAME="keywords" CONTENT="Ravel">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,59 +16,84 @@
 
 <LINK REL="next" HREF="node149.html">
 <LINK REL="previous" HREF="node147.html">
-<LINK REL="up" HREF="node144.html">
+<LINK REL="up" HREF="node145.html">
 <LINK REL="next" HREF="node149.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html2423"
+<A NAME="tex2html2428"
   HREF="node149.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html2419"
-  HREF="node144.html">
+<A NAME="tex2html2424"
+  HREF="node145.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html2413"
+<A NAME="tex2html2418"
   HREF="node147.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html2421"
+<A NAME="tex2html2426"
   HREF="Ravel.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html2424"
-  HREF="node149.html">Variable Browser</A>
-<B> Up:</B> <A NAME="tex2html2420"
-  HREF="node144.html">Variables and Parameters</A>
-<B> Previous:</B> <A NAME="tex2html2414"
-  HREF="node147.html">Tensor valued initial conditions</A>
- &nbsp; <B>  <A NAME="tex2html2422"
+<B> Next:</B> <A NAME="tex2html2429"
+  HREF="node149.html">Sliders</A>
+<B> Up:</B> <A NAME="tex2html2425"
+  HREF="node145.html">Variables and Parameters</A>
+<B> Previous:</B> <A NAME="tex2html2419"
+  HREF="node147.html">Initial conditions</A>
+ &nbsp; <B>  <A NAME="tex2html2427"
   HREF="Ravel.html">Contents</A></B> 
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00434000000000000000">
-Sliders</A>
+<H2><A NAME="SECTION00433000000000000000">
+Tensor valued initial conditions</A>
 </H2>
 
 <P>
-Variables have a ``slider'' feature, which allows the value of the
-variable (or parameter or constant) to be altered by the user via
-the mouse or by arrowkeys.
+<A NAME="tensor-init"></A><A NAME="1932"></A>
 
 <P>
-The options Max, Min and Step Size in the Edit form let you control
-the maximum and minimum values for the variable/parameter, and how
-much the value changes for each press of an arrowkey. A relative slider
-means that the step size is expressed as a fraction of max-min.
+<I>Ravel</I> provides a simple functional language which allows for
+the generation of tensor-valued operations. This enables <I>Ravel</I>
+to work with hypothetical as well as actual data--for example, hypothetical
+sales volumes for a new product from zero to 500,000 sales per year
+can be generated using the iota formula by putting the expression
+``iota(500001)'' in the initial value field for the variable <I>Sales</I>.
+This generates an axis/dimension named 0 with values from 0 to 500,000. 
 
 <P>
-Adjusting the slider of an integral (or stock) variable while the
-system is running actually adjusts the present value of the variable.
-The sliders can also be adjusted using the keyboard arrow keys: uparrow
- or rightarrow  increases the value
-of the parameter by the step size; downarrow or leftarrow
- reduces it.
+These functions take the form <EM>func</EM><IMG
+ ALIGN="MIDDLE" SRC="img232.png"
+ ALT="$(n_{1},n_{2},\ldots,n_{r})$% WIDTH=108 HEIGHT=31 ">
+where <IMG
+ ALIGN="BOTTOM" SRC="img233.png"
+ ALT="$r$% WIDTH=11 HEIGHT=14 "> is the desired rank, and <IMG
+ ALIGN="MIDDLE" SRC="img234.png"
+ ALT="$n_{1},n_{2},$% WIDTH=49 HEIGHT=29 "> etc are the dimensions
+of the tensor. Available functions include:
+
+<P>
+<BR>
+<IMG
+ ALIGN="BOTTOM" SRC="img235.png"
+ ALT="\begin{tabular}{\vert r\vert l\vert}
+\hline
+name &amp; description\tabularnewline
+...
+...d with random numbers in the range $[0,1)$\tabularnewline
+\hline
+\end{tabular}% WIDTH=445 HEIGHT=117 ">
+<BR><A NAME="1947"></A><A NAME="1948"></A><A NAME="1949"></A><A NAME="1950"></A><A NAME="1951"></A>
+
+<UL>
+<LI><code>eye</code> is equivalent to <code>one</code> for vectors. 
+</LI>
+<LI><code>rand</code> generates different random numbers each time the simulation
+is reset, and uses the clib <code>rand()</code> function. 
+</LI>
+</UL>
 
 <P>
 <BR><HR>

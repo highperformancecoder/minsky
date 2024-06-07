@@ -2,8 +2,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Creating a Godley Table</TITLE>
-<META NAME="description" CONTENT="Creating a Godley Table">
+<TITLE>Godley Tables</TITLE>
+<META NAME="description" CONTENT="Godley Tables">
 <META NAME="keywords" CONTENT="Ravel">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -14,62 +14,131 @@
 
 <LINK REL="STYLESHEET" HREF="Ravel.css">
 
-<LINK REL="next" HREF="node130.html">
+<LINK REL="next" HREF="node142.html">
 <LINK REL="previous" HREF="node128.html">
-<LINK REL="up" HREF="node128.html">
+<LINK REL="up" HREF="node51.html">
 <LINK REL="next" HREF="node130.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html2195"
+<A NAME="tex2html2188"
   HREF="node130.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html2191"
-  HREF="node128.html">
+<A NAME="tex2html2184"
+  HREF="node51.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html2185"
+<A NAME="tex2html2178"
   HREF="node128.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html2193"
+<A NAME="tex2html2186"
   HREF="Ravel.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html2196"
-  HREF="node130.html">Godley Table Context Menu</A>
-<B> Up:</B> <A NAME="tex2html2192"
-  HREF="node128.html">Godley Tables</A>
-<B> Previous:</B> <A NAME="tex2html2186"
-  HREF="node128.html">Godley Tables</A>
- &nbsp; <B>  <A NAME="tex2html2194"
+<B> Next:</B> <A NAME="tex2html2189"
+  HREF="node130.html">Creating a Godley Table</A>
+<B> Up:</B> <A NAME="tex2html2185"
+  HREF="node51.html">Operations</A>
+<B> Previous:</B> <A NAME="tex2html2179"
+  HREF="node128.html">User defined function</A>
+ &nbsp; <B>  <A NAME="tex2html2187"
   HREF="Ravel.html">Contents</A></B> 
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H3><A NAME="SECTION004217100000000000000">
-Creating a Godley Table</A>
-</H3>
+<H2><A NAME="SECTION004217000000000000000">
+Godley Tables</A>
+</H2>
 
 <P>
-To insert a Godley Table into a model, click on the Godley icon 
-  <IMG
- ALIGN="BOTTOM" SRC="img209.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/GodleyIcon}}% WIDTH=20 HEIGHT=14 ">
-  on
-the Operations bar. This attaches a Godley Table to your cursor. Click
-where you wish to place it on the canvas and this object will be inserted:
+<A NAME="godley"></A><A NAME="GodleyIcon"></A>
+<P>
+A Godley Table employs double-entry bookkeeping to create dynamic
+models of monetary transactions. It can also be used to build dynamic
+models of systems based on transitions between exclusive categories--such
+as epidemiological systems like SEIRD models of disease transmission.
+
+<P>
+A Godley Table uses the rules of accounting to create consistent equations
+to describe financial flows. The essential rules are that:
+
+<UL>
+<LI>Each flow must be entered twice on its row; and
+</LI>
+<LI>The sum of <IMG
+ ALIGN="MIDDLE" SRC="img206.png"
+ ALT="$Assets-Liabilities-Equity$% WIDTH=213 HEIGHT=30 "> must equal zero on each row.
+</LI>
+</UL>
+Using these rules, <I>Minsky</I> develops stock-flow consistent models
+of financial transactions. The row entries are flows in differential
+equations for the stocks. For example, the Godley Table shown in the
+next figure:
 
 <P>
 <IMG
- ALIGN="BOTTOM" SRC="img210.png"
- ALT="\includegraphics[width=\textwidth]{images/GodleyTableIconMode}% WIDTH=550 HEIGHT=525 ">
+ ALIGN="BOTTOM" SRC="img208.png"
+ ALT="\includegraphics[width=\textwidth]{images/GodleyTableImages}% WIDTH=554 HEIGHT=191 ">
 
 <P>
-You can edit this object by either double-clicking on the icon, or
-by choosing ``Edit Godley Table'' from its context menu.
+generates the following set of differential equations:
 
 <P>
+<IMG
+ ALIGN="MIDDLE" SRC="img207.png"
+ ALT="$\begin{array}{c}
+\frac{d}{dt}Loans=Lending-Repay\\
+\frac{d}{dt}Deposits=Lendin...
+...{dt}Banks_{Equity}=Interest-Spend_{Banks}\\
+\frac{d}{dt}Reserves=0
+\end{array}$% WIDTH=423 HEIGHT=94 ">
+
+<P>
+Stocks are thus completely defined by the Godley Table itself as equations
+in a set of coupled differential equations. For this reason, when
+placed on the canvas, each stock has an output but no input. Flows,
+on the other hand, have both inputs and outputs, and have to be fully
+defined on the canvas itself.
+
+<P>
+For complete details see <A HREF="node219.html#Godley-Tables">Godley tables</A>.
+
+<P>
+<BR><HR>
+<!--Table of Child-Links-->
+<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
+
+<UL>
+<LI><A NAME="tex2html2190"
+  HREF="node130.html">Creating a Godley Table</A>
+<LI><A NAME="tex2html2191"
+  HREF="node131.html">Godley Table Context Menu</A>
+<LI><A NAME="tex2html2192"
+  HREF="node132.html">Open Godley Table</A>
+<UL>
+<LI><A NAME="tex2html2193"
+  HREF="node133.html">Defining Stocks and Flows</A>
+<LI><A NAME="tex2html2194"
+  HREF="node134.html">Initial Conditions</A>
+</UL>
+<BR>
+<LI><A NAME="tex2html2195"
+  HREF="node135.html">Editor Mode</A>
+<LI><A NAME="tex2html2196"
+  HREF="node136.html">Row/Col buttons</A>
+<LI><A NAME="tex2html2197"
+  HREF="node137.html">Display Variables</A>
+<LI><A NAME="tex2html2198"
+  HREF="node138.html">Copy Stock/Flow Variables</A>
+<LI><A NAME="tex2html2199"
+  HREF="node139.html">Create multiple related Godley Tables</A>
+<LI><A NAME="tex2html2200"
+  HREF="node140.html">Godley Table Context Menu</A>
+<LI><A NAME="tex2html2201"
+  HREF="node141.html">Export Godley Table</A>
+</UL>
+<!--End of Table of Child-Links-->
 <BR><HR>
 
 </BODY>

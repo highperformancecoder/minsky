@@ -2,8 +2,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Initial conditions</TITLE>
-<META NAME="description" CONTENT="Initial conditions">
+<TITLE>Variable names</TITLE>
+<META NAME="description" CONTENT="Variable names">
 <META NAME="keywords" CONTENT="Ravel">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,54 +16,59 @@
 
 <LINK REL="next" HREF="node147.html">
 <LINK REL="previous" HREF="node145.html">
-<LINK REL="up" HREF="node144.html">
+<LINK REL="up" HREF="node145.html">
 <LINK REL="next" HREF="node147.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html2399"
+<A NAME="tex2html2404"
   HREF="node147.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html2395"
-  HREF="node144.html">
+<A NAME="tex2html2400"
+  HREF="node145.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html2389"
+<A NAME="tex2html2394"
   HREF="node145.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html2397"
+<A NAME="tex2html2402"
   HREF="Ravel.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html2400"
-  HREF="node147.html">Tensor valued initial conditions</A>
-<B> Up:</B> <A NAME="tex2html2396"
-  HREF="node144.html">Variables and Parameters</A>
-<B> Previous:</B> <A NAME="tex2html2390"
-  HREF="node145.html">Variable names</A>
- &nbsp; <B>  <A NAME="tex2html2398"
+<B> Next:</B> <A NAME="tex2html2405"
+  HREF="node147.html">Initial conditions</A>
+<B> Up:</B> <A NAME="tex2html2401"
+  HREF="node145.html">Variables and Parameters</A>
+<B> Previous:</B> <A NAME="tex2html2395"
+  HREF="node145.html">Variables and Parameters</A>
+ &nbsp; <B>  <A NAME="tex2html2403"
   HREF="Ravel.html">Contents</A></B> 
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00432000000000000000">
-Initial conditions</A>
+<H2><A NAME="SECTION00431000000000000000">
+Variable names</A>
 </H2>
 
 <P>
-<A NAME="var:init"></A><A NAME="1916"></A>
+Variable names uniquely identify variables. Multiple icons on the
+canvas with the same name at the same level all refer to the same
+variable. Variable names can have local scope<A NAME="1923"></A>, in which case it
+is specific to the <A HREF="node154.html#Group">group</A> in which it is contained,
+othewise its scope is determined by the innermost containing group
+that has a local variable of that name. If no such variable exists,
+its scope is global.
 
 <P>
-Variable initial conditions can be defined through the ``init value''
-field of the variable edit menu, or in the case of Godley table stock
-variables, through the initial condition row of the Godley table.
-An initial value can be a simple number, or it can be a multiple of
-another named parameter. In case of symbolic definitions, it would
-be possible to set up a circular reference where the initial value
-of variable A is defined in terms of the initial value of variable
-B, which in turn depends on the intial value of A. Such a pathological
-situation is detected when the system is reset.
+A variable which is local to a group can be used as a formula in
+several locations in a file. For example, if you use a, b anc c as
+constants in a polynomial <IMG
+ ALIGN="MIDDLE" SRC="img231.png"
+ ALT="$a+bx+cx^{2}$% WIDTH=90 HEIGHT=33 "> and make them local to a
+group, then the group can be used in several parts of a document, with
+the argument x and the values of a,b and c being different in every
+instance.
 
 <P>
 <BR><HR>

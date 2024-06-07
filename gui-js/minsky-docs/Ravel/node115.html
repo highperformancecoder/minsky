@@ -2,8 +2,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Slice</TITLE>
-<META NAME="description" CONTENT="Slice">
+<TITLE>Merge</TITLE>
+<META NAME="description" CONTENT="Merge">
 <META NAME="keywords" CONTENT="Ravel">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,48 +16,48 @@
 
 <LINK REL="next" HREF="node116.html">
 <LINK REL="previous" HREF="node114.html">
-<LINK REL="up" HREF="node97.html">
+<LINK REL="up" HREF="node98.html">
 <LINK REL="next" HREF="node116.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html2012"
+<A NAME="tex2html2017"
   HREF="node116.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html2008"
-  HREF="node97.html">
+<A NAME="tex2html2013"
+  HREF="node98.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html2002"
+<A NAME="tex2html2007"
   HREF="node114.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html2010"
+<A NAME="tex2html2015"
   HREF="Ravel.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html2013"
-  HREF="node116.html">Size</A>
-<B> Up:</B> <A NAME="tex2html2009"
-  HREF="node97.html">Tensor operations</A>
-<B> Previous:</B> <A NAME="tex2html2003"
-  HREF="node114.html">Merge</A>
- &nbsp; <B>  <A NAME="tex2html2011"
+<B> Next:</B> <A NAME="tex2html2018"
+  HREF="node116.html">Slice</A>
+<B> Up:</B> <A NAME="tex2html2014"
+  HREF="node98.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html2008"
+  HREF="node114.html">Meld</A>
+ &nbsp; <B>  <A NAME="tex2html2016"
   HREF="Ravel.html">Contents</A></B> 
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H3><A NAME="SECTION0042131800000000000000">
-Slice</A>
+<H3><A NAME="SECTION0042131700000000000000">
+Merge</A>
 </H3>
 
 <P>
-<A NAME="Operation:slice"></A>
+<A NAME="Operation:merge"></A>
 <P>
 
     <IMG
- ALIGN="BOTTOM" SRC="img179.png"
- ALT="\includegraphics[height=10mm]{images/slice}% WIDTH=49 HEIGHT=46 ">
+ ALIGN="BOTTOM" SRC="img172.png"
+ ALT="\includegraphics[height=10mm]{images/merge}% WIDTH=49 HEIGHT=46 ">
 
 <P>
 The operator can be placed on the canvas in two ways:
@@ -70,22 +70,51 @@ The operator can be placed on the canvas in two ways:
   ;
 or 
 </LI>
-<LI>By typing the letters ``slice'' on the canvas and then pressing the
+<LI>By typing the letters ``merge'' on the canvas and then pressing the
 Enter key.
 </LI>
 </UL>
-Slice will cut off a tensor along a given axis by the argument, as
-configured in the operation edit dialog. For example <IMG
- ALIGN="MIDDLE" SRC="img177.png"
- ALT="$\mathrm{slice}(\{x_{1},x_{2},\ldots x_{n}\},3)=\{x_{1},x_{2},x_{3}\}$% WIDTH=262 HEIGHT=31 ">.
-If the tensor is rank one (ie a vector), it is not necessary to specify
-the axis.
+Merge combines two Ravels sharing <I>n</I> dimensions to produce a
+new Ravel with <I>n+1</I> dimensions.
 
 <P>
-If the slice argument is negative, then it refers to the number of
-elements from the end of that axis. For example <IMG
- ALIGN="MIDDLE" SRC="img178.png"
- ALT="$\mathrm{slice}(\{x_{1},x_{2},\ldots x_{n}\},-3)=\{x_{n-2},x_{n-1},x_{n}\}$% WIDTH=311 HEIGHT=31 ">.
+For example, the file below creates two 2-dimensional Ravels, one
+with sales in dollars and the other with sales by each salesperson
+as a percentage of total sales.
+
+<P>
+<IMG
+ ALIGN="BOTTOM" SRC="img173.png"
+ ALT="\includegraphics[width=\textwidth]{images/MergeExample01TwoVariables}% WIDTH=554 HEIGHT=237 ">
+
+<P>
+Sales<SUB>SalesPerson<SUP>$</SUP>and SalesPerson<SUP>%</SUP></SUB>share
+the same dimensions (SalesPerson and Date), and they can be separately
+displayed as in the next figure.
+
+<P>
+<IMG
+ ALIGN="BOTTOM" SRC="img174.png"
+ ALT="\includegraphics[width=\textwidth]{images/MergeExample02TwoVariablesSeparate}% WIDTH=555 HEIGHT=566 ">
+
+<P>
+Using the Merge operator, you can create one new Ravel containing
+information from both the $ sales and the % of total sales analysis:
+
+<P>
+<IMG
+ ALIGN="BOTTOM" SRC="img175.png"
+ ALT="\includegraphics[width=\textwidth]{images/MergeExample02TwoVariablesEditForm}% WIDTH=554 HEIGHT=280 ">
+
+<P>
+The merged Ravel has 3 dimensions, with the extra dimension Analysis
+now containing the Sales by dollar amount and Sales as a percentage
+of total sales as entries on the Analysis axis.
+
+<P>
+<IMG
+ ALIGN="BOTTOM" SRC="img176.png"
+ ALT="\includegraphics[width=\textwidth]{images/MergeExample03TwoVariablesMerged}% WIDTH=555 HEIGHT=190 ">
 
 <P>
 <BR><HR>

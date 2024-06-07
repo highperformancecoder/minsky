@@ -2,8 +2,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Variable Browser</TITLE>
-<META NAME="description" CONTENT="Variable Browser">
+<TITLE>Sliders</TITLE>
+<META NAME="description" CONTENT="Sliders">
 <META NAME="keywords" CONTENT="Ravel">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -14,79 +14,61 @@
 
 <LINK REL="STYLESHEET" HREF="Ravel.css">
 
+<LINK REL="next" HREF="node150.html">
 <LINK REL="previous" HREF="node148.html">
-<LINK REL="up" HREF="node144.html">
+<LINK REL="up" HREF="node145.html">
 <LINK REL="next" HREF="node150.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html2433"
+<A NAME="tex2html2440"
   HREF="node150.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html2429"
-  HREF="node144.html">
+<A NAME="tex2html2436"
+  HREF="node145.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html2425"
+<A NAME="tex2html2430"
   HREF="node148.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html2431"
+<A NAME="tex2html2438"
   HREF="Ravel.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html2434"
-  HREF="node150.html">Wires</A>
-<B> Up:</B> <A NAME="tex2html2430"
-  HREF="node144.html">Variables and Parameters</A>
-<B> Previous:</B> <A NAME="tex2html2426"
-  HREF="node148.html">Sliders</A>
- &nbsp; <B>  <A NAME="tex2html2432"
+<B> Next:</B> <A NAME="tex2html2441"
+  HREF="node150.html">Variable Browser</A>
+<B> Up:</B> <A NAME="tex2html2437"
+  HREF="node145.html">Variables and Parameters</A>
+<B> Previous:</B> <A NAME="tex2html2431"
+  HREF="node148.html">Tensor valued initial conditions</A>
+ &nbsp; <B>  <A NAME="tex2html2439"
   HREF="Ravel.html">Contents</A></B> 
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00435000000000000000">
-Variable Browser</A>
+<H2><A NAME="SECTION00434000000000000000">
+Sliders</A>
 </H2>
 
 <P>
-<A NAME="VariableBrowser"></A>
-<P>
-<IMG
- ALIGN="BOTTOM" SRC="./browserWindow.png"
- ALT="Image browserWindow% WIDTH=404 HEIGHT=483 ">
+Variables have a ``slider'' feature, which allows the value of the
+variable (or parameter or constant) to be altered by the user via
+the mouse or by arrowkeys.
 
 <P>
-The browser can be accessed in two ways:
-
-<UL>
-<LI>From the Insert Menu; or 
-</LI>
-<LI>From the 
-  <IMG
- ALIGN="BOTTOM" SRC="img80.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/var}}% WIDTH=27 HEIGHT=14 ">
-   widget, which brings up a horizontal
-menu for defining, constants, parameters and variables. Click on the
-final option on this menu, ``Browser'', to bring up the window. 
-</LI>
-</UL>
-The <I>variable browser</I> is a popup window that shows all currently
-defined variables in the system. It is an ``always on top'' window,
-which will be visible over any other window including those for <I>Ravel/Minsky</I>
-(and those for other programs which you have open at the time). This
-facilitates its use as a means to insert multiple variables into a
-model.
+The options Max, Min and Step Size in the Edit form let you control
+the maximum and minimum values for the variable/parameter, and how
+much the value changes for each press of an arrowkey. A relative slider
+means that the step size is expressed as a fraction of max-min.
 
 <P>
-This is a convenience toolbar that allows one to select a variable
-for insertion into the design canvas, instead of having to type the
-new variable's name from scratch.
-
-<P>
-At the top of the variable browser are some filter checkboxes, that
-allow you filter the variables shown by variable type.
+Adjusting the slider of an integral (or stock) variable while the
+system is running actually adjusts the present value of the variable.
+The sliders can also be adjusted using the keyboard arrow keys: uparrow
+ or rightarrow  increases the value
+of the parameter by the step size; downarrow or leftarrow
+ reduces it.
 
 <P>
 <BR><HR>

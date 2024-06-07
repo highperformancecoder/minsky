@@ -2,8 +2,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>outer product </TITLE>
-<META NAME="description" CONTENT="outer product ">
+<TITLE>inner product </TITLE>
+<META NAME="description" CONTENT="inner product ">
 <META NAME="keywords" CONTENT="Ravel">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,51 +16,51 @@
 
 <LINK REL="next" HREF="node111.html">
 <LINK REL="previous" HREF="node109.html">
-<LINK REL="up" HREF="node97.html">
+<LINK REL="up" HREF="node98.html">
 <LINK REL="next" HREF="node111.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html1952"
+<A NAME="tex2html1957"
   HREF="node111.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1948"
-  HREF="node97.html">
+<A NAME="tex2html1953"
+  HREF="node98.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1942"
+<A NAME="tex2html1947"
   HREF="node109.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html1950"
+<A NAME="tex2html1955"
   HREF="Ravel.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html1953"
-  HREF="node111.html">index</A>
-<B> Up:</B> <A NAME="tex2html1949"
-  HREF="node97.html">Tensor operations</A>
-<B> Previous:</B> <A NAME="tex2html1943"
-  HREF="node109.html">inner product</A>
- &nbsp; <B>  <A NAME="tex2html1951"
+<B> Next:</B> <A NAME="tex2html1958"
+  HREF="node111.html">outer product</A>
+<B> Up:</B> <A NAME="tex2html1954"
+  HREF="node98.html">Tensor operations</A>
+<B> Previous:</B> <A NAME="tex2html1948"
+  HREF="node109.html">difference</A>
+ &nbsp; <B>  <A NAME="tex2html1956"
   HREF="Ravel.html">Contents</A></B> 
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H3><A NAME="SECTION0042131300000000000000">
-outer product <IMG
- ALIGN="MIDDLE" SRC="img24.png"
- ALT="$\otimes $% WIDTH=16 HEIGHT=29 "></A>
+<H3><A NAME="SECTION0042131200000000000000">
+inner product <IMG
+ ALIGN="BOTTOM" SRC="img23.png"
+ ALT="$\cdot $% WIDTH=8 HEIGHT=15 "></A>
 </H3>
 
 <P>
 
     <IMG
- ALIGN="BOTTOM" SRC="img162.png"
- ALT="\includegraphics[height=10mm]{images/outerProduct}% WIDTH=49 HEIGHT=46 ">
+ ALIGN="BOTTOM" SRC="img160.png"
+ ALT="\includegraphics[height=10mm]{images/innerProduct}% WIDTH=49 HEIGHT=46 ">
 
 <P>
-<A NAME="Operation:outerProduct"></A> Calculates the inner product of two
+<A NAME="Operation:innerProduct"></A> Calculates the inner product of two
 tensors.
 
 <P>
@@ -74,21 +74,25 @@ The operator can be placed on the canvas in two ways:
   ;
 or 
 </LI>
-<LI>By typing the letters ``outerProduct'' on the canvas and then pressing
+<LI>By typing the letters ``innerProduct'' on the canvas and then pressing
 the Enter key.
 </LI>
 </UL>
-It computes: 
+It computes 
 <IMG
- SRC="img161.png"
+ SRC="img156.png"
  ALT="\begin{displaymath}
-z_{i_{1},i_{2},\ldots,i_{r_{x}},j_{1},\ldots,j_{r_{y}}}=x_{i_{1},,i_{2},\ldots,i_{r_{x}}}y_{j_{1},\ldots,j_{r_{y}}}.
-\end{displaymath}% WIDTH=418 HEIGHT=31 ">
+z_{i_{1},\ldots,i_{r_{x}-1},j_{1},\ldots,j_{r_{y}-1}}=\sum_{...
+...1},k,i_{a+1}\ldots,i_{r_{x}-1}}y_{j_{1},\ldots,j_{r_{y}-1},k},
+\end{displaymath}% WIDTH=487 HEIGHT=45 ">
 where <IMG
+ ALIGN="BOTTOM" SRC="img157.png"
+ ALT="$a$% WIDTH=12 HEIGHT=14 "> is the given axis, and <IMG
  ALIGN="MIDDLE" SRC="img158.png"
  ALT="$r_{x}$% WIDTH=19 HEIGHT=29 "> and <IMG
  ALIGN="MIDDLE" SRC="img159.png"
- ALT="$r_{y}$% WIDTH=19 HEIGHT=29 "> are the ranks of <IMG
+ ALT="$r_{y}$% WIDTH=19 HEIGHT=29 "> are the ranks
+of <IMG
  ALIGN="BOTTOM" SRC="img88.png"
  ALT="$x$% WIDTH=13 HEIGHT=14 "> and <IMG
  ALIGN="MIDDLE" SRC="img89.png"

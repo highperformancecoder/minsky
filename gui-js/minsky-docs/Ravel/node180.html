@@ -2,8 +2,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Sort axis</TITLE>
-<META NAME="description" CONTENT="Sort axis">
+<TITLE>Calipers</TITLE>
+<META NAME="description" CONTENT="Calipers">
 <META NAME="keywords" CONTENT="Ravel">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,46 +16,65 @@
 
 <LINK REL="next" HREF="node181.html">
 <LINK REL="previous" HREF="node179.html">
-<LINK REL="up" HREF="node178.html">
+<LINK REL="up" HREF="node179.html">
 <LINK REL="next" HREF="node181.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html2836"
+<A NAME="tex2html2841"
   HREF="node181.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html2832"
-  HREF="node178.html">
+<A NAME="tex2html2837"
+  HREF="node179.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html2826"
+<A NAME="tex2html2831"
   HREF="node179.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html2834"
+<A NAME="tex2html2839"
   HREF="Ravel.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html2837"
-  HREF="node181.html">Sort by value</A>
-<B> Up:</B> <A NAME="tex2html2833"
-  HREF="node178.html">Context menu for Ravels</A>
-<B> Previous:</B> <A NAME="tex2html2827"
-  HREF="node179.html">Calipers</A>
- &nbsp; <B>  <A NAME="tex2html2835"
+<B> Next:</B> <A NAME="tex2html2842"
+  HREF="node181.html">Sort axis</A>
+<B> Up:</B> <A NAME="tex2html2838"
+  HREF="node179.html">Context menu for Ravels</A>
+<B> Previous:</B> <A NAME="tex2html2832"
+  HREF="node179.html">Context menu for Ravels</A>
+ &nbsp; <B>  <A NAME="tex2html2840"
   HREF="Ravel.html">Contents</A></B> 
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H3><A NAME="SECTION004144200000000000000">
-Sort axis</A>
+<H3><A NAME="SECTION004144100000000000000">
+Calipers</A>
 </H3>
 
 <P>
-The default order of an axis is the same as the data input into it.
-Once loaded into a Ravel, the data can be sorted by the names of axis
-entries--for example, countries can be sorted alphabetically. This
-can be sorted forward (from A to Z) or in reverse.
+<A NAME="Calipers"></A>A caliper is a range selector for an axis. Its customary
+use will be to select a range of dates, but a caliper can be applied
+to any axis to select a subset of data which is contiguous. In the
+next figure, calipers have been applied to extract the last 15 days'
+of data from this Ravel.
+
+<P>
+<IMG
+ ALIGN="BOTTOM" SRC="img270.png"
+ ALT="\includegraphics[width=\textwidth]{images/SmallBusinessCalipers}% WIDTH=556 HEIGHT=420 ">
+
+<P>
+When a caliper is initially created, it spans the entire range of
+a given dimension. It is applied to sections of that data by moving
+the vertical left or right side of the parenthesis; the entire parenthesis
+is moved by clicking and dragging on the peak of the parenthesis--the
+length of the selection is thus maintained while the segment selected
+is altered.
+
+<P>
+Ravel currently allows one caliper per axis. Future releases will
+enable multiple calipers, which will allow non-contiguous segments
+of data to be displayed on the one plot or sheet.
 
 <P>
 <BR><HR>

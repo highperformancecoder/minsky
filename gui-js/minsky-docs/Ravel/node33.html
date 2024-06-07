@@ -2,8 +2,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Wiring components together</TITLE>
-<META NAME="description" CONTENT="Wiring components together">
+<TITLE>Creating an equation</TITLE>
+<META NAME="description" CONTENT="Creating an equation">
 <META NAME="keywords" CONTENT="Ravel">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -14,77 +14,81 @@
 
 <LINK REL="STYLESHEET" HREF="Ravel.css">
 
+<LINK REL="next" HREF="node34.html">
 <LINK REL="previous" HREF="node32.html">
-<LINK REL="up" HREF="node29.html">
+<LINK REL="up" HREF="node30.html">
 <LINK REL="next" HREF="node34.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html722"
+<A NAME="tex2html729"
   HREF="node34.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html718"
-  HREF="node29.html">
+<A NAME="tex2html725"
+  HREF="node30.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html714"
+<A NAME="tex2html719"
   HREF="node32.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html720"
+<A NAME="tex2html727"
   HREF="Ravel.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html723"
-  HREF="node34.html">An Overview of Ravel</A>
-<B> Up:</B> <A NAME="tex2html719"
-  HREF="node29.html">Working with Ravel</A>
-<B> Previous:</B> <A NAME="tex2html715"
-  HREF="node32.html">Creating an equation</A>
- &nbsp; <B>  <A NAME="tex2html721"
+<B> Next:</B> <A NAME="tex2html730"
+  HREF="node34.html">Wiring components together</A>
+<B> Up:</B> <A NAME="tex2html726"
+  HREF="node30.html">Working with Ravel</A>
+<B> Previous:</B> <A NAME="tex2html720"
+  HREF="node32.html">Inserting a component</A>
+ &nbsp; <B>  <A NAME="tex2html728"
   HREF="Ravel.html">Contents</A></B> 
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00244000000000000000">
-Wiring components together</A>
+<H2><A NAME="SECTION00243000000000000000">
+Creating an equation</A>
 </H2>
 
 <P>
-A model is constructed by wiring one component to another in a way
-that defines an equation. Wires are drawn from the output port of
-one block to the input port of another. Ports are circles on the blocks
-to which wires can be attached, which can be seen when hovering the
-pointer over the block. Variables have an input and an output port;
-constants and parameters only have an output port. A mathematical
-operator has as many input ports as are needed to define the operation.
-Some operators can be ``overloaded''--more than one input can
-be attached to an input port. Thus you can add more than two variables
-using the 
-  <IMG
- ALIGN="BOTTOM" SRC="img64.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/add}}% WIDTH=15 HEIGHT=14 ">
-  block, simply by wiring more
-than one variable to each input port. The same applies to the subtraction
-block 
-  <IMG
- ALIGN="BOTTOM" SRC="img65.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/minus}}% WIDTH=15 HEIGHT=14 ">
-  , division 
-  <IMG
- ALIGN="BOTTOM" SRC="img66.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/Divide}}% WIDTH=15 HEIGHT=14 ">
-  ,
-minimum 
-  <IMG
- ALIGN="BOTTOM" SRC="img67.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/min}}% WIDTH=15 HEIGHT=14 ">
-   and maximum 
-  <IMG
- ALIGN="BOTTOM" SRC="img68.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/max}}% WIDTH=15 HEIGHT=14 ">
-  
-blocks.
+Equations are entered in <I>Ravel</I> graphically. Mathematical operations
+like addition, multiplication and subtraction are performed by wiring
+the inputs up to the relevant mathematical block. The output of the
+block is then the result of the equation.
+
+<P>
+For example, a simple equation like 
+<IMG
+ SRC="img61.png"
+ ALT="\begin{displaymath}
+ProfitMargin=(Price-Cost)/Cost
+\end{displaymath}% WIDTH=415 HEIGHT=29 ">
+is performed in <I>Ravel</I> by :
+
+<IMG
+ ALIGN="BOTTOM" SRC="img63.png"
+ ALT="\includegraphics[width=10cm]{images/ProfitMarginEquation}% WIDTH=452 HEIGHT=108 "> 
+
+<P>
+
+<P>
+If you click on the Equation or Summary Tab, you will see this flowchart
+rendered as an equation:
+
+<P>
+<IMG
+ SRC="img62.png"
+ ALT="\begin{displaymath}
+Profit_{Margin}=\frac{Price-Cost}{Cost}
+\end{displaymath}% WIDTH=384 HEIGHT=39 ">
+
+<P>
+If the variables Price and Cost were multi-dimensional--if, for
+example, they stored price and cost data for different <I>products</I>
+at different <I>stores</I> at different <I>dates</I>--then this
+one formula would calculate profit margins <I>by product by store
+by date</I>.
 
 <P>
 <BR><HR>

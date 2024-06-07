@@ -2,8 +2,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Duplicate keys</TITLE>
-<META NAME="description" CONTENT="Duplicate keys">
+<TITLE>Temporal data</TITLE>
+<META NAME="description" CONTENT="Temporal data">
 <META NAME="keywords" CONTENT="Ravel">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,60 +16,141 @@
 
 <LINK REL="next" HREF="node191.html">
 <LINK REL="previous" HREF="node189.html">
-<LINK REL="up" HREF="node187.html">
+<LINK REL="up" HREF="node188.html">
 <LINK REL="next" HREF="node191.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html2955"
+<A NAME="tex2html2960"
   HREF="node191.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html2951"
-  HREF="node187.html">
+<A NAME="tex2html2956"
+  HREF="node188.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html2945"
+<A NAME="tex2html2950"
   HREF="node189.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html2953"
+<A NAME="tex2html2958"
   HREF="Ravel.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html2956"
-  HREF="node191.html">Counter mode</A>
-<B> Up:</B> <A NAME="tex2html2952"
-  HREF="node187.html">Importing data into a</A>
-<B> Previous:</B> <A NAME="tex2html2946"
-  HREF="node189.html">Temporal data</A>
- &nbsp; <B>  <A NAME="tex2html2954"
+<B> Next:</B> <A NAME="tex2html2961"
+  HREF="node191.html">Duplicate keys</A>
+<B> Up:</B> <A NAME="tex2html2957"
+  HREF="node188.html">Importing data into a</A>
+<B> Previous:</B> <A NAME="tex2html2951"
+  HREF="node189.html">Quick instructions</A>
+ &nbsp; <B>  <A NAME="tex2html2959"
   HREF="Ravel.html">Contents</A></B> 
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004153000000000000000">
-Duplicate keys</A>
+<H2><A NAME="SECTION004152000000000000000">
+Temporal data</A>
 </H2>
 
 <P>
-In a hypercube, data is indexed by a list of indices, collectively
-known as a key. The indices may be strings, integers or date/time
-values. If more than one value exists in the CSV file for a given
-key, Minsky throws a ``Duplicate key'' exception. This exception
-gives you the option of writing a report, which is basically a sorted
-version of the original CSV file, with the errors listed at the beginning.
-You can open this report in a spreadsheet to see if data needs to
-be corrected or removed.
+The Date column is current parsed as strings, which not only will
+be sorted incorrectly, but even if the data were in a YYYYMMDD format
+which is sorted correctly, will not have a uniform temporal spacing.
+It is therefore important to parse the Date column as temporal data,
+which is achieved by changing the column type to ``time'', and specifying
+a format string, which follows strftime conventions with the addition
+of a quarter specifier (<code>%Q</code>). <A NAME="2266"></A><A NAME="strftime_format_specifier"></A>
+<P>
+If your temporal data is in the form Y*M*D*H*M*S, where
+* signifies any sequence of non-digit characters, and the year,
+month, day, hour minutes, second fields are regular integers in that
+order, then you can leave the format string blank <A NAME="2274"></A>.
+If some of the fields are missing, eg minutes and seconds, then they
+will be filled in with sensible defaults.
+
+<IMG
+ ALIGN="BOTTOM" SRC="img283.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogTimeFormat}}% WIDTH=555 HEIGHT=291 "> 
 
 <P>
-Duplicates will arise if you load data from a transactional database
-which stores the exact time of every transaction. Here the correct
-choice on ``Duplicate Key Action'' is to sum the entries so that
-all sales for a particular day (or month, quarter, or year) are aggregated
-for analysis of trends in the data.
 
 <P>
-<BR><HR>
+<BR>
+<A NAME="Strftime_code"></A><A NAME="2284"></A>
+<STRONG>Table 4.1:</STRONG>
+Table of strftime codes
+<BR>
+<P ALIGN=""><IMG
+ SRC="img284.png"
+ ALT="\begin{table}\begin{tabular}{\vert c\vert p{.8\textwidth}\vert}
+\hline
+Code &amp; D...
+...ne
+\%\% &amp; Literal \% character\tabularnewline
+\hline
+\end{tabular}\end{table}% WIDTH=555 HEIGHT=384 ">
+</P>
+<BR>
+
+<P>
+A <I>Strftime </I>formatted string consists of escape codes (with
+leading % characters). All other characters are treated as matching
+literally the characters of the input. So to match a date string of
+the format YYYY-MM-DD HH:MM:SS+ZZ (ISO format), use a format string
+``<code>%Y-%m-%d %H:%M:%S+%Z</code>''. Similarly, for quarterly data
+expressed like 1972-Q1, use ``<code>%Y-Q%Q</code>''. Note that only %Y
+and %y can be mixed with %Q (nothing else makes sense anyway).
+
+<P>
+Note that if your month data uses month names instead of numerical
+month representation, the it is important you select %d or %e
+depending on whether your day data has leading zeros or not.  This is
+unfortunately a restriction of the underlying date import routine,
+which may change in the future.
+
+<P>
+Even in the current settings, you may still get a message ``exhausted
+memory -- try reducing the rank'', or a similar message about hitting
+a 20% of physical memory threshold. In some cases, ``titles'' and
+``addresses'' might be pretty much unique for each record, leading
+to a large, but very sparse hypercube. If you remove those columns,
+then you may encounter the ``Duplicate key'' message. In this case,
+you can aggregate over these records--which is desirable anyway
+to analyse trends in aggregate data. You do this by setting ``Duplicate
+Key Action'' to sum (or perhaps average for this example). After
+some additional playing around with dimensions to aggregate over,
+we can get the data imported.
+
+<IMG
+ ALIGN="BOTTOM" SRC="img285.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogFinal}}% WIDTH=555 HEIGHT=291 "> 
+
+<P>
+
+<P>
+<HR>
+<!--Navigation Panel-->
+<A NAME="tex2html2960"
+  HREF="node191.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html2956"
+  HREF="node188.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html2950"
+  HREF="node189.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html2958"
+  HREF="Ravel.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html2961"
+  HREF="node191.html">Duplicate keys</A>
+<B> Up:</B> <A NAME="tex2html2957"
+  HREF="node188.html">Importing data into a</A>
+<B> Previous:</B> <A NAME="tex2html2951"
+  HREF="node189.html">Quick instructions</A>
+ &nbsp; <B>  <A NAME="tex2html2959"
+  HREF="Ravel.html">Contents</A></B> 
+<!--End of Navigation Panel-->
 
 </BODY>
 </HTML>

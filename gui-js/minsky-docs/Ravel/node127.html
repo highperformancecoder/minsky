@@ -2,8 +2,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>User defined function</TITLE>
-<META NAME="description" CONTENT="User defined function">
+<TITLE>Switch</TITLE>
+<META NAME="description" CONTENT="Switch">
 <META NAME="keywords" CONTENT="Ravel">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -15,70 +15,86 @@
 <LINK REL="STYLESHEET" HREF="Ravel.css">
 
 <LINK REL="next" HREF="node128.html">
-<LINK REL="previous" HREF="node126.html">
-<LINK REL="up" HREF="node50.html">
+<LINK REL="previous" HREF="node119.html">
+<LINK REL="up" HREF="node51.html">
 <LINK REL="next" HREF="node128.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html2159"
+<A NAME="tex2html2164"
   HREF="node128.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html2155"
-  HREF="node50.html">
+<A NAME="tex2html2160"
+  HREF="node51.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html2149"
+<A NAME="tex2html2154"
   HREF="node126.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html2157"
+<A NAME="tex2html2162"
   HREF="Ravel.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html2160"
-  HREF="node128.html">Godley Tables</A>
-<B> Up:</B> <A NAME="tex2html2156"
-  HREF="node50.html">Operations</A>
-<B> Previous:</B> <A NAME="tex2html2150"
-  HREF="node126.html">Switch</A>
- &nbsp; <B>  <A NAME="tex2html2158"
+<B> Next:</B> <A NAME="tex2html2165"
+  HREF="node128.html">User defined function</A>
+<B> Up:</B> <A NAME="tex2html2161"
+  HREF="node51.html">Operations</A>
+<B> Previous:</B> <A NAME="tex2html2155"
+  HREF="node126.html">Correlation coefficient</A>
+ &nbsp; <B>  <A NAME="tex2html2163"
   HREF="Ravel.html">Contents</A></B> 
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004216000000000000000">
-User defined function</A>
+<H2><A NAME="SECTION004215000000000000000">
+Switch</A>
 </H2>
 
 <P>
-<A NAME="Operation:userFunction"></A><A NAME="UserFunction"></A>
+<A NAME="SwitchIcon"></A>
 <P>
 
     <IMG
- ALIGN="BOTTOM" SRC="img205.png"
- ALT="\includegraphics[height=10mm]{images/userFunction}% WIDTH=95 HEIGHT=46 ">
+ ALIGN="BOTTOM" SRC="img204.png"
+ ALT="\includegraphics[height=10mm]{images/switchKey}% WIDTH=62 HEIGHT=45 ">
 
 <P>
-A user defined function is a functioned defined by an algebraic expression.
-Support for this feature is courtesy of the wonderful <A NAME="tex2html14"
-  HREF="http://www.partow.net/programming/exprtk/index.html">exprtk</A>
-library developed by Arash Partow.
+The operator can be placed on the canvas by clicking on its icon 
+  <IMG
+ ALIGN="BOTTOM" SRC="img201.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/switch}}% WIDTH=30 HEIGHT=14 ">
+  on
+the widget bar.
 
 <P>
-A user defined function has a <EM>name</EM>, <EM>parameters</EM> and
-an <EM>expression</EM>. Example expressions are things like <code>x+y</code>
-or <code>sin(x)</code>. More details of the sorts of expressions possible
-can be found in the <A HREF="node200.html#ExprTk">User Defined Functions</A>
-section of the manual.
+A switch block (also known as a case block, or select in the Fortran
+world) is a way of selecting from a range of alternatives according
+to the value of the input, effectively defining a piecewise function.
+
+<IMG
+ ALIGN="BOTTOM" SRC="img202.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/switch}}% WIDTH=542 HEIGHT=249 "> <EM>An example switch block with 3 cases</EM> 
 
 <P>
-The parameters are specified as part of the name, so a user defined
-function adding x and y would be called <code>useradd(a,y)</code> and the
-sin example might be called <code>mysin(x)</code>. Functions with up to
-two arguments can be wired on the canvas. User defined functions can
-call other user defined functions, so specifiying more than 2 parameters
-can be a useful thing to do.
+
+<P>
+The default switch has two cases, and can be used to implement an
+if/then/else construct. However, because the two cases are 0 and 1,
+or false and true, a two case switch statement will naturally appear
+``upside down'' to how you might think of an if statement. In other
+words, it looks like:
+
+<P>
+<IMG
+ ALIGN="MIDDLE" SRC="img203.png"
+ ALT="$\textstyle \parbox{1\textwidth}{%
+\texttt{if not }{\em condition} \texttt{then}\\
+\ldots\texttt{else}\\
+\ldots %
+}$% WIDTH=164 HEIGHT=66 ">
+<P>
+You can add or remove cases through the context menu.
 
 <P>
 <BR><HR>

@@ -2,8 +2,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Minsky's unusual system dynamics features</TITLE>
-<META NAME="description" CONTENT="Minsky's unusual system dynamics features">
+<TITLE>Godley Tables</TITLE>
+<META NAME="description" CONTENT="Godley Tables">
 <META NAME="keywords" CONTENT="Ravel">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,96 +16,204 @@
 
 <LINK REL="next" HREF="node220.html">
 <LINK REL="previous" HREF="node218.html">
-<LINK REL="up" HREF="node217.html">
+<LINK REL="up" HREF="node218.html">
 <LINK REL="next" HREF="node220.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html3328"
+<A NAME="tex2html3333"
   HREF="node220.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html3324"
-  HREF="node217.html">
+<A NAME="tex2html3329"
+  HREF="node218.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html3318"
+<A NAME="tex2html3323"
   HREF="node218.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html3326"
+<A NAME="tex2html3331"
   HREF="Ravel.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html3329"
-  HREF="node220.html">Building a predator-prey model</A>
-<B> Up:</B> <A NAME="tex2html3325"
-  HREF="node217.html">If you are experienced</A>
-<B> Previous:</B> <A NAME="tex2html3319"
-  HREF="node218.html">Godley Tables</A>
- &nbsp; <B>  <A NAME="tex2html3327"
+<B> Next:</B> <A NAME="tex2html3334"
+  HREF="node220.html">Minsky's unusual system dynamics</A>
+<B> Up:</B> <A NAME="tex2html3330"
+  HREF="node218.html">If you are experienced</A>
+<B> Previous:</B> <A NAME="tex2html3324"
+  HREF="node218.html">If you are experienced</A>
+ &nbsp; <B>  <A NAME="tex2html3332"
   HREF="Ravel.html">Contents</A></B> 
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00622000000000000000">
-<I>Minsky</I>'s unusual system dynamics features</A>
+<H2><A NAME="SECTION00621000000000000000">
+Godley Tables</A>
 </H2>
 
 <P>
-<I>Minsky</I> differs from conventional system dynamics models in
-various ways:
+<A NAME="Godley-Tables"></A>
+<P>
+Godley tables are a unique feature of <I>Minsky</I>. They are based
+on what could be called the world's first GUI (``Graphical User Interface''),
+the accountant's double-entry bookkeeping table.
+
+<P>
+Double-entry was invented in <A NAME="tex2html43"
+  HREF="https://www.janegleesonwhite.com/double">15th century Italy</A>
+to enable accurate recording of financial transactions. The essence
+of this method is (a) to classify all of an entity's accounts as either
+Assets or Liabilities, with the difference between them representing
+the Equity of the entity; and (b) to record every transaction twice,
+once as a Credit <IMG
+ ALIGN="MIDDLE" SRC="img317.png"
+ ALT="$\left(CR\right)$% WIDTH=41 HEIGHT=31 ">and once as a Debit <IMG
+ ALIGN="MIDDLE" SRC="img318.png"
+ ALT="$\left(DR\right)$% WIDTH=42 HEIGHT=31 ">,
+where the definitions of Credit and Debit entries for Assets, Liabilities
+and Equity are designed to ensure that the transaction was accurately
+recorded. Minsky uses this GUI to generate stock-flow consistent models
+of financial flows, but by default uses plus <IMG
+ ALIGN="MIDDLE" SRC="img319.png"
+ ALT="$\left(+\right)$% WIDTH=29 HEIGHT=31 "> and
+minus <IMG
+ ALIGN="MIDDLE" SRC="img320.png"
+ ALT="$\left(-\right)$% WIDTH=28 HEIGHT=31 "> operators (though the accountant's convention
+of Credit <IMG
+ ALIGN="MIDDLE" SRC="img317.png"
+ ALT="$\left(CR\right)$% WIDTH=41 HEIGHT=31 ">and Debit <IMG
+ ALIGN="MIDDLE" SRC="img318.png"
+ ALT="$\left(DR\right)$% WIDTH=42 HEIGHT=31 "> can be chosen
+via the Options menu). This system guarantees that, no matter how
+complex the model is, the equations are internally consistent.
+
+<P>
+<I>Minsky</I> uses this GUI to generate systems of ordinary differential
+equations to model financial flows. The columns specify stocks, while
+the entries in rows are flows. <I>The symbolic sum of a column
+is thus the rate of change of the associated stock</I>. <I>Minsky</I>
+takes a table like the next figure:
+
+<P>
+<IMG
+ ALIGN="BOTTOM" SRC="img323.png"
+ ALT="\includegraphics[width=\textwidth]{images/GodleyTableSingle}% WIDTH=555 HEIGHT=277 ">
+
+<P>
+And converts it into a set of dynamic equations, which by construction
+are ``stock-flow consistent'':
+
+<P>
+
+<BR><P>
+<IMG
+ SRC="img321.png"
+ ALT="\begin{eqnarray*}
+\mathrm{Consume}&amp;=&amp;0\\
+\mathrm{Wages}&amp;=&amp;0\\
+\mathrm{Tax}&amp;=&amp;0...
+...m{{NB}}}}-\left(\mathrm{Tax}+\mathrm{BondSale}_{T^{B}}\right)\\
+\end{eqnarray*}% WIDTH=575 HEIGHT=697 ">
+<BR></P>
+<P>
+
+<P>
+The model is completed by defining the flows on the canvas.
+
+<P>
+In addition, because one entity's financial asset is another's financial
+liability, <I>Minsky</I> enables the construction of a multi-sectoral
+view of financial transactions. The wedge next to every account name
+is used on other tables to search for Assets that have not yet been
+recorded as a Liability, and vice versa. For example, the previous
+Table recorded the financial system from the point of view of the
+Banking Sector, for which Reserves--the deposit accounts of private
+banks at the Central Bank-are an Asset. Reserves are also a liability
+of the Central Bank, and that can be shown in <I>Minsky</I> by adding
+an additional Godley Table, naming it <I>Central Bank</I>, and recording
+Reserves as a Liability:
+
+<P>
+<IMG
+ ALIGN="BOTTOM" SRC="img324.png"
+ ALT="\includegraphics[width=\textwidth]{images/GodleyTableSecondIncomplete}% WIDTH=555 HEIGHT=248 ">
+
+<P>
+At this stage, the financial transactions have been entered only once--against
+the Central Bank's Liability of Reserves. Each transaction has to
+be entered a second time to complete its record, but at present there
+are no available accounts in which to record the transactions a second
+time.
+
+<P>
+<IMG
+ ALIGN="BOTTOM" SRC="img324.png"
+ ALT="\includegraphics[width=\textwidth]{images/GodleyTableSecondIncomplete}% WIDTH=555 HEIGHT=248 ">
+
+<P>
+Bond purchases by the Central Bank indicate the need for to show bonds
+owned by the Central Bank as an asset, while the other transactions
+indicate the need to show the Treasury's account at the Central Bank,
+the ``Consolidated Revenue Fund'', as an additional liability:
+
+<P>
+<IMG
+ ALIGN="BOTTOM" SRC="img325.png"
+ ALT="\includegraphics[width=\textwidth]{images/GodleyTableSecondComplete}% WIDTH=555 HEIGHT=216 ">
+
+<P>
+This is an inherently better way to generate a dynamic model of financial
+flows than the flowchart method used by all other system dynamics
+programs, for at least four reasons: 
 
 <UL>
-<LI>Most programs store their mathematical formulas within a text block,
-which must be opened to see its equation. The mathematics of a <I>Minsky</I>
-model is shown explicitly on the design canvas;
+<LI>All financial transactions are flows between entities. The tabular
+layout captures this in a very natural way: each row shows where a
+flow originates, and where it ends up;
 </LI>
-<LI>Most programs require every entity used to build an equation to be
-wired to the block in which the equation is defined, while each entity
-is shown only once on the design canvas. This generates the familiar
-system dynamics ``spaghetti diagram'', as even practitioners--rather
-than merely critics--often describe their models. <I>Minsky</I>
-enables entities to be shown multiple times on the design canvas,
-which substantially reduces the number of wires needed to build a
-model. <I>Minsky</I>'s equations therefore resemble small ``spider
-webs'', rather than large bowls of spaghetti. This makes it easier
-to understand what a model does; and
+<LI>The program imposes the rules of double-entry bookkeeping, in which
+entries on each row balance to zero according to the <EM>accounting
+equation</EM> <IMG
+ ALIGN="MIDDLE" SRC="img322.png"
+ ALT="$(Assets=Liabilities+Equity)$% WIDTH=227 HEIGHT=31 ">. If you don't ensure that
+each flow starts somewhere and ends somewhere, then the program will
+identify your mistake;
 </LI>
-<LI>Most programs show the end results of a simulation. <I>Minsky</I>
-shows simulations dynamically, and the numerical values of parameters
-and variables are shown on the parameters and variables themselves.
-Parameters can be altered during a simulation, which enables them
-to be used as a ``control panel'' for simulation of policy proposals,
-etc.
+<LI>The double-entry perspective assists in the completion of a model,
+since the requirement of a matching entry for each transaction indicates
+the accounts that are needed to complete the accounting; and
+</LI>
+<LI>Double-entry bookkeeping acts as a prohibition against recording invalid
+transactions.
 </LI>
 </UL>
-These unusual features are best illustrated by building a simple model
-in <I>Minsky</I>. The next section explains how to build a simpler
-version of the <A HREF="node215.html#intro:new-system-dynamics">predator-prey model</A>.
+<I>Minsky</I> thus adds an element to the system dynamics toolkit
+which is essential for modeling the monetary flows that are an intrinsic
+aspect of a market economy.
 
 <P>
 <HR>
 <!--Navigation Panel-->
-<A NAME="tex2html3328"
+<A NAME="tex2html3333"
   HREF="node220.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html3324"
-  HREF="node217.html">
+<A NAME="tex2html3329"
+  HREF="node218.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html3318"
+<A NAME="tex2html3323"
   HREF="node218.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html3326"
+<A NAME="tex2html3331"
   HREF="Ravel.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html3329"
-  HREF="node220.html">Building a predator-prey model</A>
-<B> Up:</B> <A NAME="tex2html3325"
-  HREF="node217.html">If you are experienced</A>
-<B> Previous:</B> <A NAME="tex2html3319"
-  HREF="node218.html">Godley Tables</A>
- &nbsp; <B>  <A NAME="tex2html3327"
+<B> Next:</B> <A NAME="tex2html3334"
+  HREF="node220.html">Minsky's unusual system dynamics</A>
+<B> Up:</B> <A NAME="tex2html3330"
+  HREF="node218.html">If you are experienced</A>
+<B> Previous:</B> <A NAME="tex2html3324"
+  HREF="node218.html">If you are experienced</A>
+ &nbsp; <B>  <A NAME="tex2html3332"
   HREF="Ravel.html">Contents</A></B> 
 <!--End of Navigation Panel-->
 
