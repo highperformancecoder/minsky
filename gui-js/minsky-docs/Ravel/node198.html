@@ -2,8 +2,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Run Buttons</TITLE>
-<META NAME="description" CONTENT="Run Buttons">
+<TITLE>Record/Replay Buttons</TITLE>
+<META NAME="description" CONTENT="Record/Replay Buttons">
 <META NAME="keywords" CONTENT="Ravel">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,64 +16,66 @@
 
 <LINK REL="next" HREF="node199.html">
 <LINK REL="previous" HREF="node197.html">
-<LINK REL="up" HREF="node193.html">
+<LINK REL="up" HREF="node194.html">
 <LINK REL="next" HREF="node199.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html3059"
+<A NAME="tex2html3063"
   HREF="node199.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html3055"
-  HREF="node193.html">
+<A NAME="tex2html3059"
+  HREF="node194.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html3049"
+<A NAME="tex2html3053"
   HREF="node197.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html3057"
+<A NAME="tex2html3061"
   HREF="Ravel.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html3060"
-  HREF="node199.html">Speed slider</A>
-<B> Up:</B> <A NAME="tex2html3056"
-  HREF="node193.html">Minsky-specific commands</A>
-<B> Previous:</B> <A NAME="tex2html3050"
-  HREF="node197.html">Record/Replay Buttons</A>
- &nbsp; <B>  <A NAME="tex2html3058"
+<B> Next:</B> <A NAME="tex2html3064"
+  HREF="node199.html">Run Buttons</A>
+<B> Up:</B> <A NAME="tex2html3060"
+  HREF="node194.html">Minsky-specific commands</A>
+<B> Previous:</B> <A NAME="tex2html3054"
+  HREF="node197.html">Simulation Menu Commands</A>
+ &nbsp; <B>  <A NAME="tex2html3062"
   HREF="Ravel.html">Contents</A></B> 
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004165000000000000000">
-Run Buttons</A>
+<H2><A NAME="SECTION004164000000000000000">
+Record/Replay Buttons</A>
 </H2>
 
 <P>
-<A NAME="RunButtons"></A>
+<A NAME="RecReplayButtons"></A>
 <P>
 <IMG
- ALIGN="BOTTOM" SRC="NewItem15.png"
- ALT="2334%  ">
+ ALIGN="BOTTOM" SRC="recReplayButtons.png"
+ ALT="2328%  ">
 
 <P>
-The Run buttons respectively: 
+These buttons control the recording / replay mode of <I>Minsky</I>.
+You can record your interactions with <I>Minsky</I>, and replay those
+interactions for demonstration/presentation purposes.
 
 <OL>
-<LI>Start a simulation-when started the button changes to a pause icon,
-allowing you to pause the simulation 
-  
-  . 
+<LI>Record a session of building/modifying a model. Note that replaying
+a recorded session always starts from a blank canvas, so if you're
+recording the modification of a model, ensure that the first thing
+recorded is to load the model being modified. This button is a toggle
+button, so clicking it again finishes the session, and closes the
+file. 
 </LI>
-<LI>Stop a simulation and reset the simulation time to zero 
-</LI>
-<LI>Step through the simulation one iteration at a time. 
-</LI>
-<LI>Reverse checkbox changes the simulation time direction. Bear in mind
-that a simulation will eventually diverge from its original trajectory
-due to chaotic effects. 
+<LI>Simulate/Replay button. Pressing this button puts <I>Minsky</I> into
+replay mode, and asks for a recording file. You may use the run buttons
+(run/pause,stop and step), as well as the speed slider, to control
+the replay. This button is a toggle button, so clicking it again returns
+<I>Minsky</I> back to the default simulation mode. 
 </LI>
 </OL>
 

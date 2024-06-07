@@ -2,8 +2,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Building a predator-prey model in Minsky</TITLE>
-<META NAME="description" CONTENT="Building a predator-prey model in Minsky">
+<TITLE>Minsky's unusual system dynamics features</TITLE>
+<META NAME="description" CONTENT="Minsky's unusual system dynamics features">
 <META NAME="keywords" CONTENT="Ravel">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,134 +16,96 @@
 
 <LINK REL="next" HREF="node222.html">
 <LINK REL="previous" HREF="node220.html">
-<LINK REL="up" HREF="node218.html">
+<LINK REL="up" HREF="node219.html">
 <LINK REL="next" HREF="node222.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html3357"
+<A NAME="tex2html3361"
   HREF="node222.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html3353"
-  HREF="node218.html">
+<A NAME="tex2html3357"
+  HREF="node219.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html3347"
+<A NAME="tex2html3351"
   HREF="node220.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html3355"
+<A NAME="tex2html3359"
   HREF="Ravel.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html3358"
-  HREF="node222.html">Building monetary models in</A>
-<B> Up:</B> <A NAME="tex2html3354"
-  HREF="node218.html">If you are experienced</A>
-<B> Previous:</B> <A NAME="tex2html3348"
-  HREF="node220.html">Minsky's unusual system dynamics</A>
- &nbsp; <B>  <A NAME="tex2html3356"
+<B> Next:</B> <A NAME="tex2html3362"
+  HREF="node222.html">Building a predator-prey model</A>
+<B> Up:</B> <A NAME="tex2html3358"
+  HREF="node219.html">If you are experienced</A>
+<B> Previous:</B> <A NAME="tex2html3352"
+  HREF="node220.html">Godley Tables</A>
+ &nbsp; <B>  <A NAME="tex2html3360"
   HREF="Ravel.html">Contents</A></B> 
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00623000000000000000">
-Building a predator-prey model in Minsky</A>
+<H2><A NAME="SECTION00622000000000000000">
+<I>Minsky</I>'s unusual system dynamics features</A>
 </H2>
 
 <P>
-<A NAME="Minsky_model_building"></A>
-<P>
-The first step in building the Rabbits and Foxes model in <I>Minsky</I>
-is to insert two integral blocks on the canvas--one for Rabbits
-and the other for Foxes. An integral block is inserted by clicking
-on the <A HREF="node145.html#Variable:integral">
-  <IMG
- ALIGN="BOTTOM" SRC="img224.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/integrate}}% WIDTH=12 HEIGHT=14 ">
-   operator</A>.
-To alter its name from the generic ``int1'', either double-click
-on the widget, which brings up the context menu for integral blocks,
-or hover the mouse over the block and click the right-mouse button,
-and choose ``Edit'' to bring up the edit form (another method is
-to choose ``Rename all instances'' from the context menu). Name
-the two variables Rabbits and Foxes respectively, and you will have
-the following objects on your canvas:
+<I>Minsky</I> differs from conventional system dynamics models in
+various ways:
 
-<P>
-
-<IMG
- ALIGN="BOTTOM" SRC="img328.png"
- ALT="\includegraphics{images/PredatorPreyRabbitsFoxesIntegralsOnly}% WIDTH=223 HEIGHT=191 ">
-
-<P>
-As is typical of dynamic models, the rates of change of the variables
-Rabbits and Foxes depends on their current values. You therefore need
-to copy the variable names, which you do using the context menu command
-``Copy item''. Do this and place both on the canvas:
-
-<P>
-<IMG
- ALIGN="BOTTOM" SRC="img329.png"
- ALT="\includegraphics{images/PredatorPreyRabbitsFoxes02}% WIDTH=450 HEIGHT=212 ">
-
-<P>
-Next add the parameters that determine the rates of growth and death
-of the two species. The non-zero equilibrium is set by the zeros of
-<IMG
- ALIGN="MIDDLE" SRC="img326.png"
- ALT="$\left(r-\rho\times Foxes\right)$% WIDTH=115 HEIGHT=31 "> and <IMG
- ALIGN="MIDDLE" SRC="img327.png"
- ALT="$\left(-f+\phi\times Rabbits\right)$% WIDTH=139 HEIGHT=31 ">.
-
-<P>
-<IMG
- ALIGN="BOTTOM" SRC="img330.png"
- ALT="\includegraphics[width=\textwidth]{images/PredatorPreyRabbitsFoxes03ParametersAdded}% WIDTH=555 HEIGHT=299 ">
-
-<P>
-Finally, the equations for the rates of growth of the two species
-are wired up, and the model can be simulated.
-
-<P>
-<IMG
- ALIGN="BOTTOM" SRC="img331.png"
- ALT="\includegraphics[width=\textwidth]{images/PredatorPreyRabbitsFoxes04Equations}% WIDTH=555 HEIGHT=568 ">
-
-<P>
-If you don't want to display the complete equations on the canvas,
-you can use grouping to hide the complexity. The next figure illustrates
-several ways to use groups, and the feature that groups become transparent
-(and can be edited <I>in situ</I>) as the zoom level increases.
-
-<P>
-<IMG
- ALIGN="BOTTOM" SRC="img332.png"
- ALT="\includegraphics[width=\textwidth]{images/PredatorPreyRabbitsFoxes05Grouping}% WIDTH=556 HEIGHT=410 ">
+<UL>
+<LI>Most programs store their mathematical formulas within a text block,
+which must be opened to see its equation. The mathematics of a <I>Minsky</I>
+model is shown explicitly on the design canvas;
+</LI>
+<LI>Most programs require every entity used to build an equation to be
+wired to the block in which the equation is defined, while each entity
+is shown only once on the design canvas. This generates the familiar
+system dynamics ``spaghetti diagram'', as even practitioners--rather
+than merely critics--often describe their models. <I>Minsky</I>
+enables entities to be shown multiple times on the design canvas,
+which substantially reduces the number of wires needed to build a
+model. <I>Minsky</I>'s equations therefore resemble small ``spider
+webs'', rather than large bowls of spaghetti. This makes it easier
+to understand what a model does; and
+</LI>
+<LI>Most programs show the end results of a simulation. <I>Minsky</I>
+shows simulations dynamically, and the numerical values of parameters
+and variables are shown on the parameters and variables themselves.
+Parameters can be altered during a simulation, which enables them
+to be used as a ``control panel'' for simulation of policy proposals,
+etc.
+</LI>
+</UL>
+These unusual features are best illustrated by building a simple model
+in <I>Minsky</I>. The next section explains how to build a simpler
+version of the <A HREF="node217.html#intro:new-system-dynamics">predator-prey model</A>.
 
 <P>
 <HR>
 <!--Navigation Panel-->
-<A NAME="tex2html3357"
+<A NAME="tex2html3361"
   HREF="node222.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html3353"
-  HREF="node218.html">
+<A NAME="tex2html3357"
+  HREF="node219.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html3347"
+<A NAME="tex2html3351"
   HREF="node220.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html3355"
+<A NAME="tex2html3359"
   HREF="Ravel.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html3358"
-  HREF="node222.html">Building monetary models in</A>
-<B> Up:</B> <A NAME="tex2html3354"
-  HREF="node218.html">If you are experienced</A>
-<B> Previous:</B> <A NAME="tex2html3348"
-  HREF="node220.html">Minsky's unusual system dynamics</A>
- &nbsp; <B>  <A NAME="tex2html3356"
+<B> Next:</B> <A NAME="tex2html3362"
+  HREF="node222.html">Building a predator-prey model</A>
+<B> Up:</B> <A NAME="tex2html3358"
+  HREF="node219.html">If you are experienced</A>
+<B> Previous:</B> <A NAME="tex2html3352"
+  HREF="node220.html">Godley Tables</A>
+ &nbsp; <B>  <A NAME="tex2html3360"
   HREF="Ravel.html">Contents</A></B> 
 <!--End of Navigation Panel-->
 

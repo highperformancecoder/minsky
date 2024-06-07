@@ -2,8 +2,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Simulation Menu Commands</TITLE>
-<META NAME="description" CONTENT="Simulation Menu Commands">
+<TITLE>Options Menu Commands</TITLE>
+<META NAME="description" CONTENT="Options Menu Commands">
 <META NAME="keywords" CONTENT="Ravel">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,121 +16,80 @@
 
 <LINK REL="next" HREF="node197.html">
 <LINK REL="previous" HREF="node195.html">
-<LINK REL="up" HREF="node193.html">
+<LINK REL="up" HREF="node194.html">
 <LINK REL="next" HREF="node197.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html3035"
+<A NAME="tex2html3039"
   HREF="node197.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html3031"
-  HREF="node193.html">
+<A NAME="tex2html3035"
+  HREF="node194.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html3025"
+<A NAME="tex2html3029"
   HREF="node195.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html3033"
+<A NAME="tex2html3037"
   HREF="Ravel.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html3036"
-  HREF="node197.html">Record/Replay Buttons</A>
-<B> Up:</B> <A NAME="tex2html3032"
-  HREF="node193.html">Minsky-specific commands</A>
-<B> Previous:</B> <A NAME="tex2html3026"
-  HREF="node195.html">Options Menu Commands</A>
- &nbsp; <B>  <A NAME="tex2html3034"
+<B> Next:</B> <A NAME="tex2html3040"
+  HREF="node197.html">Simulation Menu Commands</A>
+<B> Up:</B> <A NAME="tex2html3036"
+  HREF="node194.html">Minsky-specific commands</A>
+<B> Previous:</B> <A NAME="tex2html3030"
+  HREF="node195.html">File Menu Minsky commands</A>
+ &nbsp; <B>  <A NAME="tex2html3038"
   HREF="Ravel.html">Contents</A></B> 
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004163000000000000000">
-Simulation Menu Commands</A>
+<H2><A NAME="SECTION004162000000000000000">
+Options Menu Commands</A>
 </H2>
 
 <P>
-<A NAME="RungeKutta"></A>
-<P>
-The Simulation Menu invokes the Simulation Parameters form.
-
-<P>
-<IMG
- ALIGN="BOTTOM" SRC="./SimulationParameters.png"
- ALT="Image SimulationParameters% WIDTH=560 HEIGHT=588 ">
-
-<P>
+The options menu allows you to customise aspects of Minsky.
+<DL>
+<DT><STRONG>Preferences</STRONG></DT>
+<DD>&nbsp;
 
 <UL>
-<LI>Time unit allows one to specify units for the time dimension for dimensional
-analysis. eg ``year'', ``s'' etc. 
+<LI>Godley table show values. When ticked, the values of flow variables
+are displayed in the Godley table whilst a simulation is running.
+This will tend to slow down the simulation somewhat. 
 </LI>
-<LI>Min and Max step size control aspect of the adaptive Runge-Kutta equation
-solver, which trade off performance and accuracy of the model. The
-algorithm is adaptive, so the step size will vary according to how
-stiff the system of equations is. 
-
-<UL>
-<LI>Specifying a minimum step size prevents the system from stalling,
-at the expense of accuracy when the step size reaches that minimum. 
+<LI>Godley table output style -- whether <IMG
+ ALIGN="MIDDLE" SRC="img238.png"
+ ALT="$+/-$% WIDTH=36 HEIGHT=31 "> or DR/CR (debit/credit)
+indicators are used. 
 </LI>
-<LI>Specifying a maximum step size is useful to ensure one has sufficient
-data points for smooth plots. 
+<LI>Enable multiple equity columns - whether Godley table have more than
+one equity columns. 
 </LI>
-</UL>
+<LI>Number of recent files to display -- affects the <A HREF="node7.html#recentfiles">recent
+files</A> menu. 
 </LI>
-<LI>An iteration is the time between updates to plots. Increasing the
-number of solver steps per iteration decreases the overhead involved
-in updating the display, at the expense of smoothness of the plots.
+<LI><A NAME="wrap-equations-1"></A> Wrap long equations in LaTeX export. If
+ticked, use the breqn package to produce nicer looking automatically
+line-wrapped formulae. Because not all LaTeX implementations are guaranteed
+to support breqn, untick this option if you find difficulty. 
 </LI>
-<LI>Start time is the value of the system <IMG
- ALIGN="BOTTOM" SRC="img1.png"
- ALT="$t$% WIDTH=10 HEIGHT=14 "> variable when the system
-is reset. 
-</LI>
-<LI>Run until time can be used to pause the simulation once <IMG
- ALIGN="BOTTOM" SRC="img1.png"
- ALT="$t$% WIDTH=10 HEIGHT=14 "> reaches
-a certain value. Setting this to ``Infinity'' causes the simulation
-to run indefinitely, or until some arithmetic error occurs. 
-</LI>
-<LI>The algorithm is adaptive, so the step size will vary according to
-how stiff the system of equations is. 
-</LI>
-<LI>Solver order determines how high order a polynomial is used for approximating
-the actual system. A first order explicit solver is the classic Jacobi
-method, which is the fastest, but least accurate solver. 4th order
-is the adaptive Runge-Kutta equation solver.
+<LI><A NAME="font-1"></A> select a font for variable names etc. 
 </LI>
 </UL>
+</DD>
+<DT><STRONG>Background colour</STRONG></DT>
+<DD>-- select a colour from which a colour scheme
+is computed.
+</DD>
+</DL>
 
 <P>
-<HR>
-<!--Navigation Panel-->
-<A NAME="tex2html3035"
-  HREF="node197.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html3031"
-  HREF="node193.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html3025"
-  HREF="node195.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html3033"
-  HREF="Ravel.html">
-<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
-<BR>
-<B> Next:</B> <A NAME="tex2html3036"
-  HREF="node197.html">Record/Replay Buttons</A>
-<B> Up:</B> <A NAME="tex2html3032"
-  HREF="node193.html">Minsky-specific commands</A>
-<B> Previous:</B> <A NAME="tex2html3026"
-  HREF="node195.html">Options Menu Commands</A>
- &nbsp; <B>  <A NAME="tex2html3034"
-  HREF="Ravel.html">Contents</A></B> 
-<!--End of Navigation Panel-->
+<BR><HR>
 
 </BODY>
 </HTML>

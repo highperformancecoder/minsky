@@ -2,8 +2,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Dimensional Analysis</TITLE>
-<META NAME="description" CONTENT="Dimensional Analysis">
+<TITLE>Bookmarks</TITLE>
+<META NAME="description" CONTENT="Bookmarks">
 <META NAME="keywords" CONTENT="Ravel">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -22,114 +22,57 @@
 
 <BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html2703"
+<A NAME="tex2html2707"
   HREF="node171.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html2699"
+<A NAME="tex2html2703"
   HREF="node44.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html2693"
+<A NAME="tex2html2697"
   HREF="node169.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html2701"
+<A NAME="tex2html2705"
   HREF="Ravel.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html2704"
-  HREF="node171.html">Tensor values</A>
-<B> Up:</B> <A NAME="tex2html2700"
+<B> Next:</B> <A NAME="tex2html2708"
+  HREF="node171.html">Dimensional Analysis</A>
+<B> Up:</B> <A NAME="tex2html2704"
   HREF="node44.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html2694"
-  HREF="node169.html">Bookmarks</A>
- &nbsp; <B>  <A NAME="tex2html2702"
+<B> Previous:</B> <A NAME="tex2html2698"
+  HREF="node169.html">Canvas background and keyboard</A>
+ &nbsp; <B>  <A NAME="tex2html2706"
   HREF="Ravel.html">Contents</A></B> 
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION004120000000000000000">
-Dimensional Analysis</A>
+<H1><A NAME="SECTION004110000000000000000">
+Bookmarks</A>
 </H1>
 
 <P>
-<A NAME="dimensional_analysis"></A>
-<P>
-Dimensional analysis is the idea of attaching units of measurement
-(eg metre or second) to the quantities being computed. It provides
-an additional constraint that the system must satisfy, reducing the
-chance of wiring errors. Two different units being added together
-will throw up an error -- you cannot add 2 metres to 3 kilograms. But
-it should be possible add 2 metres to 3 feet, and get the correct
-answer. You may need to explicitly add a multiply operation to convert
-from one unit to another, for example, dividing the 3 feet by 3.281
-before adding it to the 2 metres, providing a total of 2.914 meters.
+Bookmarks are a useful feature for saving the current position and
+zoom of the canvas, to be able to come back to that part of the canvas
+later. This helps to manage more complicated models. To create a new
+bookmark, click on the ``Bookmark'' tab in the top left-hand corner
+(in-between ``Edit'' and ``Insert'') and select ``Bookmark this
+position''. The program will provide a dialogue box to enter in a
+name for the new bookmark. After creating the bookmark, all user-created
+bookmarks can be seen in the Bookmarks menu. To delete a bookmark,
+simply select ``Delete'' from the Bookmarks menu and select the
+desired bookmark. To open an existing bookmark, select one from the
+menu.
 
 <P>
-<B>Using Dimensional Analysis in </B><B><I>Minsky</I></B>
+You may also create a bookmark from any item on the canvas by selecting
+the bookmark checkbox in the ``description'' dialog. This is especially
+useful with text boxes, since they provide a visual indicator for
+what is bookmarked at a given location--Parameter definitions, Plots,
+etc.
 
 <P>
-To attach units to quantities in <I>Minsky</I>, you use the units
-field of the variable/parameters/constants edit dialog box. Each word
-typed in this box describes a separate unit. <code>^</code>
-followed by an integer is used to represent a power. Finally, a single
-``/'' indicates that the following units are on the denominator,
-dividing the first set of units by the second. So to represent the
-unit of acceleration, you can equivalently type all of the following:
-
-<UL>
-<LI><code>m/s^2</code> 
-</LI>
-<LI><code>m/s s</code> 
-</LI>
-<LI><code>m/s^-2</code> 
-</LI>
-</UL>
-Or spelling it out in full:
-
-<UL>
-<LI><code>metre/second^2</code> 
-</LI>
-<LI><code>metre second^-2</code> 
-</LI>
-<LI><code>metre / second second</code> 
-</LI>
-</UL>
-Note that metre and m are distinctly different units in <I>Minsky</I>.
-
-<P>
-Note - setting the time dimension is done in the <A HREF="node196.html#RungeKutta">simulation menu</A>.
-
-<P>
-All function objects require dimensionless inputs. You can use dimensional
-analysis to avoid, for example, incorrectly feeding a degree measurement
-into a sine function, by requiring them to be multiplied by a radiansPerDegree
-parameter.
-
-<P>
-<HR>
-<!--Navigation Panel-->
-<A NAME="tex2html2703"
-  HREF="node171.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html2699"
-  HREF="node44.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html2693"
-  HREF="node169.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html2701"
-  HREF="Ravel.html">
-<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
-<BR>
-<B> Next:</B> <A NAME="tex2html2704"
-  HREF="node171.html">Tensor values</A>
-<B> Up:</B> <A NAME="tex2html2700"
-  HREF="node44.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html2694"
-  HREF="node169.html">Bookmarks</A>
- &nbsp; <B>  <A NAME="tex2html2702"
-  HREF="Ravel.html">Contents</A></B> 
-<!--End of Navigation Panel-->
+<BR><HR>
 
 </BODY>
 </HTML>

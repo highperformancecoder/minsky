@@ -2,8 +2,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Variable names</TITLE>
-<META NAME="description" CONTENT="Variable names">
+<TITLE>Variables and Parameters</TITLE>
+<META NAME="description" CONTENT="Variables and Parameters">
 <META NAME="keywords" CONTENT="Ravel">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -14,64 +14,143 @@
 
 <LINK REL="STYLESHEET" HREF="Ravel.css">
 
-<LINK REL="next" HREF="node147.html">
-<LINK REL="previous" HREF="node145.html">
-<LINK REL="up" HREF="node145.html">
+<LINK REL="next" HREF="node152.html">
+<LINK REL="previous" HREF="node51.html">
+<LINK REL="up" HREF="node44.html">
 <LINK REL="next" HREF="node147.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html2404"
+<A NAME="tex2html2403"
   HREF="node147.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html2400"
-  HREF="node145.html">
+<A NAME="tex2html2399"
+  HREF="node44.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html2394"
+<A NAME="tex2html2393"
   HREF="node145.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html2402"
+<A NAME="tex2html2401"
   HREF="Ravel.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html2405"
-  HREF="node147.html">Initial conditions</A>
-<B> Up:</B> <A NAME="tex2html2401"
-  HREF="node145.html">Variables and Parameters</A>
-<B> Previous:</B> <A NAME="tex2html2395"
-  HREF="node145.html">Variables and Parameters</A>
- &nbsp; <B>  <A NAME="tex2html2403"
+<B> Next:</B> <A NAME="tex2html2404"
+  HREF="node147.html">Variable names</A>
+<B> Up:</B> <A NAME="tex2html2400"
+  HREF="node44.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html2394"
+  HREF="node145.html">differentiate</A>
+ &nbsp; <B>  <A NAME="tex2html2402"
   HREF="Ravel.html">Contents</A></B> 
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00431000000000000000">
-Variable names</A>
-</H2>
+<H1><A NAME="SECTION00430000000000000000">
+Variables and Parameters</A>
+</H1>
 
 <P>
-Variable names uniquely identify variables. Multiple icons on the
-canvas with the same name at the same level all refer to the same
-variable. Variable names can have local scope<A NAME="1923"></A>, in which case it
-is specific to the <A HREF="node154.html#Group">group</A> in which it is contained,
-othewise its scope is determined by the innermost containing group
-that has a local variable of that name. If no such variable exists,
-its scope is global.
+<A NAME="Variables"></A><A NAME="Variable:constant"></A><A NAME="VarConstant"></A><A NAME="Variable:parameter"></A><A NAME="Variable:flow"></A><A NAME="Variable:integral"></A><A NAME="Variable:stock"></A>
+<P>
+
+    <IMG
+ ALIGN="BOTTOM" SRC="./var.png"
+ ALT="Image var% WIDTH=51 HEIGHT=36 ">
 
 <P>
-A variable which is local to a group can be used as a formula in
-several locations in a file. For example, if you use a, b anc c as
-constants in a polynomial <IMG
- ALIGN="MIDDLE" SRC="img231.png"
- ALT="$a+bx+cx^{2}$% WIDTH=90 HEIGHT=33 "> and make them local to a
-group, then the group can be used in several parts of a document, with
-the argument x and the values of a,b and c being different in every
-instance.
+Variables represent values in a calculation, and come in a number
+of varieties: 
+<DL>
+<DT><STRONG>Constants</STRONG></DT>
+<DD>represent an explicit numerical value, and do not have
+a name. Their graphical representation shows the actual value of the
+constant. 
+</DD>
+<DT><STRONG>Parameters</STRONG></DT>
+<DD>are named constants. All instances of a given name
+represent the same value, as with all other named variables, so changing
+the value of one parameter, either through its edit menu, or through
+a slider, will affect all the others of that name.
+
+<P>
+Parameters are used to import data from a <A HREF="node189.html#CSV_import">CSV file</A>,
+which is how external data is imported into Ravel for analysis.
+
+<P>
+Parameters can also be used to generate arrays of numbers for
+use in a <I>Ravel</I> file using built-in formulas which are placed
+in the ``Initial value'' field of the parameter definition form.
+See <A HREF="node149.html#tensor-init">tensor valued initial conditions</A>.
+</DD>
+<DT><STRONG>Flow variables</STRONG></DT>
+<DD>have an input port that defines how the value
+is to be calculated. Only one flow variable of a given name can have
+its input port connected, as they all refer to the same quantity.
+If no input ports are connected, then flow variables act just like
+parameters. 
+</DD>
+<DT><STRONG>Integral variables</STRONG></DT>
+<DD>represent the result of integrating its input
+over time by means of the differential equation solver. The integrand
+is represented by the input to an integral operator that is attached
+to the integral variable. 
+</DD>
+<DT><STRONG>Stock variables</STRONG></DT>
+<DD>are the columns of Godley tables, and represent
+the integral over time of the sum of the flow variables making up
+the column. 
+</DD>
+</DL>
+Variables may be converted between types in the variable edit menu,
+available from the context menu, subject to certain rules. For example,
+a variable whose input is wired anywhere on the canvas cannot be changed
+from ``flow''. Stock variables need to be defined in a Godley table,
+and so on.
 
 <P>
 <BR><HR>
+<!--Table of Child-Links-->
+<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
+
+<UL>
+<LI><A NAME="tex2html2405"
+  HREF="node147.html">Variable names</A>
+<LI><A NAME="tex2html2406"
+  HREF="node148.html">Initial conditions</A>
+<LI><A NAME="tex2html2407"
+  HREF="node149.html">Tensor valued initial conditions</A>
+<LI><A NAME="tex2html2408"
+  HREF="node150.html">Sliders</A>
+<LI><A NAME="tex2html2409"
+  HREF="node151.html">Variable Browser</A>
+</UL>
+<!--End of Table of Child-Links-->
+<HR>
+<!--Navigation Panel-->
+<A NAME="tex2html2403"
+  HREF="node147.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html2399"
+  HREF="node44.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html2393"
+  HREF="node145.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html2401"
+  HREF="Ravel.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html2404"
+  HREF="node147.html">Variable names</A>
+<B> Up:</B> <A NAME="tex2html2400"
+  HREF="node44.html">Reference</A>
+<B> Previous:</B> <A NAME="tex2html2394"
+  HREF="node145.html">differentiate</A>
+ &nbsp; <B>  <A NAME="tex2html2402"
+  HREF="Ravel.html">Contents</A></B> 
+<!--End of Navigation Panel-->
 
 </BODY>
 </HTML>

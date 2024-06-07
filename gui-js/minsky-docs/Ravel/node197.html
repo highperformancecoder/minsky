@@ -2,8 +2,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Record/Replay Buttons</TITLE>
-<META NAME="description" CONTENT="Record/Replay Buttons">
+<TITLE>Simulation Menu Commands</TITLE>
+<META NAME="description" CONTENT="Simulation Menu Commands">
 <META NAME="keywords" CONTENT="Ravel">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -16,71 +16,121 @@
 
 <LINK REL="next" HREF="node198.html">
 <LINK REL="previous" HREF="node196.html">
-<LINK REL="up" HREF="node193.html">
+<LINK REL="up" HREF="node194.html">
 <LINK REL="next" HREF="node198.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html3047"
+<A NAME="tex2html3051"
   HREF="node198.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html3043"
-  HREF="node193.html">
+<A NAME="tex2html3047"
+  HREF="node194.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html3037"
+<A NAME="tex2html3041"
   HREF="node196.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html3045"
+<A NAME="tex2html3049"
   HREF="Ravel.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html3048"
-  HREF="node198.html">Run Buttons</A>
-<B> Up:</B> <A NAME="tex2html3044"
-  HREF="node193.html">Minsky-specific commands</A>
-<B> Previous:</B> <A NAME="tex2html3038"
-  HREF="node196.html">Simulation Menu Commands</A>
- &nbsp; <B>  <A NAME="tex2html3046"
+<B> Next:</B> <A NAME="tex2html3052"
+  HREF="node198.html">Record/Replay Buttons</A>
+<B> Up:</B> <A NAME="tex2html3048"
+  HREF="node194.html">Minsky-specific commands</A>
+<B> Previous:</B> <A NAME="tex2html3042"
+  HREF="node196.html">Options Menu Commands</A>
+ &nbsp; <B>  <A NAME="tex2html3050"
   HREF="Ravel.html">Contents</A></B> 
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004164000000000000000">
-Record/Replay Buttons</A>
+<H2><A NAME="SECTION004163000000000000000">
+Simulation Menu Commands</A>
 </H2>
 
 <P>
-<A NAME="RecReplayButtons"></A>
+<A NAME="RungeKutta"></A>
+<P>
+The Simulation Menu invokes the Simulation Parameters form.
+
 <P>
 <IMG
- ALIGN="BOTTOM" SRC="recReplayButtons.png"
- ALT="2325%  ">
+ ALIGN="BOTTOM" SRC="./SimulationParameters.png"
+ ALT="Image SimulationParameters% WIDTH=560 HEIGHT=588 ">
 
 <P>
-These buttons control the recording / replay mode of <I>Minsky</I>.
-You can record your interactions with <I>Minsky</I>, and replay those
-interactions for demonstration/presentation purposes.
 
-<OL>
-<LI>Record a session of building/modifying a model. Note that replaying
-a recorded session always starts from a blank canvas, so if you're
-recording the modification of a model, ensure that the first thing
-recorded is to load the model being modified. This button is a toggle
-button, so clicking it again finishes the session, and closes the
-file. 
+<UL>
+<LI>Time unit allows one to specify units for the time dimension for dimensional
+analysis. eg ``year'', ``s'' etc. 
 </LI>
-<LI>Simulate/Replay button. Pressing this button puts <I>Minsky</I> into
-replay mode, and asks for a recording file. You may use the run buttons
-(run/pause,stop and step), as well as the speed slider, to control
-the replay. This button is a toggle button, so clicking it again returns
-<I>Minsky</I> back to the default simulation mode. 
+<LI>Min and Max step size control aspect of the adaptive Runge-Kutta equation
+solver, which trade off performance and accuracy of the model. The
+algorithm is adaptive, so the step size will vary according to how
+stiff the system of equations is. 
+
+<UL>
+<LI>Specifying a minimum step size prevents the system from stalling,
+at the expense of accuracy when the step size reaches that minimum. 
 </LI>
-</OL>
+<LI>Specifying a maximum step size is useful to ensure one has sufficient
+data points for smooth plots. 
+</LI>
+</UL>
+</LI>
+<LI>An iteration is the time between updates to plots. Increasing the
+number of solver steps per iteration decreases the overhead involved
+in updating the display, at the expense of smoothness of the plots.
+</LI>
+<LI>Start time is the value of the system <IMG
+ ALIGN="BOTTOM" SRC="img1.png"
+ ALT="$t$% WIDTH=10 HEIGHT=14 "> variable when the system
+is reset. 
+</LI>
+<LI>Run until time can be used to pause the simulation once <IMG
+ ALIGN="BOTTOM" SRC="img1.png"
+ ALT="$t$% WIDTH=10 HEIGHT=14 "> reaches
+a certain value. Setting this to ``Infinity'' causes the simulation
+to run indefinitely, or until some arithmetic error occurs. 
+</LI>
+<LI>The algorithm is adaptive, so the step size will vary according to
+how stiff the system of equations is. 
+</LI>
+<LI>Solver order determines how high order a polynomial is used for approximating
+the actual system. A first order explicit solver is the classic Jacobi
+method, which is the fastest, but least accurate solver. 4th order
+is the adaptive Runge-Kutta equation solver.
+</LI>
+</UL>
 
 <P>
-<BR><HR>
+<HR>
+<!--Navigation Panel-->
+<A NAME="tex2html3051"
+  HREF="node198.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html3047"
+  HREF="node194.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html3041"
+  HREF="node196.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html3049"
+  HREF="Ravel.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html3052"
+  HREF="node198.html">Record/Replay Buttons</A>
+<B> Up:</B> <A NAME="tex2html3048"
+  HREF="node194.html">Minsky-specific commands</A>
+<B> Previous:</B> <A NAME="tex2html3042"
+  HREF="node196.html">Options Menu Commands</A>
+ &nbsp; <B>  <A NAME="tex2html3050"
+  HREF="Ravel.html">Contents</A></B> 
+<!--End of Navigation Panel-->
 
 </BODY>
 </HTML>

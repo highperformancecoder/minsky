@@ -2,8 +2,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Block diagram example</TITLE>
-<META NAME="description" CONTENT="Block diagram example">
+<TITLE>If you are new to system dynamics</TITLE>
+<META NAME="description" CONTENT="If you are new to system dynamics">
 <META NAME="keywords" CONTENT="Ravel">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -14,6 +14,7 @@
 
 <LINK REL="STYLESHEET" HREF="Ravel.css">
 
+<LINK REL="next" HREF="node219.html">
 <LINK REL="previous" HREF="node216.html">
 <LINK REL="up" HREF="node216.html">
 <LINK REL="next" HREF="node218.html">
@@ -21,184 +22,112 @@
 
 <BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html3306"
+<A NAME="tex2html3311"
   HREF="node218.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html3302"
+<A NAME="tex2html3307"
   HREF="node216.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html3298"
+<A NAME="tex2html3301"
   HREF="node216.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html3304"
+<A NAME="tex2html3309"
   HREF="Ravel.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html3307"
-  HREF="node218.html">If you are experienced</A>
-<B> Up:</B> <A NAME="tex2html3303"
-  HREF="node216.html">If you are new</A>
-<B> Previous:</B> <A NAME="tex2html3299"
-  HREF="node216.html">If you are new</A>
- &nbsp; <B>  <A NAME="tex2html3305"
+<B> Next:</B> <A NAME="tex2html3312"
+  HREF="node218.html">Block diagram example</A>
+<B> Up:</B> <A NAME="tex2html3308"
+  HREF="node216.html">Introduction to Minsky</A>
+<B> Previous:</B> <A NAME="tex2html3302"
+  HREF="node216.html">Introduction to Minsky</A>
+ &nbsp; <B>  <A NAME="tex2html3310"
   HREF="Ravel.html">Contents</A></B> 
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION00611000000000000000">
-Block diagram example</A>
-</H2>
+<H1><A NAME="SECTION00610000000000000000">
+If you are new to system dynamics</A>
+</H1>
 
 <P>
-One of the very first models of a dynamic system was developed independently
-by the mathematicians <A NAME="tex2html39"
-  HREF="https://www.jstor.org/stable/84156">Lokta</A>
-and <A NAME="tex2html40"
-  HREF="https://www-nature-com.libproxy.ucl.ac.uk/articles/118558a0">Volterra</A>
-and is now known as the <A NAME="tex2html41"
-  HREF="https://en.wikipedia.org/wiki/Lotka%E2%80%93Volterra_equations">Lotka-Volterra model</A>.
-This model simulates interacting populations of predators and prey,
-which had been seen to display fluctuations that either could not
-be explained by exogenous shocks, or which displayed counterintuitive
-responses to exogenous shocks--such as the observed increase in
-the proportion of predators (sharks, rays, etc.) in the fishing catch
-in the Adriatic Sea during WWI, when biologists had expected the <A NAME="tex2html42"
-  HREF="https://en.wikipedia.org/wiki/Lotka%E2%80%93Volterra_equations#History">proportion
-of predators to fall</A>.
+<A NAME="intro:new-system-dynamics"></A>
+<P>
+<I>Minsky</I> is one of many <A NAME="tex2html37"
+  HREF="https://en.wikipedia.org/wiki/System_dynamics">``system
+  dynamics'' programs</A>.
+These programs allow a dynamic model of a system to be constructed,
+not by writing mathematical equations or computer code, but by laying
+out a model in a block diagram, which can then be simulated. These
+programs are now one of the main tools used by engineers to design
+complex products, and by management consultants to advise on corporate
+management, product marketing, local government projects, etc.
 
 <P>
-The basic dynamics of the predator-prey model are that the number
-of prey is assumed to grow exponentially in the absence of predators,
-while the number of predators is assumed to fall exponentially in
-the absence of prey. Using Rabbits as our example of prey and Foxes
-as our example of predators, the initial dynamic equations are :
+<I>Minsky</I> has many features in common with these programs, and
+adds another unique means to create dynamic equations--the
+<A HREF="node220.html#Godley-Tables">``Godley Table''</A>--that is superior to block
+diagrams for modelling monetary flows.
 
 <P>
-<IMG
- SRC="img308.png"
- ALT="\begin{displaymath}
-\begin{array}{c}
-\frac{d}{dt}Rabbits=r\times Rabbits\\
-\frac{d}{dt}Foxes=-f\times Foxes
-\end{array}\end{displaymath}% WIDTH=363 HEIGHT=46 ">
+The main advantages of the block diagram representation of dynamic
+equations over a list of equations are:
+
+<UL>
+<LI>They make the causal relationships in a complex model obvious. It
+takes a specialized mind to be able to see the causal relations in
+a large set of mathematical equations; the same equations laid out
+as diagrams can be read by anyone who can read a stock and flow diagram--and
+that's most of us; 
+</LI>
+<LI>The block diagram paradigm makes it possible to structure a complex
+model via groups. For example, the fuel delivery system in a car can
+be treated as one group, the engine as another, the exhaust as yet
+another. This reduces visual complexity, and also makes it possible
+for different components of a complex model to be designed by different
+teams, and then ``wired together'' at a later stage.
+</LI>
+</UL>
+Though these programs differ in appearance, they all work the same
+way: variables in a set of equations are linked by wires to mathematical
+operators. What would otherwise be a long list of equations is converted
+into a block diagram, and the block diagram makes the causal chain
+in the equations explicit and visually obvious. They are also explicitly
+tailored to producing numerical simulations of models.
 
 <P>
-When interaction between predators and prey is considered, the simplest
-assumption is that predators reduce the growth rate of prey (<IMG
- ALIGN="BOTTOM" SRC="img233.png"
- ALT="$r$% WIDTH=11 HEIGHT=14 ">) by
-some constant <IMG
- ALIGN="MIDDLE" SRC="img309.png"
- ALT="$\left(\rho\right)$% WIDTH=24 HEIGHT=31 "> times how many predators there
-are, while prey reduce the death rate of predators (<IMG
- ALIGN="MIDDLE" SRC="img225.png"
- ALT="$f$% WIDTH=13 HEIGHT=30 ">) by another
-constant <IMG
- ALIGN="MIDDLE" SRC="img310.png"
- ALT="$\left(\phi\right)$% WIDTH=26 HEIGHT=31 "> times how many prey there are:
+<BR><HR>
+<!--Table of Child-Links-->
+<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
 
-<P>
-<IMG
- SRC="img311.png"
- ALT="\begin{displaymath}
-\begin{array}{c}
-\frac{d}{dt}Rabbits=\left(r-\rho\times Foxe...
-...oxes=\left(-f+\phi\times Rabbits\right)\times Foxes
-\end{array}\end{displaymath}% WIDTH=418 HEIGHT=46 ">
-
-<P>
-The non-zero equilibrium of this system is easily calculated by setting
-the differential equations to zero:
-
-<P>
-<IMG
- SRC="img312.png"
- ALT="\begin{displaymath}
-\begin{array}{c}
-Rabbit_{Eq}=\frac{f}{\phi}\\
-Fox_{Eq}=\frac{r}{\rho}
-\end{array}\end{displaymath}% WIDTH=325 HEIGHT=50 ">
-
-<P>
-Mathematicians initially expected that this model would converge to
-this equilibrium over time, but this was not the case:
-quotePeriodic phenomena play an important role in nature, both organic
-and inorganic ...it appeared, from the nature of the solution
-obtained, improbable that undamped, permanent oscillations would arise
-... It was, therefore, with considerable surprise that the writer,
-on applying his method to certain special cases, found these to lead
-to <A NAME="tex2html38"
-  HREF="https://www.jstor.org/stable/84156">undamped, and hence indefinitely continued, oscillations</A>.
-
-<P>
-The mathematical reason for this phenomenon is fairly easily derived
-by mathematical stability analysis. For a system as simple as this,
-the main advantage of a system dynamics program is that it enables
-the numerical simulation of this model. To do this, this system <I>of
-ordinary differential equations</I> needs to be converted into <I>integral
-equations,</I> since numerical integration is a more accurate process
-than numerical differentiation. In mathematical form, these integral
-equations are:
-
-<IMG
- SRC="img313.png"
- ALT="\begin{displaymath}
-\begin{array}{c}
-Rabbits=Rabbits_{0}+\int\left(\left(r-\rho\...
-...eft(-f+\phi\times Rabbits\right)\times Foxes\right)
-\end{array}\end{displaymath}% WIDTH=459 HEIGHT=45 ">
-
-<P>
-Here <IMG
- ALIGN="MIDDLE" SRC="img314.png"
- ALT="$Rabbits_{0}$% WIDTH=64 HEIGHT=30 ">and <IMG
- ALIGN="MIDDLE" SRC="img315.png"
- ALT="$Foxes_{0}$% WIDTH=55 HEIGHT=30 "> represent the initial number of
-Rabbits and Foxes.
-
-<P>
-The next figure shows this model in <I>Minsky</I>, with the initial
-conditions set up so that they differ slightly from the equilibrium.
-To see how to build a model like this step by step, see <A HREF="node221.html#Minsky_model_building">Minsky model building</A>:
-
-<P>
-<IMG
- ALIGN="BOTTOM" SRC="img316.png"
- ALT="\includegraphics[width=\textwidth]{images/PredatorPreyRabbitsFoxes}% WIDTH=556 HEIGHT=290 ">
-
-<P>
-Programs like Vensim and Simulink have been in existence for decades,
-and they are now mature products that provide everything their user-base
-of management consultants and engineers want for modeling and analyzing
-complex dynamic systems. So why has <I>Minsky</I> been developed?
-The key reason is its unique feature of <A HREF="node219.html#Godley-Tables">Godley Tables</A>,
-which allow dynamic equations to be developed for monetary transactions
-via double-entry bookkeeping tables.
-
-<P>
+<UL>
+<LI><A NAME="tex2html3313"
+  HREF="node218.html">Block diagram example</A>
+</UL>
+<!--End of Table of Child-Links-->
 <HR>
 <!--Navigation Panel-->
-<A NAME="tex2html3306"
+<A NAME="tex2html3311"
   HREF="node218.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html3302"
+<A NAME="tex2html3307"
   HREF="node216.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html3298"
+<A NAME="tex2html3301"
   HREF="node216.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html3304"
+<A NAME="tex2html3309"
   HREF="Ravel.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html3307"
-  HREF="node218.html">If you are experienced</A>
-<B> Up:</B> <A NAME="tex2html3303"
-  HREF="node216.html">If you are new</A>
-<B> Previous:</B> <A NAME="tex2html3299"
-  HREF="node216.html">If you are new</A>
- &nbsp; <B>  <A NAME="tex2html3305"
+<B> Next:</B> <A NAME="tex2html3312"
+  HREF="node218.html">Block diagram example</A>
+<B> Up:</B> <A NAME="tex2html3308"
+  HREF="node216.html">Introduction to Minsky</A>
+<B> Previous:</B> <A NAME="tex2html3302"
+  HREF="node216.html">Introduction to Minsky</A>
+ &nbsp; <B>  <A NAME="tex2html3310"
   HREF="Ravel.html">Contents</A></B> 
 <!--End of Navigation Panel-->
 

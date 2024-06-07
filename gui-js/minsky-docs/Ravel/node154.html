@@ -2,8 +2,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Groups</TITLE>
-<META NAME="description" CONTENT="Groups">
+<TITLE>Curving Wires</TITLE>
+<META NAME="description" CONTENT="Curving Wires">
 <META NAME="keywords" CONTENT="Ravel">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -14,145 +14,70 @@
 
 <LINK REL="STYLESHEET" HREF="Ravel.css">
 
-<LINK REL="next" HREF="node155.html">
-<LINK REL="previous" HREF="node151.html">
-<LINK REL="up" HREF="node44.html">
+<LINK REL="previous" HREF="node153.html">
+<LINK REL="up" HREF="node152.html">
 <LINK REL="next" HREF="node155.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html2498"
+<A NAME="tex2html2502"
   HREF="node155.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html2494"
-  HREF="node44.html">
+<A NAME="tex2html2498"
+  HREF="node152.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html2488"
+<A NAME="tex2html2494"
   HREF="node153.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html2496"
+<A NAME="tex2html2500"
   HREF="Ravel.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html2499"
-  HREF="node155.html">Plot widget</A>
-<B> Up:</B> <A NAME="tex2html2495"
-  HREF="node44.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html2489"
-  HREF="node153.html">Curving Wires</A>
- &nbsp; <B>  <A NAME="tex2html2497"
+<B> Next:</B> <A NAME="tex2html2503"
+  HREF="node155.html">Groups</A>
+<B> Up:</B> <A NAME="tex2html2499"
+  HREF="node152.html">Wires</A>
+<B> Previous:</B> <A NAME="tex2html2495"
+  HREF="node153.html">Connecting operations with wires</A>
+ &nbsp; <B>  <A NAME="tex2html2501"
   HREF="Ravel.html">Contents</A></B> 
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00450000000000000000">
-Groups</A>
-</H1>
+<H2><A NAME="SECTION00442000000000000000">
+Curving Wires</A>
+</H2>
 
 <P>
-<A NAME="Group"></A>
-<P>
-
-    <IMG
- ALIGN="BOTTOM" SRC="img239.png"
- ALT="\includegraphics[height=10mm]{images/group}% WIDTH=75 HEIGHT=45 ">
+A wire can be bent by hovering over it, at which point a blue dots
+(``handle'') will appear. Click on the blue dot--or anywhere along
+the line--and the line will turn into a curve, with 3 ``bezier''
+points showing the degree of curvature.
 
 <P>
-Grouping gives the capability to create reusable modules, or subroutines
-that can dramatically simplify more complicated systems. Groups may
-be created in the following ways: 
-
-<UL>
-<LI>by lassoing a number of items to select them, then selecting ``group''
-from the canvas context menu, or the edit menu. 
-</LI>
-<LI>by pasting the selection. You may ``ungroup'' the group from the
-context menu if you don't desire the result of the paste to be a group. 
-</LI>
-<LI>by copying another group 
-</LI>
-<LI>by inserting a Minsky file as a group 
-</LI>
-</UL>
-Groups are ``transparent'': at a low level of magnification, the
-group icon is shown, but as you zoom in on a group, it will become
-transparent, which allows you see and edit its contents. 
+<IMG
+ ALIGN="BOTTOM" SRC="./CurvedLine01.png"
+ ALT="Image CurvedLine01% WIDTH=413 HEIGHT=128 ">
 
 <P>
-Groups may be nested heirarchically, which gives an excellent way
-of zooming in to see the detail of a model, or zooming out to get
-an overview of it. The group context menu item ``Zoom to display''
-zooms the canvas in just enough for the group's contents to be visible.
+Additional curves can be added to a line, which can allow you to connect
+variables without drawing a line across some other entity.
 
 <P>
-You may also select ``Open in canvas'' from the context menu. This
-replaces the current canvas contents with the contents of the group,
-allowing you to edit the contents of the group directly without the
-distractions of the rest of the model. Select ``Open master group''
-to return to the top level group occupying the canvas.
+<IMG
+ ALIGN="BOTTOM" SRC="./CurvedLine02.png"
+ ALT="Image CurvedLine02% WIDTH=418 HEIGHT=168 ">
 
 <P>
-Around the edges of a group are input or output variables, which allow
-one to parameterise the group. One can drag a variable and dock it
-in the I/O area to create a new input or output for the group.
+However, it can be preferable to copy a variable and paste into a
+document multiple times, rather than having curved wires cluttering
+up a diagram. Wires can also become excessively kinked by curving
+them, and there is a context-menu command to straighten a curved line.
 
 <P>
-When creating a group, or dragging a variable or operation into or
-out of a group, if a wire ends up crossing the group boundary, a new
-temporary variable is added as an I/O variable. You may then edit
-the I/O variable name to be something more meaningful to your model.
-
-<P>
-Variable names within groups can be locally scoped to that group.
-That means that a variable of the same name outside the group refers
-to a different entity completely. By default, grouped variables refer
-to entities outside the group scope, but may be marked local by means
-of context menu option. One can also convert all variables in a group
-to be local by means of the ``Make subroutine'' context menu entry.
-
-<P>
-Nonlocal variables refers to a local variable within an outer scope,
-going all the way to global scope if no such variable exists. In this
-way, two groups can share a variable reference to a variable, and
-you can limit the scope of the shared variable by placing a local
-variable of the same name in an outer group that both groups are contain
-within.
-
-<P>
-A group can also be exported to a file from the context menu. This
-allows you to build up a library of building blocks. There is a github
-project ``minsky-models'' allowing people to publish their building
-blocks and models for others to use. In the future, we hope to integrate
-<I>Minsky</I> with this github repository, allowing even more seamless
-sharing of models.
-
-<P>
-<HR>
-<!--Navigation Panel-->
-<A NAME="tex2html2498"
-  HREF="node155.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html2494"
-  HREF="node44.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html2488"
-  HREF="node153.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html2496"
-  HREF="Ravel.html">
-<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
-<BR>
-<B> Next:</B> <A NAME="tex2html2499"
-  HREF="node155.html">Plot widget</A>
-<B> Up:</B> <A NAME="tex2html2495"
-  HREF="node44.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html2489"
-  HREF="node153.html">Curving Wires</A>
- &nbsp; <B>  <A NAME="tex2html2497"
-  HREF="Ravel.html">Contents</A></B> 
-<!--End of Navigation Panel-->
+<BR><HR>
 
 </BODY>
 </HTML>

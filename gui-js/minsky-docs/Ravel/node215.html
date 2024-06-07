@@ -2,8 +2,8 @@
 <!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
 <HTML>
 <HEAD>
-<TITLE>Introduction to Minsky</TITLE>
-<META NAME="description" CONTENT="Introduction to Minsky">
+<TITLE>Fundamental types</TITLE>
+<META NAME="description" CONTENT="Fundamental types">
 <META NAME="keywords" CONTENT="Ravel">
 <META NAME="resource-type" CONTENT="document">
 <META NAME="distribution" CONTENT="global">
@@ -14,78 +14,74 @@
 
 <LINK REL="STYLESHEET" HREF="Ravel.css">
 
-<LINK REL="previous" HREF="node201.html">
-<LINK REL="up" HREF="Ravel.html">
+<LINK REL="previous" HREF="node207.html">
+<LINK REL="up" HREF="node202.html">
 <LINK REL="next" HREF="node216.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html3275"
+<A NAME="tex2html3281"
   HREF="node216.html">
 <IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html3271"
-  HREF="Ravel.html">
+<A NAME="tex2html3277"
+  HREF="node202.html">
 <IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html3267"
+<A NAME="tex2html3273"
   HREF="node214.html">
 <IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html3273"
+<A NAME="tex2html3279"
   HREF="Ravel.html">
 <IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html3276"
-  HREF="node216.html">If you are new</A>
-<B> Up:</B> <A NAME="tex2html3272"
-  HREF="Ravel.html">Minsky Simulation Engine</A>
-<B> Previous:</B> <A NAME="tex2html3268"
-  HREF="node214.html">Fundamental types</A>
- &nbsp; <B>  <A NAME="tex2html3274"
+<B> Next:</B> <A NAME="tex2html3282"
+  HREF="node216.html">Introduction to Minsky</A>
+<B> Up:</B> <A NAME="tex2html3278"
+  HREF="node202.html">User defined functions</A>
+<B> Previous:</B> <A NAME="tex2html3274"
+  HREF="node214.html">Control Structures</A>
+ &nbsp; <B>  <A NAME="tex2html3280"
   HREF="Ravel.html">Contents</A></B> 
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION00600000000000000000">
-Introduction to Minsky</A>
+<H1><A NAME="SECTION00560000000000000000">
+Fundamental types</A>
 </H1>
+ExprTk supports three fundamental types which can be used freely in
+expressions. The types are as follows:
 
 <P>
-<A NAME="Introduction-Minsky"></A>
-<P>
-<I>Minsky</I> is a system-dynamics program. If you are familiar with
-these programs, please go to <A HREF="node218.html#intro:experienced-system-dynamics"><I>If you are experienced in system dynamics</I></A>.
-If you are not, please go to <A HREF="node216.html#intro:new-system-dynamics"><I>If you are new to system dynamics</I></A>
+<DL>
+<DT><STRONG>Scalar Type</STRONG></DT>
+<DD>The scalar type  is a singular  numeric value. The  underlying type is
+that used  to specialise  the ExprTk  components (float,  double, long
+double, MPFR et al).
 
 <P>
-<BR><HR>
-<!--Table of Child-Links-->
-<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
+</DD>
+<DT><STRONG>Vector Type</STRONG></DT>
+<DD>The vector type is a fixed size sequence of contiguous scalar  values.
+A  vector  can be  indexed  resulting in  a  scalar value.  Operations
+between a vector and scalar will result in a vector with a size  equal
+to that  of the  original vector,  whereas operations  between vectors
+will result in a  vector of size equal  to that of the  smaller of the
+two. In both mentioned cases, the operations will occur element-wise.
 
-<UL>
-<LI><A NAME="tex2html3277"
-  HREF="node216.html">If you are new to system dynamics</A>
-<UL>
-<LI><A NAME="tex2html3278"
-  HREF="node217.html">Block diagram example</A>
-</UL>
-<BR>
-<LI><A NAME="tex2html3279"
-  HREF="node218.html">If you are experienced in system dynamics</A>
-<UL>
-<LI><A NAME="tex2html3280"
-  HREF="node219.html">Godley Tables</A>
-<LI><A NAME="tex2html3281"
-  HREF="node220.html"><I>Minsky</I>'s unusual system dynamics features</A>
-<LI><A NAME="tex2html3282"
-  HREF="node221.html">Building a predator-prey model in Minsky</A>
-<LI><A NAME="tex2html3283"
-  HREF="node222.html">Building monetary models in <I>Minsky</I></A>
-<UL>
-<LI><A NAME="tex2html3284"
-  HREF="node223.html">Modelling private money creation</A>
-</UL></UL></UL>
-<!--End of Table of Child-Links-->
+<P>
+</DD>
+<DT><STRONG>String Type</STRONG></DT>
+<DD>The string type is a variable length sequence of 8-bit chars.  Strings
+can be  assigned and  concatenated to  one another,  they can  also be
+manipulated via sub-ranges using the range definition syntax.  Strings
+however can not interact with scalar or vector types.
+
+<P>
+</DD>
+</DL>
+
+<P>
 <BR><HR>
 
 </BODY>
