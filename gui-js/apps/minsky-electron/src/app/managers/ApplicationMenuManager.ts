@@ -378,6 +378,10 @@ export class ApplicationMenuManager {
           async click() {minsky.canvas.addPlot();}
         },
         {
+          label: 'sheet',
+          async click() {minsky.canvas.addSheet();}
+        },
+        {
           label: 'Godley Table',
           async click() {minsky.canvas.addGodley();}
         },
