@@ -50,9 +50,13 @@ in a structured tabular layout. For details see \htmlref{\emph{Summary
 
 \subsection{Phillips Diagram}
 
-The Phillips Diagram Tab shows the financial flows in a \emph{Minsky}
-simulation model in a dynamic flowchart format. This is a \emph{Minsky}-specific
-feature.
+\label{tabs:Phillips}
+
+This tab implement's Minsky's take on a \htmladdnormallink{Phillips
+  diagram showing the stocks and flows in a monetary
+  economy}{https://en.wikipedia.org/wiki/Phillips_Machine}. The
+Phillips tab shows all the information contained in the Godley tables
+of the model - if there aren't any, this tab will be blank.
 
 \subsection{Publication }
 
@@ -239,7 +243,7 @@ Enter key.
 
 \subsection{Binary Operations}
 
-\label{Binary-Operations}
+\label{Binary-Operations}\label{operations-binop}
 
 \subsubsection{add +}
 
@@ -473,7 +477,7 @@ key.
 
 \subsection{Special constants}
 
-\label{Special-constants}
+\label{Special-constants}\label{operations-constop}
 
 \includegraphics{images/FundamentalConstants}
 
@@ -508,7 +512,7 @@ The operator can be placed on the canvas in two ways:
 
 \subsection{Functions/Unary Operators}
 
-\label{Functions/Unary-Operators}
+\label{Functions/Unary-Operators}\label{operations-function}
 
 \subsubsection{sqrt $\protect\surd$}
 
@@ -822,6 +826,7 @@ other user defined functions, so specifiying more than 2 parameters
 can be a useful thing to do.
 
 \subsection{Tensor operations}
+\label{operations-reduction}\label{operations-scan}\label{operations-tensor}
 
 \label{Operations: Reduction}
 
@@ -1286,6 +1291,7 @@ Returns a vector of axis sizes. Coupling this operation with a
 you interactively select axis size.
 
 \subsection{Statistical Operations}
+\label{operations-statistics}
 
 \subsubsection{Mean}
 
@@ -1458,6 +1464,15 @@ arguments. The correlation coefficient is defined as
 \rho(x,y)=\frac{\mathrm{cov(x,y)}}{\sigma(x)\sigma(y)}
 \]
 
+\subsubsection{Linear Regression}\label{Operation:linearRegression}
+
+This operation performs linear regression of the inputs along a named
+dimension. The output has the same rank and x-vector as the $x$ input,
+and consists of the linear fitted $y$ values.
+
+The slope and intercept of the fitted line is available as a tooltip.
+
+\noindent\includegraphics[width=\textwidth]{images/linearRegression}
 
 \subsection{Switch}
 

@@ -614,8 +614,8 @@ export class ApplicationMenuManager {
       role: 'help',
       submenu: [
         {
-          label: 'Minsky Documentation (F1)',
-          click() {CommandsManager.loadHelpFile("minsky");}
+          label: 'Ravel Documentation (F1)',
+          click() {CommandsManager.loadHelpFile("Ravel");}
         },
       ],
     };
