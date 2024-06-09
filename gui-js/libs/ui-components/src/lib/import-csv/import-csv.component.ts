@@ -65,6 +65,28 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
 
   destroy$ = new Subject<{}>();
 
+  tabs = [
+    {
+      index: 0,
+      caption: 'File selection',
+      disabled: false
+    },
+    {
+      index: 1,
+      caption: 'Settings',
+      disabled: true
+    },
+    {
+      index: 2,
+      caption: 'Preview',
+      disabled: true
+    }
+  ];
+
+  selectedTabIndex = 0;
+
+  fileLoaded = false;
+
   itemId: string;
   systemWindowId: number;
   isInvokedUsingToolbar: boolean;
@@ -135,6 +157,10 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   }
   public get format(): AbstractControl {
     return this.horizontalDimension.get('units');
+  }
+
+  onTabClick(index: number) {
+    if(!this.tabs[index].disabled) this.selectedTabIndex = index;
   }
 
   zoom(ratio: number) {
@@ -271,6 +297,8 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
     if (!filePath) { return; }
     this.url.setValue(filePath);
     this.dialogState.url = filePath;
+
+    await this.load();
   }
 
   async load() {
@@ -295,6 +323,14 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
     }
 
     await this.parseLines();
+
+    for(const tab of this.tabs) {
+      tab.disabled = false;
+    }
+
+    this.fileLoaded = true;
+
+    this.selectedTabIndex = 1;
   }
 
   setParameterNameFromUrl() {
