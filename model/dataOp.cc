@@ -50,8 +50,8 @@ namespace minsky
   {
     data.clear();
     const double dx=(xmax-xmin)/numSamples;
-    for (double x=xmin; x<xmax; x+=dx) //NOLINT
-      data[x]=double(rand())/RAND_MAX;
+    for (double x=xmin; x<xmax; x+=dx) 
+      data[x]=double(rand())/RAND_MAX; //NOLINT
   }
 
   double DataOp::interpolate(double x) const

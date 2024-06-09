@@ -12,7 +12,7 @@ abstract class HelpFilesManager {
   }
 
   public static async initialize(directory: string) {
-    this.topicNodeMap["minsky"]="minsky.html"; // toplevel page
+    this.topicNodeMap["minsky"]="Ravel.html"; // toplevel page
     await this.processFileOrDirectory(directory);
   }
 
@@ -48,7 +48,7 @@ abstract class HelpFilesManager {
       const contents = buffer.toString();
       const matches = contents.matchAll(/<A[ \t]+NAME="([^"]*)"/g);
       for (const match of matches) {
-        this.topicNodeMap[match[1]] = `minsky.html?minsky/${path.basename(fName)}`;
+        this.topicNodeMap[match[1]] = `minsky.html?Ravel/${path.basename(fName)}`;
       }
     }
   }

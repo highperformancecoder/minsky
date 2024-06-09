@@ -417,24 +417,6 @@ gui-js/libs/shared/src/lib/backend/minsky.ts: RESTService/typescriptAPI
 	RESTService/typescriptAPI > $@
 endif
 
-gui-tk/helpRefDb.tcl: $(wildcard doc/minsky/*.html)
-	rm -f $@
-	perl makeRefDb.pl doc/minsky/*.html >$@
-
-doc/minsky/labels.pl: $(wildcard doc/*.tex)
-	cd doc; sh makedoc.sh
-
-gui-tk/library/help: doc/minsky/labels.pl doc/minsky.html
-	rm -rf $@/*
-	mkdir -p $@/minsky
-	find doc/minsky \( -name "*.html" -o -name "*.css" -o -name "*.png" \) -exec cp {} $@/minsky \;
-	cp -r -f doc/minsky.html $@
-ifndef TRAVIS
-	linkchecker -f linkcheckerrc $@/minsky.html
-endif
-
-doc: gui-tk/library/help gui-tk/helpRefDb.tcl
-
 # N-API node embedded RESTService
 gui-js/node-addons/minskyRESTService.node: addon.o  $(NODE_API) $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) RavelCAPI/libravelCAPI.a RavelCAPI/civita/libcivita.a
 	mkdir -p gui-js/node-addons
@@ -546,8 +528,8 @@ install-doxydoc: doxydoc
 
 
 # upload manual to SF
-install-manual: doc/minsky/labels.pl
-	rsync -r -z --progress --delete doc/minsky.html doc/minsky $(SF_WEB)/manual
+install-manual: doc/Ravel/labels.pl
+	rsync -r -z --progress --delete doc/minsky.html doc/Ravel $(SF_WEB)/manual
 
 # run this after every full release
 install-release: install-doxydoc install-manual upload-schema
@@ -586,6 +568,11 @@ clang-tidy: compile_commands.json
 
 compile-ts:
 	cd gui-js && npx tsc | sed -e 's/\x1b\[[0-9;]*m//g'|sed -e 's/(\([0-9]*\),[0-9]*)/:\1/g'
+
+codeql:
+	-rm *.o
+	codeql database create codeqlDb -l c++ -c "$(MAKE) $(MAKEFLAGS) gui-js/node-addons/minskyRESTService.node" -j0  --overwrite
+	codeql database analyze codeqlDb codeql/cpp-queries:codeql-suites/cpp-security-and-quality.qls --format=csv --output=codeql-c++.csv -j0
 
 windows-package:
 	sh mkWindowsDist.sh

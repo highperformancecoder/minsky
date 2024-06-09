@@ -54,7 +54,7 @@ namespace minsky
 
       if (coupled() && intVar)
         {
-          cairo::CairoSave cs(cairo);
+          const cairo::CairoSave cs(cairo);
           auto& iv=*intVar;
           const RenderVariable rv(iv,cairo);
           // we need to add some translation if the variable is bound
@@ -65,7 +65,7 @@ namespace minsky
     
 
       {
-        cairo::CairoSave cs(cairo);
+        const cairo::CairoSave cs(cairo);
         cairo_rotate(cairo, angle); 
         cairo_scale(cairo,z,z);
         if (textFlipped) cairo_rotate(cairo, M_PI);
@@ -208,11 +208,7 @@ namespace minsky
   void IntOp::removeControlledItems(minsky::GroupItems& g)
   {
     if (intVar)
-      {
-        g.removeItem(*intVar);
-        //intVar->controller.reset();
-      }
-    //intVar.reset();
+      g.removeItem(*intVar);
   }
   
   string IntOp::description(const string& a_desc)

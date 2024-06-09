@@ -1,0 +1,279 @@
+
+<!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
+<HTML>
+<HEAD>
+<TITLE>Design Icons</TITLE>
+<META NAME="description" CONTENT="Design Icons">
+<META NAME="keywords" CONTENT="Ravel">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-15">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2017.2">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="Ravel.css">
+
+<LINK REL="previous" HREF="node28.html">
+<LINK REL="up" HREF="node27.html">
+<LINK REL="next" HREF="node30.html">
+</HEAD>
+
+<BODY  bgcolor="#ffffff">
+<!--Navigation Panel-->
+<A NAME="tex2html680"
+  HREF="node30.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html676"
+  HREF="node27.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html672"
+  HREF="node28.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html678"
+  HREF="Ravel.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html681"
+  HREF="node30.html">Working with Ravel</A>
+<B> Up:</B> <A NAME="tex2html677"
+  HREF="node27.html">Design Canvas</A>
+<B> Previous:</B> <A NAME="tex2html673"
+  HREF="node28.html">Wires</A>
+ &nbsp; <B>  <A NAME="tex2html679"
+  HREF="Ravel.html">Contents</A></B> 
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H3><A NAME="SECTION00234200000000000000">
+Design Icons</A>
+</H3>
+
+<P>
+<IMG
+ ALIGN="BOTTOM" SRC="./DesignIcons.png"
+ ALT="Image DesignIcons% WIDTH=1039 HEIGHT=33 ">
+
+<P>
+These are the ``nuts and bolts'' of data analysis using <I>Ravel</I>.
+There are many icons, and more will be added over time as we extend
+<I>Ravel</I>'s capabilities.
+
+<P>
+The critical icons for <I>Ravel</I> are the first four: Import Data
+
+  <IMG
+ ALIGN="BOTTOM" SRC="img43.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/importData.eps}}% WIDTH=12 HEIGHT=12 ">
+  ; insert a Ravel 
+  <IMG
+ ALIGN="BOTTOM" SRC="img44.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/RavelIcon}}% WIDTH=13 HEIGHT=14 ">
+  ;
+attach a selected slice of the Ravel to a Lock; and attach that lock
+to a variable for further analysis.
+<DL>
+<DT><STRONG>Import data</STRONG></DT>
+<DD><IMG
+ ALIGN="BOTTOM" SRC="img43.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/importData.eps}}% WIDTH=12 HEIGHT=12 ">
+   Opens an import CSV
+file dialog, which allows a CSV file to be loaded into a parameter
+in Ravel (the default name of the parameter is the name of the file
+being imported). See <A HREF="node189.html#CSV_import"><I>Importing CSV files</I></A> for
+full details. After a data file is imported, the next step is to attach
+it to a Ravel.
+</DD>
+<DT><STRONG>Ravel</STRONG></DT>
+<DD><IMG
+ ALIGN="BOTTOM" SRC="img44.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/RavelIcon}}% WIDTH=13 HEIGHT=14 ">
+   This places a Ravel on the
+wiring canvas. The first time this is done in a document, the Ravel
+is displayed full-size in Edit mode, and a sample set of dimensions
+are displayed. Subsequent Ravels are displayed in icon mode. For full
+details on using a Ravel see <A HREF="node176.html#Ravel-GUI_Object"><I>Ravel GUI</I></A>.
+</DD>
+<DT><STRONG>Lock</STRONG></DT>
+<DD><IMG
+ ALIGN="BOTTOM" SRC="img45.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/Lock}}% WIDTH=15 HEIGHT=15 ">
+   Lock widgets are used with
+Ravels. A lock keeps a record of the current state of a Ravel: the
+items selected on its axes, the effect of calipers in selecting data
+ranges, and so on. You can then manipulate the Ravel without changing
+the output from the Lock, which can be assigned to a variable for
+further use. You can also impose the state of a Lock on its associated
+Ravel--this is useful if you wish to fine tune the output from the
+Lock. See <A HREF="node186.html#Lock"><I>Lock</I></A> for full details. The output of a Lock will
+change whenever the attached data file changes.
+</DD>
+<DT><STRONG>Variable</STRONG></DT>
+<DD><IMG
+ ALIGN="BOTTOM" SRC="img46.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/var.eps}}% WIDTH=27 HEIGHT=14 ">
+   <A NAME="Variable"></A>This is a pop-up menu, which gives access to the form that creates
+variables, constants and parameters, and access to the Browser, which
+is a window that lists all the variables and parameters in a model,
+and enables them to be placed on the wiring canvas.
+
+<P>
+Variables are entities whose value changes as a function of time and
+its relationship with other entities in your model. Click on it and
+a variable definition window will appear:
+</DD>
+<DT><STRONG><IMG
+ ALIGN="BOTTOM" SRC="./VariableDefinitionForm.png"
+ ALT="Image VariableDefinitionForm% WIDTH=405 HEIGHT=541 "></STRONG></DT>
+<DD>&nbsp;
+</DD>
+</DL>
+See <A HREF="node146.html#Variables">Variables</A> for full details on using this form.
+<DL>
+<DT><STRONG>Plot widget</STRONG></DT>
+<DD><IMG
+ ALIGN="BOTTOM" SRC="img47.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/plot.eps}}% WIDTH=15 HEIGHT=14 ">
+   Add Plots to the canvas.
+See <A HREF="node156.html#PlotWidget">Plot widget</A> for full details.
+</DD>
+<DT><STRONG>Sheet widget</STRONG></DT>
+<DD><IMG
+ ALIGN="BOTTOM" SRC="img48.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/sheet.eps}}% WIDTH=18 HEIGHT=14 ">
+   Add a Sheet--for the
+display of numerical data to the canvas. See <A HREF="node166.html#Sheet">Sheet</A> for full
+details.
+</DD>
+<DT><STRONG>Notes</STRONG></DT>
+<DD>Add textual annotations to a document. See <A HREF="node167.html#Notes">Notes</A>
+for full details.
+</DD>
+<DT><STRONG>Time</STRONG></DT>
+<DD><IMG
+ ALIGN="BOTTOM" SRC="img49.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/time.eps}}% WIDTH=15 HEIGHT=14 ">
+   embeds a reference to the simulation
+time on the Canvas. This is a <I>Minsky</I>-specific feature.
+</DD>
+<DT><STRONG>Fundamental</STRONG></DT>
+<DD>constants. These include e, <IMG
+ ALIGN="BOTTOM" SRC="img50.png"
+ ALT="$\pi$% WIDTH=13 HEIGHT=14 ">, 0, 1 and the
+percentage operator. See <A HREF="node74.html#Special-constants">Special constants</A> for full details.
+</DD>
+<DT><STRONG>Binary operations</STRONG></DT>
+<DD>
+  . These execute
+the stated binary mathematical operations: operations that require
+two (or more) inputs. Where appropriate, each input port to a binary
+operator can take multiple wires--so that to add five numbers together,
+for example, you can wire 1 input to one port on the Add block, and
+the other four to the other port. The same applies to the subtract,
+multiply, and divide blocks. See <A HREF="node59.html#Binary-Operations">Binary Operations</A> for full
+details.
+</DD>
+<DT><STRONG>Unary functions</STRONG></DT>
+<DD><IMG
+ ALIGN="BOTTOM" SRC="img52.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/sqrt.eps}}% WIDTH=11 HEIGHT=14 ">
+   These are a fairly standard
+complement of mathematical functions which take only one input-though
+this input can have multiple dimensions. See <A HREF="node76.html#Functions_Unary-Operators">Unary functions</A>
+for details.
+</DD>
+<DT><STRONG>Reduction operations</STRONG></DT>
+<DD><IMG
+ ALIGN="BOTTOM" SRC="img53.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/sum.eps}}% WIDTH=15 HEIGHT=14 ">
+   This menu contains
+operations such as sum, product, any, all, etc., that reduce a vector
+to a scalar, or reduce the rank of a tensor. See <A HREF="node98.html#Operations:_Reduction">Tensor operations</A>
+for details.
+</DD>
+<DT><STRONG>Scans</STRONG></DT>
+<DD><IMG
+ ALIGN="BOTTOM" SRC="img54.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/runningSum.eps}}% WIDTH=15 HEIGHT=14 ">
+   This menu contains operations
+running sum, running product, and the difference operators. See <A HREF="node98.html#Operations:_Reduction">Tensor operations</A>
+for details.
+</DD>
+<DT><STRONG>Miscellaneous tensor operations</STRONG></DT>
+<DD><IMG
+ ALIGN="BOTTOM" SRC="img55.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/outerProduct.eps}}% WIDTH=15 HEIGHT=14 ">
+  
+Any other tensor function not covered elsewhere.
+</DD>
+<DT><STRONG>Switch</STRONG></DT>
+<DD><IMG
+ ALIGN="BOTTOM" SRC="img56.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/switchIcon.eps}}% WIDTH=20 HEIGHT=15 ">
+   Add <A HREF="node128.html#SwitchIcon">a piecewise-defined
+function block</A> to the canvas. See <A HREF="node128.html#SwitchIcon">Switch</A>
+for details.
+</DD>
+<DT><STRONG>User defined function</STRONG></DT>
+<DD><IMG
+ ALIGN="BOTTOM" SRC="img57.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/userFunction.eps}}% WIDTH=29 HEIGHT=14 ">
+   You can
+define your own function using an algebraic expression, such as <code>exp(-x^2</code>y)+.
+See <A HREF="node129.html#Operation:userFunction">User defined functions</A>for details.
+</DD>
+<DT><STRONG>Godley Table</STRONG></DT>
+<DD><IMG
+ ALIGN="BOTTOM" SRC="img58.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/NewItem29.eps}}% WIDTH=15 HEIGHT=14 ">
+  . <A NAME="GodleyTable"></A>This is the fundamental element of <I>Minsky</I> that is not found
+(yet) in any other system dynamics program. It is covered in the <A HREF="node216.html#Introduction-Minsky"><I>Minsky</I>
+chapter of this manual</A>.
+</DD>
+<DT><STRONG>Integration</STRONG></DT>
+<DD><IMG
+ ALIGN="BOTTOM" SRC="img59.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/int.eps}}% WIDTH=29 HEIGHT=14 ">
+  . This inserts a variable whose
+value depends on the integral of other variables in the system. It
+is discussed further in the <I>Minsky</I> section of the manual.
+</DD>
+<DT><STRONG>Derivative Operator</STRONG></DT>
+<DD><IMG
+ ALIGN="BOTTOM" SRC="img60.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/differentiate.eps}}% WIDTH=11 HEIGHT=14 ">
+   This operator
+symbolically differentiates its input. It is a component of <I>Minsky</I>
+which is explained in the <I>Minsky</I> section of this manual.
+</DD>
+</DL>
+
+<P>
+<HR>
+<!--Navigation Panel-->
+<A NAME="tex2html680"
+  HREF="node30.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html676"
+  HREF="node27.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html672"
+  HREF="node28.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html678"
+  HREF="Ravel.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html681"
+  HREF="node30.html">Working with Ravel</A>
+<B> Up:</B> <A NAME="tex2html677"
+  HREF="node27.html">Design Canvas</A>
+<B> Previous:</B> <A NAME="tex2html673"
+  HREF="node28.html">Wires</A>
+ &nbsp; <B>  <A NAME="tex2html679"
+  HREF="Ravel.html">Contents</A></B> 
+<!--End of Navigation Panel-->
+
+</BODY>
+</HTML>

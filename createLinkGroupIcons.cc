@@ -7,10 +7,10 @@ using namespace std;
 
 int main()
 {
-  double width=30, height=10;
+  const double width=30, height=10;
   for (int i=0; i<paletteSz; ++i)
     {
-      cairo::Surface surface(cairo_image_surface_create(CAIRO_FORMAT_ARGB32,width,height));
+      const cairo::Surface surface(cairo_image_surface_create(CAIRO_FORMAT_ARGB32,width,height));
       auto cr=surface.cairo();
       auto c=palette[i];
       cairo_set_source_rgba(cr,0.5*c.r,0.5*c.g,0.5*c.b,0.5*c.a);

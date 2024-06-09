@@ -382,7 +382,6 @@ namespace minsky
         {
           size_t i=0, j=0;
           if (selectedRow>=int(scrollRowStart)) j=selectedRow-scrollRowStart+1;
-          const double y=j*rowHeight+topTableOffset;
 
           if (motionCol>=0 && selectedRow==0 && selectedCol>0) // whole col being moved
             {
@@ -400,22 +399,22 @@ namespace minsky
               if ((selectedRow>1 || selectedRow <0) || selectedCol!=0) // can't select flows/stockVars or Initial Conditions labels
                 {
                   if (selectedCol>=int(scrollColStart)) i=selectedCol-scrollColStart+1;
-                  const double xx=colLeftMargin[i];
+                  const double xx=colLeftMargin[i], yy=j*rowHeight+topTableOffset;
                   {
                     const cairo::CairoSave cs(cairo);
                     cairo_set_source_rgba(cairo,1,1,1,1);
-                    cairo_rectangle(cairo,xx,y,colLeftMargin[i+1]-xx,rowHeight);
+                    cairo_rectangle(cairo,xx,yy,colLeftMargin[i+1]-xx,rowHeight);
                     cairo_fill_preserve(cairo);
                     cairo_set_source_rgba(cairo,1,.55,0,1);
                     cairo_set_line_width(cairo,2);
                     cairo_stroke(cairo);
                   }
                   pango.setMarkup(defang(m_godleyIcon.table.cell(selectedRow,selectedCol)));
-                  cairo_move_to(cairo,xx,y);
+                  cairo_move_to(cairo,xx,yy);
                   pango.show();
 				  
                   // show insertion cursor
-                  cairo_move_to(cairo,xx+pango.idxToPos(insertIdx),y);
+                  cairo_move_to(cairo,xx+pango.idxToPos(insertIdx),yy);
                   cairo_rel_line_to(cairo,0,rowHeight);
                   cairo_set_line_width(cairo,1);
                   cairo_stroke(cairo);
@@ -424,7 +423,7 @@ namespace minsky
                   if (selectIdx!=insertIdx)
                     {
                       // indicate some text has been selected
-                      cairo_rectangle(cairo,xx+pango.idxToPos(insertIdx),y,
+                      cairo_rectangle(cairo,xx+pango.idxToPos(insertIdx),yy,
                                       pango.idxToPos(selectIdx)-pango.idxToPos(insertIdx),rowHeight);
                       cairo_set_source_rgba(cairo,0.5,0.5,0.5,0.5);
                       cairo_fill(cairo);

@@ -490,7 +490,7 @@ namespace
         // place tooltip on centre dot if an odd number of control points, or halfway between otherwise
         auto dd=div(coords.size(),4);
         assert(dd.rem%2==0);
-        if (dd.quot%2==1) dd.quot+=dd.rem-1; // adjust so the dd.quot points to an x coordinate
+        if (dd.quot&1) dd.quot+=dd.rem-1; // adjust so the dd.quot points to an x coordinate
         double midx=coords[dd.quot], midy=coords[dd.quot+1];
         if (dd.rem==0)
           {

@@ -545,9 +545,9 @@ namespace minsky
   Units GodleyIcon::stockVarUnits(const string& stockName, bool check) const
   {
     unsigned stockCol=1;
-    auto vid=valueId(stockName);
+    auto valId=valueId(stockName);
     for (; stockCol<table.cols(); ++stockCol)
-      if (valueId(table.cell(0,stockCol))==vid)
+      if (valueId(table.cell(0,stockCol))==valId)
         break;
 
     if (stockCol>=table.cols()) return {};
@@ -575,7 +575,7 @@ namespace minsky
       }
     if (!cminsky().timeUnit.empty())
       units[cminsky().timeUnit]++;
-    return foundFlow? units: cminsky().variableValues[vid]->units;
+    return foundFlow? units: cminsky().variableValues[valId]->units;
   }
 
   void GodleyIcon::insertControlled(Selection& selection)

@@ -1,13 +1,18 @@
-%!PS-Adobe-3.0 EPSF-3.0
-%%Creator: cairo 1.16.0 (https://cairographics.org)
-%%CreationDate: Wed Sep 29 14:49:36 2021
+%!PS-Adobe-3.0
+%%Creator: cairo 1.15.10 (http://cairographics.org)
+%%CreationDate: Mon May 27 11:24:43 2024
 %%Pages: 1
 %%DocumentData: Clean7Bit
 %%LanguageLevel: 2
-%%BoundingBox: 0 0 28 26
+%%DocumentMedia: 12x11mm 35 32 0 () ()
+%%BoundingBox: 0 0 35 32
 %%EndComments
 %%BeginProlog
-50 dict begin
+/languagelevel where
+{ pop languagelevel } { 1 } ifelse
+2 lt { /Helvetica findfont 12 scalefont setfont 50 500 moveto
+  (This print job requires a PostScript Language Level 2 printer.) show
+  showpage quit } if
 /q { gsave } bind def
 /Q { grestore } bind def
 /cm { 6 array astore concat } bind def
@@ -62,90 +67,66 @@
 /cairo_flush_ascii85_file { cairo_ascii85_file status { cairo_ascii85_file flushfile } if } def
 /cairo_image { image cairo_flush_ascii85_file } def
 /cairo_imagemask { imagemask cairo_flush_ascii85_file } def
+/cairo_set_page_size {
+  % Change paper size, but only if different from previous paper size otherwise
+  % duplex fails. PLRM specifies a tolerance of 5 pts when matching paper size
+  % so we use the same when checking if the size changes.
+  /setpagedevice where {
+    pop currentpagedevice
+    /PageSize known {
+      2 copy
+      currentpagedevice /PageSize get aload pop
+      exch 4 1 roll
+      sub abs 5 gt
+      3 1 roll
+      sub abs 5 gt
+      or
+    } {
+      true
+    } ifelse
+    {
+      2 array astore
+      2 dict begin
+        /PageSize exch def
+        /ImagingBBox null def
+      currentdict end
+      setpagedevice
+    } {
+      pop pop
+    } ifelse
+  } {
+    pop
+  } ifelse
+} def
 %%EndProlog
 %%BeginSetup
-%%BeginResource: font Roboto-Regular
-11 dict begin
-/FontType 42 def
-/FontName /Roboto-Regular def
-/PaintType 0 def
-/FontMatrix [ 1 0 0 1 0 0 ] def
-/FontBBox [ 0 0 0 0 ] def
-/Encoding 256 array def
-0 1 255 { Encoding exch /.notdef put } for
-Encoding 43 /plus put
-/CharStrings 2 dict dup begin
-/.notdef 0 def
-/plus 1 def
-end readonly def
-/sfnts [
-<000100000006004000020020676c79668afe01be0000006c0000008868656164018e3f8e0000
-00f4000000366868656110a90b150000012c00000024686d7478081600b20000015000000008
-6c6f6361000000dc000001580000000c6d6178700026013f0000016400000020000500640000
-032805b0000300060009000c000f00003311211109020301110511010321016402c4fd9a0102
-0101e50112fda8010ce40203feff05b0fa50057afda2025efd5efd7c05080cfb100278fd5e02
-5e000001004e0092043404b6000b00000121112311213521113311210434fe6ab9fe690197b9
-0196025ffe3301cdae01a9fe57000000000100000002228fec4c78dc5f0f3cf5001908000000
-0000c4f0739e00000000d4345e1af8dffdd5105c087300000009000200010000000000010000
-076cfe0c00001110f8dffbf6105b000100000000000000000000000000000002038c0064048a
-004e00000000000000540000008800010000000200e800160054000700010000000000000000
-000000000006000200>
-] def
-/f-0-0 currentdict end definefont pop
-%%EndResource
-%%BeginResource: font Roboto-Regular
-11 dict begin
-/FontType 42 def
-/FontName /Roboto-Regular def
-/PaintType 0 def
-/FontMatrix [ 1 0 0 1 0 0 ] def
-/FontBBox [ 0 0 0 0 ] def
-/Encoding 256 array def
-0 1 255 { Encoding exch /.notdef put } for
-Encoding 1 /uni2211 put
-/CharStrings 2 dict dup begin
-/.notdef 0 def
-/uni2211 1 def
-end readonly def
-/sfnts [
-<000100000006004000020020676c796661e8404a0000006c0000008c68656164018e3f8e0000
-00f8000000366868656110a90b150000013000000024686d7478083b00aa0000015400000008
-6c6f6361000000e00000015c0000000c6d6178700026013f0000016800000020000500640000
-032805b0000300060009000c000f00003311211109020301110511010321016402c4fd9a0102
-0101e50112fda8010ce40203feff05b0fa50057afda2025efd5efd7c05080cfb100278fd5e02
-5e0000010046fef304ac05b0000c000013352115210115012115213501460419fcc60246fdbb
-0386fb9a026005218f97fd4119fd49978e02cd00000100000002228f3e2dfbb45f0f3cf50019
-080000000000c4f0739e00000000d4345e1af8dffdd5105c0873000000090002000100000000
-00010000076cfe0c00001110f8dffbf6105b000100000000000000000000000000000002038c
-006404af004600000000000000540000008c00010000000200e8001600540007000100000000
-00000000000000000006000200>
-] def
-/f-0-1 currentdict end definefont pop
-%%EndResource
 %%EndSetup
 %%Page: 1 1
 %%BeginPageSetup
-%%PageBoundingBox: 0 0 28 26
+%%PageMedia: 12x11mm
+%%PageBoundingBox: 0 0 35 32
+35 32 cairo_set_page_size
 %%EndPageSetup
-q 0 0 28 26 rectclip
-1 0 0 -1 0 26 cm q
+q 0 0 35 32 rectclip
+1 0 0 -1 0 32 cm q
 0 g
-BT
-9.333008 0 0 -9.333008 6 14.658285 Tm
-/f-0-1 1 Tf
-<01>Tj
-/f-0-0 1 Tf
-[()23(+)]TJ
-ET
+14.496 20.605 m 8.219 20.605 l 8.219 19.523 l 11.781 15.711 l 8.277 12.117
+ l 8.277 11.051 l 14.273 11.051 l 14.273 12.051 l 9.68 12.051 l 13.102 15.461
+ l 13.102 15.867 l 9.523 19.605 l 14.496 19.605 l h
+14.496 20.605 m f
+22.383 16.273 m 19.508 16.273 l 19.508 19.148 l 18.563 19.148 l 18.563 
+16.273 l 15.684 16.273 l 15.684 15.359 l 18.563 15.359 l 18.563 12.484 l
+ 19.508 12.484 l 19.508 15.359 l 22.383 15.359 l h
+22.383 16.273 m f
 0 0 1 rg
-1 w
+1.25 w
 0 J
 0 j
 [] 0.0 d
-10 M 1 1 m 1 25 l 25 25 l 27 13 l 25 1 l h
-1 1 m S
+10 M q 1 0 0 1 0 0 cm
+1.25 1.25 m 1.25 31.25 l 31.25 31.25 l 33.75 16.25 l 31.25 1.25 l h
+1.25 1.25 m S Q
 Q Q
 showpage
 %%Trailer
-end
 %%EOF

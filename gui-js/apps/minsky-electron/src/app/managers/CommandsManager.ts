@@ -594,10 +594,6 @@ export class CommandsManager {
       classType = (await minsky.canvas.getWireAt(x,y)) ? 'Wires' : 'DesignCanvas';
     }
 
-    if (!classType) {
-      return;
-    }
-
     this.loadHelpFile(classType);
     return;
   }
@@ -1209,13 +1205,9 @@ export class CommandsManager {
   }
 
   static startCSVDownload(payload: DownloadCSVPayload) {
-    console.warn('Download started');
-
     const window=this.createDownloadWindow();
 
     return new Promise<string>((resolve, reject) => {
-      console.warn('Will-download started')
-
       window.webContents.session.on('will-download', (e,i,w) => this.downloadCSV(e,i,w, resolve, reject));
       window.webContents.downloadURL(payload.url);
     });
@@ -1281,7 +1273,7 @@ export class CommandsManager {
     return WindowManager.createWindow({
       width: 500,
       height: 700,
-      title: '',
+      title: 'Download CSV',
       modal: false,
     });
   }
@@ -1304,8 +1296,8 @@ export class CommandsManager {
         let ravelFile=params.get('ravel-asset');
         if (minskyFile) {
           let minskyVersionRE=/(\d+)\.(\d+)\.(\d+)([.-])/;
-          let [all,major,minor,patch]=minskyVersionRE.exec(minskyFile);
-          let [currAll,currMajor,currMinor,currPatch,terminator]=minskyVersionRE.exec(await minsky.minskyVersion());
+          let [,major,minor,patch]=minskyVersionRE.exec(minskyFile);
+          let [,currMajor,currMinor,currPatch,terminator]=minskyVersionRE.exec(await minsky.minskyVersion());
           if (major>currMajor || major===currMajor &&
               (minor>currMinor || minor===currMinor && patch>currPatch) ||
               terminator==='-' && // currently a beta release, so install if release nos match (since betas precede releases)

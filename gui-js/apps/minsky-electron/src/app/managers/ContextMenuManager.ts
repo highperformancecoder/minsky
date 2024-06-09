@@ -379,6 +379,12 @@ export class ContextMenuManager {
         menuItems = [
           ...menuItems,
           ...(await ContextMenuManager.buildContextMenuForVariables(itemInfo)),
+          new MenuItem({
+            label: `Rotate ${itemInfo.classType}`,
+            click:  () => {
+              minsky.canvas.rotateItem(this.x, this.y);
+            }
+          }),
         ];
         break;
 
@@ -389,6 +395,12 @@ export class ContextMenuManager {
         menuItems = [
           ...menuItems,
           ...(await ContextMenuManager.buildContextMenuForOperations(itemInfo)),
+          new MenuItem({
+            label: `Rotate ${itemInfo.classType}`,
+            click:  () => {
+              minsky.canvas.rotateItem(this.x, this.y);
+            }
+          }),
         ];
         break;
 
@@ -411,6 +423,12 @@ export class ContextMenuManager {
         menuItems = [
           ...menuItems,
           ...(await ContextMenuManager.buildContextMenuForGroup()),
+          new MenuItem({
+            label: `Rotate ${itemInfo.classType}`,
+            click:  () => {
+              minsky.canvas.rotateItem(this.x, this.y);
+            }
+          }),
         ];
         break;
 
@@ -420,6 +438,12 @@ export class ContextMenuManager {
           new MenuItem({
             label: 'Copy item',
             click: async () => {minsky.canvas.copyItem();}
+          }),
+          new MenuItem({
+            label: `Rotate ${itemInfo.classType}`,
+            click:  () => {
+              minsky.canvas.rotateItem(this.x, this.y);
+            }
           }),
         ];
 
@@ -499,12 +523,6 @@ export class ContextMenuManager {
 
     menuItems = [
       ...menuItems,
-      new MenuItem({
-        label: `Rotate ${itemInfo.classType}`,
-        click:  () => {
-          minsky.canvas.rotateItem(this.x, this.y);
-        }
-      }),
       new MenuItem({
         label: 'Add item to a publication tab',
         submenu: await ContextMenuManager.pubTabMenu(),

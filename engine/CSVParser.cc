@@ -124,7 +124,7 @@ namespace escapedListSeparator
         return false;
       }
       last_ = false;
-      for (;next != end;++next) {
+      while (next != end) {
         if (is_escape(*next)) {
           do_escape(next,end,tok);
         }
@@ -145,6 +145,7 @@ namespace escapedListSeparator
         else {
           tok += *next;
         }
+        ++next;
       }
       return true;
     }
@@ -164,18 +165,21 @@ struct SpaceSeparatorParser
   {
     tok.clear();
     bool quoted=false;
-    for (; next!=end; ++next)
-      if (*next==escape)
-        tok+=*(++next);
-      else if (*next==quote)
-        quoted=!quoted;
-      else if (!quoted && isspace(*next))
-        {
-          while (isspace(*next)) ++next;
-          return true;
-        }
-      else
-        tok+=*next;
+    while (next!=end)
+      {
+        if (*next==escape)
+          tok+=*(++next);
+        else if (*next==quote)
+          quoted=!quoted;
+        else if (!quoted && isspace(*next))
+          {
+            while (isspace(*next)) ++next;
+            return true;
+          }
+        else
+          tok+=*next;
+        ++next;
+      }
     return !tok.empty();
   }
   void reset() {}
@@ -192,8 +196,6 @@ namespace
     bool operator==(const Any& x) const {return static_cast<const any&>(*this)==static_cast<const any&>(x);}
     size_t hash;
   };
-
-  std::string str(const Any& x) {return minsky::str(static_cast<const any&>(x));}
 
   // slice label token map
   template <class T>
@@ -513,13 +515,13 @@ bool DataSpec::processChunk(std::istream& input, const TokenizerFunction& tf, si
       if (!buf.empty())
         {
           smatch match;
-          static const regex re("\"RavelHypercube=(.*)\"");
-          if (regex_match(buf, match, re))
+          static const regex ravelHypercube("\"RavelHypercube=(.*)\"");
+          if (regex_match(buf, match, ravelHypercube))
             try
               {
                 string metadata=match[1];
                 // remove leaning toothpicks
-                metadata.erase(remove(metadata.begin(),metadata.end(),'\\'));
+                metadata.erase(remove(metadata.begin(),metadata.end(),'\\'),metadata.end());
                 string horizontalName;
                 getline(input, buf);
                 static const regex re("HorizontalDimension=\"(.*)\"");
@@ -537,7 +539,7 @@ bool DataSpec::processChunk(std::istream& input, const TokenizerFunction& tf, si
               }
         }
       const boost::tokenizer<TokenizerFunction> tok(buf.begin(),buf.end(), tf);
-      vector<string> line(tok.begin(), tok.end());
+      const vector<string> line(tok.begin(), tok.end());
       starts.push_back(firstNumerical(line));
       nCols=std::max(nCols, line.size());
       if (starts.back()==line.size())
@@ -794,7 +796,6 @@ namespace minsky
                 const boost::tokenizer<P> tok(buf.begin(), buf.end(), csvParser);
 
                 Key key;
-                auto field=tok.begin();
                 size_t dim=0, dataCols=0;
                 col=0;
                 for (auto field=tok.begin(); field!=tok.end(); ++col, ++field)
@@ -1135,14 +1136,14 @@ namespace minsky
     } onError;
 
     // parse file to extract error locations
-    ParseCSV<P> parseCSV(input, spec, fileSize, onError, /*checkValues=*/true);
+    const ParseCSV<P> parseCSV(input, spec, fileSize, onError, /*checkValues=*/true);
 
     input.clear();
     input.seekg(0);
     if (!input) throw FailedToRewind();
     string buf;
     size_t row=0;
-    string sep{spec.separator};
+    const string sep{spec.separator};
     multimap<Key,string> duplicateLines;
     vector<string> invalidDataLines;
 
@@ -1153,9 +1154,17 @@ namespace minsky
       for (;  getWholeLine(input, buf, spec); ++row)
         {
           if (onError.duplicates.contains(row))
-            duplicateLines.emplace(onError.duplicates[row],"Duplicate key"+sep+buf);
+            {
+              string msg="Duplicate key";
+              msg+=sep; msg+=buf;
+              duplicateLines.emplace(onError.duplicates[row],msg);
+            }
           if (onError.invalidData.contains(row))
-            invalidDataLines.push_back(onError.invalidData[row]+sep+buf);
+            {
+              string msg=onError.invalidData[row];
+              msg+=sep; msg+=buf;
+              invalidDataLines.push_back(msg);
+            }
           bytesRead+=buf.size();
           pu.setProgress(double(bytesRead)/fileSize);
         }

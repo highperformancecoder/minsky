@@ -1,0 +1,272 @@
+
+<!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
+<HTML>
+<HEAD>
+<TITLE>Simulation time</TITLE>
+<META NAME="description" CONTENT="Simulation time">
+<META NAME="keywords" CONTENT="Ravel">
+<META NAME="resource-type" CONTENT="document">
+<META NAME="distribution" CONTENT="global">
+
+<META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-15">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2017.2">
+<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+
+<LINK REL="STYLESHEET" HREF="Ravel.css">
+
+<LINK REL="previous" HREF="node200.html">
+<LINK REL="up" HREF="node194.html">
+<LINK REL="next" HREF="node202.html">
+</HEAD>
+
+<BODY  bgcolor="#ffffff">
+<!--Navigation Panel-->
+<A NAME="tex2html3097"
+  HREF="node202.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html3093"
+  HREF="node194.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html3089"
+  HREF="node200.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html3095"
+  HREF="Ravel.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html3098"
+  HREF="node202.html">User defined functions</A>
+<B> Up:</B> <A NAME="tex2html3094"
+  HREF="node194.html">Minsky-specific commands</A>
+<B> Previous:</B> <A NAME="tex2html3090"
+  HREF="node200.html">Speed slider</A>
+ &nbsp; <B>  <A NAME="tex2html3096"
+  HREF="Ravel.html">Contents</A></B> 
+<BR>
+<BR>
+<!--End of Navigation Panel-->
+
+<H2><A NAME="SECTION004167000000000000000">
+Simulation time</A>
+</H2>
+
+<P>
+<A NAME="SimTime"></A>
+<P>
+In the right hand top corner is a textual display of the current simulation
+time <IMG
+ ALIGN="BOTTOM" SRC="img1.png"
+ ALT="$t$% WIDTH=10 HEIGHT=14 ">, and the current (adaptive) difference between iterations
+<IMG
+ ALIGN="BOTTOM" SRC="img40.png"
+ ALT="$\Delta t$% WIDTH=23 HEIGHT=16 ">.
+<DL>
+<DT><STRONG>Time</STRONG></DT>
+<DD><IMG
+ ALIGN="BOTTOM" SRC="img49.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/time.eps}}% WIDTH=15 HEIGHT=14 ">
+   embeds a reference to the simulation
+time on the Canvas. This is not necessary in most simulations, but
+can be useful if you want to make a time-dependent process explicit,
+or control the appearance of a graph.
+
+<P>
+For example, by default a graph displays the simulation time on the
+horizontal axis, so that cycles get compressed as a simulation runs
+for a substantial period:
+
+<IMG
+ ALIGN="BOTTOM" SRC="img288.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/NewItem36}}% WIDTH=501 HEIGHT=253 "> 
+
+<P>
+
+<P>
+If a Time block is added to the marker for the x-axis range, you can
+control the number of years that are displayed. This graph is set
+up to show a ten year range of the model only:
+
+<IMG
+ ALIGN="BOTTOM" SRC="img289.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/NewItem37}}% WIDTH=513 HEIGHT=340 "> 
+
+<P>
+
+</DD>
+<DT><STRONG>Godley Table</STRONG></DT>
+<DD><IMG
+ ALIGN="BOTTOM" SRC="img58.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/NewItem29.eps}}% WIDTH=15 HEIGHT=14 ">
+  . This is the fundamental
+element of <I>Minsky</I> that is not found (yet) in any other system
+dynamics program.
+
+<P>
+Clicking on it and placing the resulting Bank Icon on the Canvas enters
+a Godley table into your model:
+
+<IMG
+ ALIGN="BOTTOM" SRC="img299.png"
+ ALT="\includegraphics{images/NewItem29}% WIDTH=168 HEIGHT=160 "> 
+
+<P>
+
+<P>
+Double-click on the Bank Icon (or right-click and choose ``Open Godley
+Table'' from the context menu) and you get a double-entry bookkeeping
+table we call a Godley Table, which looks like the following onscreen:
+
+<P>
+
+<IMG
+ ALIGN="BOTTOM" SRC="img290.png"
+ ALT="\scalebox{0.5}{\includegraphics{images/emptyGodley}}% WIDTH=401 HEIGHT=51 "> 
+
+<P>
+
+<P>
+Use this table to enter the bank accounts and financial flows in your
+model. We discuss this <A HREF="node220.html#Godley-Tables">later</A>.
+</DD>
+<DT><STRONG>Integration</STRONG></DT>
+<DD><IMG
+ ALIGN="BOTTOM" SRC="img59.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/int.eps}}% WIDTH=29 HEIGHT=14 ">
+  .<A NAME="Integrate"></A> This inserts
+a variable whose value depends on the integral of other variables
+in the system. This is the essential element for defining a dynamic
+model. Click on it and the following entity will appear at the top
+left hand side of the canvas (and move with your mouse until you click
+to place it somewhere:
+
+<IMG
+ ALIGN="BOTTOM" SRC="img300.png"
+ ALT="\includegraphics{images/NewItem39}% WIDTH=105 HEIGHT=50 "> 
+
+<P>
+
+<P>
+``int1'' is just a placeholder for the integration variable, and
+the first thing you should do after creating one is give it a name.
+Double-click on the ``int1'', or right click and choose Edit. This
+will bring up the following menu:
+
+ 
+
+<P>
+
+<P>
+Change the name to something appropriate, and give it an initial value.
+For example, if you were building a model that included America's
+population, you would enter the following:
+
+ 
+
+<P>
+
+<P>
+The integrated variable block would now look like this:
+
+<IMG
+ ALIGN="BOTTOM" SRC="img301.png"
+ ALT="\includegraphics{images/NewItem42}% WIDTH=191 HEIGHT=50 "> 
+
+<P>
+
+<P>
+To model population, you need to include a growth rate. According
+to Wikipedia, the current US population growth rate is 0.97 percent
+per annum. Expressed as an equation, this says that the annual change
+in population, divided by its current level, equals 0.0097:
+
+<P>
+<IMG
+ SRC="img293.png"
+ ALT="\begin{displaymath}
+\frac{1}{\mathrm{Population}(t)}\cdot\left(\frac{d}{dt}\mathrm{Population}(t)\right)=0.0097
+\end{displaymath}% WIDTH=434 HEIGHT=45 ">
+
+<P>
+To express this as an integral equation, firstly we multiply both
+sides of this equation by Population to get:
+
+<P>
+<IMG
+ SRC="img294.png"
+ ALT="\begin{displaymath}
+\frac{d}{dt}\mathrm{Population}(t)=0.0097\cdot\mathrm{Population}(t)
+\end{displaymath}% WIDTH=419 HEIGHT=39 ">
+
+<P>
+Then we integrate both sides to get an equation that estimates what
+the population will be T years into the future as:
+
+<P>
+<IMG
+ SRC="img295.png"
+ ALT="\begin{displaymath}
+\mathrm{Population}(T)=315+\int_{0}^{T}0.0097\cdot\mathrm{Population}(t)dt
+\end{displaymath}% WIDTH=457 HEIGHT=47 ">
+
+<P>
+Here, 315 (million) equals the current population of the USA, the
+year zero is today, and <IMG
+ ALIGN="BOTTOM" SRC="img296.png"
+ ALT="$T$% WIDTH=15 HEIGHT=15 "> is some number of years from today. The
+same equation done as a block diagram looks like this:
+
+<IMG
+ ALIGN="BOTTOM" SRC="img297.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/NewItem46}}% WIDTH=554 HEIGHT=142 "> 
+
+<P>
+
+<P>
+Or you can make it look more like the mathematical equation by right-clicking
+on ``Population'' and choosing ``Copy item''. This creates a copy
+of the Population variable, enabling you to wire up the equation this
+way:
+
+<IMG
+ ALIGN="BOTTOM" SRC="img298.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/NewItem47}}% WIDTH=555 HEIGHT=126 "> 
+
+<P>
+
+</DD>
+<DT><STRONG>Derivative Operator</STRONG></DT>
+<DD><IMG
+ ALIGN="BOTTOM" SRC="img60.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/differentiate.eps}}% WIDTH=11 HEIGHT=14 ">
+   This operator
+symbolically differentiates its input, provided the input is differentiable.
+An error is generated if the input is not differentiable.
+</DD>
+</DL>
+<HR>
+<!--Navigation Panel-->
+<A NAME="tex2html3097"
+  HREF="node202.html">
+<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
+<A NAME="tex2html3093"
+  HREF="node194.html">
+<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
+<A NAME="tex2html3089"
+  HREF="node200.html">
+<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
+<A NAME="tex2html3095"
+  HREF="Ravel.html">
+<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A NAME="tex2html3098"
+  HREF="node202.html">User defined functions</A>
+<B> Up:</B> <A NAME="tex2html3094"
+  HREF="node194.html">Minsky-specific commands</A>
+<B> Previous:</B> <A NAME="tex2html3090"
+  HREF="node200.html">Speed slider</A>
+ &nbsp; <B>  <A NAME="tex2html3096"
+  HREF="Ravel.html">Contents</A></B> 
+<!--End of Navigation Panel-->
+
+</BODY>
+</HTML>

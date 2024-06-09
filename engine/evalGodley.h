@@ -51,11 +51,11 @@ namespace minsky
     (const GodleyIterator& begin, const GodleyIterator& end, 
      const VariableValues& values);
 
-    /// evaluate Godley tables on sv and current value of fv, storing
+    /// evaluate Godley tables on sv (of type double[]) and current value of fv (of type double[]), storing
     /// result in output variable (of \a fv). \a sv is assume to be of
     /// size \c stockVars and \a fv is assumed to be of size \c
     /// flowVars.
-    void eval(double sv[], const double fv[]) const;
+    void eval(double* sv, const double* fv) const;
 
     EvalGodley():  compatibility(false) {}
     /// if compatibility is true, then consttrainst between Godley

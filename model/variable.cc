@@ -645,10 +645,10 @@ void VariableBase::resetMiniPlot()
 
 bool VariableBase::onMouseMotion(float x, float y) 
 {
-  RenderVariable rv(*this);
-  double rw=fabs(zoomFactor()*(rv.width()<iWidth()? 0.5*iWidth() : rv.width())*cos(rotation()*M_PI/180));
-  double sliderPos=(x-this->x())* (sliderMax-sliderMin)/rw+0.5*(sliderMin+sliderMax);
-  double sliderHatch=sliderPos-fmod(sliderPos,sliderStep);   // matches slider's hatch marks to sliderStep value. for ticket 1258
+  const RenderVariable rv(*this);
+  const double rw=fabs(zoomFactor()*(rv.width()<iWidth()? 0.5*iWidth() : rv.width())*cos(rotation()*M_PI/180));
+  const double sliderPos=(x-this->x())* (sliderMax-sliderMin)/rw+0.5*(sliderMin+sliderMax);
+  const double sliderHatch=sliderPos-fmod(sliderPos,sliderStep);   // matches slider's hatch marks to sliderStep value. for ticket 1258
   sliderSet(sliderHatch);
   // push History to prevent an unnecessary reset when
   // adjusting the slider whilst paused. See ticket #812

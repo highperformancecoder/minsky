@@ -864,7 +864,7 @@ namespace schema3
           }
         auto fromId=flow.from()->item().variableCast()->valueId();
         auto toId=flow.to()->item().variableCast()->valueId();
-        auto success=pd.flows.emplace(make_pair(fromId, toId), flow).second;
+        auto success=pd.flows.emplace(make_pair(fromId, toId), flow).second; //NOLINT
         assert(success);
       }
   }

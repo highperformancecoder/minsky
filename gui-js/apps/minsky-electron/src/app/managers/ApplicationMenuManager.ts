@@ -378,6 +378,10 @@ export class ApplicationMenuManager {
           async click() {minsky.canvas.addPlot();}
         },
         {
+          label: 'sheet',
+          async click() {minsky.canvas.addSheet();}
+        },
+        {
           label: 'Godley Table',
           async click() {minsky.canvas.addGodley();}
         },
@@ -614,8 +618,8 @@ export class ApplicationMenuManager {
       role: 'help',
       submenu: [
         {
-          label: 'Minsky Documentation (F1)',
-          click() {CommandsManager.loadHelpFile("minsky");}
+          label: 'Ravel Documentation (F1)',
+          click() {CommandsManager.loadHelpFile("Ravel");}
         },
       ],
     };

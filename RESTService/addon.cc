@@ -414,7 +414,7 @@ namespace minsky
       }
     
       // signature of last param must be non-const
-      static void busyCursorCallback(Napi::Env env, Napi::Function fn, void*, bool* busy)
+      static void busyCursorCallback(Napi::Env env, Napi::Function fn, void*, bool* busy) // NOLINT
       {
         fn({Boolean::New(env,*busy)});
       }
@@ -563,7 +563,7 @@ namespace minsky
 void handleSignal(int)
 {
   static_cast<minsky::AddOnMinsky&>(minsky::minsky()).outOfMemoryHandler();
-  exit(1);
+  exit(1); // NOLINT
 }
 
 struct MinskyAddon: public Addon<MinskyAddon>

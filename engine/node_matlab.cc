@@ -510,14 +510,14 @@ namespace MathDAG
   template <>
   ostream& OperationDAG<OperationType::data>::matlab(ostream& o) const
   {
-    throw error("data blocks not yet supported in Matlab mode");
+    throw error("Data blocks are not yet supported in Matlab mode");
     return o;
   }
         
   template <>
   ostream& OperationDAG<OperationType::ravel>::matlab(ostream& o) const
   {
-    throw error("data blocks not yet supported in Matlab mode");
+    throw error("Ravels are not yet supported in Matlab mode");
     return o;
   }
         
