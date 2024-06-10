@@ -23,7 +23,7 @@ export class ApplicationMenuManager {
   public static async createMainApplicationMenu() {
     const scope = this;
     const menu = Menu.buildFromTemplate([
-      scope.getFileMenu(),
+      await scope.getFileMenu(),
       scope.getEditMenu(),
       scope.getBookmarksMenu(),
       scope.getInsertMenu(),
@@ -76,8 +76,12 @@ export class ApplicationMenuManager {
     return menu;
   }
 
-  private static getFileMenu(): MenuItemConstructorOptions {
+  private static async getFileMenu(): Promise<MenuItemConstructorOptions> {
     const scope = this;
+    const ravelAvailable=await minsky.ravelAvailable();
+    let upgradeLabel='Upgrade';
+    if (isWindows() && !ravelAvailable)
+      upgradeLabel+=' to Ravel';
     return {
       label: 'File',
       submenu: [
@@ -95,7 +99,7 @@ export class ApplicationMenuManager {
           },
         },
         {
-          label: 'Upgrade',
+          label: upgradeLabel,
           click() {CommandsManager.upgrade();},
         },
         {
