@@ -7,37 +7,98 @@
   height: 100vh;
   flex-direction: column;
   overflow: hidden;
-  
-  .import-container {
-    flex: 0 0 50px;
 
+  .tabs-header {
+    flex: 0 0 30px;
     display: flex;
-    justify-content: center;
-    align-items: center;
+    flex-direction: row;
+    
+    .header-tab {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
 
-    .url {
-      flex: 0 1 500px;
-    }
+      div {
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
 
-    span {
-      margin: 5px 10px;
-    }
+        width: 90%;
 
-    button {
-      flex: 0 0 80px;
-      margin: 5px 10px;
+        cursor: pointer;
+        user-select: none;
+
+        border-bottom: 3px ridge rgba(220, 149, 50, 0.4);
+      }
+
+      div.disabled {
+        cursor: auto;
+        color: lightgray;
+        border-bottom: 3px ridge rgba(220, 149, 50, 0.2);
+      }
+
+      div.selected {
+        font-weight: bold;
+        border-bottom: 3px ridge rgba(220, 149, 50, 1);
+      }
     }
   }
 
-  .options-row {
-    z-index: 10000;
+  .tab-area {
+    padding: 10px;
 
-    flex: 0 0 1;
-    width: 100%;
-    
+    flex: 1;
+  }
+
+  .form-buttons {
+    flex: 0 0 30px;
+
+    margin: 0;
+  
+    button {
+      margin: 5px;
+    }
+  }
+
+  .tab-area.file-select-area {
     display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+
+    .import-option-field {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+
+      .import-option-label {
+        margin: 10px;
+      }
+
+      .import-option-content {
+        margin: 10px;
+
+        * {
+          margin: 0px 10px;
+        }
+
+        input.url {
+          width: 400px;
+        }
+      }
+    }
+  }
+
+  .tab-area.settings-area {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
 
     span.inputs-group {
       flex: 0 0 636px;
@@ -73,20 +134,16 @@
           height: 21px;
         }
       }
+
+      span.wide-input {
+        flex: 0 0 200px;
+      }
     }
   }
-
-  .canvas-container {
-    flex: 1;
+  
+  
+  .tab-area.canvas-area {
     overflow: scroll;
-  }
-}
-
-.form-buttons {
-  margin: 0;
-
-  button {
-    margin: 5px;
   }
 }
 
@@ -141,9 +198,6 @@ td {
 .col-type-container.selected {
    filter: brightness(80%)
 }
-
-
-
 
 .table-cell {
   padding: 2px 6px;
