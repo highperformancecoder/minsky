@@ -1229,11 +1229,8 @@ namespace minsky
   {
     const double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-4,-7);
-    setCachedText(cairo, "Δ",7);
+    setCachedText(cairo, "Δ<sup>-</sup>",7);
     cairo_scale(cairo,sf,sf);	  
-    cachedPango->show();
-    cairo_move_to(cairo,-4+cachedPango->width(),-7);
-    setCachedText(cairo, "-",4);
     cachedPango->show();
   }
 
@@ -1241,11 +1238,8 @@ namespace minsky
   {
     const double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-4,-7);
-    setCachedText(cairo, "Δ",7);
+    setCachedText(cairo, "Δ<sup>+</sup>",7);
     cairo_scale(cairo,sf,sf);	  
-    cachedPango->show();
-    cairo_move_to(cairo,-4+cachedPango->width(),-7);
-    setCachedText(cairo, "+",4);
     cachedPango->show();
   }
 
