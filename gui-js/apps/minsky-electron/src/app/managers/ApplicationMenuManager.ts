@@ -80,7 +80,7 @@ export class ApplicationMenuManager {
     const scope = this;
     const ravelAvailable=await minsky.ravelAvailable();
     let upgradeLabel='Upgrade';
-    if (isWindows() && !ravelAvailable)
+    if (Functions.isWindows() && !ravelAvailable)
       upgradeLabel+=' to Ravel';
     return {
       label: 'File',
