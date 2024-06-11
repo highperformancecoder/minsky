@@ -975,10 +975,19 @@ namespace minsky
   template <> void Operation<OperationType::floor>::iconDraw(cairo_t* cairo) const
   {
     const double sf = scaleFactor(); 	     
-    cairo_move_to(cairo,-7,-7);
-    setCachedText(cairo, "⌊x⌋",7);
+    cairo_move_to(cairo,-5,-5);
+    // what we're trying to draw, but Windows' deficient fontsets don't allow it
+    //setCachedText(cairo, "⌊x⌋",7);
+    setCachedText(cairo, "x",7);
     cairo_scale(cairo,sf,sf);	  
     cachedPango->show();
+    cairo_move_to(cairo,-5,-4);
+    cairo_rel_line_to(cairo,0,cachedPango->height()-2);
+    cairo_rel_line_to(cairo,1,0);
+    cairo_move_to(cairo,-5+cachedPango->width(),-4);
+    cairo_rel_line_to(cairo,0,cachedPango->height()-2);
+    cairo_rel_line_to(cairo,-1,0);
+    cairo_stroke(cairo);
   }
   template <> void Operation<OperationType::frac>::iconDraw(cairo_t* cairo) const
   {
@@ -1220,8 +1229,11 @@ namespace minsky
   {
     const double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-4,-7);
-    setCachedText(cairo, "Δ⁻",7);
+    setCachedText(cairo, "Δ",7);
     cairo_scale(cairo,sf,sf);	  
+    cachedPango->show();
+    cairo_move_to(cairo,-4+cachedPango->width(),-7);
+    setCachedText(cairo, "-",4);
     cachedPango->show();
   }
 
@@ -1229,8 +1241,11 @@ namespace minsky
   {
     const double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-4,-7);
-    setCachedText(cairo, "Δ⁺",7);
+    setCachedText(cairo, "Δ",7);
     cairo_scale(cairo,sf,sf);	  
+    cachedPango->show();
+    cairo_move_to(cairo,-4+cachedPango->width(),-7);
+    setCachedText(cairo, "+",4);
     cachedPango->show();
   }
 
@@ -1247,9 +1262,19 @@ namespace minsky
   {
     const double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-4,-10);
-    setCachedText(cairo, "⊗",10);
+    // this is the character we want, but draw it explicitly because
+    //of Windows' deficient fontsets.
+    // setCachedText(cairo, "⊗",10);
     cairo_scale(cairo,sf,sf);	  
-    cachedPango->show();
+    constexpr const double r=6;
+    static const double d=0.5*r*std::sqrt(2);
+    cairo_move_to(cairo,d,d);
+    cairo_line_to(cairo,-d,-d);
+    cairo_move_to(cairo,-d,d);
+    cairo_line_to(cairo,d,-d);
+    cairo_move_to(cairo,r,0);
+    cairo_arc(cairo,0,0,r,0,2*M_PI);
+    cairo_stroke(cairo);
   }
 
   template <> void Operation<OperationType::index>::iconDraw(cairo_t* cairo) const
@@ -1276,28 +1301,42 @@ namespace minsky
   template <> void Operation<OperationType::meld>::iconDraw(cairo_t* cairo) const
   {
     const double sf = scaleFactor(); 	     
-    cairo_move_to(cairo,-4,-10);
-    setCachedText(cairo, "⭄",10);
+    cairo_move_to(cairo,-4,-5);
+    //setCachedText(cairo, "⭄",10);
     cairo_scale(cairo,sf,sf);  
-    cachedPango->show();
+    cairo_rel_line_to(cairo,4,0);
+    cairo_rel_line_to(cairo,2,5);
+    cairo_rel_line_to(cairo,-2,5);
+    cairo_rel_line_to(cairo,-4,0);
+    cairo_move_to(cairo,-4,0);
+    cairo_rel_line_to(cairo,10,0);
+    cairo_stroke(cairo);
   }
 
   template <> void Operation<OperationType::merge>::iconDraw(cairo_t* cairo) const
   {
     const double sf = scaleFactor(); 	     
-    cairo_move_to(cairo,-4,-10);
-    setCachedText(cairo, "⫤",10);
+    cairo_move_to(cairo,-4,-3);
+    //setCachedText(cairo, "⫤",10);
     cairo_scale(cairo,sf,sf);  
-    cachedPango->show();
+    cairo_rel_line_to(cairo,8,0);
+    cairo_move_to(cairo,-4,3);
+    cairo_rel_line_to(cairo,8,0);
+    cairo_rel_move_to(cairo,0,-10);
+    cairo_rel_line_to(cairo,0,14);
+    cairo_stroke(cairo);
   }
 
   template <> void Operation<OperationType::slice>::iconDraw(cairo_t* cairo) const
   {
     const double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-10,-10);
-    setCachedText(cairo, "[⋯|",10);
+    setCachedText(cairo, "[...",10);
     cairo_scale(cairo,sf,sf);  
     cachedPango->show();
+    cairo_move_to(cairo,-10+cachedPango->width(),-9);
+    cairo_rel_line_to(cairo,0,cachedPango->height()-2);
+    cairo_stroke(cairo);
   }
 
   
