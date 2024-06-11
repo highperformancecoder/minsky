@@ -1301,28 +1301,42 @@ namespace minsky
   template <> void Operation<OperationType::meld>::iconDraw(cairo_t* cairo) const
   {
     const double sf = scaleFactor(); 	     
-    cairo_move_to(cairo,-4,-10);
-    setCachedText(cairo, "⭄",10);
+    cairo_move_to(cairo,-4,-5);
+    //setCachedText(cairo, "⭄",10);
     cairo_scale(cairo,sf,sf);  
-    cachedPango->show();
+    cairo_rel_line_to(cairo,4,0);
+    cairo_rel_line_to(cairo,2,5);
+    cairo_rel_line_to(cairo,-2,5);
+    cairo_rel_line_to(cairo,-4,0);
+    cairo_move_to(cairo,-4,0);
+    cairo_rel_line_to(cairo,10,0);
+    cairo_stroke(cairo);
   }
 
   template <> void Operation<OperationType::merge>::iconDraw(cairo_t* cairo) const
   {
     const double sf = scaleFactor(); 	     
-    cairo_move_to(cairo,-4,-10);
-    setCachedText(cairo, "⫤",10);
+    cairo_move_to(cairo,-4,-3);
+    //setCachedText(cairo, "⫤",10);
     cairo_scale(cairo,sf,sf);  
-    cachedPango->show();
+    cairo_rel_line_to(cairo,8,0);
+    cairo_move_to(cairo,-4,3);
+    cairo_rel_line_to(cairo,8,0);
+    cairo_rel_move_to(cairo,0,-10);
+    cairo_rel_line_to(cairo,0,14);
+    cairo_stroke(cairo);
   }
 
   template <> void Operation<OperationType::slice>::iconDraw(cairo_t* cairo) const
   {
     const double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-10,-10);
-    setCachedText(cairo, "[⋯|",10);
+    setCachedText(cairo, "[...",10);
     cairo_scale(cairo,sf,sf);  
     cachedPango->show();
+    cairo_move_to(cairo,-10+cachedPango->width(),-9);
+    cairo_rel_line_to(cairo,0,cachedPango->height()-2);
+    cairo_stroke(cairo);
   }
 
   
