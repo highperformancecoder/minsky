@@ -974,8 +974,6 @@ namespace minsky
   }
   template <> void Operation<OperationType::floor>::iconDraw(cairo_t* cairo) const
   {
-    //cairo::CairoSave cs(cairo);
-    //cairo_set_source_rgb(cairo,0,0,0);
     const double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-5,-5);
     // what we're trying to draw, but Windows' deficient fontsets don't allow it
@@ -1231,8 +1229,11 @@ namespace minsky
   {
     const double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-4,-7);
-    setCachedText(cairo, "Δ⁻",7);
+    setCachedText(cairo, "Δ",7);
     cairo_scale(cairo,sf,sf);	  
+    cachedPango->show();
+    cairo_move_to(cairo,-4+cachedPango->width(),-7);
+    setCachedText(cairo, "-",4);
     cachedPango->show();
   }
 
@@ -1240,8 +1241,11 @@ namespace minsky
   {
     const double sf = scaleFactor(); 	     
     cairo_move_to(cairo,-4,-7);
-    setCachedText(cairo, "Δ⁺",7);
+    setCachedText(cairo, "Δ",7);
     cairo_scale(cairo,sf,sf);	  
+    cachedPango->show();
+    cairo_move_to(cairo,-4+cachedPango->width(),-7);
+    setCachedText(cairo, "+",4);
     cachedPango->show();
   }
 
