@@ -1324,7 +1324,7 @@ export class CommandsManager {
       }
     });
 
-    let clientId='abf9j0FWQTj-etln2BbRlUhJnjv11kaL9lH1nprj23NLSq3l6ELxUGkLJKIfWsKt';
+    let clientId='I9sn5lKdemBdh8uTNA7H7YiplxQk3gI-pP0I9_2g1tcbE88T2C3Z9wOvoy51I4-U';
     // need to pass what platform we are
     switch (process.platform) {
     case 'win32': var system='windows'; break;
