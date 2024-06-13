@@ -1297,7 +1297,7 @@ export class CommandsManager {
         if (minskyFile) {
           let minskyVersionRE=/(\d+)\.(\d+)\.(\d+)([.-])/;
           let [,major,minor,patch]=minskyVersionRE.exec(minskyFile);
-          let [,currMajor,currMinor,currPatch,terminator]=minskyVersionRE.exec(await minsky.minskyVersion());
+          let [,currMajor,currMinor,currPatch,terminator]=minskyVersionRE.exec((await minsky.minskyVersion())+'.');
           if (major>currMajor || major===currMajor &&
               (minor>currMinor || minor===currMinor && patch>currPatch) ||
               terminator==='-' && // currently a beta release, so install if release nos match (since betas precede releases)
