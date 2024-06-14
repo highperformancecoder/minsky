@@ -10,6 +10,7 @@ exports.default = async function(context) {
   let files=glob.globSync(p.info.projectDir+"/dynamic_libraries/libravel.*")
   if (files.length>0) {
     console.log('updating appInfo');
-    p.appInfo.productFilename="ravel-with-plugin";
+    // this doesn't actually work! file is renamed in mkWindowsDist.sh
+    p.appInfo.artifactName="ravel-with-plugin-${version}.${ext}";
   }
 }
