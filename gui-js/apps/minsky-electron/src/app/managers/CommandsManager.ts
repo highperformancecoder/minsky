@@ -1273,7 +1273,7 @@ export class CommandsManager {
     return WindowManager.createWindow({
       width: 500,
       height: 700,
-      title: 'Download CSV',
+      title: 'Download',
       modal: false,
     });
   }
