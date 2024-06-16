@@ -460,7 +460,7 @@ void Sheet::draw(cairo_t* cairo) const
           else
             {
               format=value->hypercube().xvectors[horizDim].dimension.units;
-              const ElisionRowChecker adjustColAndFinish(showColSlice,m_width-colWidth,colWidth,dims[1]);
+              const ElisionRowChecker adjustColAndFinish(showColSlice,m_width-colWidth,colWidth,dims[horizDim]);
               for (size_t i=adjustColAndFinish.startRow; i<dims[horizDim]; ++i)
                 {
                   if (adjustColAndFinish(i,x)) break;
