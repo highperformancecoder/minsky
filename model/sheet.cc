@@ -489,7 +489,8 @@ void Sheet::draw(cairo_t* cairo) const
                       if (adjustRowAndFinish(j,y)) break;
                       y+=rowHeight;
                       cairo_move_to(cairo,x,y);
-                      auto v=value->atHCIndex(j+i*dims[vertDim]+scrollOffset);
+                      assert(horizDim==0);
+                      auto v=value->atHCIndex(i+j*dims[0]+scrollOffset);
                       if (!std::isnan(v))
                         {
                           cpango.setText(str(v));
