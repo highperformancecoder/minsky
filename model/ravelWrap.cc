@@ -316,14 +316,22 @@ namespace minsky
   {
     if (axis>=0 && axis<int(numHandles()))
       {
-        // stash previous handle sort order
-        auto state=wrappedRavel.getHandleState(axis);
+        vector<size_t> customOrder, currentOrder=wrappedRavel.currentPermutation(axis);
         auto allLabels=wrappedRavel.allSliceLabels(axis, ravel::HandleSort::none);
         map<string,size_t> idxMap; // map index positions
         for (size_t i=0; i<allLabels.size(); ++i)
           idxMap[allLabels[i]]=i;
-        vector<size_t> customOrder;
-        for (auto& i: pick)
+        set<string> picked(pick.begin(), pick.end());
+        for (auto i: currentOrder)
+          {
+            string label=allLabels[i];
+            auto pickedIter=picked.find(label);
+            if (pickedIter==picked.end()) continue;
+            picked.erase(pickedIter);
+            customOrder.push_back(i);
+          }
+        // add remaining picked labels to end of permutation
+        for (auto& i: picked)
           {
             auto j=idxMap.find(i);
             if (j!=idxMap.end())
@@ -331,8 +339,6 @@ namespace minsky
           }
         assert(!customOrder.empty());
         wrappedRavel.applyCustomPermutation(axis,customOrder);
-        if (state.order!=ravel::HandleSort::custom)
-          setHandleSortOrder(state.order, axis);
         broadcastStateToLockGroup();
         minsky().requestReset();
       }
