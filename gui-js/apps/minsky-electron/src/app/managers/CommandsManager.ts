@@ -1273,7 +1273,7 @@ export class CommandsManager {
     return WindowManager.createWindow({
       width: 500,
       height: 700,
-      title: 'Download CSV',
+      title: 'Download',
       modal: false,
     });
   }
@@ -1297,7 +1297,7 @@ export class CommandsManager {
         if (minskyFile) {
           let minskyVersionRE=/(\d+)\.(\d+)\.(\d+)([.-])/;
           let [,major,minor,patch]=minskyVersionRE.exec(minskyFile);
-          let [,currMajor,currMinor,currPatch,terminator]=minskyVersionRE.exec(await minsky.minskyVersion());
+          let [,currMajor,currMinor,currPatch,terminator]=minskyVersionRE.exec((await minsky.minskyVersion())+'.');
           if (major>currMajor || major===currMajor &&
               (minor>currMinor || minor===currMinor && patch>currPatch) ||
               terminator==='-' && // currently a beta release, so install if release nos match (since betas precede releases)
@@ -1324,7 +1324,7 @@ export class CommandsManager {
       }
     });
 
-    let clientId='abf9j0FWQTj-etln2BbRlUhJnjv11kaL9lH1nprj23NLSq3l6ELxUGkLJKIfWsKt';
+    let clientId='I9sn5lKdemBdh8uTNA7H7YiplxQk3gI-pP0I9_2g1tcbE88T2C3Z9wOvoy51I4-U';
     // need to pass what platform we are
     switch (process.platform) {
     case 'win32': var system='windows'; break;
