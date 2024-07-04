@@ -27,7 +27,120 @@
     </div>
   </div>
 
-  <div class="tab-area settings-area" [style.display]="selectedTabIndex !== 1 ? 'none' : 'flex'">
+  <div class="tab-area canvas-area" [style.display]="selectedTabIndex !== 1 ? 'none' : 'flex'" #importCsvCanvasContainer id="import-csv-canvas-container">
+    <table *ngIf="parsedLines.length">
+      <tr>
+        <th>Name</th>
+        <td *ngFor="let col of csvCols; let i = index"
+          class="col-type-container wedge-container" [class.selected]="selected[i]"
+          (mousedown)="typeMouseDown($event,i)"
+          (mousemove)="typeMouseMove($event,i)"
+          (mouseup)="typeMouseUp($event,'name',i)"
+            >
+          <input
+            *ngIf="colType[i]==='axis'||colType[i]==='data'"
+            type="text"
+            class="form-control"
+            [value]="dialogState.spec.dimensionNames[i]"
+            (change)="dialogState.spec.dimensionNames[i] = $event.target['value']"
+            >
+          
+          <div *ngIf="selectableDimensionNames[i]?.length > 0" class="material-icons wedge-icon" style="margin-right: -2px" (click)="onWedgeIconClicked($event, i)">expand_more</div>
+
+          <div *ngIf="i === wedgeOptionPanelVisibleIndex" class="wedge-options-panel">
+            <div class="wedge-option" *ngFor="let dimensionName of selectableDimensionNames[i]" (click)="onWedgeOptionClicked($event, i, dimensionName)">{{dimensionName}}</div>
+          </div>
+        </td>
+      </tr>
+
+      <tr>
+        <th>Dimension</th>
+        <td #colTypeRow
+          *ngFor="let col of csvCols; let i = index"
+          class="col-type-container" [class.selected]="selected[i]"
+        >
+            <select
+              (change)="setColType(i,$event.target['value'])"
+            >
+              <option value="axis" style="color:blue">axis</option>
+              <option value="data">data</option>
+              <option value="ignore" style="color:red">ignore</option>
+            </select>
+        </td>
+      </tr>
+
+      <tr>
+        <th>Type</th>
+        <td *ngFor="let col of csvCols; let i = index"
+            class="col-type-container col-container"
+            [class.selected]="selected[i]"
+            >
+          <ng-container *ngIf="colType[i]==='axis'">
+            <select
+              [value]="dialogState.spec.dimensions[i]?.type "
+              (change)="dialogState.spec.dimensions[i].type = $event.target['value']"
+            >
+              <option value="string">string</option>
+              <option value="value">value</option>
+              <option value="time">time</option>
+            </select>
+          </ng-container>
+        </td>
+      </tr>
+
+      <tr>
+        <th>Format</th>
+        <td *ngFor="let col of csvCols; let i = index"
+            class="col-container" [class.selected]="selected[i]"
+            >
+          <input
+            *ngIf="colType[i]==='axis'"
+            type="text"
+            [value]="dialogState.spec.dimensions[i]?.units"
+            [matAutocomplete]="autocompleteFormat"
+            class="form-control"
+            (change)="dialogState.spec.dimensions[i].units = $event.target['value']"
+          />
+          <mat-autocomplete
+            id="format_{{ i }}"
+            [panelWidth]="'14rem'"
+            #autocompleteFormat="matAutocomplete"
+            (optionSelected)="dialogState.spec.dimensions[i].units = $event.option.value"
+          >
+            <ng-container *ngIf="dialogState.spec.dimensions[i]?.type === 'time'">
+              <mat-option
+                *ngFor="let tfs of timeFormatStrings"
+                [value]="tfs.value"
+              >
+                {{ tfs.label }}
+              </mat-option>
+            </ng-container>
+          </mat-autocomplete>
+        </td>
+      </tr>
+
+      <tr *ngFor="let row of parsedLines; let rowIndex = index">
+        <th class="header" (click)="selectHeader(rowIndex)">
+          <ng-container *ngIf="rowIndex === dialogState.spec.headerRow
+            && dialogState.spec.headerRow < dialogState.spec.dataRowOffset"
+            >Header</ng-container
+          >
+        </th>
+        <td class="table-cell"
+            *ngFor="let rowElement of row; let colIndex = index"
+            (mousedown)="typeMouseDown($event,colIndex)"
+            (mousemove)="typeMouseMove($event,colIndex)"
+            (mouseup)="typeMouseUp($event,rowIndex,colIndex)"
+            (contextmenu)="contextMenu(rowIndex,colIndex)"
+          [ngStyle]="{ color: getColorForCell(rowIndex, colIndex) }"
+        >
+          {{ rowElement }}
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <div class="tab-area settings-area" [style.display]="selectedTabIndex !== 2 ? 'none' : 'flex'">
     <div class="options-row">
       <span class="inputs-group">
         <span class="wide-input">
@@ -235,125 +348,16 @@
     </div>
   </div>
 
-  <div class="tab-area canvas-area" [style.display]="selectedTabIndex !== 2 ? 'none' : 'flex'" #importCsvCanvasContainer id="import-csv-canvas-container">
-    <table *ngIf="parsedLines.length">
-      <tr>
-        <th>Name</th>
-        <td *ngFor="let col of csvCols; let i = index"
-          class="col-type-container wedge-container" [class.selected]="selected[i]"
-          (mousedown)="typeMouseDown($event,i)"
-          (mousemove)="typeMouseMove($event,i)"
-          (mouseup)="typeMouseUp($event,'name',i)"
-            >
-          <input
-            *ngIf="colType[i]==='axis'||colType[i]==='data'"
-            type="text"
-            class="form-control"
-            [value]="dialogState.spec.dimensionNames[i]"
-            (change)="dialogState.spec.dimensionNames[i] = $event.target['value']"
-            >
-          
-          <div *ngIf="selectableDimensionNames[i]?.length > 0" class="material-icons wedge-icon" style="margin-right: -2px" (click)="onWedgeIconClicked($event, i)">expand_more</div>
-
-          <div *ngIf="i === wedgeOptionPanelVisibleIndex" class="wedge-options-panel">
-            <div class="wedge-option" *ngFor="let dimensionName of selectableDimensionNames[i]" (click)="onWedgeOptionClicked($event, i, dimensionName)">{{dimensionName}}</div>
-          </div>
-        </td>
-      </tr>
-
-      <tr>
-        <th>Dimension</th>
-        <td #colTypeRow
-          *ngFor="let col of csvCols; let i = index"
-          class="col-type-container" [class.selected]="selected[i]"
-        >
-            <select
-              (change)="setColType(i,$event.target['value'])"
-            >
-              <option value="axis" style="color:blue">axis</option>
-              <option value="data">data</option>
-              <option value="ignore" style="color:red">ignore</option>
-            </select>
-        </td>
-      </tr>
-
-      <tr>
-        <th>Type</th>
-        <td *ngFor="let col of csvCols; let i = index"
-            class="col-type-container col-container"
-            [class.selected]="selected[i]"
-            >
-          <ng-container *ngIf="colType[i]==='axis'">
-            <select
-              [value]="dialogState.spec.dimensions[i]?.type "
-              (change)="dialogState.spec.dimensions[i].type = $event.target['value']"
-            >
-              <option value="string">string</option>
-              <option value="value">value</option>
-              <option value="time">time</option>
-            </select>
-          </ng-container>
-        </td>
-      </tr>
-
-      <tr>
-        <th>Format</th>
-        <td *ngFor="let col of csvCols; let i = index"
-            class="col-container" [class.selected]="selected[i]"
-            >
-          <input
-            *ngIf="colType[i]==='axis'"
-            type="text"
-            [value]="dialogState.spec.dimensions[i]?.units"
-            [matAutocomplete]="autocompleteFormat"
-            class="form-control"
-            (change)="dialogState.spec.dimensions[i].units = $event.target['value']"
-          />
-          <mat-autocomplete
-            id="format_{{ i }}"
-            [panelWidth]="'14rem'"
-            #autocompleteFormat="matAutocomplete"
-            (optionSelected)="dialogState.spec.dimensions[i].units = $event.option.value"
-          >
-            <ng-container *ngIf="dialogState.spec.dimensions[i]?.type === 'time'">
-              <mat-option
-                *ngFor="let tfs of timeFormatStrings"
-                [value]="tfs.value"
-              >
-                {{ tfs.label }}
-              </mat-option>
-            </ng-container>
-          </mat-autocomplete>
-        </td>
-      </tr>
-
-      <tr *ngFor="let row of parsedLines; let rowIndex = index">
-        <th class="header" (click)="selectHeader(rowIndex)">
-          <ng-container *ngIf="rowIndex === dialogState.spec.headerRow
-            && dialogState.spec.headerRow < dialogState.spec.dataRowOffset"
-            >Header</ng-container
-          >
-        </th>
-        <td class="table-cell"
-            *ngFor="let rowElement of row; let colIndex = index"
-            (mousedown)="typeMouseDown($event,colIndex)"
-            (mousemove)="typeMouseMove($event,colIndex)"
-            (mouseup)="typeMouseUp($event,rowIndex,colIndex)"
-            (contextmenu)="contextMenu(rowIndex,colIndex)"
-          [ngStyle]="{ color: getColorForCell(rowIndex, colIndex) }"
-        >
-          {{ rowElement }}
-        </td>
-      </tr>
-    </table>
-  </div>
-
   <div class="form-buttons">
     <button mat-raised-button class="btn cancel-btn" (click)="closeWindow()">
       Cancel
     </button>
 
-    <button [disabled]="!fileLoaded"
+    <button *ngIf="selectedTabIndex !== 2" mat-raised-button class="btn next-btn" [disabled]="!fileLoaded" (click)="next()">
+      Next
+    </button>
+
+    <button *ngIf="selectedTabIndex === 2" [disabled]="!fileLoaded"
       mat-raised-button
       class="btn ok-btn submit"
       type="submit"

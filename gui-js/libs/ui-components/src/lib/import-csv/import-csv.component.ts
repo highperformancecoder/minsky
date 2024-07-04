@@ -73,12 +73,12 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
     },
     {
       index: 1,
-      caption: 'Settings',
+      caption: 'Data selection',
       disabled: true
     },
     {
       index: 2,
-      caption: 'Preview',
+      caption: 'Settings',
       disabled: true
     }
   ];
@@ -608,6 +608,10 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
       this.dialogState.spec.dimensionNames[i] = value;
     }
     $event.stopPropagation();
+  }
+
+  next() {
+    this.selectedTabIndex++;
   }
 
   closeWindow() { this.electronService.closeWindow(); }
