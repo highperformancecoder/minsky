@@ -13,7 +13,8 @@ if [ -f dynamic_libraries/libravel.dll ]; then
 else
     name=ravel
 fi
-java -jar $HOME/usr/bin/jsign-4.1.jar --keystore $WINDOWS_SIGN_CERTIFICATE_NAME --storetype PKCS12 --storepass "$WINDOWS_SIGN_TOKEN_PASSWORD" dist/executables/$name-$version.exe
+#java -jar $HOME/usr/bin/jsign-4.1.jar --keystore $WINDOWS_SIGN_CERTIFICATE_NAME --storetype PKCS12 --storepass "$WINDOWS_SIGN_TOKEN_PASSWORD" dist/executables/$name-$version.exe
+sudo java -jar $HOME/usr/bin/jsign-6.0.jar --storetype ETOKEN --keystore ~/usr/etc/SafeNet.cfg -t http://timestamp.sectigo.com --storepass "$WINDOWS_SIGN_TOKEN_PASSWORD" dist/executables/$name-$version.exe
 echo cp dist/executables/$name-$version.exe /tmp
 cp dist/executables/$name-$version.exe /tmp
 popd
