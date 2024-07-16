@@ -852,7 +852,14 @@ namespace minsky
              const CairoSave cs(cairo);
              cairo_identity_matrix(cairo);
              cairo_translate(cairo,it.x(), it.y());
-             it.draw(cairo);
+             try
+               {
+                 it.draw(cairo);
+               }
+             catch (const std::exception& ex)
+               {
+                 cerr << ex.what() << endl;
+               }
            }
          return false;
        });
