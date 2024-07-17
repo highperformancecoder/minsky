@@ -116,8 +116,8 @@ namespace minsky
       rotatingItem=true;
     }
     ClickType::Type clickType;
-    /// for drawing error indicators on the canvas
-    bool itemIndicator=false;
+    /// for drawing error indicator on the canvas
+    ItemPtr itemIndicator;
 
     /// lasso mode support
     struct LassoMode {enum type  {none, lasso, itemResize};};
