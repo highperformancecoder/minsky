@@ -185,7 +185,7 @@ namespace minsky
     lassoMode=LassoMode::none;
 
     
-    itemIndicator=false;
+    itemIndicator.reset();
     rotatingItem=false;
     itemFocus.reset();
     wireFocus.reset();
@@ -776,7 +776,7 @@ namespace minsky
             iv->type()==VariableType::parameter || iv->inputWired())
           return true;
         
-        auto def=model->findAny
+        itemIndicator=model->findAny
           (&GroupItems::items, [&](const ItemPtr& i) {
             if (auto v=i->variableCast())
               return v->inputWired() && v->valueId()==iv->valueId();
@@ -790,9 +790,7 @@ namespace minsky
               return o->intVar->valueId()==iv->valueId();
             return false;
           });
-        if (def)
-          item=def;
-        return def.get();
+        return itemIndicator.get();
       }
     return false;
   }
@@ -852,7 +850,14 @@ namespace minsky
              const CairoSave cs(cairo);
              cairo_identity_matrix(cairo);
              cairo_translate(cairo,it.x(), it.y());
-             it.draw(cairo);
+             try
+               {
+                 it.draw(cairo);
+               }
+             catch (const std::exception& ex)
+               {
+                 cerr << ex.what() << endl;
+               }
            }
          return false;
        });
@@ -910,11 +915,11 @@ namespace minsky
         cairo_stroke(cairo);
       }
 
-    if (itemIndicator && item) // draw a red circle to indicate an error or other marker
+    if (itemIndicator) // draw a red circle to indicate an error or other marker
       {
         const CairoSave cs(surface()->cairo());
         cairo_set_source_rgb(surface()->cairo(),1,0,0);
-        cairo_arc(surface()->cairo(),item->x(),item->y(),15,0,2*M_PI);
+        cairo_arc(surface()->cairo(),itemIndicator->x(),itemIndicator->y(),15,0,2*M_PI);
         cairo_stroke(surface()->cairo());
       }
 

@@ -347,11 +347,10 @@ export class CommandsManager {
         Math.abs(itemX - 0.5 * canvasWidth) > 0.5 * canvasWidth ||
         Math.abs(itemY - 0.5 * canvasHeight) > 0.5 * canvasHeight
       ) {
-        const posX = itemX - (await minsky.canvas.item.x()) + 0.5 * canvasWidth;
-        const posY = itemY - (await minsky.canvas.item.y()) + 0.5 * canvasHeight;
+        const posX = itemX - (await minsky.canvas.itemIndicator.x()) + 0.5 * canvasWidth;
+        const posY = itemY - (await minsky.canvas.itemIndicator.y()) + 0.5 * canvasHeight;
         minsky.canvas.moveTo(posX,posY);
       }
-      minsky.canvas.itemIndicator(true);
       minsky.canvas.requestRedraw();
       WindowManager.getMainWindow()?.webContents?.send(events.RESET_SCROLL);
     } else {

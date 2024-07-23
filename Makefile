@@ -527,6 +527,9 @@ install-doxydoc: doxydoc
 	rsync -r -z --progress --delete doxydoc $(SF_WEB)
 
 
+doc/Ravel/labels.pl: $(wildcard doc/*.tex)
+	cd doc; sh makedoc.sh
+
 # upload manual to SF
 install-manual: doc/Ravel/labels.pl
 	rsync -r -z --progress --delete doc/minsky.html doc/Ravel $(SF_WEB)/manual
