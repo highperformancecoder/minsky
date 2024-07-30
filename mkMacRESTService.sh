@@ -19,7 +19,7 @@ if [ $version = '"unknown"' ]; then
     version=0.0.0.0
 fi
 
-target=gui-js/dist/executables/minsky-$version.dmg
+target=gui-js/dist/executables/ravel-$version.dmg
 
 # determine release or beta depending on the number of fields separated by '-' in the version string
 numFields=`echo $version|tr - ' '|wc -w`
@@ -68,6 +68,8 @@ rewrite_dylibs $MAC_DIST_DIR/minskyRESTService.node
 pushd gui-js
 npm run export:package:mac
 popd
+
+mv gui-js/dist/executables/minsky-$version.dmg $target
 
 # notarytool is introduced from Big Sur onwards, altool has been deprecated.
 if [ `sw_vers|grep ProductVersion|cut -f2|cut -f1 -d.` -lt 11 ]; then

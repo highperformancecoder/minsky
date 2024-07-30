@@ -8,7 +8,7 @@
     "appId": "au.com.hpcoders.Minsky",
     "artifactName": "${productName}-${version}.${ext}",
     "mac": {
-      "icon": "../minsky.app/Contents/Resources/MinskyLogo.icns"
+      "icon": "apps/minsky-electron/src/assets/RavelLogo.icns"
     },
     "win": {
       "icon": "apps/minsky-electron/src/assets/RavelLogo.ico"
