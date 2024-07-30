@@ -11,7 +11,7 @@ TK_LIB=$(dir $(shell find $(TCL_PREFIX) -name tk.tcl -path "*/tk$(TCL_VERSION)*"
 # root directory for ecolab include files and libraries
 ECOLAB_HOME=$(shell pwd)/ecolab
 
-ifeq ($(OS),Darwin)
+ifeq ($(shell uname),Darwin)
 MAKEOVERRIDES+=MAC_OSX_TK=1
 endif
 
