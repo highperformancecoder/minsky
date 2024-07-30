@@ -20,8 +20,9 @@ import { WindowManager } from './WindowManager';
 import { StoreManager } from './StoreManager';
 import { RecentFilesManager } from './RecentFilesManager';
 import ProgressBar from 'electron-progressbar';
-import {spawn} from 'child_process';
+import {exec,spawn} from 'child_process';
 import decompress from 'decompress';
+import {promisify} from 'util';
 
 export class CommandsManager {
   static activeGodleyWindowItems = new Map<string, CanvasItem>();
@@ -1284,7 +1285,7 @@ export class CommandsManager {
     });
   }
   
-  static upgrade() {
+  static async upgrade() {
     const window=this.createDownloadWindow();
 
     // handler for when user has logged in to initiate upgrades.
@@ -1335,10 +1336,17 @@ export class CommandsManager {
     let clientId='I9sn5lKdemBdh8uTNA7H7YiplxQk3gI-pP0I9_2g1tcbE88T2C3Z9wOvoy51I4-U';
     // need to pass what platform we are
     switch (process.platform) {
-    case 'win32': var system='windows'; break;
-    case 'darwin': var system='macos'; break;
-    case 'linux': var system='linux'; break;
-      // TODO consult /etc/os-release to figure out which distro
+    case 'win32': var state={system: 'windows', distro: '', version: ''}; break;
+    case 'darwin': var state={system: 'macos', distro: '', version: ''}; break;
+    case 'linux':
+      var state={system: 'linux', distro: '', version: ''};
+      // figure out distro and version from /etc/os-release
+      let aexec=promisify(exec)
+      let distroInfo=await aexec('grep ^ID= /etc/os-release');
+      state.distro=/.*="(.*)"/.exec(distroInfo.stdout)[1];
+      distroInfo=await aexec('grep ^VERSION_ID= /etc/os-release');
+      state.version=/.*="(.*)"/.exec(distroInfo.stdout)[1];
+      break;
     default:
       dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
             message: `In app update is not available for your operating system yet, please check back later`,
@@ -1348,8 +1356,9 @@ export class CommandsManager {
       return;
       break;
     }
+    let encodedState=encodeURI(JSON.stringify(state));
     // load patreon's login page
-    window.loadURL(`https://www.patreon.com/oauth2/authorize?response_type=code&client_id=${clientId}&redirect_uri=https://ravelation.hpcoders.com.au/ravel-downloader.cgi&state=${system}`);
+    window.loadURL(`https://www.patreon.com/oauth2/authorize?response_type=code&client_id=${clientId}&redirect_uri=https://ravelation.hpcoders.com.au/ravel-downloader.cgi&state=${encodedState}`);
   }
   
 }
