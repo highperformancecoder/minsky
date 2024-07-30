@@ -1325,12 +1325,12 @@ export class CommandsManager {
           window.webContents.downloadURL(ravelFile);
           return;
         }
+        dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
+          message: "Everything's up to date, nothing to do",
+          type: 'info',
+        });
+        window.close();
       }
-      dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
-        message: "Everything's up to date, nothing to do",
-        type: 'info',
-      });
-      window.close();
     });
 
     let clientId='I9sn5lKdemBdh8uTNA7H7YiplxQk3gI-pP0I9_2g1tcbE88T2C3Z9wOvoy51I4-U';
