@@ -9,6 +9,7 @@ exports.default = async function(context) {
     p.platformSpecificBuildOptions.icon="apps/minsky-electron/src/assets/RavelLogo.ico"
     break;
     case  "darwin":
+    p.appInfo.name="ravel";
     p.appInfo.productName="ravel";
     p.appInfo.sanitizedProductName="ravel";
     p.platformSpecificBuildOptions.icon="apps/minsky-electron/src/assets/RavelLogo.icns"

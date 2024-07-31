@@ -1,8 +1,18 @@
 {
-  "name": "minsky",
+  "name": "ravel",
   "version":"3.6.0-beta.3",
   "author": "High Performance Coders",
   "description": "Graphical dynamical systems simulator oriented towards economics",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/highperformancecoder/minsky.git",
+    "directory": "gui-js"
+  },
+  "funding": {
+    "type": "patreon",
+    "url": "https://patreon.com/Ravelation"
+  },
+  "license": "GPL-3.0-or-later",
   "build": {
     "beforePack": "beforePackHook.js",
     "appId": "au.com.hpcoders.Minsky",
