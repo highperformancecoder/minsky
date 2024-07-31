@@ -24,6 +24,7 @@
       "icon": "apps/minsky-electron/src/assets/RavelLogo.ico"
     },
     "linux": {
+      "executableName": "minsky",
       "category": "Science"
     },
     "extraFiles": [
