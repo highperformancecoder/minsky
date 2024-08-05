@@ -1183,7 +1183,9 @@ export class CommandsManager {
           spawn(item.getSavePath(),{detached: true, stdio: 'ignore'});
           app.quit();
           break;
-        case 'darwin': // TODO
+        case 'darwin':
+          spawn('open '+item.getSavePath(),{detached: true, shell: true, stdio: 'ignore'});
+          app.quit();
         case 'linux': // nothing to be done, updates happen via OBS
           webContents.close();
           break;
