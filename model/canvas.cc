@@ -774,7 +774,7 @@ namespace minsky
       {
         if (iv->type()==VariableType::constant ||
             iv->type()==VariableType::parameter || iv->inputWired())
-          return true;
+          return (itemIndicator=item).get();
         
         itemIndicator=model->findAny
           (&GroupItems::items, [&](const ItemPtr& i) {

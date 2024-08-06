@@ -9,6 +9,7 @@
 *.aux
 *.dvi
 *.log
+!test/exampleLogs/*.log
 *.out
 *.xls
 *.docx
