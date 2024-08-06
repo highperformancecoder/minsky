@@ -1119,7 +1119,7 @@ export class CommandsManager {
     case 'win32':
       const savePath=dirname(process.execPath)+'/libravel.dll';
       if (existsSync(savePath))
-        renameSync(savePath,dirname(process.execPath)+'/deleteme')
+        renameSync(savePath,dirname(process.execPath)+'/deleteme');
       item.setSavePath(savePath);
       break;
     case 'darwin':
@@ -1343,7 +1343,7 @@ export class CommandsManager {
     case 'linux':
       var state={system: 'linux', distro: '', version: ''};
       // figure out distro and version from /etc/os-release
-      let aexec=promisify(exec)
+      let aexec=promisify(exec);
       let distroInfo=await aexec('grep ^ID= /etc/os-release');
       state.distro=/.*="(.*)"/.exec(distroInfo.stdout)[1];
       distroInfo=await aexec('grep ^VERSION_ID= /etc/os-release');
