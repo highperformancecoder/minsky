@@ -9,6 +9,7 @@ fi
 pushd gui-js
 npm run export:package:linux
 pushd dist/executables/
+rm -rf $name
 mkdir $name
 mv linux-unpacked $name/app
 rm $name/app/resources/node-addons/*.node
