@@ -425,7 +425,7 @@ SUITE(Canvas)
       CHECK(item==var1);
       model->addWire(new Wire(op->ports(0),var2->ports(1)));
       CHECK(findVariableDefinition());
-      CHECK(item==var2);
+      CHECK(itemIndicator==var2);
       model->removeItem(*var2);
 
       shared_ptr<IntOp> integ(new IntOp);
@@ -433,7 +433,7 @@ SUITE(Canvas)
       model->addItem(integ);
       item=var1;
       CHECK(findVariableDefinition());
-      CHECK(item==integ);
+      CHECK(itemIndicator==integ);
       model->removeItem(*integ);
       integ->removeControlledItems();
       
@@ -445,9 +445,10 @@ SUITE(Canvas)
       godley->update();
       item=var1;
       CHECK(findVariableDefinition());
-      CHECK(item==godley);
+      CHECK(itemIndicator==godley);
 
       // on a non-variable, findVariableDefinition should returns false
+      item=godley;
       CHECK(!findVariableDefinition());
 
     }

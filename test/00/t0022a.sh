@@ -29,36 +29,34 @@ pass()
 trap "fail" 1 2 3 15
 
 # check description/tooltip functionality
-cat >input.tcl <<EOF
-source assert.tcl
-proc afterMinskyStarted {} {
-  minsky.addVariable foo flow
-  deiconifyNote
-  .wiring.note.tooltip.entry insert 0 foobar
-  .wiring.note.text insert 1.0 "some longer text"
-  OKnote itemFocus
-  assert {"foobar"==[minsky.canvas.itemFocus.tooltip]}
-  assert {"some longer text"==[minsky.canvas.itemFocus.detailedText]}
-  minsky.save saved.mky
-  tcl_exit
-}
+cat >input.py <<EOF
+import sys
+sys.path.insert(0,'$here')
+from pyminsky import minsky
+minsky.canvas.addVariable('foo','flow')
+minsky.canvas.itemFocus().tooltip('foobar')
+minsky.canvas.itemFocus().detailedText('some longer text')
+assert "foobar"==minsky.canvas.itemFocus().tooltip()
+assert "some longer text"==minsky.canvas.itemFocus().detailedText()
+minsky.save('saved.mky')
 EOF
 
-cp $here/test/assert.tcl .
-$here/gui-tk/minsky input.tcl
+python3 input.py
 if test $? -ne 0; then fail; fi
 
 # check that it reloads
-cat >reload.tcl <<EOF
-source assert.tcl
-minsky.load saved.mky
-assert {[minsky.findObject "Variable:flow"]}
-assert {"foobar"==[minsky.canvas.item.tooltip]}
-assert {"some longer text"==[minsky.canvas.item.detailedText]}
-tcl_exit
+cat >reload.py <<EOF
+import sys
+sys.path.insert(0,'$here')
+from pyminsky import minsky
+minsky.load('saved.mky')
+assert len(minsky.model.items)==1
+item=minsky.model.items[0]
+assert "foobar"==item.tooltip()
+assert "some longer text"==item.detailedText()
 EOF
 
-$here/gui-tk/minsky reload.tcl
+python3 reload.py
 if test $? -ne 0; then fail; fi
 
 pass
