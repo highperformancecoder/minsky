@@ -324,8 +324,7 @@ namespace minsky
         set<string> picked(pick.begin(), pick.end());
         for (auto i: currentOrder)
           {
-            string label=allLabels[i];
-            auto pickedIter=picked.find(label);
+            auto pickedIter=picked.find(allLabels[i]);
             if (pickedIter==picked.end()) continue;
             picked.erase(pickedIter);
             customOrder.push_back(i);
