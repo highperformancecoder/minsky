@@ -2487,14 +2487,11 @@ export class ecolab__cairo__Colour extends CppClass {
 
 export class ravel__HandleState extends CppClass {
   customOrder: Sequence<string>;
-  customOrderComplement: Sequence<string>;
   constructor(prefix: string){
     super(prefix);
     this.customOrder=new Sequence<string>(this.$prefix()+'.customOrder');
-    this.customOrderComplement=new Sequence<string>(this.$prefix()+'.customOrderComplement');
   }
   async collapsed(...args: boolean[]): Promise<boolean> {return this.$callMethod('collapsed',...args);}
-  async customOrderIsInverted(...args: boolean[]): Promise<boolean> {return this.$callMethod('customOrderIsInverted',...args);}
   async description(...args: string[]): Promise<string> {return this.$callMethod('description',...args);}
   async displayFilterCaliper(...args: boolean[]): Promise<boolean> {return this.$callMethod('displayFilterCaliper',...args);}
   async format(...args: string[]): Promise<string> {return this.$callMethod('format',...args);}
