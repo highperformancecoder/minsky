@@ -149,7 +149,14 @@ export class WiringComponent implements OnInit, OnDestroy {
         ).pipe(sampleTime(1)); /// FPS=1000/sampleTime
 
         this.mouseMove$.pipe(takeUntil(this.destroy$)).subscribe(async (event: MouseEvent) => {
-            await this.cmService.mouseEvents('CANVAS_EVENT', event);
+          let scrollableArea=this.windowUtilityService.getScrollableArea();
+          this.electronService.log(`scrollableArea=${scrollableArea.width} x ${scrollableArea.height}`);
+          let canvasOffset=this.windowUtilityService.getMinskyCanvasOffset();
+          this.electronService.log(`left: ${canvasOffset.left}, top: ${canvasOffset.top}`);
+          this.electronService.log(`currentTabePosition=${await this.electronService.currentTabPosition()}`);
+          this.electronService.log(`scrollLeft=${minskyCanvasElement.offsetLeft}, scrollTop=${minskyCanvasElement.offsetTop}`);
+          this.electronService.log(`${event.clientX}, ${event.offsetX-scrollableArea.width/2+canvasOffset.left}, ${event.clientY}, ${event.offsetY-scrollableArea.height/2+canvasOffset.top}`);
+          await this.cmService.mouseEvents('CANVAS_EVENT', event);
         });
 
         minskyCanvasElement.addEventListener(

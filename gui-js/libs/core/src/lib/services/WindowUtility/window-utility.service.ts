@@ -54,27 +54,32 @@ export class WindowUtilityService {
 
       // After setting the above, container gets scrollbars, so we need to compute drawableWidth & Height only now (clientWidth/clientHeight change after scrollbar addition)
 
-      this.drawableWidth = this.minskyCanvasContainer.clientWidth;
-      this.drawableHeight = this.minskyCanvasContainer.clientHeight;
+//      this.drawableWidth = this.minskyCanvasContainer.clientWidth;
+//      this.drawableHeight = this.minskyCanvasContainer.clientHeight;
 
       const clientRect = this.minskyCanvasContainer.getBoundingClientRect();
 
       this.leftOffset = clientRect.left;
-      if (this.electronService.isMacOS())
-      {
-	this.topOffset=-30; // put in by hand, I don't know how to calculate this.
-	this.electronMenuBarHeight=0;
-      }
-      else
-      {
-        this.topOffset = clientRect.top;
-        this.electronMenuBarHeight = await this.getElectronMenuBarHeight();
-      }
+      this.topOffset = clientRect.top;
+      this.drawableWidth = clientRect.bottom-clientRect.top;
+      this.drawableHeight = clientRect.right-clientRect.left;
+      this.electronMenuBarHeight = await this.getElectronMenuBarHeight();
+//      if (this.electronService.isMacOS())
+//      {
+//	this.topOffset=-30; // put in by hand, I don't know how to calculate this.
+//	this.electronMenuBarHeight=0;
+//      }
+//      else
+//      {
+//        this.topOffset = clientRect.top;
+//        this.electronMenuBarHeight = await this.getElectronMenuBarHeight();
+//      }
     }
   }
 
   public async getElectronMenuBarHeight(): Promise<number> {
     if (this.electronService.isWindows()) return electronMenuBarHeightForWindows;
+    if (this.electronService.isMacOS()) return 0;
     
     const currentWindow = await this.electronService.getCurrentWindow();
     const currentWindowSize = currentWindow.size[1];
