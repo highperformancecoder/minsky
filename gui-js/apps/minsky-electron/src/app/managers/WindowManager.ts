@@ -2,6 +2,7 @@ import {
   ActiveWindow,
   AppLayoutPayload,
   CreateWindowPayload,
+  electronMenuBarHeightForWindows,
   Functions,
   minsky,
   OPEN_DEV_TOOLS_IN_DEV_BUILD,
@@ -267,9 +268,14 @@ export class WindowManager {
     this.topOffset = Math.round(payload.offset.top);
     this.leftOffset = Math.round(payload.offset.left);
     this.scaleFactor = screen.getPrimaryDisplay().scaleFactor;
-    let size=this.getMainWindow().getSize();
-    let contentSize=this.getMainWindow().getContentSize();
-    this.electronTopOffset = size[1]-contentSize[1];
+    if (Functions.isWindows())
+      this.electronTopOffset = electronMenuBarHeightForWindows;
+    else
+    {
+      let size=this.getMainWindow().getSize();
+      let contentSize=this.getMainWindow().getContentSize();
+      this.electronTopOffset = size[1]-contentSize[1];
+    }
 
     this.canvasHeight = payload.drawableArea.height;
     this.canvasWidth = payload.drawableArea.width;
