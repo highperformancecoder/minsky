@@ -1301,7 +1301,6 @@ export class CommandsManager {
       const installables=await window.webContents.executeJavaScript('document.getElementById("installables")?.innerText');
       if (installables) {
         let params=new URLSearchParams(installables);
-        console.log(installables);
         let minskyFile=params.get('minsky-asset');
         let ravelFile=params.get('ravel-asset');
         if (minskyFile) {
@@ -1328,7 +1327,8 @@ export class CommandsManager {
           return;
         }
         dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
-          message: "Everything's up to date, nothing to do",
+          message: "Everything's up to date, nothing to do.\n"+
+            "If you're trying to download the Ravel plugin, please ensure you are logged into an account subscribed to Ravel Fan or Explorer tiers.",
           type: 'info',
         });
         window.close();
