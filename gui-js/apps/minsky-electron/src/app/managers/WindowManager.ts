@@ -59,7 +59,6 @@ export class WindowManager {
   static async renderFrame() {
     try
     {
-      console.log(`childWidth: ${this.canvasWidth}, childHeight: ${this.canvasHeight}`);
       return this.currentTab?.renderFrame(
                                        {
                                          parentWindowId: this.activeWindows.get(1).systemWindowId.toString(),

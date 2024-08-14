@@ -79,7 +79,6 @@ namespace minsky
     m_frameArgs=args;
     init();
     winInfoPtr.reset();
-    std::cout<<"render args: "<<args.offsetLeft<<" "<<args.offsetTop<<" "<<args.childWidth<<" "<<args.childHeight<<std::endl;
     winInfoPtr = std::make_shared<WindowInformation>(stoull(args.parentWindowId), args.offsetLeft, args.offsetTop, args.childWidth, args.childHeight, args.scalingFactor, hasScrollBars(), [this](){draw();});
     surface.reset(new NativeSurface(*this)); // ensure callback on requestRedraw works
     draw();

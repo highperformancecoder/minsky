@@ -111,9 +111,7 @@ namespace minsky
   if (winfo->getRenderingFlag()) return;
   auto context = [[NSGraphicsContext currentContext] CGContext];
   auto frame=[self frame];
-  std::cout<<winfo->childWidth<<" "<<winfo->childHeight<<" "<<winfo->offsetLeft<<" "<<winfo->offsetTop<<std::endl;
-  // do not overwrite scrollbar
-  CGContextTranslateCTM(context,winfo->offsetLeft,winfo->childHeight/*+(winfo->hasScrollBars? 20:0)*/); 
+  CGContextTranslateCTM(context,winfo->offsetLeft,winfo->childHeight); 
   CGContextScaleCTM(context,1,-1); //CoreGraphics's y dimension is opposite to everybody else's
   winfo->bufferSurface=make_shared<ecolab::cairo::Surface>(cairo_quartz_surface_create_for_cg_context(context, NSWidth(frame), NSHeight(frame)));
   winfo->draw();

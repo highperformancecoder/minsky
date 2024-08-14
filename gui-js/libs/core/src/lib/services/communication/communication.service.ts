@@ -324,17 +324,13 @@ export class CommunicationService {
     const { type, clientX, clientY, button } = message;
     const offset = this.windowUtilityService.getMinskyCanvasOffset();
 
-    //this.electronService.log(`${message.clientX}, ${message.offsetX}, ${message.clientY}, ${message.offsetY}`);
-    
     this.mouseX = clientX-offset.left;
     this.mouseY = clientY-offset.top;
-    this.electronService.log(`mouse: ${this.mouseX},${this.mouseY}`);
-    //const yoffs = this.electronService.isMacOS() ? -172 : 0; // why, o why, Mac?
 
     if (event === 'contextmenu') {
       this.electronService.send(events.CONTEXT_MENU, {
         x: this.mouseX,
-        y: this.mouseY /*+ yoffs*/,
+        y: this.mouseY,
         type: "canvas",
       });
       return;

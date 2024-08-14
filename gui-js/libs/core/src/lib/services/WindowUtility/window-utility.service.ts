@@ -53,9 +53,6 @@ export class WindowUtilityService {
 
       // After setting the above, container gets scrollbars, so we need to compute drawableWidth & Height only now (clientWidth/clientHeight change after scrollbar addition)
 
-//      this.drawableWidth = this.minskyCanvasContainer.clientWidth;
-//      this.drawableHeight = this.minskyCanvasContainer.clientHeight;
-
       const clientRect = this.minskyCanvasContainer.getBoundingClientRect();
 
       this.leftOffset = clientRect.left;
@@ -63,24 +60,11 @@ export class WindowUtilityService {
       this.drawableWidth = clientRect.right-clientRect.left;
       this.drawableHeight = clientRect.bottom-clientRect.top;
       this.electronMenuBarHeight = await this.getElectronMenuBarHeight();
-      this.electronService.log(`leftOffset=${this.leftOffset}, topOffset=${this.topOffset}, electronMenuBarHeight=${this.electronMenuBarHeight}`);
-//      if (this.electronService.isMacOS())
-//      {
-//	this.topOffset=-30; // put in by hand, I don't know how to calculate this.
-//	this.electronMenuBarHeight=0;
-//      }
-//      else
-//      {
-//        this.topOffset = clientRect.top;
-//        this.electronMenuBarHeight = await this.getElectronMenuBarHeight();
-//      }
     }
   }
 
   public async getElectronMenuBarHeight(): Promise<number> {
     if (this.electronService.isWindows()) return electronMenuBarHeightForWindows;
-    //if (this.electronService.isMacOS()) return 0;
-    
     const currentWindow = await this.electronService.getCurrentWindow();
     const currentWindowSize = currentWindow.size[1];
     const currentWindowContentSize = currentWindow.contentSize[1];
