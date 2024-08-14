@@ -25,7 +25,6 @@ export class RavelViewComponent implements AfterViewInit, OnDestroy {
   width: number;
   namedItem: Ravel;
   mouseMove$: Observable<MouseEvent>;
-  yoffs = 0; // extra offset required on some systems
   context=false;
   
   constructor(
@@ -46,7 +45,6 @@ export class RavelViewComponent implements AfterViewInit, OnDestroy {
     this.namedItem=new Ravel(this.electronService.minsky.namedItems.elem(this.itemId));
     this.render();
     this.initEvents();
-    if (Functions.isMacOS()) this.yoffs=-20; // why, o why, Mac?
   }
 
   async render() {
@@ -56,9 +54,7 @@ export class RavelViewComponent implements AfterViewInit, OnDestroy {
 
     this.leftOffset = Math.round(clientRect.left);
 
-    this.topOffset = Math.round(
-      await this.windowUtilityService.getElectronMenuBarHeight()
-    );
+    this.topOffset = Math.round(clientRect.top);
 
     this.height = Math.round(ravelCanvasContainer.clientHeight);
     this.width = Math.round(ravelCanvasContainer.clientWidth);
@@ -102,17 +98,17 @@ export class RavelViewComponent implements AfterViewInit, OnDestroy {
 
     this.mouseMove$.pipe(takeUntil(this.destroy$)).subscribe(async (event: MouseEvent) => {
       if (event.buttons==0)
-        this.namedItem.popup.mouseOver(event.x,event.y+this.yoffs);
+        this.namedItem.popup.mouseOver(event.x,event.y);
       else
-        this.namedItem.popup.mouseMove(event.x,event.y+this.yoffs);
+        this.namedItem.popup.mouseMove(event.x,event.y);
     });
 
     ravelCanvasContainer.addEventListener('mousedown', async (event) => {
-      this.namedItem.popup.mouseDown(event.x,event.y+this.yoffs);
+      this.namedItem.popup.mouseDown(event.x,event.y);
     });
 
     ravelCanvasContainer.addEventListener('mouseup', async (event) => {
-      this.namedItem.popup.mouseUp(event.x,event.y+this.yoffs);
+      this.namedItem.popup.mouseUp(event.x,event.y);
     });
     ravelCanvasContainer.addEventListener('mouseleave', async (event) => {
       if (!this.context) // absorb mouseleaves caused by context menu posting
