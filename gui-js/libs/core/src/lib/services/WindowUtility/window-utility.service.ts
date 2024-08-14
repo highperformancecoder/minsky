@@ -10,7 +10,6 @@ export class WindowUtilityService {
   private minskyCanvasContainer: HTMLElement = null;
   private leftOffset = 0;
   private topOffset = 0;
-  private electronMenuBarHeight = 0;
   private drawableWidth = 0;
   private drawableHeight = 0;
   private scrollableAreaWidth = null;
@@ -42,44 +41,19 @@ export class WindowUtilityService {
           bodyElement.clientWidth * this.SCROLLABLE_AREA_FACTOR;
         this.scrollableAreaHeight =
           bodyElement.clientHeight * this.SCROLLABLE_AREA_FACTOR;
-
-        // No need to set canvas width / height - we don't use the frontend canvas at all
-        // this.minskyCanvasElement.width = this.scrollableAreaWidth;
-        // this.minskyCanvasElement.height = this.scrollableAreaHeight;
       }
-
       this.minskyCanvasElement.style.width = this.scrollableAreaWidth + 'px';
-        this.minskyCanvasElement.style.height =
-          this.scrollableAreaHeight + 'px';
+      this.minskyCanvasElement.style.height = this.scrollableAreaHeight + 'px';
 
       // After setting the above, container gets scrollbars, so we need to compute drawableWidth & Height only now (clientWidth/clientHeight change after scrollbar addition)
-
-      this.drawableWidth = this.minskyCanvasContainer.clientWidth;
-      this.drawableHeight = this.minskyCanvasContainer.clientHeight;
 
       const clientRect = this.minskyCanvasContainer.getBoundingClientRect();
 
       this.leftOffset = clientRect.left;
-      if (this.electronService.isMacOS())
-      {
-	this.topOffset=-30; // put in by hand, I don't know how to calculate this.
-	this.electronMenuBarHeight=0;
-      }
-      else
-      {
-        this.topOffset = clientRect.top;
-        this.electronMenuBarHeight = await this.getElectronMenuBarHeight();
-      }
+      this.topOffset = clientRect.top;
+      this.drawableWidth = clientRect.right-clientRect.left;
+      this.drawableHeight = clientRect.bottom-clientRect.top;
     }
-  }
-
-  public async getElectronMenuBarHeight(): Promise<number> {
-    if (this.electronService.isWindows()) return electronMenuBarHeightForWindows;
-    
-    const currentWindow = await this.electronService.getCurrentWindow();
-    const currentWindowSize = currentWindow.size[1];
-    const currentWindowContentSize = currentWindow.contentSize[1];
-    return currentWindowSize - currentWindowContentSize;
   }
 
   public scrollToCenter() {
@@ -91,7 +65,6 @@ export class WindowUtilityService {
     return {
       left: this.leftOffset,
       top: this.topOffset,
-      electronMenuBarHeight: this.electronMenuBarHeight,
     };
   }
 

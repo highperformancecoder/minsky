@@ -60,8 +60,6 @@ ipcMain.handle(events.GET_CURRENT_WINDOW, (event) => {
     id: window.id,
     dontCloseOnEscape: window.hasOwnProperty("dontCloseOnEscape"),
     dontCloseOnReturn: window.hasOwnProperty("dontCloseOnReturn"),
-    size: window.getSize(),
-    contentSize: window.getContentSize(),
   };
 });
 
