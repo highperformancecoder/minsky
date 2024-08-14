@@ -149,7 +149,7 @@ export class WiringComponent implements OnInit, OnDestroy {
         ).pipe(sampleTime(1)); /// FPS=1000/sampleTime
 
         this.mouseMove$.pipe(takeUntil(this.destroy$)).subscribe(async (event: MouseEvent) => {
-            await this.cmService.mouseEvents('CANVAS_EVENT', event);
+          await this.cmService.mouseEvents('CANVAS_EVENT', event);
         });
 
         minskyCanvasElement.addEventListener(

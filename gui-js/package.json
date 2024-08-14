@@ -54,7 +54,6 @@
       }
     ]
   },
-  "license": "GPL-3.0-or-later",
   "scripts": {
     "ng": "nx",
     "postinstall": "node ./decorate-angular-cli.js && exitzero electron-builder install-app-deps",

@@ -63,7 +63,7 @@ export class WindowManager {
                                        {
                                          parentWindowId: this.activeWindows.get(1).systemWindowId.toString(),
                                          offsetLeft: this.leftOffset,
-                                         offsetTop: this.electronTopOffset,
+                                         offsetTop: this.topOffset+this.electronTopOffset,
                                          childWidth: this.canvasWidth,
                                          childHeight: this.canvasHeight,
                                          scalingFactor: this.scaleFactor
@@ -267,10 +267,8 @@ export class WindowManager {
     this.topOffset = Math.round(payload.offset.top);
     this.leftOffset = Math.round(payload.offset.left);
     this.scaleFactor = screen.getPrimaryDisplay().scaleFactor;
-
-    this.electronTopOffset = Math.round(
-      payload.offset.electronMenuBarHeight + payload.offset.top
-    );
+    // TODO this can be calculated here, rather than in the renderer process
+    this.electronTopOffset = payload.offset.electronMenuBarHeight;
 
     this.canvasHeight = payload.drawableArea.height;
     this.canvasWidth = payload.drawableArea.width;
