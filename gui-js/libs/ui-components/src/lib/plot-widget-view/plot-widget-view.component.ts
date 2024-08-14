@@ -72,9 +72,7 @@ export class PlotWidgetViewComponent implements OnInit, OnDestroy {
 
     this.leftOffset = Math.round(clientRect.left);
 
-    this.topOffset = Math.round(
-      await this.windowUtilityService.getElectronMenuBarHeight()
-    );
+    this.topOffset = Math.round(clientRect.top);
 
     this.height = Math.round(plotCanvasContainer.clientHeight);
     this.width = Math.round(plotCanvasContainer.clientWidth);

@@ -267,14 +267,17 @@ export class WindowManager {
     this.topOffset = Math.round(payload.offset.top);
     this.leftOffset = Math.round(payload.offset.left);
     this.scaleFactor = screen.getPrimaryDisplay().scaleFactor;
-    // TODO this can be calculated here, rather than in the renderer process
-    this.electronTopOffset = payload.offset.electronMenuBarHeight;
+    let size=this.getMainWindow().getSize();
+    let contentSize=this.getMainWindow().getContentSize();
+    this.electronTopOffset = size[1]-contentSize[1];
 
     this.canvasHeight = payload.drawableArea.height;
     this.canvasWidth = payload.drawableArea.width;
 
   }
 
+  
+  
   static showMouseCoordinateWindow({ mouseX, mouseY }) {
     dialog.showMessageBox(WindowManager.getMainWindow(), {
       message: `MouseX: ${mouseX}, MouseY: ${mouseY}`,
