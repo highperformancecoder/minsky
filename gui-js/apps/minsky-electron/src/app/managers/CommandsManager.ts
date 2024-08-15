@@ -1345,9 +1345,11 @@ export class CommandsManager {
       // figure out distro and version from /etc/os-release
       let aexec=promisify(exec);
       let distroInfo=await aexec('grep ^ID= /etc/os-release');
-      state.distro=/.*="(.*)"/.exec(distroInfo.stdout)[1];
+      // value may or may not be quoted
+      let extractor=/.*=['"]?([^'"\n]*)['"]?/;
+      state.distro=extractor.exec(distroInfo.stdout)[1];
       distroInfo=await aexec('grep ^VERSION_ID= /etc/os-release');
-      state.version=/.*="(.*)"/.exec(distroInfo.stdout)[1];
+      state.version=extractor.exec(distroInfo.stdout)[1];
       break;
     default:
       dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
