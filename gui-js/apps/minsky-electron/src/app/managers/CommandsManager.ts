@@ -1346,7 +1346,7 @@ export class CommandsManager {
       let aexec=promisify(exec);
       let distroInfo=await aexec('grep ^ID= /etc/os-release');
       // value may or may not be quoted
-      let extractor=/.*=['"]?([^'"]*)['"]?/;
+      let extractor=/.*=['"]?([^'"\n]*)['"]?/;
       state.distro=extractor.exec(distroInfo.stdout)[1];
       distroInfo=await aexec('grep ^VERSION_ID= /etc/os-release');
       state.version=extractor.exec(distroInfo.stdout)[1];
