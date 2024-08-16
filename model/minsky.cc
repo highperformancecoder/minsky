@@ -888,7 +888,7 @@ namespace minsky
 
         auto start=chrono::high_resolution_clock::now();
         auto updateResetDuration=onStackExit([&]{resetDuration=chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now()-start);});
-        canvas.itemIndicator=false;
+        canvas.itemIndicator.reset();
         const BusyCursor busy(*this);
         EvalOpBase::t=t=t0;
         lastT=t0;
@@ -1249,26 +1249,24 @@ namespace minsky
     // this method is logically const, but because of the way
     // canvas rendering is done, canvas state needs updating
     auto& canvas=const_cast<Canvas&>(this->canvas);
-    canvas.item=nullptr;
     if (op.visible())
-      canvas.item=canvas.model->findItem(op);
+      canvas.itemIndicator=canvas.model->findItem(op);
     else if (auto v=op.variableCast())
       if (auto c=v->controller.lock())
         displayErrorItem(*c);
 
-    if (!canvas.item)
+    if (!canvas.itemIndicator)
       if (auto g=op.group.lock())
         {
           while (g && !g->visible()) g=g->group.lock();
           if (g && g->visible())
-            canvas.item=g;
+            canvas.itemIndicator=g;
         }
     
-    canvas.itemIndicator=canvas.item.get();
     if (canvas.item)
       {
-        auto physX=canvas.item->x();
-        auto physY=canvas.item->y();
+        auto physX=canvas.itemIndicator->x();
+        auto physY=canvas.itemIndicator->y();
         if (physX<100 || physX>canvas.frameArgs().childWidth-100 ||
             physY<100 || physY>canvas.frameArgs().childHeight-100)
           {

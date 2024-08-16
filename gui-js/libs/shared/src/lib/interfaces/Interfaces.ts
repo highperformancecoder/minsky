@@ -14,8 +14,6 @@ export interface CurrentWindowDetails {
   id: number;
   dontCloseOnEscape: boolean;
   dontCloseOnReturn: boolean;
-  size: number[];
-  contentSize: number[];
 }
 
 export interface MinskyProcessPayload {
@@ -55,7 +53,6 @@ export interface HandleDimensionPayload {
 export interface ElectronCanvasOffset {
   left: number;
   top: number;
-  electronMenuBarHeight: number;
 }
 
 export interface AppLayoutPayload {

@@ -340,8 +340,8 @@ export class ContextMenuManager {
 
       menu.popup({
         window: mainWindow,
-        x: this.x,
-        y: this.y + WindowManager.electronTopOffset,
+        x: Math.round(this.x + WindowManager.leftOffset),
+        y: Math.round(this.y + WindowManager.topOffset + WindowManager.electronTopOffset),
       });
     }
   }

@@ -348,10 +348,10 @@ void Sheet::draw(cairo_t* cairo) const
         {
           if (value->size()!=scrollMax) minsky().requestReset(); // fix up slice indicator
           
-          if (!value->hypercube().xvectors[0].name.empty())
+          if (!value->hypercube().xvectors[vertDim].name.empty())
             {
               const cairo::CairoSave cs(cairo);
-              pango.setMarkup(value->hypercube().xvectors[0].name);
+              pango.setMarkup(value->hypercube().xvectors[vertDim].name);
               x0+=pango.height();
               cairo_move_to(cairo,x0, -0.5*pango.width());
               pango.angle=0.5*M_PI;
@@ -390,7 +390,7 @@ void Sheet::draw(cairo_t* cairo) const
               if (!value->hypercube().xvectors[horizDim].name.empty())
                 {
                   const cairo::CairoSave cs(cairo);
-                  cpango.setMarkup(value->hypercube().xvectors[1].name);
+                  cpango.setMarkup(value->hypercube().xvectors[horizDim].name);
                   cairo_move_to(cairo,0.5*(x0+colWidth+0.5*m_width-cpango.width()), y0);
                   y0+=cpango.height();
                   cpango.show();

@@ -80,7 +80,7 @@ export class ApplicationMenuManager {
     const scope = this;
     const ravelAvailable=await minsky.ravelAvailable();
     let upgradeLabel='Upgrade';
-    if (Functions.isWindows() && !ravelAvailable)
+    if (!ravelAvailable)
       upgradeLabel+=' to Ravel';
     return {
       label: 'File',
@@ -101,6 +101,18 @@ export class ApplicationMenuManager {
         {
           label: upgradeLabel,
           click() {CommandsManager.upgrade();},
+        },
+        {
+          label: 'Logout from Patreon',
+          click() {
+            let window=WindowManager.createWindow({
+              width: 420,
+              height: 500,
+              title: '',
+              modal: false,
+            });
+            window.loadURL('https://www.patreon.com/logout');
+          },
         },
         {
           label: 'New System',

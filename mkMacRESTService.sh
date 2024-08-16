@@ -19,14 +19,14 @@ if [ $version = '"unknown"' ]; then
     version=0.0.0.0
 fi
 
-target=gui-js/dist/executables/minsky-$version.dmg
+target=gui-js/dist/executables/ravel-$version.dmg
 
 # determine release or beta depending on the number of fields separated by '-' in the version string
 numFields=`echo $version|tr - ' '|wc -w`
 if [ $numFields -le 1 ]; then
-    productName=Minsky
+    productName=Ravel
 else
-    productName=MinskyBeta
+    productName=RavelBeta
 fi
 
 rewrite_dylib()

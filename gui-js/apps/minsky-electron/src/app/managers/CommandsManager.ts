@@ -10,7 +10,8 @@ import {
   minsky, GodleyIcon, Group, IntOp, Item, Lock, Ravel, VariableBase, Wire, Utility, DownloadCSVPayload
 } from '@minsky/shared';
 import { app, dialog, ipcMain, Menu, MenuItem, SaveDialogOptions,} from 'electron';
-import { existsSync, renameSync, unlinkSync } from 'fs';
+import { existsSync, mkdirSync, renameSync, unlinkSync } from 'fs';
+import { homedir } from 'os';
 import JSON5 from 'json5';
 import { extname, join, dirname } from 'path';
 import { tmpdir } from 'os';
@@ -19,8 +20,9 @@ import { WindowManager } from './WindowManager';
 import { StoreManager } from './StoreManager';
 import { RecentFilesManager } from './RecentFilesManager';
 import ProgressBar from 'electron-progressbar';
-import {spawn} from 'child_process';
+import {exec,spawn} from 'child_process';
 import decompress from 'decompress';
+import {promisify} from 'util';
 
 export class CommandsManager {
   static activeGodleyWindowItems = new Map<string, CanvasItem>();
@@ -347,11 +349,10 @@ export class CommandsManager {
         Math.abs(itemX - 0.5 * canvasWidth) > 0.5 * canvasWidth ||
         Math.abs(itemY - 0.5 * canvasHeight) > 0.5 * canvasHeight
       ) {
-        const posX = itemX - (await minsky.canvas.item.x()) + 0.5 * canvasWidth;
-        const posY = itemY - (await minsky.canvas.item.y()) + 0.5 * canvasHeight;
+        const posX = itemX - (await minsky.canvas.itemIndicator.x()) + 0.5 * canvasWidth;
+        const posY = itemY - (await minsky.canvas.itemIndicator.y()) + 0.5 * canvasHeight;
         minsky.canvas.moveTo(posX,posY);
       }
-      minsky.canvas.itemIndicator(true);
       minsky.canvas.requestRedraw();
       WindowManager.getMainWindow()?.webContents?.send(events.RESET_SCROLL);
     } else {
@@ -1118,11 +1119,16 @@ export class CommandsManager {
     case 'win32':
       const savePath=dirname(process.execPath)+'/libravel.dll';
       if (existsSync(savePath))
-        renameSync(savePath,dirname(process.execPath)+'/deleteme')
+        renameSync(savePath,dirname(process.execPath)+'/deleteme');
       item.setSavePath(savePath);
       break;
+    case 'darwin':
+    case 'linux':
+      mkdirSync(homedir()+'/.ravel',{recursive: true});
+      item.setSavePath(homedir()+'/.ravel/libravel.so');
+      break;
     default:
-      // nothing to do - TODO implement handlers for MacOS and Linux
+      break;
     }
 
     let progress=new ProgressBar({text:"Downloading Ravel",value: 0, indeterminate:false, closeOnComplete: true,});
@@ -1177,7 +1183,10 @@ export class CommandsManager {
           spawn(item.getSavePath(),{detached: true, stdio: 'ignore'});
           app.quit();
           break;
-        default:
+        case 'darwin':
+          spawn('open '+item.getSavePath(),{detached: true, shell: true, stdio: 'ignore'});
+          app.quit();
+        case 'linux': // nothing to be done, updates happen via OBS
           webContents.close();
           break;
         }
@@ -1278,7 +1287,7 @@ export class CommandsManager {
     });
   }
   
-  static upgrade() {
+  static async upgrade() {
     const window=this.createDownloadWindow();
 
     // handler for when user has logged in to initiate upgrades.
@@ -1308,29 +1317,40 @@ export class CommandsManager {
             }
             window.webContents.session.on('will-download',this.downloadMinsky);
             window.webContents.downloadURL(minskyFile);
-          } else if (ravelFile) {
-              // currently on latest, so reinstall ravel
-              window.webContents.session.on('will-download',this.downloadRavel);      
-              window.webContents.downloadURL(ravelFile);
-            }
-          else {
-            dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
-              message: "Everything's up to date, nothing to do",
-              type: 'info',
-            });
-            window.close();
+            return;
           }
         }
+        if (ravelFile) {
+          // currently on latest, so reinstall ravel
+          window.webContents.session.on('will-download',this.downloadRavel);      
+          window.webContents.downloadURL(ravelFile);
+          return;
+        }
+        dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
+          message: "Everything's up to date, nothing to do.\n"+
+            "If you're trying to download the Ravel plugin, please ensure you are logged into an account subscribed to Ravel Fan or Explorer tiers.",
+          type: 'info',
+        });
+        window.close();
       }
     });
 
     let clientId='I9sn5lKdemBdh8uTNA7H7YiplxQk3gI-pP0I9_2g1tcbE88T2C3Z9wOvoy51I4-U';
     // need to pass what platform we are
     switch (process.platform) {
-    case 'win32': var system='windows'; break;
-    //case 'darwin': var system='macos'; break;
-    //case 'linux': var system='linux'; break;
-      // TODO consult /etc/os-release to figure out which distro
+    case 'win32': var state={system: 'windows', distro: '', version: ''}; break;
+    case 'darwin': var state={system: 'macos', distro: '', version: ''}; break;
+    case 'linux':
+      var state={system: 'linux', distro: '', version: ''};
+      // figure out distro and version from /etc/os-release
+      let aexec=promisify(exec);
+      let distroInfo=await aexec('grep ^ID= /etc/os-release');
+      // value may or may not be quoted
+      let extractor=/.*=['"]?([^'"\n]*)['"]?/;
+      state.distro=extractor.exec(distroInfo.stdout)[1];
+      distroInfo=await aexec('grep ^VERSION_ID= /etc/os-release');
+      state.version=extractor.exec(distroInfo.stdout)[1];
+      break;
     default:
       dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
             message: `In app update is not available for your operating system yet, please check back later`,
@@ -1340,8 +1360,9 @@ export class CommandsManager {
       return;
       break;
     }
+    let encodedState=encodeURI(JSON.stringify(state));
     // load patreon's login page
-    window.loadURL(`https://www.patreon.com/oauth2/authorize?response_type=code&client_id=${clientId}&redirect_uri=https://ravelation.hpcoders.com.au/ravel-downloader.cgi&state=${system}`);
+    window.loadURL(`https://www.patreon.com/oauth2/authorize?response_type=code&client_id=${clientId}&redirect_uri=https://ravelation.hpcoders.com.au/ravel-downloader.cgi&state=${encodedState}`);
   }
   
 }

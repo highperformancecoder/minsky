@@ -85,8 +85,12 @@ namespace minsky
 
     impl=make_unique<ViewImpl>();
 
+    // do not overwrite scrollbar
     if (winfo.hasScrollBars)
-      height+=20;
+      {
+        height-=20;
+        width-=20;
+      }
     [impl->cairoView setFrameSize: NSMakeSize(width,height)];
     [impl->cairoView setWinfo: &winfo];
     [view addSubview: impl->cairoView];
@@ -107,9 +111,8 @@ namespace minsky
   if (winfo->getRenderingFlag()) return;
   auto context = [[NSGraphicsContext currentContext] CGContext];
   auto frame=[self frame];
-  CGContextTranslateCTM(context,0,winfo->childHeight-winfo->offsetTop-(winfo->hasScrollBars? 20:0)); 
+  CGContextTranslateCTM(context,winfo->offsetLeft,winfo->childHeight); 
   CGContextScaleCTM(context,1,-1); //CoreGraphics's y dimension is opposite to everybody else's
-  // do not overwrite scrollbar
   winfo->bufferSurface=make_shared<ecolab::cairo::Surface>(cairo_quartz_surface_create_for_cg_context(context, NSWidth(frame), NSHeight(frame)));
   winfo->draw();
   winfo->bufferSurface.reset();

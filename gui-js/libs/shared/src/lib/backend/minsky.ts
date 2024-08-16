@@ -414,6 +414,7 @@ export class Canvas extends RenderNativeWindow {
   backgroundColour: ecolab__cairo__Colour;
   item: Item;
   itemFocus: Item;
+  itemIndicator: Item;
   lasso: LassoBox;
   model: Group;
   selection: Selection;
@@ -428,6 +429,7 @@ export class Canvas extends RenderNativeWindow {
     this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'.backgroundColour');
     this.item=new Item(this.$prefix()+'.item');
     this.itemFocus=new Item(this.$prefix()+'.itemFocus');
+    this.itemIndicator=new Item(this.$prefix()+'.itemIndicator');
     this.lasso=new LassoBox(this.$prefix()+'.lasso');
     this.model=new Group(this.$prefix()+'.model');
     this.selection=new Selection(this.$prefix()+'.selection');
@@ -468,7 +470,6 @@ export class Canvas extends RenderNativeWindow {
   async hasScrollBars(): Promise<boolean> {return this.$callMethod('hasScrollBars');}
   async init(): Promise<void> {return this.$callMethod('init');}
   async itemAt(a1: number,a2: number): Promise<object> {return this.$callMethod('itemAt',a1,a2);}
-  async itemIndicator(...args: boolean[]): Promise<boolean> {return this.$callMethod('itemIndicator',...args);}
   async keyPress(a1: minsky__EventInterface__KeyPressArgs): Promise<boolean> {return this.$callMethod('keyPress',a1);}
   async lassoMode(...args: string[]): Promise<string> {return this.$callMethod('lassoMode',...args);}
   async lockRavelsInSelection(): Promise<void> {return this.$callMethod('lockRavelsInSelection');}

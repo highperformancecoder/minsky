@@ -27,15 +27,6 @@
 #include "minsky_epilogue.h"
 #include "zStream.h"
 #include "dimension.h"
-#include <boost/asio/ssl/error.hpp>
-#include <boost/asio/ssl/stream.hpp>
-#include <boost/asio.hpp>
-#include <boost/beast/core.hpp>
-#include <boost/beast/http.hpp>
-#include <boost/beast/version.hpp>
-#include <boost/filesystem.hpp>
-#include "certify/include/boost/certify/extensions.hpp"
-#include "certify/include/boost/certify/https_verification.hpp"
 #include <cstdlib>
 #include <chrono>
 #include <iostream>
@@ -49,6 +40,8 @@ using namespace minsky;
 using namespace civita;
 using ecolab::Pango;
 using ecolab::cairo::CairoSave;
+
+#include <boost/filesystem.hpp>
 using boost::filesystem::file_size;
 
 const unsigned CSVDialog::numInitialLines;

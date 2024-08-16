@@ -1,19 +1,30 @@
 {
-  "name": "minsky",
-  "version":"3.6.0-alpha.2",
+  "name": "ravel",
+  "version":"3.7.3",
   "author": "High Performance Coders",
   "description": "Graphical dynamical systems simulator oriented towards economics",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/highperformancecoder/minsky.git",
+    "directory": "gui-js"
+  },
+  "funding": {
+    "type": "patreon",
+    "url": "https://patreon.com/Ravelation"
+  },
+  "license": "GPL-3.0-or-later",
   "build": {
     "beforePack": "beforePackHook.js",
     "appId": "au.com.hpcoders.Minsky",
     "artifactName": "${productName}-${version}.${ext}",
     "mac": {
-      "icon": "../minsky.app/Contents/Resources/RavelLogo.icns"
+      "icon": "apps/minsky-electron/src/assets/RavelLogo.icns"
     },
     "win": {
       "icon": "apps/minsky-electron/src/assets/RavelLogo.ico"
     },
     "linux": {
+      "executableName": "minsky",
       "category": "Science"
     },
     "extraFiles": [
@@ -43,7 +54,6 @@
       }
     ]
   },
-  "license": "GPL-3.0-or-later",
   "scripts": {
     "ng": "nx",
     "postinstall": "node ./decorate-angular-cli.js && exitzero electron-builder install-app-deps",

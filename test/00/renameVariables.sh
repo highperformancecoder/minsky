@@ -27,32 +27,37 @@ pass()
 }
 
 trap "fail" 1 2 3 15
-cat >input.tcl <<EOF
-source $here/test/assert.tcl
-proc tk_messageBox args {return -code error "$args"}
-minsky.load $here/examples/GoodwinLinear02.mky
-proc afterMinskyStarted {} {
-  assert {[findVariable L]}
-  renameVariableInstances
-  assert {[winfo ismapped .renameDialog]}
-  .renameDialog.entry delete 0 end
-  .renameDialog.entry insert 0 R
-  .renameDialog.buttonBar.ok invoke
-  assert {![findVariable L]}
-  assert {[findVariable R]}
-  canvas.selectAllVariables
-  assert {[canvas.selection.items.size]==2}
+cat >input.py <<EOF
+import sys
+sys.path.insert(0,'$here')
+from pyminsky import minsky
+minsky.load('$here/examples/GoodwinLinear02.mky')
 
-  # check findDefinition
-  findDefinition
-  assert {[minsky.canvas.item.name]=="R"}
-  # check that the selected variable has its input wired
-  assert {[minsky.canvas.item.inputWired]}
-  tcl_exit
-}
+def findVariable(name):
+    for i in range(len(minsky.model.items)):
+        try:
+          if minsky.model.items[i].name()==name:
+             minsky.canvas.getItemAt(minsky.model.items[i].x(),minsky.model.items[i].y())
+             return True
+        except:
+          pass
+
+assert findVariable('L')
+minsky.canvas.renameAllInstances('R')
+assert not findVariable('L')
+assert findVariable('R')
+minsky.canvas.selectAllVariables()
+assert len(minsky.canvas.selection.items)==2
+
+# check findDefinition
+assert findVariable('R')
+minsky.canvas.findVariableDefinition()
+assert minsky.canvas.itemIndicator().name()=="R"
+# check that the selected variable has its input wired
+assert minsky.canvas.itemIndicator().inputWired()
 EOF
 
-$here/gui-tk/minsky input.tcl
+python3 input.py
 if [ $? -ne 0 ]; then fail; fi
 
 pass

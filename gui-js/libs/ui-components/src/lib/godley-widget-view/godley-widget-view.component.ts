@@ -86,8 +86,6 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
 
   cellEditing = [undefined, undefined];
 
-  yoffs = 0; // extra offset required on some systems
-
   constructor(
     private communicationService: CommunicationService,
     private windowUtilityService: WindowUtilityService,
@@ -125,7 +123,6 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
     if(this.canvasMode) {
       this.windowResize();
       this.initEvents();
-      if (this.electronService.isMacOS()) this.yoffs=-20; // why, o why, Mac?
     }
   }
 
@@ -141,9 +138,8 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
 
     const clientRect = this.godleyCanvasContainer.getBoundingClientRect();
 
-    let menuBarHeight=await this.windowUtilityService.getElectronMenuBarHeight();
     this.leftOffset = Math.round(clientRect.left);
-    this.topOffset = Math.round(menuBarHeight);
+    this.topOffset = Math.round(clientRect.top);
 
     this.height = Math.round(this.godleyCanvasContainer.clientHeight);
     this.width = Math.round(this.godleyCanvasContainer.clientWidth);
@@ -182,19 +178,19 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
     ).pipe(sampleTime(1)); /// FPS=1000/sampleTime
 
     this.mouseMove$.pipe(takeUntil(this.destroy$)).subscribe(async (event: MouseEvent) => {
-      this.namedItemSubCommand.mouseMove(event.x,event.y+this.yoffs);
+      this.namedItemSubCommand.mouseMove(event.x,event.y);
     });
 
     this.godleyCanvasContainer.addEventListener('mousedown', async (event) => {
       if (event.button===0)
         this.electronService.invoke(events.GODLEY_VIEW_MOUSEDOWN, {
           command: this.itemId,
-          mouseX: event.x, mouseY: event.y+this.yoffs
+          mouseX: event.x, mouseY: event.y
         });
     });
 
     this.godleyCanvasContainer.addEventListener('mouseup', async (event) => {
-      this.namedItemSubCommand.mouseUp(event.x,event.y+this.yoffs);
+      this.namedItemSubCommand.mouseUp(event.x,event.y);
     });
     
     this.godleyCanvasContainer.addEventListener('contextmenu', async (event) => {
@@ -228,13 +224,10 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
     event.preventDefault();
     const zoomFactor = event.deltaY<0 ? ZOOM_IN_FACTOR : ZOOM_OUT_FACTOR;
 
-    const [
-      x,
-      y,
-    ] = (await this.electronService.getCurrentWindow()).contentSize;
+    const area = this.windowUtilityService.getDrawableArea();
 
     //TODO: throttle here if required
-    this.namedItemSubCommand.zoom(x/2, y/2, zoomFactor);
+    this.namedItemSubCommand.zoom(area.width/2, area.height/2, zoomFactor);
   };
 
   async handleScroll(scrollTop: number, scrollLeft: number) {
