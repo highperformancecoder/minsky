@@ -209,6 +209,16 @@ namespace minsky
     return m_init;
   }
 
+  const Hypercube& VariableValue::hypercube() const
+  {
+    if (rhs) return rhs->hypercube();
+    // return the initialisation hypercube if not a defined flowVar
+    if (tensorInit.rank()>0 && (!isFlowVar() || m_type==parameter || !cminsky().definingVar(valueId())))
+        return tensorInit.hypercube();
+    return m_hypercube;
+  }
+
+
   
   TensorVal VariableValues::initValue
   (const VariableValue& v, set<string>& visited) const

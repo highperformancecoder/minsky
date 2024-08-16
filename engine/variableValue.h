@@ -148,12 +148,7 @@ namespace minsky
 
     bool idxInRange() const;
 
-    const Hypercube& hypercube() const override {
-      if (rhs) return rhs->hypercube();
-      if (tensorInit.rank()>0) return tensorInit.hypercube();
-      return m_hypercube;
-    }
-
+    const Hypercube& hypercube() const override;
     const Hypercube& hypercube(const Hypercube& hc) override
     {hypercube_(hc); return m_hypercube;}
     const Hypercube& hypercube(Hypercube&& hc) override
