@@ -77,7 +77,7 @@ namespace escapedListSeparator
     }
     template <typename iterator, typename Token>
     void do_escape(iterator& next,iterator end,Token& tok) {
-      if (++next == end)
+      if (++next >= end)
         // don't throw, but pass on verbatim
         tok+=escape_.front();
       if (Traits::eq(*next,'n')) {
@@ -116,7 +116,8 @@ namespace escapedListSeparator
       bool bInQuote = false;
       tok = Token();
 
-      if (next == end) {
+      if (next >= end) {
+        next=end; // reset next in case it has adavanced beyond
         if (last_) {
           last_ = false;
           return true;
@@ -124,7 +125,7 @@ namespace escapedListSeparator
         return false;
       }
       last_ = false;
-      while (next != end) {
+      while (next < end) {
         if (is_escape(*next)) {
           do_escape(next,end,tok);
         }
