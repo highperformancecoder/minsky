@@ -36,10 +36,10 @@ namespace minsky
     struct RenderFrameArgs
     {
       std::string parentWindowId;
-      int offsetLeft;
-      int offsetTop;
-      int childWidth;
-      int childHeight;
+      double offsetLeft;
+      double offsetTop;
+      double childWidth;
+      double childHeight;
       double scalingFactor=0;
     };
 
