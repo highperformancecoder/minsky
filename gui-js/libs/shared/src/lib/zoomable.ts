@@ -4,10 +4,10 @@ export class Zoomable {
   onKeyDown = async (event: KeyboardEvent) => {
     switch (event.key) {
     case '+': case 'numplus':
-      event.ctrlKey && this.zoom(1.1);
+      (event.ctrlKey||event.metaKey) && this.zoom(1.1);
       break;
     case '-': case 'numsub':
-      event.ctrlKey && this.zoom(1/1.1);
+      (event.ctrlKey||event.metaKey) && this.zoom(1/1.1);
       break;
     }
   }

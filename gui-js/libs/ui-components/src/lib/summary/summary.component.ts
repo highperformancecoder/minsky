@@ -104,7 +104,7 @@ export class SummaryComponent implements OnInit {
   }
   
   changeScale(e) {
-    if(e.ctrlKey) {
+    if(e.ctrlKey || e.metaKey) {
       this.scale.changeScale(e.deltaY);
     }
   }
