@@ -56,7 +56,7 @@ export class PickSlicesComponent implements OnInit {
   }
 
   toggleSelected($event, sliceLabel) {
-    if($event.ctrlKey) {
+    if($event.ctrlKey || $event.metaKey) {
       sliceLabel.selected = !sliceLabel.selected;
     } else if($event.shiftKey) {
       const newValue = !sliceLabel.selected;
