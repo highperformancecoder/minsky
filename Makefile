@@ -12,7 +12,7 @@ TK_LIB=$(dir $(shell find $(TCL_PREFIX) -name tk.tcl -path "*/tk$(TCL_VERSION)*"
 ECOLAB_HOME=$(shell pwd)/ecolab
 
 ifeq ($(shell uname),Darwin)
-MAKEOVERRIDES+=MAC_OSX_TK=1
+MAKEOVERRIDES+=MAC_OSX_TK=1 TK=
 endif
 
 ifdef MXE
@@ -34,7 +34,8 @@ ifeq ($(OS),Darwin)
 # location of minsky executable when building mac-dist
 MAC_DIST_DIR=minsky.app/Contents/MacOS
 # default min version is the machine doing the building.
-MACOSX_MIN_VERSION=$(shell sw_vers|grep ProductVersion|cut -f2)
+MACOSX_MIN_VERSION=$(shell sw_vers|grep ProductVersion|tr -s '\t'|cut -f2)
+LIBS+=-framework AppKit
 endif
 
 ifndef MXE

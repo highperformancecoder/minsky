@@ -360,8 +360,6 @@ namespace minsky
   }
 
   
-  extern Tk_Window mainWin;
-
   void PlotWidget::requestRedraw()
   {
     justDataChanged=true; // assume plot same size, don't do unnecessary stuff

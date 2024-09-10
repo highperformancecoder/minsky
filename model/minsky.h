@@ -386,9 +386,6 @@ namespace minsky
     /// @return index of current state in history
     long undo(int changes=1);
 
-    /// set a Tk image to render equations to
-    void renderEquationsToImage(const std::string& image);
-
     /// Converts variable(s) named by \a name into a variable of type \a type.
     /// @throw if conversion is disallowed
     void convertVarType(const std::string& name, VariableType::Type type);
