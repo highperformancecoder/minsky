@@ -391,7 +391,7 @@ export class CommunicationService {
       switch (type) {
 
       case 'mousedown':
-        if (message.ctrlKey)
+        if (message.ctrlKey || message.metaKey)
           canvas.controlMouseDown(this.mouseX, this.mouseY);
         else
           canvas.mouseDown(this.mouseX, this.mouseY);
@@ -500,8 +500,8 @@ export class CommunicationService {
       return; // perform menu accelerator only
 
     if (
-      isMainWindow &&
-      ((this.dialogRef && event.ctrlKey) || (this.dialogRef && event.altKey) || (this.dialogRef && event.metaKey))
+      isMainWindow && this.dialogRef &&
+        (event.ctrlKey || event.altKey || event.metaKey)
     ) {
       // return when dialog is open anything is pressed with ctrl or alt
       return;
@@ -513,6 +513,7 @@ export class CommunicationService {
       shift: event.shiftKey,
       capsLock: event.getModifierState('CapsLock'),
       ctrl: event.ctrlKey,
+      meta: event.metaKey,
       alt: event.altKey,
       mouseX: this.mouseX,
       mouseY: this.mouseY,

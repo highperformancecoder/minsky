@@ -15,6 +15,7 @@ export class KeyBindingsManager {
       shift,
       capsLock,
       ctrl,
+      meta,
       alt,
       mouseX,
       mouseY,
@@ -37,7 +38,7 @@ export class KeyBindingsManager {
     if (capsLock) {
       modifierKeyCode += 2;
     }
-    if (ctrl) {
+    if (ctrl||meta) {
       modifierKeyCode += 4;
     }
     if (alt) {
@@ -63,7 +64,7 @@ export class KeyBindingsManager {
           !command &&
           currentTab.$equal(minsky.canvas)
       ) {
-        return await this.handleOnKeyPressFallback({key:keySymAndName.name, ctrl, mouseX, mouseY});
+        return await this.handleOnKeyPressFallback({key:keySymAndName.name, ctrl, meta, mouseX, mouseY});
       }
       return isKeyPressHandled;
     }
@@ -168,7 +169,8 @@ export class KeyBindingsManager {
     }
 
   private static isCtrlPayload(payload: MinskyProcessPayload) {
-    return payload.ctrl && !payload.alt && !payload.shift;
+    // meta is the Mac "Command" key
+    return (payload.ctrl||payload.meta) && !payload.alt && !payload.shift;
   }
 
   private static async handleOnKeyPressFallback(payload: MinskyProcessPayload) {
@@ -264,7 +266,7 @@ export class KeyBindingsManager {
       break;
     }
 
-    if (payload.ctrl) {
+    if (payload.ctrl||payload.meta) {
       // avoiding conflict with shortCuts (electron accelerators)
       return false;
     }

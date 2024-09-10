@@ -467,7 +467,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
       if (col === this.mouseDown)  // deselect all if ending on same column
         if (this.selected.every((x) => !x)) {
           // hide selectRowAndColumn behind a modifier key to prevent accidental settings.
-          if (Number.isInteger(row) && (event.shiftKey || event.ctrlKey || event.altKey))
+          if (Number.isInteger(row) && (event.shiftKey || event.ctrlKey || event.altKey || event.metaKey))
             this.selectRowAndCol(row, col);
           else
             this.dialogState.spec.dimensionNames[col] = this.parsedLines[this.dialogState.spec.headerRow][col]

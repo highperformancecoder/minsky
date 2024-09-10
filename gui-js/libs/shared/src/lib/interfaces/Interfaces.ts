@@ -27,6 +27,7 @@ export interface MinskyProcessPayload {
   shift?: boolean;
   capsLock?: boolean;
   ctrl?: boolean;
+  meta?: boolean;
   alt?: boolean;
   args?: Record<string, unknown>;
   location?: number;

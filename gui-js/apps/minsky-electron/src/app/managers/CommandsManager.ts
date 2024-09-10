@@ -1362,7 +1362,7 @@ export class CommandsManager {
     }
     let encodedState=encodeURI(JSON.stringify(state));
     // load patreon's login page
-    window.loadURL(`https://www.patreon.com/oauth2/authorize?response_type=code&client_id=${clientId}&redirect_uri=https://ravelation.hpcoders.com.au/ravel-downloader.cgi&state=${encodedState}`);
+    window.loadURL(`https://www.patreon.com/oauth2/authorize?response_type=code&client_id=${clientId}&redirect_uri=https://ravelation.hpcoders.com.au/ravel-downloader.cgi&scope=identity%20identity%5Bemail%5D&state=${encodedState}`);
   }
   
 }

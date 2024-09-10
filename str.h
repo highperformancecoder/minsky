@@ -146,9 +146,15 @@ namespace minsky
   /// and removes it if present
   inline void stripByteOrderingMarker(std::istream& s)
   {
-    char bom[4];
+    char bom[4]="\0\0\0";
     s.get(bom,4);
     if (strcmp(bom,"\357\273\277")==0) return; //skipped BOM
+    if (memcmp(bom,"\0\0\376",3)==0)
+      if (s && s.get()=='\377') // UTF-32(BE) file detected
+        throw std::runtime_error("Only UTF-8 encoded files supported");
+    if (strncmp(bom,"\376\377",2)==0 || strncmp(bom,"\377\376",2)==0)
+      // UTF-16 or UTF-32(LE) file detected
+      throw std::runtime_error("Only UTF-8 encoded files supported");
     s.seekg(0); //rewind input stream
   }
 
