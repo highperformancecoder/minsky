@@ -69,11 +69,19 @@ pushd gui-js
 npm run export:package:mac
 popd
 
+# npm run export step actually does the code signing. Following is for reference
+#codesign -s "Developer ID Application" --options runtime --timestamp --deep $target
+
 # notarytool is introduced from Big Sur onwards, altool has been deprecated.
-if [ `sw_vers|grep ProductVersion|cut -f2|cut -f1 -d.` -lt 11 ]; then
+if [ `sw_vers|grep ProductVersion|tr -s '\t'|cut -f2|cut -f1 -d.` -lt 11 ]; then
    xcrun altool --notarize-app --primary-bundle-id Minsky --username apple@hpcoders.com.au --password "@keychain:Minsky" --file $target
 else
-    # Note: use xcrun notarytool store-credentials --apple-id apple@hpcoders.com.au --team-id 3J798GK5A7 --password "...", and specify "NotaryTool" as the profile id.
+    # Note: use xcrun notarytool store-credentials --apple-id \
+    # apple@hpcoders.com.au --team-id 3J798GK5A7 --password "...", and
+    # specify "NotaryTool" as the profile id.  Password can be
+    # generated at https://appleid.apple.com. You will need to
+    # generate a new "application password" every time you set up a
+    # new machine.
     xcrun notarytool submit $target  --keychain-profile NotaryTool  --wait
 fi
    
