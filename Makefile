@@ -11,8 +11,14 @@ TK_LIB=$(dir $(shell find $(TCL_PREFIX) -name tk.tcl -path "*/tk$(TCL_VERSION)*"
 # root directory for ecolab include files and libraries
 ECOLAB_HOME=$(shell pwd)/ecolab
 
+ARCH=$(shell arch)
+
 ifeq ($(shell uname),Darwin)
 MAKEOVERRIDES+=MAC_OSX_TK=1 TK=
+# for some reason, Intel Macs always report the arch as i386, even when they're x86_64
+ifeq ($(ARCH),i386)
+ARCH=x86_64
+endif
 endif
 
 ifdef MXE
@@ -427,7 +433,7 @@ ifdef MXE
 	cp $(DLLS) gui-js/dynamic_libraries
 else
 ifeq ($(OS),Darwin)
-	c++ -bundle -undefined dynamic_lookup -Wl,-no_pie -Wl,-search_paths_first -mmacosx-version-min=$(MACOSX_MIN_VERSION) -arch x86_64 -stdlib=libc++  -o $@  $^ $(LIBS)
+	c++ -bundle -undefined dynamic_lookup -Wl,-no_pie -Wl,-search_paths_first -mmacosx-version-min=$(MACOSX_MIN_VERSION) -arch $(ARCH) -stdlib=libc++  -o $@  $^ $(LIBS)
 else
 	$(LINK) $(FLAGS) -shared -pthread -rdynamic -m64  -Wl,-soname=minskyRESTService.node -o $@ -Wl,--start-group $^ -Wl,--end-group $(LIBS)
 endif
