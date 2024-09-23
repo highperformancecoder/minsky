@@ -12,7 +12,9 @@
         "outputPath": "dist/apps/minsky-electron",
         "main": "apps/minsky-electron/src/main.ts",
         "tsConfig": "apps/minsky-electron/tsconfig.app.json",
-        "assets": ["apps/minsky-electron/src/assets"]
+        "assets": [
+          "apps/minsky-electron/src/assets"
+        ]
       },
       "configurations": {
         "production": {
@@ -54,7 +56,9 @@
     "lint": {
       "executor": "@nx/linter:eslint",
       "options": {
-        "lintFilePatterns": ["apps/minsky-electron/**/*.ts"]
+        "lintFilePatterns": [
+          "apps/minsky-electron/**/*.ts"
+        ]
       }
     },
     "test": {
@@ -63,7 +67,9 @@
         "jestConfig": "apps/minsky-electron/jest.config.ts",
         "passWithNoTests": true
       },
-      "outputs": ["{workspaceRoot}/coverage/apps/minsky-electron"]
+      "outputs": [
+        "{workspaceRoot}/coverage/apps/minsky-electron"
+      ]
     },
     "compodoc": {
       "executor": "@twittwer/compodoc:compodoc",
