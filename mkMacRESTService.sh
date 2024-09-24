@@ -13,13 +13,13 @@ if ! nm ecolab/lib/libecolab.a|c++filt|grep NSContext::NSContext|grep T; then
     exit 1
 fi
 
-MAC_DIST_DIR=gui-js/node-addons
+MAC_DIST_DIR=gui-js/build
 version=`cut -f3 -d' ' minskyVersion.h|head -1|tr -d '"'`
 if [ $version = '"unknown"' ]; then
     version=0.0.0.0
 fi
 
-target=gui-js/dist/executables/ravel-$version.dmg
+target=gui-js/dist/ravel-$version.dmg
 
 # determine release or beta depending on the number of fields separated by '-' in the version string
 numFields=`echo $version|tr - ' '|wc -w`
@@ -66,7 +66,10 @@ mkdir -p $MAC_DIST_DIR
 rewrite_dylibs $MAC_DIST_DIR/minskyRESTService.node
 
 pushd gui-js
-npm run export:package:mac
+#npm run export:package:mac
+npm run build:web
+npm run build:electron
+npx electron-builder
 popd
 
 # npm run export step actually does the code signing. Following is for reference

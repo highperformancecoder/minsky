@@ -169,7 +169,7 @@ ifneq ($(GUI_TK),1)
 
 EXES=RESTService/minsky-RESTService$(EXE)
 ifeq ($(HAVE_NODE),1)
-EXES+=gui-js/node-addons/minskyRESTService.node
+EXES+=gui-js/build/minskyRESTService.node
 endif
 ifndef MXE
 EXES+=RESTService/typescriptAPI
@@ -425,8 +425,8 @@ gui-js/libs/shared/src/lib/backend/minsky.ts: RESTService/typescriptAPI
 endif
 
 # N-API node embedded RESTService
-gui-js/node-addons/minskyRESTService.node: addon.o  $(NODE_API) $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) RavelCAPI/libravelCAPI.a RavelCAPI/civita/libcivita.a
-	mkdir -p gui-js/node-addons
+gui-js/build/minskyRESTService.node: addon.o  $(NODE_API) $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) RavelCAPI/libravelCAPI.a RavelCAPI/civita/libcivita.a
+	mkdir -p gui-js/build
 ifdef MXE
 	$(LINK) -shared -o $@ $^ $(LIBS)
 	mkdir -p gui-js/dynamic_libraries
@@ -483,7 +483,7 @@ clean:
 	-cd ecolab && $(MAKE) clean
 	-cd RavelCAPI && $(MAKE) clean
 
-mac-dist: gui-js/node-addons/minskyRESTService.node
+mac-dist: gui-js/build/minskyRESTService.node
 # create executable in the app package directory. Make it 32 bit only
 #	mkdir -p minsky.app/Contents/MacOS
 #	sh -v mkMacDist.sh
@@ -581,7 +581,7 @@ compile-ts:
 
 codeql:
 	-rm *.o
-	codeql database create codeqlDb -l c++ -c "$(MAKE) $(MAKEFLAGS) gui-js/node-addons/minskyRESTService.node" -j0  --overwrite
+	codeql database create codeqlDb -l c++ -c "$(MAKE) $(MAKEFLAGS) gui-js/build/minskyRESTService.node" -j0  --overwrite
 	codeql database analyze codeqlDb codeql/cpp-queries:codeql-suites/cpp-security-and-quality.qls --format=csv --output=codeql-c++.csv -j0
 
 windows-package:
