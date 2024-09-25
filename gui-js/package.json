@@ -29,7 +29,7 @@
       "category": "Science"
     },
     "files": [
-      "dist/**/*",
+      "dist/apps/**/*",
       "package.json"
     ],
     "dmg": {
@@ -49,6 +49,10 @@
       {
         "from": "build",
         "to": "build"
+      },
+      {
+        "from": "node-addons",
+        "to": "node-addons"
       },
       {
         "from": "apps/minsky-electron/src/assets",

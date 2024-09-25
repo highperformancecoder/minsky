@@ -483,7 +483,10 @@ clean:
 	-cd ecolab && $(MAKE) clean
 	-cd RavelCAPI && $(MAKE) clean
 
-mac-dist: gui-js/build/minskyRESTService.node
+mac-dist:
+# force rebuild of the node file to force rewriting of dependent dylibs
+	rm -rf gui-js/build
+	$(MAKE) gui-js/build/minskyRESTService.node
 # create executable in the app package directory. Make it 32 bit only
 #	mkdir -p minsky.app/Contents/MacOS
 #	sh -v mkMacDist.sh

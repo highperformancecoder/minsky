@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/opt/local/bin/bash
 
 # creates a Mac .pkg installer. 
 
@@ -10,6 +10,12 @@ PATH=~/usr/bin:$PATH
 # check that EcoLab and Tk has been built for extracting a quartz context
 if ! nm ecolab/lib/libecolab.a|c++filt|grep NSContext::NSContext|grep T; then
     echo "Rebuild EcoLab with MAC_OSX_TK=1"
+    exit 1
+fi
+
+# check that the keychain has been unlocked
+if security show-keychain-info|grep "User interaction is not allowed."; then
+    echo "Unlock the keychain with security unlock-keychain"
     exit 1
 fi
 
@@ -66,6 +72,15 @@ mkdir -p $MAC_DIST_DIR
 rewrite_dylibs $MAC_DIST_DIR/minskyRESTService.node
 
 pushd gui-js
+# libravel.so expects certain dylibs in node-addons for legacy
+# reasons. Once the Ravel application has moved on, then we can drop
+# this, and update the expected location in the Ravel Makefile.
+# make a copy here, as creating symlinks in electron-builder seems nigh on impossible
+rm -rf node-addons
+mkdir node-addons
+pushd node-addons
+ln -sf ../build/lib*.dylib .
+popd
 #npm run export:package:mac
 npm run build:web
 npm run build:electron

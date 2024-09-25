@@ -30,7 +30,6 @@ try {
   log.error(error);
 }
 
-console.log('after loading addon');
 process.chdir(path.dirname(process.execPath));
 
 
