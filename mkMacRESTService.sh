@@ -25,7 +25,7 @@ if [ $version = '"unknown"' ]; then
     version=0.0.0.0
 fi
 
-target=gui-js/dist/ravel-$version.dmg
+target=gui-js/dist/ravel-$version-`arch`.dmg
 
 # determine release or beta depending on the number of fields separated by '-' in the version string
 numFields=`echo $version|tr - ' '|wc -w`

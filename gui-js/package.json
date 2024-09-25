@@ -33,7 +33,8 @@
       "package.json"
     ],
     "dmg": {
-      "title": "${productName}-${version}${arch}"
+      "title": "${productName}-${version}${arch}",
+      "artifactName": "${productName}-${version}-${arch}.dmg"
     },
     "extraFiles": [
       {
