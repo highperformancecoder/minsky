@@ -7,7 +7,6 @@ set -e
 make -j2 AEGIS=1 $(DEBUG) OBS=1
 export TRAVIS=1
 
-yes|npm install
 (cd gui-js && yes|npm install) 
 #make -j2 AEGIS=1 sure
 make -j2 AEGIS=1 tests
