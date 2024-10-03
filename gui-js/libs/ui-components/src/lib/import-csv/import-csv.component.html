@@ -129,58 +129,59 @@
   </div>
 
   <!-- Data selection -->
-  <div class="tab-area settings-area"
+  <div class="tab-area settings-area inputs-group csv-settings"
        [style.display]="selectedTabIndex !== 2 ? 'none' : 'flex'">
-    
-    <span>
-      <label for="horizontal-dimension"
-             title="Name of the collection of data columns.">Horizontal Dimension</label>
-      <div class="wedge-container">
-        <input
-          id="horizontal-dimension"
-          type="text"
-          formControlName="horizontalDimName"
-          />
-            
-        <div *ngIf="existingDimensionNames.length > 0" class="material-icons wedge-icon" style="width: 20px;" (click)="onWedgeIconClicked($event, -1)">expand_more</div>
-
-        <div *ngIf="wedgeOptionPanelVisibleIndex === -1" class="wedge-options-panel">
-          <div class="wedge-option" *ngFor="let dimensionName of existingDimensionNames" (click)="onWedgeOptionClicked($event, -1, dimensionName)">{{dimensionName}}</div>
+    <span class="inputs-group csv-settings">
+      <span>
+        <label for="horizontal-dimension"
+               title="Name of the collection of data columns.">Horizontal Dimension</label>
+        <div class="wedge-container">
+          <input
+            id="horizontal-dimension"
+            type="text"
+            formControlName="horizontalDimName"
+            />
+          
+          <div *ngIf="existingDimensionNames.length > 0" class="material-icons wedge-icon" style="width: 20px;" (click)="onWedgeIconClicked($event, -1)">expand_more</div>
+          
+          <div *ngIf="wedgeOptionPanelVisibleIndex === -1" class="wedge-options-panel">
+            <div class="wedge-option" *ngFor="let dimensionName of existingDimensionNames" (click)="onWedgeOptionClicked($event, -1, dimensionName)">{{dimensionName}}</div>
+          </div>
         </div>
-      </div>
+      </span>
+      <ng-container [formGroup]="horizontalDimension">
+        <span>
+          <label for="type" title="Type of horizontal dimension.">Type</label>
+          <select id="type" formControlName="type">
+            <option value="string">string</option>
+            <option value="value">value</option>
+            <option value="time">time</option>
+          </select>
+        </span>
+        
+        <span>
+          <label for="format" title="Format field for the horizontal
+                                     dimension. Mostly useful for time dimensions.">Format</label>
+          <input
+            id="units"
+            type="text"
+            formControlName="units"
+            [matAutocomplete]="auto"
+            class="form-control autocomplete"
+            />
+          <mat-autocomplete [panelWidth]="'14rem'" #auto="matAutocomplete">
+            <ng-container *ngIf="type.value === 'time'">
+              <mat-option
+                *ngFor="let tfs of timeFormatStrings"
+                [value]="tfs.value"
+                >
+                {{ tfs.label }}
+              </mat-option>
+            </ng-container>
+          </mat-autocomplete>
+        </span>
+      </ng-container>
     </span>
-    <ng-container [formGroup]="horizontalDimension">
-      <span>
-        <label for="type" title="Type of horizontal dimension.">Type</label>
-        <select id="type" formControlName="type">
-          <option value="string">string</option>
-          <option value="value">value</option>
-          <option value="time">time</option>
-        </select>
-      </span>
-      
-      <span>
-        <label for="format" title="Format field for the horizontal
-                                   dimension. Mostly useful for time dimensions.">Format</label>
-        <input
-          id="units"
-          type="text"
-          formControlName="units"
-          [matAutocomplete]="auto"
-          class="form-control autocomplete"
-          />
-        <mat-autocomplete [panelWidth]="'14rem'" #auto="matAutocomplete">
-          <ng-container *ngIf="type.value === 'time'">
-            <mat-option
-              *ngFor="let tfs of timeFormatStrings"
-              [value]="tfs.value"
-              >
-              {{ tfs.label }}
-            </mat-option>
-          </ng-container>
-        </mat-autocomplete>
-      </span>
-    </ng-container>
   </div>
   <div class="tab-area canvas-area" [style.display]="selectedTabIndex !== 2 ? 'none' : 'flex'" #importCsvCanvasContainer id="import-csv-canvas-container">
     <table *ngIf="parsedLines.length">
@@ -378,11 +379,11 @@
       Cancel
     </button>
 
-    <button *ngIf="selectedTabIndex !== 2" mat-raised-button class="btn next-btn" [disabled]="!fileLoaded" (click)="next()">
+    <button *ngIf="selectedTabIndex !== 3" mat-raised-button class="btn next-btn" [disabled]="!fileLoaded" (click)="next()">
       Next
     </button>
 
-    <button *ngIf="selectedTabIndex === 2" [disabled]="!fileLoaded"
+    <button *ngIf="selectedTabIndex === 3" [disabled]="!fileLoaded"
       mat-raised-button
       class="btn ok-btn submit"
       type="submit"
