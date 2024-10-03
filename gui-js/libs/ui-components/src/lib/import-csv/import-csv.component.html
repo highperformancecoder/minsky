@@ -5,6 +5,7 @@
       </div>
   </div>
 
+  <!-- File selection -->
   <div class="tab-area file-select-area" [style.display]="selectedTabIndex !== 0 ? 'none' : 'flex'">
     <div class="import-option-field">
       <div class="import-option-label">Option 1: browse your local disk drive for a file to import</div>
@@ -27,7 +28,161 @@
     </div>
   </div>
 
-  <div class="tab-area canvas-area" [style.display]="selectedTabIndex !== 1 ? 'none' : 'flex'" #importCsvCanvasContainer id="import-csv-canvas-container">
+  <!-- CSV settings -->
+  <div class="options-row tab-area settings-area inputs-group csv-settings" [style.display]="selectedTabIndex !== 1 ? 'none' : 'flex'">
+    <!--div class="options-row"-->
+      <span class="inputs-group csv-settings">
+        <span>
+          <label for="separator" title="CSV separator.">Separator</label>
+          <input
+            id="separator"
+            type="text"
+            formControlName="separator"
+            [matAutocomplete]="autocompleteSeparator"
+            class="form-control autocomplete"
+            (change)="onSeparatorChange()"
+          />
+          <mat-autocomplete
+            [panelWidth]="'10rem'"
+            #autocompleteSeparator="matAutocomplete"
+            (optionSelected)="onSeparatorChange()"
+          >
+            <mat-option value=",">,</mat-option>
+            <mat-option value=";">;</mat-option>
+            <mat-option value="tab">tab</mat-option>
+            <mat-option value="space">space</mat-option>
+          </mat-autocomplete>
+        </span>
+
+        <span>
+          <label for="decimal-separator" title="Separator of units and
+          fraction part of numbers: '.' for UK/US data, ',' for European data.">Decimal Separator</label>
+          <input
+            id="decimal-separator"
+            type="text"
+            formControlName="decSeparator"
+            [matAutocomplete]="decSeparator"
+            class="form-control autocomplete"
+            (change)="onSeparatorChange()"
+          />
+          <mat-autocomplete [panelWidth]="'10rem'" #decSeparator="matAutocomplete" (optionSelected)="onSeparatorChange()">
+            <mat-option value=".">.</mat-option>
+            <mat-option value=",">,</mat-option>
+          </mat-autocomplete>
+        </span>
+
+        <span>
+          <label for="escape" title="Character used to embed special
+          characters in strings, such as quotes.">Escape</label>
+          <input
+            id="escape"
+            type="text"
+            formControlName="escape"
+            [matAutocomplete]="escape"
+            class="form-control autocomplete"
+            (change)="onSeparatorChange()"
+          />
+          <mat-autocomplete [panelWidth]="'10rem'" #escape="matAutocomplete" (optionSelected)="onSeparatorChange()">
+            <mat-option value="\">\</mat-option>
+          </mat-autocomplete>
+        </span>
+
+        <span>
+          <label for="quote" title="CSV quote character.">Quote</label>
+          <input
+            id="quote"
+            type="text"
+            formControlName="quote"
+            [matAutocomplete]="quote"
+            class="form-control autocomplete"
+            (change)="onSeparatorChange()"
+          />
+          <mat-autocomplete [panelWidth]="'10rem'" #quote="matAutocomplete" (optionSelected)="onSeparatorChange()">
+            <mat-option value="'">'</mat-option>
+            <mat-option value='"'>"</mat-option>
+          </mat-autocomplete>
+        </span>
+
+        <span>
+          <label for="merge-delimiters" title="Consecutive separators
+          treated as a single separator. Mostly useful for space delimited
+          files.">Merge Delimiters</label>
+          <input
+            id="merge-delimiters"
+            type="checkbox"
+            formControlName="mergeDelimiters"
+            (change)="onSeparatorChange()"
+          />
+        </span>
+      </span>
+    <!--/div-->
+  </div>
+  <!-- display of parsed CSV to aid selecting CSV parameters -->
+  <div class="tab-area canvas-area" [style.display]="selectedTabIndex !== 1 ? 'none' : 'flex'">
+    <table *ngIf="parsedLines.length">
+      <tr *ngFor="let row of parsedLines; let rowIndex = index">
+        <td class="table-cell" *ngFor="let rowElement of row">
+          {{ rowElement }}
+        </td>
+      </tr>
+    </table>
+  </div>
+
+  <!-- Data selection -->
+  <div class="tab-area settings-area"
+       [style.display]="selectedTabIndex !== 2 ? 'none' : 'flex'">
+    
+    <span>
+      <label for="horizontal-dimension"
+             title="Name of the collection of data columns.">Horizontal Dimension</label>
+      <div class="wedge-container">
+        <input
+          id="horizontal-dimension"
+          type="text"
+          formControlName="horizontalDimName"
+          />
+            
+        <div *ngIf="existingDimensionNames.length > 0" class="material-icons wedge-icon" style="width: 20px;" (click)="onWedgeIconClicked($event, -1)">expand_more</div>
+
+        <div *ngIf="wedgeOptionPanelVisibleIndex === -1" class="wedge-options-panel">
+          <div class="wedge-option" *ngFor="let dimensionName of existingDimensionNames" (click)="onWedgeOptionClicked($event, -1, dimensionName)">{{dimensionName}}</div>
+        </div>
+      </div>
+    </span>
+    <ng-container [formGroup]="horizontalDimension">
+      <span>
+        <label for="type" title="Type of horizontal dimension.">Type</label>
+        <select id="type" formControlName="type">
+          <option value="string">string</option>
+          <option value="value">value</option>
+          <option value="time">time</option>
+        </select>
+      </span>
+      
+      <span>
+        <label for="format" title="Format field for the horizontal
+                                   dimension. Mostly useful for time dimensions.">Format</label>
+        <input
+          id="units"
+          type="text"
+          formControlName="units"
+          [matAutocomplete]="auto"
+          class="form-control autocomplete"
+          />
+        <mat-autocomplete [panelWidth]="'14rem'" #auto="matAutocomplete">
+          <ng-container *ngIf="type.value === 'time'">
+            <mat-option
+              *ngFor="let tfs of timeFormatStrings"
+              [value]="tfs.value"
+              >
+              {{ tfs.label }}
+            </mat-option>
+          </ng-container>
+        </mat-autocomplete>
+      </span>
+    </ng-container>
+  </div>
+  <div class="tab-area canvas-area" [style.display]="selectedTabIndex !== 2 ? 'none' : 'flex'" #importCsvCanvasContainer id="import-csv-canvas-container">
     <table *ngIf="parsedLines.length">
       <tr>
         <th>Name</th>
@@ -140,9 +295,9 @@
     </table>
   </div>
 
-  <div class="tab-area settings-area" [style.display]="selectedTabIndex !== 2 ? 'none' : 'flex'">
+  <div class="tab-area settings-area" [style.display]="selectedTabIndex !== 3 ? 'none' : 'flex'">
     <div class="options-row">
-      <span class="inputs-group">
+      <span class="inputs-group import-settings">
         <span class="wide-input">
           <label for="parameterName" title="Parameter name">Parameter name</label>
           <input
@@ -171,92 +326,12 @@
           />
         </span>
       </span>
-      <span class="inputs-group">
+      <span class="inputs-group import-options">
         <span>
           <label for="dontFail" title="Selecting this discards erroneous
           data from being imported.">Don't fail on invalid data</label>
           <input id="dontFail" type="checkbox" formControlName="dontFail"/>
         </span>
-
-        <span>
-          <label for="separator" title="CSV separator.">Separator</label>
-          <input
-            id="separator"
-            type="text"
-            formControlName="separator"
-            [matAutocomplete]="autocompleteSeparator"
-            class="form-control autocomplete"
-            (change)="onSeparatorChange()"
-          />
-          <mat-autocomplete
-            [panelWidth]="'10rem'"
-            #autocompleteSeparator="matAutocomplete"
-          >
-            <mat-option value=",">,</mat-option>
-            <mat-option value=";">;</mat-option>
-            <mat-option value="tab">tab</mat-option>
-            <mat-option value="space">space</mat-option>
-          </mat-autocomplete>
-        </span>
-
-        <span>
-          <label for="decimal-separator" title="Separator of units and
-          fraction part of numbers: '.' for UK/US data, ',' for European data.">Decimal Separator</label>
-          <input
-            id="decimal-separator"
-            type="text"
-            formControlName="decSeparator"
-            [matAutocomplete]="decSeparator"
-            class="form-control autocomplete"
-          />
-          <mat-autocomplete [panelWidth]="'10rem'" #decSeparator="matAutocomplete">
-            <mat-option value=".">.</mat-option>
-            <mat-option value=",">,</mat-option>
-          </mat-autocomplete>
-        </span>
-
-        <span>
-          <label for="escape" title="Character used to embed special
-          characters in strings, such as quotes.">Escape</label>
-          <input
-            id="escape"
-            type="text"
-            formControlName="escape"
-            [matAutocomplete]="escape"
-            class="form-control autocomplete"
-          />
-          <mat-autocomplete [panelWidth]="'10rem'" #escape="matAutocomplete">
-            <mat-option value="\">\</mat-option>
-          </mat-autocomplete>
-        </span>
-
-        <span>
-          <label for="quote" title="CSV quote character.">Quote</label>
-          <input
-            id="quote"
-            type="text"
-            formControlName="quote"
-            [matAutocomplete]="quote"
-            class="form-control autocomplete"
-          />
-          <mat-autocomplete [panelWidth]="'10rem'" #quote="matAutocomplete">
-            <mat-option value="'">'</mat-option>
-            <mat-option value='"'>"</mat-option>
-          </mat-autocomplete>
-        </span>
-
-        <span>
-          <label for="merge-delimiters" title="Consecutive separators
-          treated as a single separator. Mostly useful for space delimited
-          files.">Merge Delimiters</label>
-          <input
-            id="merge-delimiters"
-            type="checkbox"
-            formControlName="mergeDelimiters"
-          />
-        </span>
-      </span>
-      <span class="inputs-group">
         <span>
           <label for="missing-value" title="Value to substitute for
           missing data.">Missing Value</label>
@@ -294,57 +369,7 @@
           data. Particularly useful if no numerical data in file.">Counter</label>
           <input id="counter" type="checkbox" formControlName="counter"/>
         </span>
-
-        <span>
-          <label for="horizontal-dimension"
-                title="Name of the collection of data columns.">Horizontal Dimension</label>
-          <div class="wedge-container">
-            <input
-              id="horizontal-dimension"
-              type="text"
-              formControlName="horizontalDimName"
-            />
-            
-            <div *ngIf="existingDimensionNames.length > 0" class="material-icons wedge-icon" style="width: 20px;" (click)="onWedgeIconClicked($event, -1)">expand_more</div>
-
-            <div *ngIf="wedgeOptionPanelVisibleIndex === -1" class="wedge-options-panel">
-              <div class="wedge-option" *ngFor="let dimensionName of existingDimensionNames" (click)="onWedgeOptionClicked($event, -1, dimensionName)">{{dimensionName}}</div>
-            </div>
-          </div>
-        </span>
-        <ng-container [formGroup]="horizontalDimension">
-          <span>
-            <label for="type" title="Type of horizontal dimension.">Type</label>
-            <select id="type" formControlName="type">
-              <option value="string">string</option>
-              <option value="value">value</option>
-              <option value="time">time</option>
-            </select>
-          </span>
-
-          <span>
-            <label for="format" title="Format field for the horizontal
-            dimension. Mostly useful for time dimensions.">Format</label>
-            <input
-              id="units"
-              type="text"
-              formControlName="units"
-              [matAutocomplete]="auto"
-              class="form-control autocomplete"
-            />
-            <mat-autocomplete [panelWidth]="'14rem'" #auto="matAutocomplete">
-              <ng-container *ngIf="type.value === 'time'">
-                <mat-option
-                  *ngFor="let tfs of timeFormatStrings"
-                  [value]="tfs.value"
-                >
-                  {{ tfs.label }}
-                </mat-option>
-              </ng-container>
-            </mat-autocomplete>
-          </span>
-        </ng-container>
-        </span>
+      </span>
     </div>
   </div>
 

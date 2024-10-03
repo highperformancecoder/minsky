@@ -73,15 +73,19 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
     },
     {
       index: 1,
-      caption: 'Data selection',
+      caption: 'CSV settings',
       disabled: true
     },
     {
       index: 2,
-      caption: 'Settings',
+      caption: 'Data selection',
       disabled: true
-    }
-  ];
+    },
+    {
+      index: 3,
+      caption: 'Import settings',
+      disabled: true
+    }  ];
 
   selectedTabIndex = 0;
 

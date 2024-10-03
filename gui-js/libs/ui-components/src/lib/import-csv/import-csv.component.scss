@@ -100,15 +100,23 @@
     justify-content: space-between;
     align-items: center;
 
+    span.csv-settings {
+        flex: 0 0 auto;
+        flex-direction: row;
+        justify-content: space-between;
+    }
+    span.import-settings {
+        align-items: center;
+        flex: 0 0 636px;
+    }
+    
     span.inputs-group {
-      flex: 0 0 636px;
-
       display: flex;
       justify-content: center;
 
       span {
         margin: 0px 3px;
-        flex: 0 0 100px;
+        flex: 0 0 auto;
         display: flex;
         flex-direction: column;
         align-items: center;
