@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/opt/local/bin/bash
 
 # creates a Mac .pkg installer. 
 
@@ -13,13 +13,19 @@ if ! nm ecolab/lib/libecolab.a|c++filt|grep NSContext::NSContext|grep T; then
     exit 1
 fi
 
-MAC_DIST_DIR=gui-js/node-addons
+# check that the keychain has been unlocked
+if security show-keychain-info|grep "User interaction is not allowed."; then
+    echo "Unlock the keychain with security unlock-keychain"
+    exit 1
+fi
+
+MAC_DIST_DIR=gui-js/build
 version=`cut -f3 -d' ' minskyVersion.h|head -1|tr -d '"'`
 if [ $version = '"unknown"' ]; then
     version=0.0.0.0
 fi
 
-target=gui-js/dist/executables/ravel-$version.dmg
+target=gui-js/dist/ravel-$version-`arch`.dmg
 
 # determine release or beta depending on the number of fields separated by '-' in the version string
 numFields=`echo $version|tr - ' '|wc -w`
@@ -66,14 +72,34 @@ mkdir -p $MAC_DIST_DIR
 rewrite_dylibs $MAC_DIST_DIR/minskyRESTService.node
 
 pushd gui-js
-npm run export:package:mac
+# libravel.so expects certain dylibs in node-addons for legacy
+# reasons. Once the Ravel application has moved on, then we can drop
+# this, and update the expected location in the Ravel Makefile.
+# make a copy here, as creating symlinks in electron-builder seems nigh on impossible
+rm -rf node-addons
+mkdir node-addons
+pushd node-addons
+ln -sf ../build/lib*.dylib .
+popd
+#npm run export:package:mac
+npm run build:web
+npm run build:electron
+npx electron-builder
 popd
 
+# npm run export step actually does the code signing. Following is for reference
+#codesign -s "Developer ID Application" --options runtime --timestamp --deep $target
+
 # notarytool is introduced from Big Sur onwards, altool has been deprecated.
-if [ `sw_vers|grep ProductVersion|cut -f2|cut -f1 -d.` -lt 11 ]; then
+if [ `sw_vers|grep ProductVersion|tr -s '\t'|cut -f2|cut -f1 -d.` -lt 11 ]; then
    xcrun altool --notarize-app --primary-bundle-id Minsky --username apple@hpcoders.com.au --password "@keychain:Minsky" --file $target
 else
-    # Note: use xcrun notarytool store-credentials --apple-id apple@hpcoders.com.au --team-id 3J798GK5A7 --password "...", and specify "NotaryTool" as the profile id.
+    # Note: use xcrun notarytool store-credentials --apple-id \
+    # apple@hpcoders.com.au --team-id 3J798GK5A7 --password "...", and
+    # specify "NotaryTool" as the profile id.  Password can be
+    # generated at https://appleid.apple.com. You will need to
+    # generate a new "application password" every time you set up a
+    # new machine.
     xcrun notarytool submit $target  --keychain-profile NotaryTool  --wait
 fi
    

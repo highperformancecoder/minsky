@@ -394,15 +394,6 @@ namespace minsky
     variableValues.reset();
   }
 
-  void Minsky::renderEquationsToImage(const string& image)
-  {
-    ecolab::cairo::TkPhotoSurface surf(Tk_FindPhoto(interp(),image.c_str()));
-    cairo_move_to(surf.cairo(),0,0);
-    const MathDAG::SystemOfEquations system(*this);
-    system.renderEquations(surf, surf.height());
-    surf.blit();
-  }
-
   void Minsky::constructEquations()
   {
     if (cycleCheck()) throw error("cyclic network detected");

@@ -11,8 +11,14 @@ TK_LIB=$(dir $(shell find $(TCL_PREFIX) -name tk.tcl -path "*/tk$(TCL_VERSION)*"
 # root directory for ecolab include files and libraries
 ECOLAB_HOME=$(shell pwd)/ecolab
 
+ARCH=$(shell arch)
+
 ifeq ($(shell uname),Darwin)
-MAKEOVERRIDES+=MAC_OSX_TK=1
+MAKEOVERRIDES+=MAC_OSX_TK=1 TK=
+# for some reason, Intel Macs always report the arch as i386, even when they're x86_64
+ifeq ($(ARCH),i386)
+ARCH=x86_64
+endif
 endif
 
 ifdef MXE
@@ -34,7 +40,8 @@ ifeq ($(OS),Darwin)
 # location of minsky executable when building mac-dist
 MAC_DIST_DIR=minsky.app/Contents/MacOS
 # default min version is the machine doing the building.
-MACOSX_MIN_VERSION=$(shell sw_vers|grep ProductVersion|cut -f2)
+MACOSX_MIN_VERSION=$(shell sw_vers|grep ProductVersion|tr -s '\t'|cut -f2)
+LIBS+=-framework AppKit
 endif
 
 ifndef MXE
@@ -162,7 +169,7 @@ ifneq ($(GUI_TK),1)
 
 EXES=RESTService/minsky-RESTService$(EXE)
 ifeq ($(HAVE_NODE),1)
-EXES+=gui-js/node-addons/minskyRESTService.node
+EXES+=gui-js/build/minskyRESTService.node
 endif
 ifndef MXE
 EXES+=RESTService/typescriptAPI
@@ -418,15 +425,15 @@ gui-js/libs/shared/src/lib/backend/minsky.ts: RESTService/typescriptAPI
 endif
 
 # N-API node embedded RESTService
-gui-js/node-addons/minskyRESTService.node: addon.o  $(NODE_API) $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) RavelCAPI/libravelCAPI.a RavelCAPI/civita/libcivita.a
-	mkdir -p gui-js/node-addons
+gui-js/build/minskyRESTService.node: addon.o  $(NODE_API) $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) RavelCAPI/libravelCAPI.a RavelCAPI/civita/libcivita.a
+	mkdir -p gui-js/build
 ifdef MXE
 	$(LINK) -shared -o $@ $^ $(LIBS)
 	mkdir -p gui-js/dynamic_libraries
 	cp $(DLLS) gui-js/dynamic_libraries
 else
 ifeq ($(OS),Darwin)
-	c++ -bundle -undefined dynamic_lookup -Wl,-no_pie -Wl,-search_paths_first -mmacosx-version-min=$(MACOSX_MIN_VERSION) -arch x86_64 -stdlib=libc++  -o $@  $^ $(LIBS)
+	c++ -bundle -undefined dynamic_lookup -Wl,-no_pie -Wl,-search_paths_first -mmacosx-version-min=$(MACOSX_MIN_VERSION) -arch $(ARCH) -stdlib=libc++  -o $@  $^ $(LIBS)
 else
 	$(LINK) $(FLAGS) -shared -pthread -rdynamic -m64  -Wl,-soname=minskyRESTService.node -o $@ -Wl,--start-group $^ -Wl,--end-group $(LIBS)
 endif
@@ -476,7 +483,10 @@ clean:
 	-cd ecolab && $(MAKE) clean
 	-cd RavelCAPI && $(MAKE) clean
 
-mac-dist: gui-tk/minsky gui-js/node-addons/minskyRESTService.node
+mac-dist:
+# force rebuild of the node file to force rewriting of dependent dylibs
+	rm -rf gui-js/build
+	$(MAKE) gui-js/build/minskyRESTService.node
 # create executable in the app package directory. Make it 32 bit only
 #	mkdir -p minsky.app/Contents/MacOS
 #	sh -v mkMacDist.sh
@@ -574,7 +584,7 @@ compile-ts:
 
 codeql:
 	-rm *.o
-	codeql database create codeqlDb -l c++ -c "$(MAKE) $(MAKEFLAGS) gui-js/node-addons/minskyRESTService.node" -j0  --overwrite
+	codeql database create codeqlDb -l c++ -c "$(MAKE) $(MAKEFLAGS) gui-js/build/minskyRESTService.node" -j0  --overwrite
 	codeql database analyze codeqlDb codeql/cpp-queries:codeql-suites/cpp-security-and-quality.qls --format=csv --output=codeql-c++.csv -j0
 
 windows-package:

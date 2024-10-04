@@ -1338,10 +1338,10 @@ export class CommandsManager {
     let clientId='I9sn5lKdemBdh8uTNA7H7YiplxQk3gI-pP0I9_2g1tcbE88T2C3Z9wOvoy51I4-U';
     // need to pass what platform we are
     switch (process.platform) {
-    case 'win32': var state={system: 'windows', distro: '', version: ''}; break;
-    case 'darwin': var state={system: 'macos', distro: '', version: ''}; break;
+    case 'win32': var state={system: 'windows', distro: '', version: '', arch:''}; break;
+    case 'darwin': var state={system: 'macos', distro: '', version: '', arch: `${process.arch}`}; break;
     case 'linux':
-      var state={system: 'linux', distro: '', version: ''};
+      var state={system: 'linux', distro: '', version: '',arch:''};
       // figure out distro and version from /etc/os-release
       let aexec=promisify(exec);
       let distroInfo=await aexec('grep ^ID= /etc/os-release');

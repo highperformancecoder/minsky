@@ -1,4 +1,4 @@
-const restService = require('bindings')('../gui-js/node-addons/minskyRESTService.node');
+const restService = require('bindings')('../gui-js/build/minskyRESTService.node');
 // test synchronous version
 console.log(restService.call("minsky.minskyVersion.$sync",""));
 

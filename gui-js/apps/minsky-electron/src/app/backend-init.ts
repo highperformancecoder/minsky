@@ -16,17 +16,22 @@ if (!Utility.isDevelopmentMode()) { //clobber logging in production
 }
 
 export const initialWorkingDirectory=process.cwd();
-process.chdir(path.dirname(process.execPath));
 const addonDir = Utility.isPackaged()
-      ? '../../node-addons'
-      : '../../node-addons';
+// this starts looking inside app.asar/build, so we need to recurse
+// out of that to find the addons, given we can't add them to the ASAR
+// for some reason.
+      ? '../../build/'
+      : '';
 /** REST Service addon */
 export var restService = null;
 try {
-  restService = require('bindings')(addonDir+'/minskyRESTService.node');
+  restService = require('bindings')(addonDir+'minskyRESTService.node');
 } catch (error) {
   log.error(error);
 }
+
+process.chdir(path.dirname(process.execPath));
+
 
 /** returns true if RESTService call is logged in development mode */
 function logFilter(c: string) {
@@ -216,12 +221,12 @@ export function loadResources()
 {
   const assetsDir=
         Utility.isDevelopmentMode() && !Utility.isPackaged()
-        ? __dirname+'/assets'
-        : process.resourcesPath+'/assets';
+        ? __dirname+'/assets/'
+        : process.resourcesPath+'/assets/';
 
-  backendSync('minsky.setGodleyIconResource',assetsDir+'/godley.svg');
-  backendSync('minsky.setGroupIconResource',assetsDir+'/group.svg');
-  backendSync('minsky.setRavelIconResource',assetsDir+'/ravel-logo.svg');
-  backendSync('minsky.setLockIconResource',assetsDir+'/locked.svg',assetsDir+'/unlocked.svg');
-  backendSync('minsky.histogramResource.setResource',assetsDir+'/histogram.svg');
+  backendSync('minsky.setGodleyIconResource',assetsDir+'godley.svg');
+  backendSync('minsky.setGroupIconResource',assetsDir+'group.svg');
+  backendSync('minsky.setRavelIconResource',assetsDir+'ravel-logo.svg');
+  backendSync('minsky.setLockIconResource',assetsDir+'locked.svg',assetsDir+'unlocked.svg');
+  backendSync('minsky.histogramResource.setResource',assetsDir+'histogram.svg');
 }

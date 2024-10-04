@@ -1,7 +1,7 @@
 import { Component, OnDestroy, ElementRef, AfterViewInit, ViewChild,} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import {   CommunicationService, ElectronService, WindowUtilityService } from '@minsky/core';
-import { events, Ravel, Functions } from '@minsky/shared';
+import { events, Ravel } from '@minsky/shared';
 import { fromEvent, Observable, Subject, takeUntil } from 'rxjs';
 import { sampleTime } from 'rxjs/operators';
 import { MessageBoxSyncOptions } from 'electron/renderer';

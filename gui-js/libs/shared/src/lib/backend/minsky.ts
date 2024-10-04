@@ -1424,7 +1424,6 @@ export class Minsky extends CppClass {
   async renderCanvasToPNG(a1: string): Promise<void> {return this.$callMethod('renderCanvasToPNG',a1);}
   async renderCanvasToPS(a1: string): Promise<void> {return this.$callMethod('renderCanvasToPS',a1);}
   async renderCanvasToSVG(a1: string): Promise<void> {return this.$callMethod('renderCanvasToSVG',a1);}
-  async renderEquationsToImage(a1: string): Promise<void> {return this.$callMethod('renderEquationsToImage',a1);}
   async requestRedraw(): Promise<void> {return this.$callMethod('requestRedraw');}
   async requestReset(): Promise<void> {return this.$callMethod('requestReset');}
   async reset(): Promise<void> {return this.$callMethod('reset');}
