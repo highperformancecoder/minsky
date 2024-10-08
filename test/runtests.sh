@@ -21,7 +21,7 @@ for i in test/00/*.sh; do
     # disable RESTProcess for now
 #    if [ $i = test/00/RESTService.sh ]; then echo disabled; continue; fi
     # we need to expose output generated here to prevent a build timeout
-    if [ "$TRAVIS" = 1 -a $i = test/00/checkOverrides.sh ]; then
+    if [ "$TRAVIS" = 1 -a $i = test/00/checkOverrides.sh -o $i = test/00/napi-addon.sh ]; then
         sh $i
 #    elif [ "$TRAVIS" = 1 -a $i = test/00/jest-tests.sh ]; then
 #        sh $i
