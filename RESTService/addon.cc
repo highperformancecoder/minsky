@@ -238,7 +238,7 @@ namespace minsky
       {
         const lock_guard<mutex> lock(minskyCmdMutex);
         const Timer timer(timers[command]);
-        const LocalMinsky lm(*this); // sets this to be the global minsky object
+        //const LocalMinsky lm(*this); // sets this to be the global minsky object
 
         // if reset requested, postpone it
         if (reset_flag()) requestReset();
@@ -257,7 +257,7 @@ namespace minsky
         for (auto i: nativeWindowsToRedraw)
           try
             {
-              const LocalMinsky lm(*this); // sets this to be the global minsky object
+              //              const LocalMinsky lm(*this); // sets this to be the global minsky object
               i->draw();
             }
           catch (const std::exception& ex)
@@ -279,6 +279,7 @@ namespace minsky
 
       void macOSXDrawNativeWindows()
       {
+        //        minsky::LocalMinsky lm(*this);
         const lock_guard<mutex> lock(minskyCmdMutex);
         const Timer timer(timers["draw"]);
         for (auto i: nativeWindowsToRedraw)
@@ -318,7 +319,7 @@ namespace minsky
                       const lock_guard<mutex> lock(minskyCmdMutex);
                       if (reset_flag()) // check again, in case another thread got there first
                         {
-                          const LocalMinsky lm(*this); // sets this to be the global minsky object
+                          //                          const LocalMinsky lm(*this); // sets this to be the global minsky object
                           const Timer timer(timers["minsky.reset"]);
                           reset();
                         }
@@ -541,19 +542,13 @@ namespace minsky
       }
     };
     
-    Minsky* l_minsky=NULL;
+    static Minsky s_minsky; //This object is not really used, needed to avoid a null dereference
+    Minsky* l_minsky=&s_minsky;
   }
 
-  Minsky& minsky()
-  {
-    static Minsky s_minsky;
-    if (l_minsky)
-      return *l_minsky;
-    return s_minsky;
-  }
-
+  Minsky& minsky() {return *l_minsky;}
   LocalMinsky::LocalMinsky(Minsky& minsky) {l_minsky=&minsky;}
-  LocalMinsky::~LocalMinsky() {l_minsky=NULL;}
+  LocalMinsky::~LocalMinsky() {}
 
   // GUI callback needed only to solve linkage problems
   void doOneEvent(bool idleTasksOnly) {}
