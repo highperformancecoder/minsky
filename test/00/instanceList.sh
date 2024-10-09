@@ -27,46 +27,37 @@ pass()
 }
 
 trap "fail" 1 2 3 15
-cat >input.py <<EOF
-import sys
+cat >input.tcl <<EOF
+source $here/test/assert.tcl
+minsky.load $here/examples/GoodwinLinear02.mky
+minsky.findVariable "Y"
+set instanceList [minsky.listAllInstances]
+assert "[llength [\$instanceList.names]]==2"
+set offsx [minsky.model.x]
+set offsy [minsky.model.y]
+\$instanceList.gotoInstance 0
+set offsx0 [minsky.model.x]
+set offsy0 [minsky.model.y]
+assert "\$offsx0!=\$offsx"
+assert "\$offsy0!=\$offsy"
 
-# Add the directory containing pyminsky.so to sys.path
-sys.path.insert(0,'$here')
 
-from pyminsky import minsky
+# offsets hard coded in VariableInstanceList
+minsky.canvas.getItemAt [expr \$offsx-[minsky.model.x]+50] [expr \$offsy-[minsky.model.y]+50]
+assert {[minsky.canvas.item.name]=="Y"}
 
-def assert_condition(condition, message=""):
-    if not condition:
-        print(f"Assertion failed: {message}")
-        sys.exit(1)
-# Load the model
-minsky.load('/home/dednaw/minsky/examples/GoodwinLinear02.mky')
+\$instanceList.gotoInstance 1
+assert "[minsky.model.x]!=\$offsx0"
+assert "[minsky.model.y]!=\$offsy0"
 
-# Get the number of items in the model
-item_count = len(minsky.model.items)
+minsky.canvas.getItemAt [expr \$offsx-[minsky.model.x]+50] [expr \$offsy-[minsky.model.y]+50]
+assert {[minsky.canvas.item.name]=="Y"}
 
-# Find all variables named "Y"
-variables_Y = []
-for idx in range(item_count):
-    item = minsky.model.items[idx]
-    if item.classType().startswith("Variable:") and item.name() == "Y":
-        variables_Y.append(item)
-
-assert_condition(len(variables_Y) == 2, f"Expected 2 instances of 'Y', found {len(variables_Y)}")
-
-# For each instance, get the item at its position and check it's correct
-for idx, var_item in enumerate(variables_Y):
-    # Get the item at var_item's position
-    item_found = minsky.canvas.getItemAt(var_item.x(), var_item.y())
-    assert_condition(item_found, f"No item found at variable's position for instance {idx}")
-    # Check that the found item matches the expected item
-    assert_condition(minsky.canvas.item().id() == var_item.id(),
-                     f"Item at variable's position does not match expected item for instance {idx}")
-    assert_condition(minsky.canvas.item().name() == "Y",
-                     f"Item at variable's position is not 'Y' for instance {idx}")
+assert "[catch \$instanceList.gotoInstance 2]"
+tcl_exit
 EOF
 
-python3 input.py
+$here/gui-tk/minsky input.tcl
 if [ $? -ne 0 ]; then fail; fi
 
 pass
