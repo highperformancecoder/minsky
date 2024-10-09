@@ -41,3 +41,35 @@ gui-js/dist/*
 gui-js/.nx/*
 gui-js/.angular/*
 doc/minsky/*
+
+# Ignore build artifacts and temporary files
+# Object files, static and shared libraries, executables
+*.o
+*.a
+*.so
+*.dll
+*.exe
+*.gch
+*.node
+
+# Build directories
+/build/
+/bin/
+/obj/
+
+# Logs and temporary files
+*.log
+*.tmp
+*.pid
+*.swp
+*.swo
+
+# Core dumps
+core
+
+# Exclude specific large files
+/gui-js/node-addons/minskyRESTService.node
+/model/minsky.gch
+/libminsky.a
+/st1QD5JV
+
