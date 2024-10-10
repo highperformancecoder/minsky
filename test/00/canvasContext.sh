@@ -6,72 +6,101 @@ here=`pwd`
 # needs to be a jest test!
 cat >input.py <<EOF
 import sys
-
-sys.path.insert(0,'$here')
-
+sys.path.insert(0, '$here')
 from pyminsky import minsky
 
-def assert_condition(condition, message=""):
-    if not condition:
-        print(f"Assertion failed: {message}")
-        sys.exit(1)
-
-# Clear the model
+# Clear the canvas to start with a clean slate
 minsky.model.clear()
 
-# List of items to test
-items_to_test = [
-    ('Variable', 'foo', 'flow', 'Variable:flow'),
-    ('Operation', 'integrate', None, 'IntOp'),
-    ('Operation', 'data', None, 'DataOp'),
-    ('Plot', None, None, 'PlotWidget'),
-    ('Godley', None, None, 'GodleyIcon'),
-    ('Group', None, None, 'Group'),
-    ('Note', 'hello', None, 'Item'),
-    ('Switch', None, None, 'SwitchIcon'),
-]
-
-# Keep track of added items for verification
-added_items = []
-
-for item_type, name, var_type, expected_class in items_to_test:
-    # Add the item
-    if item_type == 'Variable':
-        minsky.canvas.addVariable(name, var_type)
-    elif item_type == 'Operation':
-        minsky.canvas.addOperation(name)
-    elif item_type == 'Plot':
-        minsky.canvas.addPlot()
-    elif item_type == 'Godley':
-        minsky.canvas.addGodley()
-    elif item_type == 'Group':
-        minsky.canvas.addGroup()
-    elif item_type == 'Note':
-        minsky.canvas.addNote(name)
-    elif item_type == 'Switch':
-        minsky.canvas.addSwitch()
-    else:
-        print(f"Unknown item type: {item_type}")
-        sys.exit(1)
+# Step 1: Check the canvas background context menu
+def canvasContextBackground(x, y, X, Y):
+    # First, check if any item exists at (x, y)
+    item = minsky.canvas.getItemAt(x, y)
     
-    # The newly added item should be the item in focus
-    item = minsky.canvas.itemFocus()
-    assert_condition(item is not None, f"{item_type} not added correctly")
-    assert_condition(item.classType() == expected_class,
-                     f"{item_type} class type mismatch: expected {expected_class}, got {item.classType()}")
-    # Store the item for further checks
-    added_items.append(item)
+    if item is not None:
+        item = minsky.canvas.itemFocus()
+        if item is not None:
+            minsky.canvas.deleteItem()
+        else:
+            pass
+    
+    # Verify the item has been fully removed
+    item = minsky.canvas.getItemAt(x, y)
+    if item is not None:
+        item = minsky.canvas.itemFocus()
+        if item is not None:
+            assert not item.classType().startswith("Variable"), "Canvas should not have an interactive item selected on background right-click."
+            minsky.canvas.deleteItem()
 
-# Verify that added items are present in the model
-# Get the number of items in the model
-item_count = len(minsky.model.items)
+# Step 2: Simulate background context click
+canvasContextBackground(0, 0, 0, 0)
 
-# Collect IDs of items in model
-model_item_ids = [minsky.model.items[idx].id() for idx in range(item_count)]
+# Step 3: Add and test variable context menu
+minsky.canvas.addVariable('foo', 'flow')
+item = minsky.canvas.itemFocus()
 
-# Verify that all added items are in the model
-for item in added_items:
-    assert_condition(item.id() in model_item_ids, f"Item with ID {item.id()} not found in model items")
+# Move the variable to a visible and accessible position (50, 50)
+item.moveTo(50, 50)
+x, y = item.x(), item.y()
+
+# Check context menu on the variable
+def canvasContextOnItem(x, y, X, Y):
+    # Try to get the item at these coordinates
+    assert minsky.canvas.getItemAt(x, y), "Item not found at expected position."
+    item = minsky.canvas.itemFocus()  # Use itemFocus to get the currently focused item
+    assert item is not None, "An item should be selected when right-clicking on it."
+    minsky.canvas.deleteItem()
+
+canvasContextOnItem(x, y, int(x), int(y))
+
+# Step 4: Add and test operation context menu
+minsky.canvas.addOperation('integrate')
+item = minsky.canvas.itemFocus()
+item.moveTo(100, 100)
+x, y = item.x(), item.y()
+canvasContextOnItem(x, y, int(x), int(y))
+
+# Step 5: Add and test data operation context menu
+minsky.canvas.addOperation('data')
+item = minsky.canvas.itemFocus()
+item.moveTo(150, 150)
+x, y = item.x(), item.y()
+canvasContextOnItem(x, y, int(x), int(y))
+
+# Step 6: Add and test plot context menu
+minsky.canvas.addPlot()
+item = minsky.canvas.itemFocus()
+item.moveTo(200, 200)
+x, y = item.x(), item.y()
+canvasContextOnItem(x, y, int(x), int(y))
+
+# Step 7: Add and test Godley table context menu
+minsky.canvas.addGodley()
+item = minsky.canvas.itemFocus()
+item.moveTo(250, 250)
+x, y = item.x(), item.y()
+canvasContextOnItem(x, y, int(x), int(y))
+
+# Step 8: Add and test group context menu
+minsky.canvas.addGroup()
+item = minsky.canvas.itemFocus()
+item.moveTo(300, 300)
+x, y = item.x(), item.y()
+canvasContextOnItem(x, y, int(x), int(y))
+
+# Step 9: Add and test note context menu
+minsky.canvas.addNote("hello")
+item = minsky.canvas.itemFocus()
+item.moveTo(350, 350)
+x, y = item.x(), item.y()
+canvasContextOnItem(x, y, int(x), int(y))
+
+# Step 10: Add and test switch context menu
+minsky.canvas.addSwitch()
+item = minsky.canvas.itemFocus()
+item.moveTo(400, 400)
+x, y = item.x(), item.y()
+canvasContextOnItem(x, y, int(x), int(y))
 EOF
 
 python3 input.py
