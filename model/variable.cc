@@ -160,7 +160,7 @@ float VariableBase::zoomFactor() const
 
 shared_ptr<VariableValue> VariableBase::vValue() const
 {
-  auto vv=minsky().variableValues.find(valueId());
+  auto vv=cminsky().variableValues.find(valueId());
   if (vv!=minsky().variableValues.end())
     return vv->second;
   return {};
@@ -316,8 +316,11 @@ string VariableBase::init(const string& x)
       try
         {
           if (type()==constant || type()==parameter ||
-              (type()==flow && !cminsky().definingVar(valueId()))) 
-            minsky().variableValues.resetValue(val);
+              (type()==flow && !cminsky().definingVar(valueId())))
+            {
+              minsky().variableValues.resetValue(val);
+              cachedNameRender.reset(); // for constants
+            }
         }
       catch (...)
         {}
@@ -328,19 +331,20 @@ string VariableBase::init(const string& x)
 
 double VariableBase::value() const
 {
-  try
-    {
-      if (isValueId(valueId()))
-        return minsky::cminsky().variableValues[valueId()]->value();
-    }
-  catch (...) {} // ignore any errors in RHS
-  return 0;
+  auto& vvs=minsky::cminsky().variableValues;
+  auto v=vvs.find(valueId());
+  if (v==vvs.end() || !v->second) return 0;
+  return v->second->value();
 }
 
 double VariableBase::value(const double& x)
 {
   if (!m_name.empty() && isValueId(valueId()))
-    (*minsky().variableValues[valueId()])[0]=x;
+    {
+      (*minsky().variableValues[valueId()])[0]=x;
+      if (type()==constant)
+        cachedNameRender.reset();
+    }
   return x;
 }
 
@@ -674,37 +678,41 @@ void VariableBase::draw(cairo_t *cairo) const
   auto [angle,flipped]=rotationAsRadians();
   const float z=zoomFactor();
 
-  if (!cachedNameRender || cairo!=cachedNameRender->cairoContext())
+  // grab a thread local copy of the renderer caches, as MacOSX does
+  // rendering on a different thread, and this avoids a race condition
+  // when the cache is invalidated
+  auto l_cachedNameRender=cachedNameRender;
+  if (!l_cachedNameRender || cairo!=cachedNameRender->cairoContext())
     {
-      cachedNameRender=std::make_shared<RenderVariable>(*this,cairo);
-      cachedNameRender->setFontSize(12.0);
+      l_cachedNameRender=cachedNameRender=std::make_shared<RenderVariable>(*this,cairo);
+      l_cachedNameRender->setFontSize(12.0);
     }
     
-    // if rotation is in 1st or 3rd quadrant, rotate as
-    // normal, otherwise flip the text so it reads L->R
+  // if rotation is in 1st or 3rd quadrant, rotate as
+  // normal, otherwise flip the text so it reads L->R
   const Rotate r(rotation() + (flipped? 180:0),0,0);
-  cachedNameRender->angle=angle+(flipped? M_PI:0);
+  l_cachedNameRender->angle=angle+(flipped? M_PI:0);
 
-    // parameters of icon in userspace (unscaled) coordinates
-    const double w=std::max(cachedNameRender->width(), 0.5f*iWidth()); 
-    const double h=std::max(cachedNameRender->height(), 0.5f*iHeight());
-    const double hoffs=cachedNameRender->top();
+  // parameters of icon in userspace (unscaled) coordinates
+  const double w=std::max(l_cachedNameRender->width(), 0.5f*iWidth()); 
+  const double h=std::max(l_cachedNameRender->height(), 0.5f*iHeight());
+  const double hoffs=l_cachedNameRender->top();
   
-    unique_ptr<cairo::Path> clipPath;
+  unique_ptr<cairo::Path> clipPath;
+  {
+    const CairoSave cs(cairo);
+    cairo_scale(cairo, z,z);
+    cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2), r.y(-w+1,-h-hoffs+2));
     {
       const CairoSave cs(cairo);
-      cairo_scale(cairo, z,z);
-      cairo_move_to(cairo,r.x(-w+1,-h-hoffs+2), r.y(-w+1,-h-hoffs+2));
-      {
-        const CairoSave cs(cairo);
-        if (local())
-          cairo_set_source_rgb(cairo,0,0,1);
-        cachedNameRender->show();
-      }
+      if (local())
+        cairo_set_source_rgb(cairo,0,0,1);
+      l_cachedNameRender->show();
+    }
 
-      auto vv=vValue();
-      if (miniPlot && vv && vv->size()==1)
-        try
+    auto vv=vValue();
+    if (miniPlot && vv && vv->size()==1)
+      try
         {
           if (cachedTime!=cminsky().t)
             {
@@ -716,122 +724,124 @@ void VariableBase::draw(cairo_t *cairo) const
           cairo_translate(cairo,-w,-h);
           miniPlot->draw(cairo,2*w,2*h);
         }
-        catch (...) {} // ignore errors in obtaining values
+      catch (...) {} // ignore errors in obtaining values
 
-      // For feature 47
-      try
-        {
-          if (type()!=constant && !ioVar() && vv && vv->size()==1 && vv->idxInRange())
-            {
-              if (!cachedMantissa || cachedMantissa->cairoContext()!=cairo)
-                {
-                  cachedMantissa=make_shared<Pango>(cairo);
-                  cachedMantissa->setFontSize(6.0);
-                  cachedExponent=make_shared<Pango>(cairo);
-                  cachedExponent->setFontSize(6.0);
-                  cachedValue=nan("");
-                }
-          
-              auto val=engExp();    
-              if (value()!=cachedValue)
-                {
-                  cachedValue=value();
-                  if (!isnan(value())) {
-                    if (sliderBoundsSet && vv->sliderVisible)
-                      cachedMantissa->setMarkup
-                        (mantissa(val,
-                                  int(1+
-                                      (sliderStepRel?
-                                       -log10(maxSliderSteps()):
-                                       log10(value()/maxSliderSteps())
-                                       ))));
-                    else
-                      cachedMantissa->setMarkup(mantissa(val));
-                  }
-                  else if (isinf(value())) { // Display non-zero divide by zero as infinity. For ticket 1155
-                    if (signbit(value())) cachedMantissa->setMarkup("-∞");
-                    else cachedMantissa->setMarkup("∞");
-                  }
-                  else // Display all other NaN cases as ???. For ticket 1155
-                    cachedMantissa->setMarkup("???");
-                  cachedExponent->setMarkup(expMultiplier(val.engExp));
-                }
-              cachedMantissa->angle=angle+(flipped? M_PI:0);
-            
-              cairo_move_to(cairo,r.x(w-cachedMantissa->width()-2,-h-hoffs+2),
-                            r.y(w-cachedMantissa->width()-2,-h-hoffs+2));
-              cachedMantissa->show();
-
-              if (val.engExp!=0 && !isnan(value())) // Avoid large exponential number in variable value display. For ticket 1155
-                {
-                  cairo_move_to(cairo,r.x(w-cachedExponent->width()-2,0),r.y(w-cachedExponent->width()-2,0));
-                  cachedExponent->show();
-                }
-            }
-        }
-        catch (...) {} // ignore errors in obtaining values
-
+    // For feature 47
+    try
       {
-        const cairo::CairoSave cs(cairo);
-        cairo_rotate(cairo, angle);
-        // constants and parameters should be rendered in blue, all others in red
-        switch (type())
+        if (type()!=constant && !ioVar() && vv && vv->size()==1 && vv->idxInRange())
           {
-          case constant: case parameter:
-            cairo_set_source_rgb(cairo,0,0,1);
-            break;
-          default:
-            cairo_set_source_rgb(cairo,1,0,0);
-            break;
-          }
-        cairo_move_to(cairo,-w,-h);
-        if (lhs())
-          cairo_line_to(cairo,-w+2,0);
-        cairo_line_to(cairo,-w,h);
-        cairo_line_to(cairo,w,h);
-        cairo_line_to(cairo,w+2,0);
-        cairo_line_to(cairo,w,-h);
-        cairo_close_path(cairo);
-        clipPath.reset(new cairo::Path(cairo));
-        cairo_stroke(cairo);
-        if (sliderVisible())
-          {
-            // draw slider
-            const CairoSave cs(cairo);
-            cairo_set_source_rgb(cairo,0,0,0);
-            try
+            auto l_cachedMantissa=cachedMantissa;
+            auto l_cachedExponent=cachedExponent;
+            if (!l_cachedMantissa || l_cachedMantissa->cairoContext()!=cairo)
               {
-                cairo_arc(cairo,(flipped?-1.0:1.0)*cachedNameRender->handlePos(), (flipped? h: -h), sliderHandleRadius, 0, 2*M_PI);
+                l_cachedMantissa=cachedMantissa=make_shared<Pango>(cairo);
+                l_cachedMantissa->setFontSize(6.0);
+                l_cachedExponent=cachedExponent=make_shared<Pango>(cairo);
+                l_cachedExponent->setFontSize(6.0);
+                cachedValue=nan("");
               }
-            catch (const error&) {} // handlePos() may throw.
-            cairo_fill(cairo);
+          
+            auto val=engExp();    
+            if (value()!=cachedValue)
+              {
+                cachedValue=value();
+                if (!isnan(value())) {
+                  if (sliderBoundsSet && vv->sliderVisible)
+                    l_cachedMantissa->setMarkup
+                      (mantissa(val,
+                                int(1+
+                                    (sliderStepRel?
+                                     -log10(maxSliderSteps()):
+                                     log10(value()/maxSliderSteps())
+                                     ))));
+                  else
+                    l_cachedMantissa->setMarkup(mantissa(val));
+                }
+                else if (isinf(value())) { // Display non-zero divide by zero as infinity. For ticket 1155
+                  if (signbit(value())) l_cachedMantissa->setMarkup("-∞");
+                  else l_cachedMantissa->setMarkup("∞");
+                }
+                else // Display all other NaN cases as ???. For ticket 1155
+                  l_cachedMantissa->setMarkup("???");
+                l_cachedExponent->setMarkup(expMultiplier(val.engExp));
+              }
+            l_cachedMantissa->angle=angle+(flipped? M_PI:0);
+            
+            cairo_move_to(cairo,r.x(w-l_cachedMantissa->width()-2,-h-hoffs+2),
+                          r.y(w-l_cachedMantissa->width()-2,-h-hoffs+2));
+            l_cachedMantissa->show();
+
+            if (val.engExp!=0 && !isnan(value())) // Avoid large exponential number in variable value display. For ticket 1155
+              {
+                cairo_move_to(cairo,r.x(w-l_cachedExponent->width()-2,0),r.y(w-l_cachedExponent->width()-2,0));
+                l_cachedExponent->show();
+              }
           }
-      }// undo rotation
+      }
+    catch (...) {} // ignore errors in obtaining values
 
-      const double x0=z*w, y0=0, x1=-z*w+2, y1=0;
-      const double sa=sin(angle), ca=cos(angle);
-      if (!m_ports.empty())
-        m_ports[0]->moveTo(x()+(x0*ca-y0*sa), 
-                           y()+(y0*ca+x0*sa));
-      if (m_ports.size()>1)
-        m_ports[1]->moveTo(x()+(x1*ca-y1*sa), 
-                           y()+(y1*ca+x1*sa));
-    }
+    {
+      const cairo::CairoSave cs(cairo);
+      cairo_rotate(cairo, angle);
+      // constants and parameters should be rendered in blue, all others in red
+      switch (type())
+        {
+        case constant: case parameter:
+          cairo_set_source_rgb(cairo,0,0,1);
+          break;
+        default:
+          cairo_set_source_rgb(cairo,1,0,0);
+          break;
+        }
+      cairo_move_to(cairo,-w,-h);
+      if (lhs())
+        cairo_line_to(cairo,-w+2,0);
+      cairo_line_to(cairo,-w,h);
+      cairo_line_to(cairo,w,h);
+      cairo_line_to(cairo,w+2,0);
+      cairo_line_to(cairo,w,-h);
+      cairo_close_path(cairo);
+      clipPath.reset(new cairo::Path(cairo));
+      cairo_stroke(cairo);
+      if (sliderVisible())
+        {
+          // draw slider
+          const CairoSave cs(cairo);
+          cairo_set_source_rgb(cairo,0,0,0);
+          try
+            {
+              cairo_arc(cairo,(flipped?-1.0:1.0)*l_cachedNameRender->handlePos(), (flipped? h: -h), sliderHandleRadius, 0, 2*M_PI);
+            }
+          catch (const error&) {} // handlePos() may throw.
+          cairo_fill(cairo);
+        }
+    }// undo rotation
+
+    const double x0=z*w, y0=0, x1=-z*w+2, y1=0;
+    const double sa=sin(angle), ca=cos(angle);
+    if (!m_ports.empty())
+      m_ports[0]->moveTo(x()+(x0*ca-y0*sa), 
+                         y()+(y0*ca+x0*sa));
+    if (m_ports.size()>1)
+      m_ports[1]->moveTo(x()+(x1*ca-y1*sa), 
+                         y()+(y1*ca+x1*sa));
+  }
     
-    auto g=group.lock();
-    if (mouseFocus || (ioVar() && g && g->mouseFocus))
-      {
-        const cairo::CairoSave cs(cairo);
-        drawPorts(cairo);
-        displayTooltip(cairo,tooltip());
-        if (onResizeHandles) drawResizeHandles(cairo);
-      }  
+  auto g=group.lock();
+  if (mouseFocus || (ioVar() && g && g->mouseFocus))
+    {
+      const cairo::CairoSave cs(cairo);
+      drawPorts(cairo);
+      displayTooltip(cairo,tooltip());
+      if (onResizeHandles) drawResizeHandles(cairo);
+    }  
 
-    cairo_new_path(cairo);
-    clipPath->appendToCurrent(cairo);
-    // Rescale size of variable attached to intop. For ticket 94
-    cairo_clip(cairo);
-    if (selected) drawSelected(cairo);
+  cairo_new_path(cairo);
+  clipPath->appendToCurrent(cairo);
+  // Rescale size of variable attached to intop. For ticket 94
+  cairo_clip(cairo);
+  if (selected) drawSelected(cairo);
 }
 
 void VariableBase::resize(const LassoBox& b)

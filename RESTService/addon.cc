@@ -238,7 +238,6 @@ namespace minsky
       {
         const lock_guard<mutex> lock(minskyCmdMutex);
         const Timer timer(timers[command]);
-        const LocalMinsky lm(*this); // sets this to be the global minsky object
 
         // if reset requested, postpone it
         if (reset_flag()) requestReset();
@@ -257,7 +256,6 @@ namespace minsky
         for (auto i: nativeWindowsToRedraw)
           try
             {
-              const LocalMinsky lm(*this); // sets this to be the global minsky object
               i->draw();
             }
           catch (const std::exception& ex)
@@ -318,7 +316,6 @@ namespace minsky
                       const lock_guard<mutex> lock(minskyCmdMutex);
                       if (reset_flag()) // check again, in case another thread got there first
                         {
-                          const LocalMinsky lm(*this); // sets this to be the global minsky object
                           const Timer timer(timers["minsky.reset"]);
                           reset();
                         }
@@ -541,21 +538,15 @@ namespace minsky
       }
     };
     
-    Minsky* l_minsky=NULL;
+    static Minsky s_minsky; //This object is not really used, needed to avoid a null dereference in minsky()
+    Minsky* l_minsky=&s_minsky; //weak reference to global Minsky object
   }
 
-  Minsky& minsky()
-  {
-    static Minsky s_minsky;
-    if (l_minsky)
-      return *l_minsky;
-    return s_minsky;
-  }
+  Minsky& minsky() {return *l_minsky;}
 
-  LocalMinsky::LocalMinsky(Minsky& minsky) {l_minsky=&minsky;}
-  LocalMinsky::~LocalMinsky() {l_minsky=NULL;}
-
-  // GUI callback needed only to solve linkage problems
+  // Needed only to solve linkage problems
+  LocalMinsky::LocalMinsky(Minsky& minsky) {}
+  LocalMinsky::~LocalMinsky() {}
   void doOneEvent(bool idleTasksOnly) {}
 
 }
@@ -568,11 +559,13 @@ void handleSignal(int)
 
 struct MinskyAddon: public Addon<MinskyAddon>
 {
+  // Actual global minsky object needs to be declared here, to ensure
+  // threads are started and torn down at the right point in time.
   minsky::AddOnMinsky addOnMinsky;
-  minsky::LocalMinsky lm{addOnMinsky};
 
   MinskyAddon(Env env, Object exports)
   {
+    minsky::l_minsky=&addOnMinsky; // set the global minsky object
     tsPromiseResolver=TypedThreadSafeFunction<void,PromiseResolver,resolvePromise>::
       New(env,"TSResolver", 0, 2, nullptr);
     addOnMinsky.tsDrawNativeWindows_=

@@ -2,7 +2,7 @@ import 'jest-preset-angular/setup-jest';
 import JSON5 from 'json5';
 import {CppClass} from '@minsky/shared';
 
-const restService = require('bindings')('../../node-addons/minskyRESTService.node');
+const restService = require('bindings')('../../build/minskyRESTService.node');
 
 // replace backend with a synchronous call
 CppClass.backend=(command: string, ...args: any[])=>{

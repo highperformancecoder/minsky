@@ -59,7 +59,7 @@ RenderVariable::RenderVariable(const VariableBase& var, cairo_t* cairo):
           if (val.engExp==-3) val.engExp=0; //0.001-1.0
           setMarkup(var.mantissa(val)+expMultiplier(val.engExp));
         }
-      catch (const error&)
+      catch (const std::exception& ex)
         {
           setMarkup("0");
         }

@@ -58,6 +58,10 @@
       {
         "from": "apps/minsky-electron/src/assets",
         "to": "assets"
+      },
+      {
+        "from": "minsky-docs",
+        "to": "minsky-docs"
       }
     ],
     "fileAssociations": [
