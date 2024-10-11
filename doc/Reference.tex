@@ -148,7 +148,7 @@ back to the centre of the Ravel. This applies an aggregation method
 to the axis, which is determined by the setting for ``Set next aggregation''
 on the context menu. The aggregations are Sum, Product, Average, Standard
 Deviation, Maximum and Minimum. The aggregation type can be changed
-{\em post facto} unser the ``Axis properties'' context menu. 
+{\em post facto} under the ``Axis properties'' context menu. 
 \item[Selected] When the selector dot for an Axis is in the centre
 of the Ravel, the entire Ravel axis is output (though this can be a selection
 of values on the axis if ``Pick axis slices'' has been activated).
@@ -406,7 +406,7 @@ operator will be placed on the canvas.
 \operatorKey{PowerKey}
 
 \label{Operation:pow} Raise one number to the power of another. The
-ports are labelled $x$ and $y$, referring the the formula $x^{y}$.
+ports are labeled $x$ and $y$, referring the the formula $x^{y}$.
 
 The operator can be placed on the canvas in two ways:
 \begin{itemize}
@@ -1265,7 +1265,7 @@ or
 Enter key.
 \end{itemize}
 Size refers to the number of elements along a named dimension given
-by the operation axisargument---eg a $3\times2$ rank 2 tensor with
+by the operation axis argument---eg a $3\times2$ rank 2 tensor with
 named axes ``0'' and ``1'', size(``1'')==2.
 
 If the axis argument is left blank, the size returns the total number
@@ -1525,7 +1525,7 @@ The parameters are specified as part of the name, so a user defined
 function adding x and y would be called \verb'useradd(a,y)' and the
 sin example might be called \verb'mysin(x)'. Functions with up to
 two arguments can be wired on the canvas. User defined functions can
-call other user defined functions, so specifiying more than 2 parameters
+call other user defined functions, so specifying more than 2 parameters
 can be a useful thing to do.
 
 \subsection{Godley Tables}
@@ -1644,7 +1644,7 @@ If you press the leftarrow key on the first entry in Liabilities,
 \emph{Minsky} will warn you that this will change the classification
 of the stock from a Liability to an Asset.
 
-The final column in the Table, labelled $A-L-E$, checks whether the
+The final column in the Table, labeled $A-L-E$, checks whether the
 row sums to zero---which it must do to obey the rules of accounting.
 The entries in the columns, and the sum itself, are \emph{symbolic}:
 words are entered rather than numbers. The sum of that row must be
@@ -1701,7 +1701,7 @@ all stocks and flows on the canvas.
 \emph{Minsky} uses the fact that one entity's financial asset is another's
 financial liability to rapidly build interlocked Godley Tables, which
 describe the financial system from the perspective of every entity
-or sector modelled in it. The inverted wedge \textifsymbol[ifgeo]{99}
+or sector modeled in it. The inverted wedge \textifsymbol[ifgeo]{99}
 next to the name of every column is used to check for Assets that
 have not yet been recorded as a Liability, and vice versa. The next
 figure shows an expanded Godley Table for the Banking Sector, with
@@ -1736,7 +1736,7 @@ into a Godley Table cell as a positive or a negative entry:
 \noindent\includegraphics[width=\textwidth]{images/GodleyTableContextMenu}
 
 It is also possible to record all as-yet-unclassified flows as additions
-to or substractions from the Equity of the relevant sector---which
+to or subtractions from the Equity of the relevant sector---which
 is often (but not always) what is needed to complete a set of interlocking
 Godley Tables. In the figure above, $-Interest$ and $+Spend_{Banks}$
 are shown in the $A-L-E$ checksum column. Choosing ``Balance equity''
@@ -1762,9 +1762,9 @@ toolbar; or
 the Enter key.
 \end{itemize}
 Integral blocks require two inputs: the flow being integrated, which
-is attached to the top input on the block, labelled $f$; and the
+is attached to the top input on the block, labeled $f$; and the
 initial conditions for the integral, which is attached to the bottom
-input, labelled $0$.
+input, labeled $0$.
 
 \subsubsection{Integral Block context menu}
 
@@ -1806,7 +1806,7 @@ the \htmlref{variable initial value field}{var:init}.
 
 \label{Operation:differentiate} Symbolically differentiates its input
 with respect to system time, producing d/dt{[}input{]}. For further
-explanation regarding differentiation, see \href{https://en.wikipedia.org/wiki/Derivative}{this wikipedia page}.
+explanation regarding differentiation, see \href{https://en.wikipedia.org/wiki/Derivative}{this Wikipedia page}.
 
 
 \section{Variables and Parameters}
@@ -1859,12 +1859,12 @@ Variable names uniquely identify variables. Multiple icons on the
 canvas with the same name at the same level all refer to the same
 variable. Variable names can have local scope\index{local scope}, in which case it
 is specific to the \htmlref{group}{Group} in which it is contained,
-othewise its scope is determined by the innermost containing group
+otherwise its scope is determined by the innermost containing group
 that has a local variable of that name. If no such variable exists,
 its scope is global.
 
 A variable which is local to a group can be used as a formula in
-several locations in a file. For example, if you use a, b anc c as
+several locations in a file. For example, if you use a, b and c as
 constants in a polynomial $a+bx+cx^{2}$ and make them local to a
 group, then the group can be used in several parts of a document, with
 the argument x and the values of a,b and c being different in every
@@ -2077,7 +2077,7 @@ A group can also be exported to a file from the context menu. This
 allows you to build up a library of building blocks. There is a github
 project ``minsky-models'' allowing people to publish their building
 blocks and models for others to use. In the future, we hope to integrate
-\emph{Minsky} with this github repository, allowing even more seamless
+\emph{Minsky} with this GitHub repository, allowing even more seamless
 sharing of models.
 
 \section{Plot widget}
@@ -2165,7 +2165,7 @@ through this form.
 \subsubsection{Set options as default}
 
 This command reproduces the settings of the selected plot in any subsequent
-plot. This can expedite plot labelling, as well as setting a default
+plot. This can expedite plot labeling, as well as setting a default
 appearance for the style of graph applied to the data in each plot.
 
 \subsubsection{Apply default options}
@@ -2245,7 +2245,7 @@ Bookmark? box.
 
 Notes allow arbitrary text to be placed on the canvas for explanatory
 purposes. Anything that can be entered on the keyboard can be placed
-here, including unicode characters, and \LaTeX{} formatting is supported. 
+here, including Unicode characters, and \LaTeX{} formatting is supported. 
 
 \includegraphics{images/Note+Text}
 
@@ -2274,7 +2274,7 @@ variable to reduce the amount of overlapping wiring in a model. This
 can substantially improve the readability of a \emph{Ravel/Minsky}
 model when compared to standard system-dynamics programs.
 \item [{Flip}] actually rotates an object through $180^{\circ}$. You can
-specify aribtrary rotations of objects through the edit menu. 
+specify arbitrary rotations of objects through the edit menu. 
 \item [{Delete}] delete the object. 
 \end{description}
 Item specific context menu items: 
@@ -2851,7 +2851,7 @@ many locks can be applied to one Ravel, this makes it easy to edit
 the data as required to fine-tune individual locks. For example, the
 data for \emph{Inflation}\textsubscript{\emph{Average}}\emph{}\textsuperscript{\emph{Normal}}
 initially began in 1950. Since this included a very brief period of
-hyperinflation for Austria associated with Russia ceasing its posr-WWII
+hyperinflation for Austria associated with Russia ceasing its post-WWII
 occupation, it was advisable to alter the selection to start the caliper
 in 1955. This was easily done by applying the state of the lock to
 the Ravel, then editing the caliper, and opening and re-closing the
@@ -2909,125 +2909,180 @@ which will create a new parameter for you to import the data into.
 
 The dialog looks somewhat like this (developments in the import routine
 may change some layout details):
+
 \begin{center}
 \resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialog}} 
-\par\end{center}
+\end{center}
 
-\subsection{Quick instructions}
+It has 4 tabs, which lead you through the import process. The first
+tab is for selecting the source, which may be a file, one of the
+included examples, or a URL to a remote file (possibly zipped).
+
+Once the file is loaded, the form automatically advances to the CSV
+setting tab. For conformant CSV files, only the separator character
+and quote are important. Some nonconformant files use an escape
+character such as `\' to mark the following character as a literal,
+and if using space separated data, you may want to treat successive
+separators as a single separator, in which case, select ``Merge
+delimiters''. If loading Eurpean data, you may need to set the decimal
+separator to `,'.
+
+\begin{center}
+\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialog-CSVSettings}} 
+\end{center}
+
+\subsection{Data selection}
+
+Once the CSV settings are chosen, then you can move to the next stage,
+which is to choose which columns describe the axes of the data, and
+which contain the data.
+
+\begin{center}
+\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialog-DataSelection}} 
+\end{center}
+
+The system will try to automatically guess which columns are axes and
+which are data. Generally speaking, columns consisting entirely of
+numbers are considered data, and the other columns axes. Empty columns
+are set to ``ignore''. However, this may not always be correct --- for
+example if a numerical code is used for classification, or the
+numerical data contains currency specifiers like \$ or $\pounds$. You
+can override the automatic classification by selecting the
+``Dimension'' drop down in each column.
+
+\subsection{Quick instructions for the Data selection form}
 
 \begin{itemize}
 \item Data is typically (but not always) stored in the rightmost columns
-of a CSV file. Shift click to set the top left cell of the data. Columns
-to the left will be marked as axes. 
+  of a CSV file. Shift click to set the top left cell of the data. Columns
+  to the left will be marked as axes. 
 \item Select ``axis'' in the Dimension dropdown to include a column as
-an axis. Column data turns blue. 
+  an axis. Column data turns blue. 
 \item Select ``ignore'' in the Dimension dropdown to exclude a column.
-Column data turns red. 
+  Column data turns red. 
 \item Select ``data'' in the Dimension dropdown to treat a column as a
-data column. Column data turns black. 
+  data column. Column data turns black. 
 \item Select Type for included axis columns. Select one of three types: 
-\begin{description}
-\item [{string}] most general type, data treated as is. 
-\item [{value}] value data must be numerical, e.g. 1, 2, and not quoted
-(as in ``1'', ``2'', etc.)
-\item [{time}] data must refer to date-time data. The format field may
-be used to control interpretation of this data, though if this field
-is left blank, Ravel will interpret the data format itself. Blank
-format assumes data contains year/month/day/hour/minute/second separated
-by some non-numerical character. If fewer than 6 numerical fields
-present (from year to second), smallest units are set to minimum value
-(0 or 1 respectively). 
-\end{description}
-\item Click the OK button. 
-\item Data is imported into the parameter. 
-\item You may need to set units for the imported data field, which can be
-done via the Edit $\rightarrow$ Dimensions menu item.
+  \begin{description}
+  \item [{string}] most general type, data treated as is. 
+  \item [{value}] value data must be numerical, e.g. 1, 2, and not quoted
+    (as in ``1'', ``2'', etc.)
+  \item [{time}] data must refer to date-time data. The format field may
+    be used to control interpretation of this data, though if this field
+    is left blank, Ravel will interpret the data format itself. Blank
+    format assumes data contains year/month/day/hour/minute/second separated
+    by some non-numerical character. If fewer than 6 numerical fields
+    present (from year to second), smallest units are set to minimum value
+    (0 or 1 respectively).
+  \end{description}
+\item The header row can be set by clicking in the left hand margin.
+\item The column names can be quickly populated from the header row
+  from a context menu.
+\item Multiple columns can have their types changed simultaneously by click dragging
+  to select, then changing the value on one of the columns.
+\item When more than one data column exists, it creates a ``horizontal
+  dimension''. This has a name, type and format string, just like a
+  regular axis column.
+\item The ``unique values'' row shows the number of unique values in
+  that column. This can be used to determine columns to exclude (via
+  the ``ignore'' option. This becomes important when the hypercube
+  size is too large to be imported. Ravel uses 64 bit numbers to index
+  into the data cube, and so if the hypercube has more than $2^{64}$
+  elements, Ravel will not be able to import the data. The hypercube
+  size is rendered in red if that is the case. Good columns to ignore
+  are things like unique keys exported from a database.
 \end{itemize}
-In the case shown above, the system has automatically guessed that
-the data is 3 dimensional, and that the first 3 columns give the axis
-labels for each dimension (shown in blue), and the 4th column contains
-the data. The first row has been automatically determined to be the
-first row of the file --- with the dimension names are shown in green.
 
-In this case, the automatic parsing system has worked things out correctly,
-but often times it needs help from the computer user. An example is
-as follows:
-\begin{center}
-\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogFail}} 
-\par\end{center}
-
-In this example, \emph{Ravel} has failed to determine where the data
-starts, probably because of the columns to the right of the ``Price''
-columns. So the first thing to do is tell it where the data is located.
-This is one function of the context menu for data importing. The options
-are:
-
-\noindent\begin{tabular}{|c|p{0.5\textwidth}|}
-\hline 
-Command & Effect\tabularnewline
-\hline 
-\hline 
-Set as header row & Tell Ravel that the selected row contains the header information for
-the import\tabularnewline
-\hline 
-Auto-classify columns as axis/data & Invoke \emph{Ravel}'s automated column classification routine\tabularnewline
-\hline 
-Populate column labels & Transfer the information from the header row to the Name row\tabularnewline
-\hline 
-Populate current column label & Transfer the information from the header to the Name for one column
-only\tabularnewline
-\hline 
-Set start of data row, and column & Tell \emph{Ravel }where data begins in the file\tabularnewline
-\hline 
-Set start of data row & Tell \emph{Ravel} where data begins in the file\tabularnewline
-\hline 
-Set start of data column & Tell \emph{Ravel} where data begins in the file\tabularnewline
-\hline 
-\end{tabular}
-\begin{center}
-\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogSelectData}} 
-\par\end{center}
-
-Note that this causes all columns to the right of ``Price paid''
-to be treated as data, which is not right, since the columns to the
-right of ``Price (text infill)'' are text based columns, not data.
-So we need to mark those columns as either ``axis'' or ``ignore''.
-To do that, click and drag your mouse on the header field, which will
-cause those columns to be selected, like so:
-\begin{center}
-\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogSelectedColumns}} 
-\par\end{center}
-
-Then in the dimensions row, select ``axis'', which flips the selected
-columns:
-\begin{center}
-\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogSelectedAxes}} 
-\par\end{center}
-
-Now the axes index labels are rendered in blue, the axes names in
-green and the data is in black. In this example, some axes have unique
-values, which are not particularly useful to scan over. Other examples
-might have columns that duplicate others, for example when the data
-has been entered via a database program that allows the user to type
-country codes (e.g., LX) rather than the full country name (Luxembourg).
-Only one of these axes is needed to uniquely specify the country,
-so you can exclude the unwanted dimension by choosing ``ignore''
-in the ``Dimension'' row. The deselected columns are rendered in
-red, indicating that its data will not be imported into \emph{Ravel}:
-\begin{center}
-\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogAxesDeselected}} 
-\par\end{center}
-
-In this example, the axis names has not been correctly inferred. Whilst,
-one can manually edit the axis names in the ``Name'' line, a quick
-shortcut is to select ``Populate column labels'' from the context menu. 
-\begin{center}
-\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogAxesNamed}} 
-\par\end{center}
+%\item Click the OK button. 
+%\item Data is imported into the parameter. 
+%\item You may need to set units for the imported data field, which can be
+%done via the Edit $\rightarrow$ Dimensions menu item.
+%\end{itemize}
+%In the case shown above, the system has automatically guessed that
+%the data is 3 dimensional, and that the first 3 columns give the axis
+%labels for each dimension (shown in blue), and the 4th column contains
+%the data. The first row has been automatically determined to be the
+%first row of the file --- with the dimension names are shown in green.
+%
+%In this case, the automatic parsing system has worked things out correctly,
+%but often times it needs help from the computer user. An example is
+%as follows:
+%\begin{center}
+%\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogFail}} 
+%\par\end{center}
+%
+%In this example, \emph{Ravel} has failed to determine where the data
+%starts, probably because of the columns to the right of the ``Price''
+%columns. So the first thing to do is tell it where the data is located.
+%This is one function of the context menu for data importing. The options
+%are:
+%
+%\noindent\begin{tabular}{|c|p{0.5\textwidth}|}
+%\hline 
+%Command & Effect\tabularnewline
+%\hline 
+%\hline 
+%Set as header row & Tell Ravel that the selected row contains the header information for
+%the import\tabularnewline
+%\hline 
+%Auto-classify columns as axis/data & Invoke \emph{Ravel}'s automated column classification routine\tabularnewline
+%\hline 
+%Populate column labels & Transfer the information from the header row to the Name row\tabularnewline
+%\hline 
+%Populate current column label & Transfer the information from the header to the Name for one column
+%only\tabularnewline
+%\hline 
+%Set start of data row, and column & Tell \emph{Ravel }where data begins in the file\tabularnewline
+%\hline 
+%Set start of data row & Tell \emph{Ravel} where data begins in the file\tabularnewline
+%\hline 
+%Set start of data column & Tell \emph{Ravel} where data begins in the file\tabularnewline
+%\hline 
+%\end{tabular}
+%\begin{center}
+%\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogSelectData}} 
+%\par\end{center}
+%
+%Note that this causes all columns to the right of ``Price paid''
+%to be treated as data, which is not right, since the columns to the
+%right of ``Price (text infill)'' are text based columns, not data.
+%So we need to mark those columns as either ``axis'' or ``ignore''.
+%To do that, click and drag your mouse on the header field, which will
+%cause those columns to be selected, like so:
+%\begin{center}
+%\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogSelectedColumns}} 
+%\par\end{center}
+%
+%Then in the dimensions row, select ``axis'', which flips the selected
+%columns:
+%\begin{center}
+%\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogSelectedAxes}} 
+%\par\end{center}
+%
+%Now the axes index labels are rendered in blue, the axes names in
+%green and the data is in black. In this example, some axes have unique
+%values, which are not particularly useful to scan over. Other examples
+%might have columns that duplicate others, for example when the data
+%has been entered via a database program that allows the user to type
+%country codes (e.g., LX) rather than the full country name (Luxembourg).
+%Only one of these axes is needed to uniquely specify the country,
+%so you can exclude the unwanted dimension by choosing ``ignore''
+%in the ``Dimension'' row. The deselected columns are rendered in
+%red, indicating that its data will not be imported into \emph{Ravel}:
+%\begin{center}
+%\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogAxesDeselected}} 
+%\par\end{center}
+%
+%In this example, the axis names has not been correctly inferred. Whilst,
+%one can manually edit the axis names in the ``Name'' line, a quick
+%shortcut is to select ``Populate column labels'' from the context menu. 
+%\begin{center}
+%\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogAxesNamed}} 
+%\par\end{center}
 
 \subsection{Temporal data}
 
-The Date column is current parsed as strings, which not only will
+The Date column is currently parsed as strings, which not only will
 be sorted incorrectly, but even if the data were in a YYYYMMDD format
 which is sorted correctly, will not have a uniform temporal spacing.
 It is therefore important to parse the Date column as temporal data,
@@ -3083,10 +3138,60 @@ expressed like 1972-Q1, use ``\verb+%Y-Q%Q+''. Note that only \%Y
 and \%y can be mixed with \%Q (nothing else makes sense anyway).
 
 Note that if your month data uses month names instead of numerical
-month representation, the it is important you select \%d or \%e
+month representation, then it is important you select \%d or \%e
 depending on whether your day data has leading zeros or not.  This is
 unfortunately a restriction of the underlying date import routine,
 which may change in the future.
+
+\subsection{Import settings}
+
+The final tab allows a few more options. The first line allows setting
+the name, short and long description of the parameter the data is
+being imported into. These could also be changed after the data is
+imported, so is largely a convenience option.
+
+The second line has options for the import process.
+
+\begin{description}
+  \item[Don't fail on invalid data] If selected, Ravel will simply
+    ignore any data it cannot understand --- eg malformed dates etc
+  \item[Missing value] --- the default is ``NaN'', which stands for
+    {\em not a number}, a special IEEE floating point value that Ravel
+    understands to be missing data. You can choose to override it, if
+    that suits your purpose --- eg substituting 0 for missing data in
+    the file.
+  \item[Duplicate keys]
+
+    In a hypercube, data is indexed by a list of indices, collectively
+    known as a key. The indices may be strings, integers or date/time
+    values. If more than one value exists in the CSV file for a given
+    key, Ravel throws a ``Duplicate key'' exception. This exception
+    gives you the option of writing a report, which is basically a sorted
+    version of the original CSV file, with the errors listed at the beginning.
+    You can open this report in a spreadsheet to see if data needs to
+    be corrected or removed.
+    
+    Duplicates will arise if you load data from a transactional database
+    which stores the exact time of every transaction. Here the correct
+    choice on ``Duplicate Key Action'' is to sum the entries so that
+    all sales for a particular day (or month, quarter, or year) are aggregated
+    for analysis of trends in the data.
+
+  \item[Counter mode]
+  \label{counter}
+  
+  As mentioned previously, Ravel is designed to work with numerical
+  data. However, it is possible to work with purely symbolic data by
+  using {\em counter mode}\index{counter mode}. This mode counts the
+  number of times a key is present in the data file --- either zero or
+  one, or in the case of duplicate keys, a value greater than one. You
+  can feed this into a Ravel and perform rollups to analyse the symbols
+  statistically, for example as histograms.
+  
+  To select counter mode, select the ``counter'' check box in the input
+  dialog form. If no data columns are present at all, Ravel
+  automatically selects counter mode.
+\end{description}
 
 Even in the current settings, you may still get a message ``exhausted
 memory --- try reducing the rank'', or a similar message about hitting
@@ -3096,44 +3201,14 @@ to a large, but very sparse hypercube. If you remove those columns,
 then you may encounter the ``Duplicate key'' message. In this case,
 you can aggregate over these records---which is desirable anyway
 to analyse trends in aggregate data. You do this by setting ``Duplicate
-Key Action'' to sum (or perhaps average for this example). After
-some additional playing around with dimensions to aggregate over,
-we can get the data imported.
-\begin{center}
-\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogFinal}} 
-\par\end{center}
+Key Action'' to sum (or perhaps average for this example).
 
-\subsection{Duplicate keys}
-
-In a hypercube, data is indexed by a list of indices, collectively
-known as a key. The indices may be strings, integers or date/time
-values. If more than one value exists in the CSV file for a given
-key, Minsky throws a ``Duplicate key'' exception. This exception
-gives you the option of writing a report, which is basically a sorted
-version of the original CSV file, with the errors listed at the beginning.
-You can open this report in a spreadsheet to see if data needs to
-be corrected or removed.
-
-Duplicates will arise if you load data from a transactional database
-which stores the exact time of every transaction. Here the correct
-choice on ``Duplicate Key Action'' is to sum the entries so that
-all sales for a particular day (or month, quarter, or year) are aggregated
-for analysis of trends in the data.
-
-\subsection{Counter mode}
-\label{counter}
-
-As mentioned previously, Ravel is designed to work with numerical
-data. However, it is possible to work with purely symbolic data by
-using {\em counter mode}\index{counter mode}. This mode counts the
-number of times a key is present in the data file --- either zero or
-one, or in the case of duplicate keys, a value greater than one. You
-can feed this into a Ravel and perform rollups to analyse the symbols
-statistically, for example as histograms.
-
-To select counter mode, select the ``counter'' check box in the input
-dialog form. If no data columns are present at all, Ravel
-automatically selected counter mode.
+%After
+%some additional playing around with dimensions to aggregate over,
+%we can get the data imported.
+%\begin{center}
+%\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogFinal}} 
+%\par\end{center}
 
 \section{Minsky-specific commands}
 
