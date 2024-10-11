@@ -86,6 +86,10 @@ namespace minsky
     /// \a If horizontalName is one of the dimensions, data is written in a tabular format
     void populateFromRavelMetadata(const std::string& metadata, const std::string& horizontalName, std::size_t row);
 
+    /// number of unique values in each column
+    /// corrected for header row, so may be slightly inaccurate if header row contains one of the values
+    const std::vector<size_t>& uniqueValues() const {return m_uniqueValues;}
+    
   private:
     /// try to fill in remainder of spec, given a tokenizer function tf
     /// eg boost::escaped_list_separator<char> tf(escape,separator,quote)
@@ -100,10 +104,13 @@ namespace minsky
     size_t row=0;
     size_t firstEmpty=std::numeric_limits<size_t>::max();
 
+    /// number of unique values in each column
+    std::vector<size_t> m_uniqueValues;
+
     /// process chunk of input, updating guessed spec
     /// @return true if there's no more work to be done
     template <class T>
-    bool processChunk(std::istream& input, const T& tf, size_t until);
+    bool processChunk(std::istream& input, const T& tf, size_t until, std::vector<std::set<std::string>>&);
   };
 
   /// creates a report CSV file from input, with errors sorted at

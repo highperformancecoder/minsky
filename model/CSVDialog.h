@@ -72,6 +72,10 @@ namespace minsky
     void populateHeader(size_t col);
     /// try to classify axis,data,ignore columns based on read in data
     void classifyColumns();
+    /// unique values in each column, ignoring initial header lines
+    /// could slightly underestimate the value, and is never less than
+    /// 1, even for empty columns
+    std::vector<size_t> correctedUniqueValues();
   };
 
   bool isNumerical(const std::string& s);

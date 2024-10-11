@@ -85,7 +85,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
       index: 3,
       caption: 'Import settings',
       disabled: true
-    }  ];
+    }];
 
   selectedTabIndex = 0;
 
@@ -104,6 +104,8 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   selected: boolean[]; ///< per column whether column is selected
   mouseDown = -1;       ///< record of column of previous mouseDown
   dialogState: any;
+  uniqueValues = [];
+
   existingDimensionNames: string[] = [];
   selectableDimensionNames: string[][] = [];
   wedgeOptionPanelVisibleIndex: number = null;
@@ -164,7 +166,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   }
 
   onTabClick(index: number) {
-    if(!this.tabs[index].disabled) this.selectedTabIndex = index;
+    if (!this.tabs[index].disabled) this.selectedTabIndex = index;
   }
 
   zoom(ratio: number) {
@@ -251,11 +253,11 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
       var table = this.inputCsvCanvasContainer.nativeElement.children[0] as HTMLTableElement;
       if (!table) return;
       for (var i = 0; i < this.colType.length; ++i) {
-        var colType = table.rows[1].cells[i + 1]?.children[0] as HTMLInputElement;
+        var colType = table.rows[2].cells[i + 1]?.children[0] as HTMLInputElement;
         if (colType)
           colType.value = this.colType[i];
         if (this.colType[i] === ColType.axis) {
-          var type = table.rows[2].cells[i + 1]?.children[0] as HTMLSelectElement;
+          var type = table.rows[3].cells[i + 1]?.children[0] as HTMLSelectElement;
           var dimension = this.dialogState.spec.dimensions[i];
           if (!dimension) dimension = { type: "string", units: "" };
           type.value = dimension.type;
@@ -306,12 +308,12 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   }
 
   async load() {
-    if(this.url.value === '') return;
+    if (this.url.value === '') return;
 
     this.setParameterNameFromUrl();
 
-    if(this.url.value.includes('://')) {
-      const savePath = await this.electronService.downloadCSV({windowUid: this.itemId, url: this.url.value});
+    if (this.url.value.includes('://')) {
+      const savePath = await this.electronService.downloadCSV({ windowUid: this.itemId, url: this.url.value });
       this.url.setValue(savePath);
     }
 
@@ -328,7 +330,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
 
     await this.parseLines();
 
-    for(const tab of this.tabs) {
+    for (const tab of this.tabs) {
       tab.disabled = false;
     }
 
@@ -347,6 +349,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   async getCSVDialogSpec() {
     this.variableValuesSubCommand.csvDialog.spec.toSchema();
     this.dialogState = await this.variableValuesSubCommand.csvDialog.$properties() as Record<string, unknown>;
+    this.uniqueValues = await this.variableValuesSubCommand.csvDialog.correctedUniqueValues();
   }
 
   updateColumnTypes() {
@@ -377,6 +380,14 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
     this.selected = new Array(this.parsedLines[header]?.length).fill(false);
     this.selectableDimensionNames = this.parsedLines[header] ? this.parsedLines[header].map(header => this.getSelectableNameDimensions(header)) : [];
     this.updateColumnTypes();
+  }
+
+  hypercubeSize() {
+    let r = 1;
+    for (let i in this.uniqueValues)
+      if (this.colType[i] == ColType.axis)
+        r *= this.uniqueValues[i];
+    return r;
   }
 
   onSeparatorChange() {
@@ -511,14 +522,14 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   }
 
   async handleSubmit() {
-    if(this.parameterName.value === '') {
+    if (this.parameterName.value === '') {
       this.setParameterNameFromUrl();
     }
 
     this.updateSpecFromForm();
 
-    if (this.dialogState.spec.dataCols.length===0)
-      this.dialogState.spec.counter=true;
+    if (this.dialogState.spec.dataCols.length === 0)
+      this.dialogState.spec.counter = true;
     let v = new VariableBase(this.electronService.minsky.canvas.item);
     // returns an error message on error
     const res = await v.importFromCSV(this.url.value, this.dialogState.spec) as unknown as string;

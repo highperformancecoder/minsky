@@ -367,6 +367,7 @@ export class CSVDialog extends CppClass {
   async colWidth(...args: number[]): Promise<number> {return this.$callMethod('colWidth',...args);}
   async columnOver(a1: number): Promise<number> {return this.$callMethod('columnOver',a1);}
   async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
+  async correctedUniqueValues(): Promise<number[]> {return this.$callMethod('correctedUniqueValues');}
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
   async draw(): Promise<void> {return this.$callMethod('draw');}
   async flashNameRow(...args: boolean[]): Promise<boolean> {return this.$callMethod('flashNameRow',...args);}
@@ -579,6 +580,7 @@ export class DataSpec extends CppClass {
   async setDataArea(a1: number,a2: number): Promise<void> {return this.$callMethod('setDataArea',a1,a2);}
   async toSchema(): Promise<object> {return this.$callMethod('toSchema');}
   async toggleDimension(a1: number): Promise<void> {return this.$callMethod('toggleDimension',a1);}
+  async uniqueValues(): Promise<number[]> {return this.$callMethod('uniqueValues');}
 }
 
 export class DataSpecSchema extends CppClass {

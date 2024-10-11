@@ -480,13 +480,21 @@ void DataSpec::givenTFguessRemainder(std::istream& initialInput, std::istream& r
   // we don't know how many times we'll be going around the loop here, so pick a largish number for the progress bar
   const ProgressUpdater pu(minsky().progressState,"Guessing CSV format",100);
 
+  vector<set<string>> uniqueVals;
+  m_uniqueValues.clear(); // cleared in case of early return
   try
     {
-      if (processChunk(initialInput, tf, CSVDialog::numInitialLines))
-        return; // found a Ravel hypercube line.
+      if (!processChunk(initialInput, tf, CSVDialog::numInitialLines, uniqueVals)) return;
+      do
+        {
+          m_uniqueValues.resize(uniqueVals.size());
+          for (size_t i=0; i<uniqueVals.size(); ++i) m_uniqueValues[i]=uniqueVals[i].size();
+          ++minsky().progressState;
+        }
+      while (!processChunk(remainingInput, tf, row+CSVDialog::numInitialLines, uniqueVals));
+      m_uniqueValues.resize(uniqueVals.size());
+      for (size_t i=0; i<uniqueVals.size(); ++i) m_uniqueValues[i]=uniqueVals[i].size();
       ++minsky().progressState;
-      while (!processChunk(remainingInput, tf, row+CSVDialog::numInitialLines))
-        ++minsky().progressState;
     }
   catch (std::exception&)
     {
@@ -505,7 +513,7 @@ void DataSpec::guessRemainder(std::istream& initialInput, std::istream& remainin
 }
 
 template <class TokenizerFunction>
-bool DataSpec::processChunk(std::istream& input, const TokenizerFunction& tf, size_t until)
+bool DataSpec::processChunk(std::istream& input, const TokenizerFunction& tf, size_t until, vector<set<string>>& uniqueVals)
 {
   string buf;
   for (; getline(input, buf) && row<until; ++row)
@@ -532,7 +540,7 @@ bool DataSpec::processChunk(std::istream& input, const TokenizerFunction& tf, si
                     ++row;
                   }
                 populateFromRavelMetadata(metadata, horizontalName, row);
-                return true;
+                return false;
               }
             catch (...)
               {
@@ -541,6 +549,10 @@ bool DataSpec::processChunk(std::istream& input, const TokenizerFunction& tf, si
         }
       const boost::tokenizer<TokenizerFunction> tok(buf.begin(),buf.end(), tf);
       const vector<string> line(tok.begin(), tok.end());
+      if (line.size()>uniqueVals.size())
+        uniqueVals.resize(std::min(maxColumn, line.size()));
+      for (size_t i=0; i<uniqueVals.size(); ++i)
+        uniqueVals[i].insert(line[i]);
       starts.push_back(firstNumerical(line));
       nCols=std::max(nCols, line.size());
       if (starts.back()==line.size())

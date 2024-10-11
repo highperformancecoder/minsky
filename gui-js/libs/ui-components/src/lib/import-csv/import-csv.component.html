@@ -180,7 +180,18 @@
             </ng-container>
           </mat-autocomplete>
         </span>
+        <span>
+          <label for="hypercube-size"
+                 title="Number of elements in the hypercube formed by
+                        selected axes. If showing red, then the
+                 hypercube is too large to be imported. Try ignoring
+                 some axes.">Hypercube size</label>
+          <div id="hypercube-size" [style.color]="hypercubeSize()>=1.844674e19?'red':'black'">
+            {{hypercubeSize()}}
+          </div>
+        </span>
       </ng-container>
+      
     </span>
     <div class="tab-area canvas-area" #importCsvCanvasContainer id="import-csv-canvas-container">
       <table *ngIf="parsedLines.length">
@@ -208,6 +219,13 @@
           </td>
         </tr>
         
+        <tr>
+          <th>Unique Values</th>
+          <td *ngFor="let val of uniqueValues; let i = index">
+            {{val}}
+          </td>
+        </tr>
+       
         <tr>
           <th>Dimension</th>
           <td #colTypeRow
