@@ -115,17 +115,17 @@
           />
         </span>
       </span>
-    <!--/div-->
-  </div>
-  <!-- display of parsed CSV to aid selecting CSV parameters -->
-  <div class="tab-area canvas-area" [style.display]="selectedTabIndex !== 1 ? 'none' : 'flex'">
-    <table *ngIf="parsedLines.length">
-      <tr *ngFor="let row of parsedLines; let rowIndex = index">
-        <td class="table-cell" *ngFor="let rowElement of row">
-          {{ rowElement }}
-        </td>
-      </tr>
-    </table>
+      <!--/div-->
+      <!-- display of parsed CSV to aid selecting CSV parameters -->
+      <div class="tab-area canvas-area" [style.display]="selectedTabIndex !== 1 ? 'none' : 'flex'">
+        <table *ngIf="parsedLines.length">
+          <tr *ngFor="let row of parsedLines; let rowIndex = index">
+            <td class="table-cell" *ngFor="let rowElement of row">
+              {{ rowElement }}
+            </td>
+          </tr>
+        </table>
+      </div>
   </div>
 
   <!-- Data selection -->
@@ -182,50 +182,49 @@
         </span>
       </ng-container>
     </span>
-  </div>
-  <div class="tab-area canvas-area" [style.display]="selectedTabIndex !== 2 ? 'none' : 'flex'" #importCsvCanvasContainer id="import-csv-canvas-container">
-    <table *ngIf="parsedLines.length">
-      <tr>
-        <th>Name</th>
-        <td *ngFor="let col of csvCols; let i = index"
-          class="col-type-container wedge-container" [class.selected]="selected[i]"
-          (mousedown)="typeMouseDown($event,i)"
-          (mousemove)="typeMouseMove($event,i)"
-          (mouseup)="typeMouseUp($event,'name',i)"
-            >
-          <input
-            *ngIf="colType[i]==='axis'||colType[i]==='data'"
-            type="text"
-            class="form-control"
-            [value]="dialogState.spec.dimensionNames[i]"
-            (change)="dialogState.spec.dimensionNames[i] = $event.target['value']"
-            >
-          
-          <div *ngIf="selectableDimensionNames[i]?.length > 0" class="material-icons wedge-icon" style="margin-right: -2px" (click)="onWedgeIconClicked($event, i)">expand_more</div>
-
-          <div *ngIf="i === wedgeOptionPanelVisibleIndex" class="wedge-options-panel">
-            <div class="wedge-option" *ngFor="let dimensionName of selectableDimensionNames[i]" (click)="onWedgeOptionClicked($event, i, dimensionName)">{{dimensionName}}</div>
-          </div>
-        </td>
-      </tr>
-
-      <tr>
-        <th>Dimension</th>
-        <td #colTypeRow
-          *ngFor="let col of csvCols; let i = index"
-          class="col-type-container" [class.selected]="selected[i]"
-        >
+    <div class="tab-area canvas-area" #importCsvCanvasContainer id="import-csv-canvas-container">
+      <table *ngIf="parsedLines.length">
+        <tr>
+          <th>Name</th>
+          <td *ngFor="let col of csvCols; let i = index"
+              class="col-type-container wedge-container" [class.selected]="selected[i]"
+              (mousedown)="typeMouseDown($event,i)"
+              (mousemove)="typeMouseMove($event,i)"
+              (mouseup)="typeMouseUp($event,'name',i)"
+              >
+            <input
+              *ngIf="colType[i]==='axis'||colType[i]==='data'"
+              type="text"
+              class="form-control"
+              [value]="dialogState.spec.dimensionNames[i]"
+              (change)="dialogState.spec.dimensionNames[i] = $event.target['value']"
+              >
+            
+            <div *ngIf="selectableDimensionNames[i]?.length > 0" class="material-icons wedge-icon" style="margin-right: -2px" (click)="onWedgeIconClicked($event, i)">expand_more</div>
+            
+            <div *ngIf="i === wedgeOptionPanelVisibleIndex" class="wedge-options-panel">
+              <div class="wedge-option" *ngFor="let dimensionName of selectableDimensionNames[i]" (click)="onWedgeOptionClicked($event, i, dimensionName)">{{dimensionName}}</div>
+            </div>
+          </td>
+        </tr>
+        
+        <tr>
+          <th>Dimension</th>
+          <td #colTypeRow
+              *ngFor="let col of csvCols; let i = index"
+              class="col-type-container" [class.selected]="selected[i]"
+              >
             <select
               (change)="setColType(i,$event.target['value'])"
-            >
+              >
               <option value="axis" style="color:blue">axis</option>
               <option value="data">data</option>
               <option value="ignore" style="color:red">ignore</option>
             </select>
-        </td>
-      </tr>
-
-      <tr>
+          </td>
+        </tr>
+        
+        <tr>
         <th>Type</th>
         <td *ngFor="let col of csvCols; let i = index"
             class="col-type-container col-container"
@@ -235,67 +234,68 @@
             <select
               [value]="dialogState.spec.dimensions[i]?.type "
               (change)="dialogState.spec.dimensions[i].type = $event.target['value']"
-            >
+              >
               <option value="string">string</option>
               <option value="value">value</option>
               <option value="time">time</option>
             </select>
           </ng-container>
         </td>
-      </tr>
-
-      <tr>
-        <th>Format</th>
-        <td *ngFor="let col of csvCols; let i = index"
-            class="col-container" [class.selected]="selected[i]"
-            >
-          <input
-            *ngIf="colType[i]==='axis'"
-            type="text"
-            [value]="dialogState.spec.dimensions[i]?.units"
-            [matAutocomplete]="autocompleteFormat"
-            class="form-control"
-            (change)="dialogState.spec.dimensions[i].units = $event.target['value']"
-          />
-          <mat-autocomplete
-            id="format_{{ i }}"
-            [panelWidth]="'14rem'"
-            #autocompleteFormat="matAutocomplete"
-            (optionSelected)="dialogState.spec.dimensions[i].units = $event.option.value"
-          >
-            <ng-container *ngIf="dialogState.spec.dimensions[i]?.type === 'time'">
-              <mat-option
-                *ngFor="let tfs of timeFormatStrings"
-                [value]="tfs.value"
+        </tr>
+        
+        <tr>
+          <th>Format</th>
+          <td *ngFor="let col of csvCols; let i = index"
+              class="col-container" [class.selected]="selected[i]"
               >
-                {{ tfs.label }}
-              </mat-option>
-            </ng-container>
-          </mat-autocomplete>
-        </td>
-      </tr>
-
-      <tr *ngFor="let row of parsedLines; let rowIndex = index">
-        <th class="header" (click)="selectHeader(rowIndex)">
-          <ng-container *ngIf="rowIndex === dialogState.spec.headerRow
-            && dialogState.spec.headerRow < dialogState.spec.dataRowOffset"
-            >Header</ng-container
-          >
-        </th>
-        <td class="table-cell"
-            *ngFor="let rowElement of row; let colIndex = index"
-            (mousedown)="typeMouseDown($event,colIndex)"
-            (mousemove)="typeMouseMove($event,colIndex)"
-            (mouseup)="typeMouseUp($event,rowIndex,colIndex)"
-            (contextmenu)="contextMenu(rowIndex,colIndex)"
-          [ngStyle]="{ color: getColorForCell(rowIndex, colIndex) }"
-        >
-          {{ rowElement }}
-        </td>
-      </tr>
-    </table>
+            <input
+              *ngIf="colType[i]==='axis'"
+              type="text"
+              [value]="dialogState.spec.dimensions[i]?.units"
+              [matAutocomplete]="autocompleteFormat"
+              class="form-control"
+              (change)="dialogState.spec.dimensions[i].units = $event.target['value']"
+              />
+            <mat-autocomplete
+              id="format_{{ i }}"
+              [panelWidth]="'14rem'"
+              #autocompleteFormat="matAutocomplete"
+              (optionSelected)="dialogState.spec.dimensions[i].units = $event.option.value"
+              >
+              <ng-container *ngIf="dialogState.spec.dimensions[i]?.type === 'time'">
+                <mat-option
+                  *ngFor="let tfs of timeFormatStrings"
+                  [value]="tfs.value"
+                  >
+                  {{ tfs.label }}
+                </mat-option>
+              </ng-container>
+            </mat-autocomplete>
+          </td>
+        </tr>
+        
+        <tr *ngFor="let row of parsedLines; let rowIndex = index">
+          <th class="header" (click)="selectHeader(rowIndex)">
+            <ng-container *ngIf="rowIndex === dialogState.spec.headerRow
+                                 && dialogState.spec.headerRow < dialogState.spec.dataRowOffset"
+                          >Header</ng-container
+                                   >
+          </th>
+          <td class="table-cell"
+              *ngFor="let rowElement of row; let colIndex = index"
+              (mousedown)="typeMouseDown($event,colIndex)"
+              (mousemove)="typeMouseMove($event,colIndex)"
+              (mouseup)="typeMouseUp($event,rowIndex,colIndex)"
+              (contextmenu)="contextMenu(rowIndex,colIndex)"
+              [ngStyle]="{ color: getColorForCell(rowIndex, colIndex) }"
+              >
+            {{ rowElement }}
+          </td>
+        </tr>
+      </table>
+    </div>
   </div>
-
+  
   <div class="tab-area settings-area" [style.display]="selectedTabIndex !== 3 ? 'none' : 'flex'">
     <div class="options-row">
       <span class="inputs-group import-settings">
@@ -306,7 +306,7 @@
             type="text"
             formControlName="parameterName"
             class="form-control"
-          />
+            />
         </span>
         <span class="wide-input">
           <label for="shortDescription" title="Short description">Short description</label>
@@ -315,7 +315,7 @@
             type="text"
             formControlName="shortDescription"
             class="form-control"
-          />
+            />
         </span>
         <span class="wide-input">
           <label for="detailedDescription" title="Detailed description">Detailed description</label>
@@ -324,50 +324,50 @@
             type="text"
             formControlName="detailedDescription"
             class="form-control"
-          />
+            />
         </span>
       </span>
       <span class="inputs-group import-options">
         <span>
           <label for="dontFail" title="Selecting this discards erroneous
-          data from being imported.">Don't fail on invalid data</label>
+                                       data from being imported.">Don't fail on invalid data</label>
           <input id="dontFail" type="checkbox" formControlName="dontFail"/>
         </span>
         <span>
           <label for="missing-value" title="Value to substitute for
-          missing data.">Missing Value</label>
+                                            missing data.">Missing Value</label>
           <input
             id="missing-value"
             type="text"
             formControlName="missingValue"
             [matAutocomplete]="missingValue"
             class="form-control autocomplete"
-          />
+            />
           <mat-autocomplete [panelWidth]="'10rem'" #missingValue="matAutocomplete">
             <mat-option value="NaN">NaN</mat-option>
             <mat-option value="0">0</mat-option>
           </mat-autocomplete>
         </span>
-
+        
         <span>
           <label for="duplicate-key-action"
-                title="What to do if multiple values exist for the same
-                data element."
-                >Duplicate Key Action</label>
-
+                 title="What to do if multiple values exist for the same
+                        data element."
+                 >Duplicate Key Action</label>
+          
           <select id="duplicate-key-action" formControlName="duplicateKeyAction">
-                <option value="throwException">throwException</option>
-                <option value="sum">sum</option>
-                <option value="product">product</option>
-                <option value="min">min</option>
-                <option value="max">max</option>
-                <option value="av">av</option>
+            <option value="throwException">throwException</option>
+            <option value="sum">sum</option>
+            <option value="product">product</option>
+            <option value="min">min</option>
+            <option value="max">max</option>
+            <option value="av">av</option>
           </select>
         </span>
-
+        
         <span>
           <label for="counter" title="Counts elements instead of reading
-          data. Particularly useful if no numerical data in file.">Counter</label>
+                                      data. Particularly useful if no numerical data in file.">Counter</label>
           <input id="counter" type="checkbox" formControlName="counter"/>
         </span>
       </span>
