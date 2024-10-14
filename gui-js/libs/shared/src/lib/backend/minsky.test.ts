@@ -75,7 +75,7 @@ describe('Minsky tests', ()=>{
      minsky.clearAllMaps();
      expect(await minsky.edited()).toBe(false);
    });
- 
+
   test('copy/cut/paste',async ()=>{
      minsky.load(`${examples}/GoodwinLinear02.mky`);
     minsky.canvas.selection.clear();

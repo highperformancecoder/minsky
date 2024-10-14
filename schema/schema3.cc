@@ -147,6 +147,14 @@ namespace schema3
       auto* j=dynamic_cast<const T*>(i);
       if (j)
         {
+          // do not write invisible unwired GodleyIcon variables to the schema. For #1759.
+          if (auto v=i->variableCast())
+            if (auto g=dynamic_cast<minsky::GodleyIcon*>(v->controller.lock().get()))
+              for (size_t i=0; !g->variableDisplay() && i<2; ++i)
+                if (auto p=v->ports(i).lock())
+                  if (p->wires().empty())
+                    return j;
+          
           items.emplace_back(at(i), *j, at(*j));
           if (auto* g=dynamic_cast<const minsky::GodleyIcon*>(i))
             {
@@ -362,7 +370,8 @@ namespace schema3
                     groups.emplace_back(itemMap[i->get()], **i);
                     for (auto& j: (*i)->items)
                       {
-                        assert(itemMap.count(j.get()));
+                        // some invisible items are excluded from the schema 
+                        assert(!j->visible() || itemMap.count(j.get()));
                         groups.back().items.push_back(itemMap[j.get()]);
                         if (j==(*i)->displayPlot)
                           groups.back().displayPlot=itemMap[j.get()];
