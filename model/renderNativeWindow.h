@@ -66,6 +66,14 @@ namespace minsky
     CLASSDESC_ACCESS(RenderNativeWindow); 
     classdesc::Exclude<std::shared_ptr<WindowInformation>> winInfoPtr;
     RenderFrameArgs m_frameArgs;
+
+    /// a copiable mutex where each copy has a distinct mutex
+    struct CopiableMutux: public std::mutex
+    {
+      CopiableMutux()=default;
+      CopiableMutux(const CopiableMutux&) {}
+    };
+    classdesc::Exclude<CopiableMutux> drawMutex;
   };
 } // namespace minsky
 

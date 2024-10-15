@@ -146,16 +146,6 @@ namespace minsky
 #endif
   }
 
-  void WindowInformation::setRenderingFlag(bool value)
-  {
-    isRendering = value;
-  }
-
-  bool WindowInformation::getRenderingFlag() const
-  {
-    return isRendering;
-  }
-
 #ifdef USE_WIN32_SURFACE
   LRESULT CALLBACK windowProc(HWND hwnd, UINT msg, WPARAM wparam, LPARAM lparam)
   {

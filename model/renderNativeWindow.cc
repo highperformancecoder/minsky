@@ -76,15 +76,20 @@ namespace minsky
   
   void RenderNativeWindow::renderFrame(const RenderFrameArgs& args)
   {
-    m_frameArgs=args;
-    init();
-    winInfoPtr.reset();
-    winInfoPtr = std::make_shared<WindowInformation>(stoull(args.parentWindowId), args.offsetLeft, args.offsetTop, args.childWidth, args.childHeight, args.scalingFactor, hasScrollBars(), [this](){draw();});
-    surface.reset(new NativeSurface(*this)); // ensure callback on requestRedraw works
+    {
+      lock_guard lock(drawMutex);
+      m_frameArgs=args;
+      init();
+      winInfoPtr = std::make_shared<WindowInformation>(stoull(args.parentWindowId), args.offsetLeft, args.offsetTop, args.childWidth, args.childHeight, args.scalingFactor, hasScrollBars(), [this](){draw();});
+      surface.reset(new NativeSurface(*this)); // ensure callback on requestRedraw works
+    }
     draw();
   }
 
-  void RenderNativeWindow::destroyFrame() {winInfoPtr.reset();}
+  void RenderNativeWindow::destroyFrame() {
+    lock_guard lock(drawMutex);
+    winInfoPtr.reset();
+  }
 
   void RenderNativeWindow::macOSXRedraw()
   {
@@ -105,7 +110,8 @@ namespace minsky
   
   void RenderNativeWindow::draw()
   {
-    if (!winInfoPtr.get() || winInfoPtr->getRenderingFlag())
+    lock_guard lock(drawMutex);
+    if (!winInfoPtr.get())
       {
         return;
       }
@@ -117,7 +123,6 @@ namespace minsky
 
     auto surfaceToDraw = winInfoPtr->getBufferSurface();
     if (!surfaceToDraw) return;
-    winInfoPtr->setRenderingFlag(true);
     surfaceToDraw.swap(surface);
 
     cairo_reset_clip(surface->cairo());
@@ -137,7 +142,6 @@ namespace minsky
 #endif
 
     surfaceToDraw.swap(surface);
-    winInfoPtr->setRenderingFlag(false);
     winInfoPtr->copyBufferToMain();
 
     

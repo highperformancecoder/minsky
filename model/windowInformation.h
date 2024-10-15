@@ -68,7 +68,6 @@ namespace minsky
   class WindowInformation: public Winfo
   {
     friend class RenderNativeWindow;
-    bool isRendering=false;
 #if defined(MAC_OSX_TK)
     friend struct NSContext;
 #elif defined(USE_X11)
@@ -87,8 +86,6 @@ namespace minsky
     const bool hasScrollBars=false;
     ecolab::cairo::SurfacePtr bufferSurface;
     std::function<void()> draw;
-    bool getRenderingFlag() const;
-    void setRenderingFlag(bool value);
     void copyBufferToMain();
       
   public:
