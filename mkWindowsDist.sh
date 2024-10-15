@@ -4,6 +4,7 @@
 
 version=`cut -f3 -d' ' minskyVersion.h|head -1|tr -d '"'`
 pushd gui-js
+export NX_DAEMON=false # prevent hang in next step
 npm run export:package:windows
 
 if [ -f dynamic_libraries/libravel.dll ]; then
