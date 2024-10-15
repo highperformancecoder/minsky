@@ -339,12 +339,12 @@ ifdef MXE
 	sh mkWindowsDist.sh
 else
 ifndef OBS
-	cd gui-js; npm run export:package:linux
+	cd gui-js; env NX_DAEMON=false npm run export:package:linux
 endif
 endif
 endif
 ifeq ($(OS),Darwin)
-	cd gui-js; npm run export:package:mac
+	cd gui-js; env NX_DAEMON=false npm run export:package:mac
 endif
 endif
 

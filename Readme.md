@@ -20,6 +20,14 @@ Official releases are available from [SourceForge](https://sourceforge.net/proje
 
 To compile Minsky, you will need a suitable posix compliant system, [with a number of prerequisites installed](Compiling.md).
 
+Type `make -j4` in the top level directory of the repository.
+
+## Running Minsky from source code
+
+Minsky can be run directly by running `gui-js/dist/executables/linux-unpacked/minsky`.
+
+You can also run it by running `npm start` from the gui-js directory. At the time of writing, npm start will not work on certain Linux systems. I suspect it has to do with poor IPv6 support in electron, but the cause is as yet unknown.
+
 ## Compiling release versions of Minsky
 
 - [Windows](githubdocs/WindowsRelease.md)
@@ -40,6 +48,7 @@ Notes on using the [REST Service](RESTService.md).
 NB since the upgrade of electron, process is no longer available in the renderer (minsky-web) environment.
 - use `green(`*some string*`)` or `red(`*some string*`)` to colorise log output to make it easier to spot your messages. With console.log, you only need to colourise the first argument.
 - enable front end debugging tools by setting `OPEN_DEV_TOOLS_IN_DEV_BUILD = true` in `libs/shared/src/lib/constants/constants.ts`. This can be very useful in tracking down runtime errors, even syntax errors, as the renderer process fails silently.
+- When building for production (make in toplevel directory, or npm run export:package:*), then you also need to set the environment variable `ELECTRON_IS_DEV=1`
 
 ## Setting up emacs
 

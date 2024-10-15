@@ -1,6 +1,7 @@
 set -e
 cd gui-js
 npm install
+export NX_DAEMON=false
 npm test minsky-electron
 npm test minsky-web
 # commented out tests currently failing
