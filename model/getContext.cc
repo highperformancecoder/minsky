@@ -108,7 +108,6 @@ namespace minsky
 @implementation CairoView
 -(void) drawRect: (NSRect)rect
 {
-  if (winfo->getRenderingFlag()) return;
   auto context = [[NSGraphicsContext currentContext] CGContext];
   auto frame=[self frame];
   CGContextTranslateCTM(context,winfo->offsetLeft,winfo->childHeight); 

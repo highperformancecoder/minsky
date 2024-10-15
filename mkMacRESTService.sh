@@ -81,6 +81,7 @@ mkdir node-addons
 pushd node-addons
 ln -sf ../build/lib*.dylib .
 popd
+export NX_DAEMON=false # prevent hangs in the following steps
 #npm run export:package:mac
 npm run build:web
 npm run build:electron
