@@ -27,38 +27,83 @@ pass()
 }
 
 trap "fail" 1 2 3 15
-cat >input.tcl <<EOF
-source $here/test/assert.tcl
-minsky.load $here/examples/GoodwinLinear02.mky
-minsky.canvas.recentre
-proc afterMinskyStarted {} {
-  puts "minsky started"
-  set numItems [model.numItems]
-  set numWires [model.numWires]
-  focus .wiring.canvas
+cat >input.py <<EOF
+import sys
+sys.path.insert(0, '$here')
+from pyminsky import minsky
 
-#  set w [minsky.model.wires.@elem 1]
-#  set x {[\$w.coords.@elem 0]}
-#  set y {[\$w.coords.@elem 1]}
-#  deleteKey \$x \$y
-  deleteKey 415 290
-  assert "[model.numWires]==[expr \$numWires-1]" {test wire deletion}
-  findVariable emprate
-  deleteKey [minsky.canvas.item.x] [minsky.canvas.item.y]
-  assert "[model.numItems]==[expr \$numItems-1]" {test emprate var deletion}
-  # should also be two more wires deleted
-  assert "[model.numWires]==[expr \$numWires-3]" {test attached wires deletion}
+# Load the model and centre the canvas
+minsky.load('$here/examples/GoodwinLinear02.mky')
+minsky.canvas.recentre()
 
-  findVariable Investment
-  canvas.selectAllVariables
-  deleteKey 0 0
-  assert "[model.numItems]==[expr \$numItems-2]" {test selection deletion}
+# Store initial counts of items and wires
+numItems = minsky.model.numItems()
+numWires = minsky.model.numWires()
 
-  tcl_exit
-}
+# Function to find a variable by name
+def findVariable(name):
+    last_error = None
+    for i in range(len(minsky.model.items)):
+        try:
+            if minsky.model.items[i].name() == name:
+                x = minsky.model.items[i].x()
+                y = minsky.model.items[i].y()
+                print(f"Found variable '{name}' at coordinates ({x}, {y})")
+                # Get the item at coordinates
+                if minsky.canvas.getItemAt(x, y):
+                    return (x, y)
+                else:
+                    print(f"Failed to focus item at ({x}, {y}). Trying manual fallback.")
+                    return (x, y)  # Return coordinates anyway for manual handling
+        except Exception as e:
+            last_error = e
+            pass
+    if last_error:
+        print(f"Error while finding variable '{name}' at last known coordinates: {last_error}")
+    return None
+
+# Function to delete an item or wire at a given position
+def deleteKey(x, y):
+    # Check for a wire or item at the coordinates and delete it
+    if minsky.canvas.getWireAt(x, y):
+        minsky.canvas.deleteWire()
+        print(f"Wire deleted at ({x}, {y})")
+    elif minsky.canvas.getItemAt(x, y):
+        item = minsky.canvas.itemFocus()  # Try to focus on the item
+        if item is not None:
+            print(f"Deleting item at ({x}, {y}), ID: {item.id()}, Type: {item.classType()}")
+            minsky.canvas.deleteItem()
+        else:
+            print(f"Item found but not focused at ({x}, {y}), manually deleting.")
+            minsky.canvas.deleteItem()  # Manually delete if focus fails
+    else:
+        print(f"No item found at ({x}, {y}).")
+
+# Step 1: Delete the wire at coordinates (415, 290)
+deleteKey(415, 290)
+assert minsky.model.numWires() == (numWires - 1), "Test wire deletion failed."
+
+# Step 2: Delete the variable 'emprate'
+emprate_coords = findVariable("emprate")
+if emprate_coords:
+    deleteKey(emprate_coords[0], emprate_coords[1])  # Delete the variable directly using coordinates
+    assert minsky.model.numItems() == (numItems - 1), "Test 'emprate' variable deletion failed."
+    # Two wires should also be deleted after deleting the variable
+    assert minsky.model.numWires() == (numWires - 3), "Test attached wires deletion failed."
+else:
+    raise ValueError("Variable 'emprate' not found in the model.")
+
+# Step 3: Delete the variable 'Investment'
+investment_coords = findVariable("Investment")
+if investment_coords:
+    minsky.canvas.selectAllVariables()
+    deleteKey(investment_coords[0], investment_coords[1])  # Delete the variable using coordinates
+    assert minsky.model.numItems() == (numItems - 2), "Test selection deletion failed."
+else:
+    raise ValueError("Variable 'Investment' not found in the model.")
 EOF
 
-$here/gui-tk/minsky input.tcl
+python3 input.py
 if [ $? -ne 0 ]; then fail; fi
 
 pass
