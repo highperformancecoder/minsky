@@ -1,7 +1,7 @@
 
 // See gui-js/libs/shared/src/test-setup.ts for the equivalent definitions for the jest environment.
 
-import {CppClass, events, Utility, version } from '@minsky/shared';
+import {CppClass, events, Functions, Utility, version } from '@minsky/shared';
 import { WindowManager } from './managers/WindowManager';
 import { BookmarkManager } from './managers/BookmarkManager';
 import { dialog, shell } from 'electron';
@@ -25,6 +25,8 @@ const addonDir = Utility.isPackaged()
 /** REST Service addon */
 export var restService = null;
 try {
+  if (Functions.isWindows())
+    process.chdir(path.dirname(process.execPath));
   restService = require('bindings')(addonDir+'minskyRESTService.node');
 } catch (error) {
   log.error(error);
