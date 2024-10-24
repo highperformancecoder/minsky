@@ -384,9 +384,18 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
 
   hypercubeSize() {
     let r = 1;
+    let dataDims=0;
     for (let i in this.uniqueValues)
-      if (this.colType[i] == ColType.axis)
+      switch (this.colType[i]) {
+      case ColType.axis:
         r *= this.uniqueValues[i];
+        break;
+      case ColType.data:
+        dataDims++;
+        break;
+      }
+    if (dataDims>0)
+      return r*dataDims;
     return r;
   }
 

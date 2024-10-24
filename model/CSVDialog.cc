@@ -385,11 +385,12 @@ std::vector<size_t> CSVDialog::correctedUniqueValues()
 {
   auto r=spec.uniqueValues();
   // apply a correction by removing the values in the header rows
-  std::vector<std::set<std::string>> correction(r.size());
+  vector<set<size_t>> correction(r.size());
   auto parsedLines=parseLines();
-  for (size_t row=0; row<spec.nRowAxes(); ++row)
-    for (size_t col=0; col<correction.size() && col<parsedLines.size(); ++col)
-      correction[col].insert(parsedLines[row][col]);
+  hash<string> h;
+  for (size_t row=0; row<parsedLines.size() && row<spec.nRowAxes(); ++row)
+    for (size_t col=0; col<correction.size() && col<parsedLines[row].size(); ++col)
+      correction[col].insert(h(parsedLines[row][col]));
   for (size_t i=0; i<r.size(); ++i)
     if (r[i]>correction[i].size())
       r[i]-=correction[i].size();

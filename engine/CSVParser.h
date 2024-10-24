@@ -109,8 +109,8 @@ namespace minsky
 
     /// process chunk of input, updating guessed spec
     /// @return true if there's no more work to be done
-    template <class T>
-    bool processChunk(std::istream& input, const T& tf, size_t until, std::vector<std::set<std::string>>&);
+    template <class T, class U>
+    bool processChunk(std::istream& input, const T& tf, size_t until, U&);
   };
 
   /// creates a report CSV file from input, with errors sorted at

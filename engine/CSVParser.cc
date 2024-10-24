@@ -480,7 +480,10 @@ void DataSpec::givenTFguessRemainder(std::istream& initialInput, std::istream& r
   // we don't know how many times we'll be going around the loop here, so pick a largish number for the progress bar
   const ProgressUpdater pu(minsky().progressState,"Guessing CSV format",100);
 
-  vector<set<string>> uniqueVals;
+    // set up off-heap memory allocator, and ensure it is torn down at exit
+  TrackingAllocatorBase::allocatePool();
+  auto onExit=onStackExit([](){TrackingAllocatorBase::deallocatePool();});
+  vector<set<size_t,less<size_t>,TrackingAllocator<size_t>>> uniqueVals;
   m_uniqueValues.clear(); // cleared in case of early return
   try
     {
@@ -512,10 +515,11 @@ void DataSpec::guessRemainder(std::istream& initialInput, std::istream& remainin
     givenTFguessRemainder(initialInput, remainingInput, Parser(escape,separator,quote));
 }
 
-template <class TokenizerFunction>
-bool DataSpec::processChunk(std::istream& input, const TokenizerFunction& tf, size_t until, vector<set<string>>& uniqueVals)
+template <class TokenizerFunction, class UniqueVals>
+bool DataSpec::processChunk(std::istream& input, const TokenizerFunction& tf, size_t until, UniqueVals& uniqueVals)
 {
   string buf;
+  hash<string> h;
   for (; getline(input, buf) && row<until; ++row)
     {
       if (buf.empty()) continue;
@@ -552,7 +556,7 @@ bool DataSpec::processChunk(std::istream& input, const TokenizerFunction& tf, si
       if (line.size()>uniqueVals.size())
         uniqueVals.resize(std::min(maxColumn, line.size()));
       for (size_t i=0; i<uniqueVals.size(); ++i)
-        uniqueVals[i].insert(line[i]);
+        uniqueVals[i].insert(h(line[i]));
       starts.push_back(firstNumerical(line));
       nCols=std::max(nCols, line.size());
       if (starts.back()==line.size())
