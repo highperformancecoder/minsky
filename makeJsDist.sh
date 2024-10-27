@@ -12,7 +12,7 @@ pushd dist/executables/
 rm -rf $name
 mkdir $name
 mv linux-unpacked $name/app
-rm $name/app/resources/node-addons/*.node
+rm $name/app/resources/build/*.node
 popd
 popd
 cp au.com.hpcoders.{Minsky.{desktop,appdata.xml},{Minsky,Ravelation}-mime.xml} gui-js/dist/executables/$name/
