@@ -69,7 +69,7 @@ def deleteKey(x, y):
         minsky.canvas.deleteWire()
         print(f"Wire deleted at ({x}, {y})")
     elif minsky.canvas.getItemAt(x, y):
-        item = minsky.canvas.itemFocus()  # Try to focus on the item
+        item = minsky.canvas.item() 
         if item is not None:
             print(f"Deleting item at ({x}, {y}), ID: {item.id()}, Type: {item.classType()}")
             minsky.canvas.deleteItem()
@@ -79,8 +79,8 @@ def deleteKey(x, y):
     else:
         print(f"No item found at ({x}, {y}).")
 
-# Step 1: Delete the wire at coordinates (415, 290)
-deleteKey(415, 290)
+# Step 1: Delete the wire at coordinates
+deleteKey(450, 50)
 assert minsky.model.numWires() == (numWires - 1), "Test wire deletion failed."
 
 # Step 2: Delete the variable 'emprate'

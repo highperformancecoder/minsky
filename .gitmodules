@@ -3,7 +3,7 @@
 	url = https://github.com/highperformancecoder/ecolab.git
 [submodule "exprtk"]
 	path = exprtk
-	url = https://github.com/ArashPartow/exprtk.git
+	url = https://github.com/highperformancecoder/exprtk.git
 [submodule "RavelCAPI"]
 	path = RavelCAPI
 	url = https://github.com/highperformancecoder/RavelCAPI.git
