@@ -28,25 +28,25 @@ pass()
 
 trap "fail" 1 2 3 15
 
-cat >input.tcl <<EOF
-source $here/test/assert.tcl
-proc afterMinskyStarted {} {
-  minsky.addVariable par parameter
-  assert {[findObject Variable:parameter]}  
-  editItem
-  assert {[winfo ismapped .wiring.editVar]}
-  .wiring.editVar.buttonBar.import invoke
-  assert {[winfo ismapped .wiring.csvImport]}      
-  minsky.value.csvDialog.url $here/test/testEqGodley.csv
-  minsky.value.csvDialog.loadFile  
-  minsky.value.csvDialog.requestRedraw        
-  minsky.value.csvDialog.spec.guessFromFile minsky.value.csvDialog.url      
-  .wiring.csvImport.buttonBar.ok invoke 
-  tcl_exit
-}
+cat >input.py <<EOF
+import sys
+sys.path.insert(0, '$here')
+from pyminsky import minsky
+
+minsky.canvas.addVariable('par','parameter')
+csvDialog=minsky.variableValues[':par'].csvDialog
+csvDialog.url('$here/gui-js/examples/PatentsByCountry1980-2011.csv')
+csvDialog.loadFile()
+assert(len(csvDialog.parseLines())==csvDialog.numInitialLines())
+# TODO - parseLines fails to report all lines in Python
+csvDialog.guessSpecAndLoadFile()
+assert(csvDialog.spec.nRowAxes()==1)
+assert(csvDialog.spec.nColAxes()==2)
+assert(csvDialog.spec.headerRow()==0)
+assert(csvDialog.spec.numCols()==34)
 EOF
 
-$here/gui-tk/minsky input.tcl
+python3 input.py
 if [ $? -ne 0 ]; then fail; fi
 
 pass
