@@ -133,7 +133,6 @@ namespace minsky
         // return a more meaningful error message to the user than what STL does
         if (ValueVector::flowVars.max_size()-ValueVector::flowVars.size()<size())
           throw runtime_error("Maximum processing data exceeded.");
-        cout<<"Adding "<<size()<<" elements to "<<ValueVector::flowVars.size()<<" flowvars"<<endl;
         ValueVector::flowVars.resize(ValueVector::flowVars.size()+size());
         break;
       case stock:
