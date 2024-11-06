@@ -42,9 +42,6 @@ using namespace std;
 #include <boost/token_functions.hpp>
 #include <boost/pool/pool.hpp>
 
-extern "C" void* __libc_malloc(size_t);
-extern "C" void __lib_free(void*);
-
 namespace escapedListSeparator
 {
   // pinched from boost::escape_list_separator, and modified to not throw
@@ -224,97 +221,9 @@ namespace
     }
   };
 
-//  // a std::allocator class that tracks the number of bytes allocated
-//  struct TrackingAllocatorBase
-//  {
-//    static size_t allocatedBytes;
-//    static size_t poolSize;
-//    static char* pool;
-//    static char* nextPool;
-//    static bool destructing;
-//    static void allocatePool() {
-//      poolSize=minsky::minsky().physicalMem();
-//#ifdef _WIN32
-//      pool=reinterpret_cast<char*>(VirtualAlloc(nullptr,poolSize,MEM_COMMIT|MEM_RESERVE,PAGE_READWRITE));
-//      if (!pool)
-//        {
-//          char message[1024];
-//          FormatMessage(FORMAT_MESSAGE_FROM_SYSTEM,nullptr,GetLastError(),MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),message,sizeof(message),nullptr);
-//          cout<<message<<endl;
-//          throw bad_alloc();
-//        }
-//#else
-//      pool=reinterpret_cast<char*>
-//        (mmap(nullptr,poolSize,PROT_READ|PROT_WRITE,MAP_PRIVATE|MAP_ANONYMOUS,-1,0));
-//      if (pool==MAP_FAILED)
-//        {
-//          perror("mmap failed");
-//          throw bad_alloc();
-//        }
-//#endif
-//      nextPool=pool;
-//      allocatedBytes=0;
-//      destructing=false;
-//    }
-//    static void deallocatePool() {
-//#ifdef _WIN32
-//      VirtualFree(pool,poolSize,MEM_DECOMMIT);
-//#else
-//      munmap(pool,poolSize);
-//#endif
-//      pool=nextPool=nullptr;
-//    }
-//  };
-//
-//  size_t TrackingAllocatorBase::allocatedBytes=0;
-//  size_t TrackingAllocatorBase::poolSize=0;
-//  char* TrackingAllocatorBase::pool=nullptr;
-//  char* TrackingAllocatorBase::nextPool=nullptr;
-//  bool TrackingAllocatorBase::destructing=false;
-  
-//  template <class T>
-//  struct TrackingAllocator: TrackingAllocatorBase
-//  {
-//    using value_type=T;
-//    TrackingAllocator()=default;
-//    template <class U> TrackingAllocator(const TrackingAllocator<U>&) {}
-//    unordered_map<size_t, vector<T*>> freeList;
-//    T* allocate(size_t n) {
-//      auto i=freeList.find(n);
-//      if (i!=freeList.end() && !i->second.empty())
-//        {
-//          auto r=i->second.back();
-//          i->second.pop_back();
-//          return r;
-//        }
-//      auto size=n*sizeof(T);
-//      // align to 8 byte boundary
-//      auto mod=size & 7;
-//      if (mod) size=(size-mod)+8;
-//      allocatedBytes+=size;
-//      if (!pool || allocatedBytes>poolSize)
-//        throw bad_alloc();
-//      auto r=reinterpret_cast<T*>(nextPool);
-//      nextPool+=size;
-//      return r;
-//    }
-//    void deallocate(T* p, size_t n) {
-//      if (pool && !destructing)
-//        freeList[n].push_back(p); // recycle allocation
-//    }
-//  };
-
-  template <class T>
-  struct LibCAllocator
-  {
-    using value_type=T;
-    T* allocate(size_t n) {return reinterpret_cast<T*>(__libc_malloc(sizeof(T)*n));}
-    void deallocate(T* p, size_t n) {__libc_free(p);}
-  };
-  
   using SliceLabelToken=uint32_t;
-  using Key=vector<SliceLabelToken/*, TrackingAllocator<SliceLabelToken>*/>;
-  template <class V> using Map=map<Key,V,less<Key>/*,TrackingAllocator<pair<const Key,V>>*/>;
+  using Key=vector<SliceLabelToken, LibCAllocator<SliceLabelToken>>;
+  template <class V> using Map=map<Key,V,less<Key>,LibCAllocator<pair<const Key,V>>>;
 
   struct NoDataColumns: public std::exception
   {
@@ -478,7 +387,7 @@ void DataSpec::setDataArea(size_t row, size_t col)
 
 
 template <class TokenizerFunction>
-void DataSpec::givenTFguessRemainder(std::istream& initialInput, std::istream& remainingInput, const TokenizerFunction& tf)
+void DataSpec::givenTFguessRemainder(std::istream& initialInput, std::istream& remainingInput, const TokenizerFunction& tf, uintmax_t fileSize)
 {
   starts.clear();
   nCols=0;
@@ -488,12 +397,9 @@ void DataSpec::givenTFguessRemainder(std::istream& initialInput, std::istream& r
 
   const BusyCursor busy(minsky());
   // we don't know how many times we'll be going around the loop here, so pick a largish number for the progress bar
-  const ProgressUpdater pu(minsky().progressState,"Guessing CSV format",100);
+  ProgressUpdater pu(minsky().progressState,"Guessing CSV format",100);
 
-    // set up off-heap memory allocator, and ensure it is torn down at exit
-//  TrackingAllocatorBase::allocatePool();
-//  auto onExit=onStackExit([](){TrackingAllocatorBase::deallocatePool();});
-  vector<set<size_t,less<size_t>/*,TrackingAllocator<size_t>*/>> uniqueVals;
+  vector<set<size_t,less<size_t>,LibCAllocator<size_t>>> uniqueVals;
   m_uniqueValues.clear(); // cleared in case of early return
   try
     {
@@ -502,12 +408,18 @@ void DataSpec::givenTFguessRemainder(std::istream& initialInput, std::istream& r
         {
           m_uniqueValues.resize(uniqueVals.size());
           for (size_t i=0; i<uniqueVals.size(); ++i) m_uniqueValues[i]=uniqueVals[i].size();
-          ++minsky().progressState;
+          if (fileSize==-1)
+            ++minsky().progressState;
+          else
+            pu.setProgress(double(remainingInput.tellg())/fileSize);
         }
       while (!processChunk(remainingInput, tf, row+CSVDialog::numInitialLines, uniqueVals));
       m_uniqueValues.resize(uniqueVals.size());
       for (size_t i=0; i<uniqueVals.size(); ++i) m_uniqueValues[i]=uniqueVals[i].size();
-      ++minsky().progressState;
+      if (fileSize==-1)
+        ++minsky().progressState;
+      else
+        pu.setProgress(double(remainingInput.tellg())/fileSize);
     }
   catch (std::exception&)
     {
@@ -516,13 +428,13 @@ void DataSpec::givenTFguessRemainder(std::istream& initialInput, std::istream& r
     }
 }
 
-void DataSpec::guessRemainder(std::istream& initialInput, std::istream& remainingInput, char sep)
+void DataSpec::guessRemainder(std::istream& initialInput, std::istream& remainingInput, char sep, uintmax_t fileSize)
 {
   separator=sep;
   if (separator==' ')
-    givenTFguessRemainder(initialInput, remainingInput, SpaceSeparatorParser(escape,separator,quote)); //assumes merged whitespace separators
+    givenTFguessRemainder(initialInput, remainingInput, SpaceSeparatorParser(escape,separator,quote),fileSize); //assumes merged whitespace separators
   else
-    givenTFguessRemainder(initialInput, remainingInput, Parser(escape,separator,quote));
+    givenTFguessRemainder(initialInput, remainingInput, Parser(escape,separator,quote),fileSize);
 }
 
 template <class TokenizerFunction, class UniqueVals>
@@ -602,7 +514,7 @@ bool DataSpec::processChunk(std::istream& input, const TokenizerFunction& tf, si
 
 
 
-void DataSpec::guessFromStream(std::istream& input)
+void DataSpec::guessFromStream(std::istream& input,uintmax_t fileSize)
 {
   size_t numCommas=0, numSemicolons=0, numTabs=0;
   size_t row=0;
@@ -626,13 +538,13 @@ void DataSpec::guessFromStream(std::istream& input)
   {
     istringstream inputCopy(streamBuf.str());
     if (numCommas>0.9*row && numCommas>numSemicolons && numCommas>numTabs)
-      guessRemainder(inputCopy,input,',');
+      guessRemainder(inputCopy,input,',',fileSize);
     else if (numSemicolons>0.9*row && numSemicolons>numTabs)
-      guessRemainder(inputCopy,input,';');
+      guessRemainder(inputCopy,input,';',fileSize);
     else if (numTabs>0.9*row)
-      guessRemainder(inputCopy,input,'\t');
+      guessRemainder(inputCopy,input,'\t',fileSize);
     else
-      guessRemainder(inputCopy,input,' ');
+      guessRemainder(inputCopy,input,' ',fileSize);
   }
 }
 
@@ -721,7 +633,6 @@ namespace minsky
     Hypercube hc;
     size_t row=0, col=0;
     
-    //~ParseCSV() {TrackingAllocatorBase::destructing=true;}
     template <class E>
     ParseCSV(istream& input, const DataSpec& spec, uintmax_t fileSize, E& onError, bool checkValues=false):
       dimLabels(spec.dimensionCols.size())
@@ -809,17 +720,6 @@ namespace minsky
             ProgressUpdater pu(minsky().progressState, "Reading data",1);
             for (; getWholeLine(input, buf, spec); ++row)
               {
-                if (!memUsageChecked)
-                  // fudge this a bit, because we're using a mmap allocator to bypass Electron's heap
-                  switch (cminsky().checkMemAllocation(1e10/*(2147483648.0*TrackingAllocatorBase::allocatedBytes)/TrackingAllocatorBase::poolSize*/))
-                    {
-                    case Minsky::OK: break;
-                    case Minsky::proceed:
-                      memUsageChecked=true;
-                      break;
-                    case Minsky::abort:
-                      throw runtime_error("memory threshold exceeded");
-                    }
                 const boost::tokenizer<P> tok(buf.begin(), buf.end(), csvParser);
 
                 Key key;
@@ -992,10 +892,6 @@ namespace minsky
     const BusyCursor busy(minsky());
     const ProgressUpdater pu(minsky().progressState, "Importing CSV",4);
 
-    // set up off-heap memory allocator, and ensure it is torn down at exit
-//    TrackingAllocatorBase::allocatePool();
-//    auto onExit=onStackExit([](){TrackingAllocatorBase::deallocatePool();});
-
     {
       // check dimension names are all distinct
       set<string> dimNames{spec.horizontalDimName};
@@ -1004,29 +900,27 @@ namespace minsky
           throw runtime_error("Duplicate dimension: "+spec.dimensionNames[i]);
     }
     
-    ParseCSV<P> parseCSV(input,spec,fileSize,onError);
-    auto& tmpData=parseCSV.tmpData;
-    auto& dimLabels=parseCSV.dimLabels;
-    auto& hc=parseCSV.hc;
-
     try
       {
+        ParseCSV<P> parseCSV(input,spec,fileSize,onError);
+        auto& tmpData=parseCSV.tmpData;
+        auto& dimLabels=parseCSV.dimLabels;
+        auto& hc=parseCSV.hc;
+
         // remove zero length dimensions
-        {
-          auto d=dimLabels.begin();
-          assert(hc.xvectors.size()==dimLabels.size());
-          for (auto i=hc.xvectors.begin(); i!=hc.xvectors.end();)
-            if (i->size()<2)
-              {
-                hc.xvectors.erase(i);
-              }
-            else
-              {
-                ++i;
-                ++d;
-              }
-          assert(hc.xvectors.size()<=dimLabels.size());
-        }
+        auto d=dimLabels.begin();
+        assert(hc.xvectors.size()==dimLabels.size());
+        for (auto i=hc.xvectors.begin(); i!=hc.xvectors.end();)
+          if (i->size()<2)
+            {
+              hc.xvectors.erase(i);
+            }
+          else
+            {
+              ++i;
+              ++d;
+            }
+        assert(hc.xvectors.size()<=dimLabels.size());
         
         for (auto& xv: hc.xvectors)
           xv.imposeDimension();
@@ -1034,9 +928,8 @@ namespace minsky
 
         if (hc.logNumElements()>log(numeric_limits<size_t>::max()))
           throw runtime_error("Hypercube dimensionality exceeds maximum size, results are likely to be garbage.\n"
-                  "Suggest rolling up one or more axes by ignoring them, and setting 'Duplicate Key Action' as appropriate");
+                              "Suggest rolling up one or more axes by ignoring them, and setting 'Duplicate Key Action' as appropriate");
             
-        
         if (log(tmpData.size())-hc.logNumElements()>=log(0.5)) 
           { // dense case
             vv.index({});
@@ -1073,11 +966,10 @@ namespace minsky
             if (cminsky().checkMemAllocation(6*tmpData.size()*sizeof(double))==Minsky::abort)
               throw MemoryExhausted();	  	  		
             auto dims=hc.dims();
-            const ProgressUpdater pu(minsky().progressState,"Indexing and loading",2);
+            const ProgressUpdater pu(minsky().progressState,"Indexing and loading",tmpData.size()+1);
               
-            map<size_t,double> indexValue; // intermediate stash to sort index vector
+            map<size_t,double,less<size_t>,LibCAllocator<pair<const size_t,double>>> indexValue; // intermediate stash to sort index vector
             {
-              const ProgressUpdater pu(minsky().progressState,"Building index",tmpData.size());
               for (auto& i: tmpData)
                 {
                   size_t idx=0;
@@ -1098,17 +990,10 @@ namespace minsky
                   ++minsky().progressState;
                 }
 
-              vv.tensorInit.index(indexValue);
+              vv.tensorInit=indexValue;
+              vv.index(indexValue);
               vv.tensorInit.hypercube(hc);
-            }
-            {
-              const ProgressUpdater pu(minsky().progressState,"Loading data",indexValue.size());
-              size_t j=0;
-              for (auto& i: indexValue)
-                {
-                  vv.tensorInit[j++]=i.second;
-                  ++minsky().progressState;
-                }
+              ++minsky().progressState;
             }
           }
         minsky().progressState.title="Cleaning up";
@@ -1122,7 +1007,7 @@ namespace minsky
       { // replace with a more user friendly error message
         throw MemoryExhausted();
       }
-  }
+  }  
   
   void loadValueFromCSVFile(VariableValue& v, istream& input, const DataSpec& spec, uintmax_t fileSize)
   {

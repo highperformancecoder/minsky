@@ -55,9 +55,9 @@ namespace minsky
     EvalOpVector equations;
     vector<Integral> integrals;
     system.populateEvalOpVector(equations, integrals);
-    vector<double> flow(ValueVector::flowVars);
+    auto flow(ValueVector::flowVars);
 
-        // assign values to unattached input variables
+    // assign values to unattached input variables
     auto iVar=inVariables.begin();
     for (auto v: p)
       {

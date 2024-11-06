@@ -565,7 +565,7 @@ export class DataSpec extends CppClass {
   async duplicateKeyAction(...args: string[]): Promise<string> {return this.$callMethod('duplicateKeyAction',...args);}
   async escape(...args: number[]): Promise<number> {return this.$callMethod('escape',...args);}
   async guessFromFile(a1: string): Promise<void> {return this.$callMethod('guessFromFile',a1);}
-  async guessFromStream(a1: minsky__dummy): Promise<void> {return this.$callMethod('guessFromStream',a1);}
+  async guessFromStream(a1: minsky__dummy,a2: number): Promise<void> {return this.$callMethod('guessFromStream',a1,a2);}
   async headerRow(...args: number[]): Promise<number> {return this.$callMethod('headerRow',...args);}
   async horizontalDimName(...args: string[]): Promise<string> {return this.$callMethod('horizontalDimName',...args);}
   async maxColumn(...args: number[]): Promise<number> {return this.$callMethod('maxColumn',...args);}
@@ -2446,7 +2446,6 @@ export class civita__TensorVal extends CppClass {
   async setArguments(...args: any[]): Promise<void> {return this.$callMethod('setArguments',...args);}
   async shape(): Promise<number[]> {return this.$callMethod('shape');}
   async size(): Promise<number> {return this.$callMethod('size');}
-  async timestamp(): Promise<object> {return this.$callMethod('timestamp');}
   async updateTimestamp(): Promise<void> {return this.$callMethod('updateTimestamp');}
 }
 

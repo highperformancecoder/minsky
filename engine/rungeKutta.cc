@@ -135,7 +135,7 @@ namespace minsky
     running=true;
     
     // create a private copy for worker thread use
-    vector<double> stockVarsCopy(stockVars);
+    auto stockVarsCopy(stockVars);
     RKThreadRunning=true;
     int err=GSL_SUCCESS;
     // run RK algorithm on a separate worker thread so as to not block UI. See ticket #6
@@ -219,7 +219,7 @@ namespace minsky
     const double reverseFactor=reverse? -1: 1;
     // firstly evaluate the flow variables. Initialise to flowVars so
     // that no input vars are correctly initialised
-    vector<double> flow=flowVars;
+    auto flow=flowVars;
     for (size_t i=0; i<equations.size(); ++i)
       equations[i]->eval(flow.data(), flow.size(), sv);
 
@@ -251,7 +251,7 @@ namespace minsky
     const double reverseFactor=reverse? -1: 1;
     // firstly evaluate the flow variables. Initialise to flowVars so
     // that no input vars are correctly initialised
-    vector<double> flow(flowVars);
+    auto flow(flowVars);
     for (size_t i=0; i<equations.size(); ++i)
       equations[i]->eval(flow.data(), flow.size(), vars);
 

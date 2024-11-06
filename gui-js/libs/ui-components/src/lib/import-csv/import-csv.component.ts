@@ -242,7 +242,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
 
       await this.getCSVDialogSpec();
       this.updateForm();
-      this.load();
+      this.load(1);
       this.selectRowAndCol(this.dialogState.spec.dataRowOffset, this.dialogState.spec.dataColOffset);
     })();
   }
@@ -304,10 +304,10 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
     this.url.setValue(filePath);
     this.dialogState.url = filePath;
 
-    await this.load();
+    await this.load(1);
   }
 
-  async load() {
+  async load(selectTab) {
     if (this.url.value === '') return;
 
     this.setParameterNameFromUrl();
@@ -336,7 +336,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
 
     this.fileLoaded = true;
 
-    this.selectedTabIndex = 1;
+    this.selectedTabIndex = selectTab;
   }
 
   setParameterNameFromUrl() {

@@ -63,8 +63,8 @@ string quoted(const string& x)
 
 namespace minsky
 {
-  std::vector<double> ValueVector::stockVars(1);
-  std::vector<double> ValueVector::flowVars(1);
+  std::vector<double,CIVITA_ALLOCATOR<double>> ValueVector::stockVars(1);
+  std::vector<double,CIVITA_ALLOCATOR<double>> ValueVector::flowVars(1);
 
   namespace {
     // special scalar constants
@@ -133,6 +133,7 @@ namespace minsky
         // return a more meaningful error message to the user than what STL does
         if (ValueVector::flowVars.max_size()-ValueVector::flowVars.size()<size())
           throw runtime_error("Maximum processing data exceeded.");
+        cout<<"Adding "<<size()<<" elements to "<<ValueVector::flowVars.size()<<" flowvars"<<endl;
         ValueVector::flowVars.resize(ValueVector::flowVars.size()+size());
         break;
       case stock:

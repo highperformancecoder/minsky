@@ -60,7 +60,7 @@ LINK=$(CPLUSPLUS)
 endif
 endif
 
-MAKEOVERRIDES+=FPIC=1 CLASSDESC=$(shell pwd)/ecolab/bin/classdesc EXTRA_FLAGS="-I$(shell pwd)/ecolab/include" CPLUSPLUS="$(CPLUSPLUS)" GCOV=$(GCOV)
+MAKEOVERRIDES+=FPIC=1 CLASSDESC=$(shell pwd)/ecolab/bin/classdesc EXTRA_FLAGS="-I$(shell pwd)/ecolab/include -DCIVITA_ALLOCATOR=civita::LibCAllocator" CPLUSPLUS="$(CPLUSPLUS)" GCOV=$(GCOV)
 ifneq ($(MAKECMDGOALS),clean)
 build_ravelcapi:=$(shell cd RavelCAPI; if  $(MAKE) $(JOBS) $(MAKEOVERRIDES)  >build.log 2>&1; then echo "ravelcapi built"; fi) 
 $(warning $(build_ravelcapi))
@@ -201,7 +201,7 @@ ifdef CLASSDESC_ARITIES
 FLAGS+=-DUSE_UNROLLED -DCLASSDESC_ARITIES=$(CLASSDESC_ARITIES)
 endif
 
-FLAGS+=-std=c++20 -UTR1 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -IRavelCAPI/civita -IRavelCAPI -DCLASSDESC $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-deprecated-declarations -Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-attributes
+FLAGS+=-std=c++20 -UTR1 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -IRavelCAPI/civita -IRavelCAPI -DCLASSDESC $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-deprecated-declarations -Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-attributes -DCIVITA_ALLOCATOR=civita::LibCAllocator
 
 ifeq ($(CPLUSPLUS),clang++)
 FLAGS+=-Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-defaulted-function-deleted

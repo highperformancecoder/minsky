@@ -28,6 +28,7 @@
 #include <string>
 #include <set>
 #include <fstream>
+#include <filesystem>
 
 namespace minsky
 {
@@ -73,13 +74,13 @@ namespace minsky
     void setDataArea(std::size_t row, std::size_t col);
     
     /// initial stab at dataspec from examining stream
-    void guessFromStream(std::istream& file);
+    void guessFromStream(std::istream& file, uintmax_t fileSize=uintmax_t(-1));
 
     /// initial stab at dataspec from examining file
     void guessFromFile(const std::string& fileName) {
       std::ifstream is(fileName);
       stripByteOrderingMarker(is);
-      guessFromStream(is);
+      guessFromStream(is, std::filesystem::file_size(fileName));
     }
 
     /// populates this spec from a "RavelHypercube" entry, \a row is the row being read, used to set the headerRow attribute
@@ -94,10 +95,10 @@ namespace minsky
     /// try to fill in remainder of spec, given a tokenizer function tf
     /// eg boost::escaped_list_separator<char> tf(escape,separator,quote)
     template <class T>
-    void givenTFguessRemainder(std::istream& initialInput, std::istream& remainingInput, const T& tf);
+    void givenTFguessRemainder(std::istream& initialInput, std::istream& remainingInput, const T& tf, uintmax_t fileSize);
 
     /// figure out the tokenizer function and call givenTFguessRemainder
-    void guessRemainder(std::istream& initialInput, std::istream& remainingInput, char separator);
+    void guessRemainder(std::istream& initialInput, std::istream& remainingInput, char separator, uintmax_t fileSize);
 
     std::vector<size_t> starts;
     size_t nCols=0;
