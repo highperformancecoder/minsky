@@ -62,9 +62,4 @@ NOBBLE(std::__1::__wrap_iter<const unsigned long *>,)
 NOBBLE(NOBBLE_TARG(__gnu_cxx::__normal_iterator<const unsigned long*, std::vector<T,A>>),NOBBLE_TARG(class T,class A))
 #endif
 NOBBLE(NOBBLE_TARG(boost::geometry::model::d2::point_xy<T,S>),NOBBLE_TARG(class T,class S))
-namespace classdesc_access
-{
-  template <> struct access_RESTProcess<civita::any>:
-    public classdesc::NullDescriptor<classdesc::RESTProcess_t> {};
-}
 #endif
