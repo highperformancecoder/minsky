@@ -18,13 +18,10 @@ namespace classdesc
   template <class T> struct is_map: public false_type {};
   template <class K, class V> struct is_map<std::map<K,V>>: public true_type {};
 
-  template <class T> struct is_excluded: public false_type {};
-  template <class T> struct is_excluded<Exclude<T>>: public true_type {};
-
-  template <class T, class = void> struct is_iterator: public std::false_type {};
-#ifndef MAC_OSX_TK
-  template <class T, class U> struct is_iterator<__gnu_cxx::__normal_iterator<T,U>>: public true_type {};
-#endif
+//  template <class T, class = void> struct is_iterator: public std::false_type {};
+//#ifndef MAC_OSX_TK
+//  template <class T, class U> struct is_iterator<__gnu_cxx::__normal_iterator<T,U>>: public true_type {};
+//#endif
   
   // general is_iterator class https://stackoverflow.com/questions/4335962/how-to-check-if-a-template-parameter-is-an-iterator-type-or-not doesn't seem to work
 //  template <class T>

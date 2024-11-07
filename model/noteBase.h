@@ -31,10 +31,10 @@ namespace minsky
     mutable bool mouseFocus=false; ///<true if target of a mouseover
     bool selected=false; ///<true if selected for cut, copy or group operation
     bool bookmark=false; ///< Is this item also a bookmark?
-    virtual const std::string& detailedText() const {return m_detailedText;}
-    virtual const std::string& detailedText(const std::string& x) {return m_detailedText=x;}
-    virtual const std::string& tooltip() const {return m_tooltip;}
-    virtual const std::string& tooltip(const std::string& x) {return m_tooltip=x;}
+    virtual std::string const& detailedText() const {return m_detailedText;}
+    virtual std::string const& detailedText(const std::string& x) {return m_detailedText=x;}
+    virtual std::string const& tooltip() const {return m_tooltip;}
+    virtual std::string const& tooltip(const std::string& x) {return m_tooltip=x;}
     /// adjust bookmark list to reflect current configuration
     virtual void adjustBookmark() const {}
     virtual void updateBoundingBox() {}

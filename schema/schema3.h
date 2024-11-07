@@ -235,10 +235,14 @@ namespace schema3
   };
 
   struct MinskyImpl; ///< working structure, not serialised
-  
-  class Minsky
+
+  struct ExcludedMinsky
   {
-    classdesc::Exclude<std::shared_ptr<MinskyImpl>> impl;
+    std::shared_ptr<MinskyImpl> impl;
+  };
+  
+  class Minsky: public Exclude<ExcludedMinsky>
+  {
     CLASSDESC_ACCESS(Minsky);
   public:
     static const int version=3;

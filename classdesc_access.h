@@ -25,7 +25,7 @@
 
 namespace classdesc_access
 {
-  template <class T> struct access_RESTProcess;
+  template <class T, class Enable> struct access_RESTProcess;
 }
 
 // redefine this to include xml_* descriptors

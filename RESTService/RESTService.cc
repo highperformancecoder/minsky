@@ -18,6 +18,7 @@
 */
 
 #include "RESTMinsky.h"
+#include "cairoItems.h"
 #include "minsky_epilogue.h"
 
 using namespace classdesc;
@@ -82,7 +83,7 @@ void processBuffer(const string& buffer)
       cout<<cmd<<"=>";
       cmd.erase(0,1); // remove leading '/'
       replace(cmd.begin(), cmd.end(), '/', '.');
-      write(rminsky.registry.process(cmd, jin),cout);
+      write(rminsky.registry.process(cmd, jin)->asBuffer(),cout);
       cout << endl;
       rminsky.commandHook(cmd, jin);
     }

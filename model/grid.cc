@@ -19,6 +19,7 @@
 
 #undef CLASSDESC_ARITIES
 #define CLASSDESC_ARITIES 0x3f
+#include "cairoItems.h"
 #include "grid.h"
 #include "variablePane.h"
 #include "lasso.h"

@@ -180,6 +180,13 @@ namespace classdesc_access
   template <>
   struct access_json_unpack<ecolab::TCL_args>: public cd::NullDescriptor<cd::json_unpack_t> {};
 
+#ifdef REST_PROCESS_BUFFER
+  template <>
+  struct access_json_pack<classdesc::RESTProcessBase>: public cd::NullDescriptor<cd::json_pack_t> {};
+  template <>
+  struct access_json_unpack<classdesc::RESTProcessBase>: public cd::NullDescriptor<cd::json_unpack_t> {};
+#endif
+
 }
 #endif
 
@@ -189,28 +196,32 @@ namespace classdesc
   struct RESTProcess_t;
 }
 
+#include "dimension.h"
 
 namespace classdesc_access
 {
 #ifdef JSON_PACK_NO_FALL_THROUGH_TO_STREAMING
-  template <class T> struct access_json_pack
+  template <class T,class E> struct access_json_pack
   {
     template <class U>
     void operator()(classdesc::json_pack_t& targ, const classdesc::string& desc,U& arg);
   };
   
-  template <class T> struct access_json_unpack
+  template <class T, class E> struct access_json_unpack
   {
     template <class U>
     void operator()(classdesc::json_pack_t& targ, const classdesc::string& desc,U& arg);
   };
 #endif
 
-  template <class T> struct access_RESTProcess
+  template <class T, class E> struct access_RESTProcess
   {
     template <class U>
     void operator()(classdesc::RESTProcess_t& targ, const classdesc::string& desc,U& arg);
   };
+  
+  template <>
+  struct access_RESTProcess<civita::any,void>: public classdesc::NullDescriptor<classdesc::RESTProcess_t> {};
 }
 
 #ifdef CIVITA_XVECTOR_H

@@ -244,7 +244,7 @@ namespace minsky
 
         civita::ITensor::cancel(false);
         // disable quoting wide characters in UTF-8 strings
-        auto result=write(registry.process(command, arguments),json5_parser::raw_utf8);
+        auto result=write(registry.process(command, arguments)->asBuffer(),json5_parser::raw_utf8);
         commandHook(command,arguments);
         return result;
       }
@@ -563,7 +563,7 @@ struct MinskyAddon: public Addon<MinskyAddon>
   // threads are started and torn down at the right point in time.
   minsky::AddOnMinsky addOnMinsky;
 
-  MinskyAddon(Env env, Object exports)
+  MinskyAddon(Env env, Napi::Object exports)
   {
     minsky::l_minsky=&addOnMinsky; // set the global minsky object
     tsPromiseResolver=TypedThreadSafeFunction<void,PromiseResolver,resolvePromise>::

@@ -19,6 +19,7 @@
 
 #undef CLASSDESC_ARITIES
 #define CLASSDESC_ARITIES 0x3F 
+#include "windowInformation.h"
 #include "cairoItems.h"
 #include "minskyTCL.h"
 #include "minskyTCLObj.h"

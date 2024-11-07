@@ -18,6 +18,7 @@
 */
 
 #include "minsky.h"
+#include "cairoItems.h"
 #include "RESTProcess_base.h"
 #include "minsky_epilogue.h"
 

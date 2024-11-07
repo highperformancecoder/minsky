@@ -19,11 +19,13 @@
 
 // TODO figure out how to switch buffer types... For now, use JSON
 //#define REST_PROCESS_BUFFER classdesc::PythonBuffer
+#include "RESTProcess_base.h"
 #include "pythonBuffer.h"
 
 #include "RESTMinsky.h"
 #include "minsky_epilogue.h"
 #include <Python.h>
+#include <numeric>
 
 using namespace minsky;
 namespace
@@ -141,7 +143,7 @@ struct CppWrapperType: public PyTypeObject
       static Py_ssize_t size(PyObject* self)
       {
         auto cppWrapper=static_cast<CppWrapper*>(self);
-        return moduleMinsky().registry.process(cppWrapper->command+".@size",{}).get_uint64();
+        return moduleMinsky().registry.process(cppWrapper->command+".@size",{})->asBuffer().get_uint64();
       }
 
       static PyObject* getElem(PyObject* self, PyObject* key)
@@ -195,7 +197,7 @@ struct CppWrapperType: public PyTypeObject
     if (!pyObject) return;
     try
       {
-        auto methods=moduleMinsky().registry.process(command+".@list",{});
+        auto methods=moduleMinsky().registry.process(command+".@list",{})->asBuffer();
         if (methods.type()!=RESTProcessType::array) return;
         for (auto& i: methods.array())
           {
@@ -209,8 +211,9 @@ struct CppWrapperType: public PyTypeObject
                 // make special commands representable in python
                 replace(uqMethodName.begin(),uqMethodName.end(),'@','_');
               }
-            else
-              {  // and recurse
+            else if (std::accumulate(command.begin(),command.end(),0.0,
+                                     [](double x,char c){return x+(c=='.');})<5)
+              {  // and recurse to a limited extent, to prevent loops caused by references
                 attachMethods(method, command+methodName);
               }
             PyObject_SetAttrString(pyObject, uqMethodName.c_str(), method.release());

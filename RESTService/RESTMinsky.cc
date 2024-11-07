@@ -18,6 +18,7 @@
 */
 
 #include "RESTMinsky.h"
+#include "cairoItems.h"
 #include "RESTProcess_base.h"
 #include "signature.h"
 #include "signature.xcd"

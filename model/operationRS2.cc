@@ -18,6 +18,7 @@
 */
 
 #define OPNAMEDEF
+#include "pango.h"
 #include "operation.h"
 #include "lasso.h"
 #include "itemT.rcd"

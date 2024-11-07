@@ -29,7 +29,7 @@ pass()
 trap "fail" 1 2 3 15
 
 # A quick and dirty smoketest, to see if minskyVersion can be called
-cp $here/package.json $here/tsconfig.json .
+cp $here/package*.json $here/tsconfig.json .
 npm install
 npx ts-node $here/test/testAddon.ts
 if [ $? -ne 0 ]; then fail; fi

@@ -23,6 +23,7 @@
 #include "stringKeyMap.h"
 #include "intrusiveMap.h"
 #include "bookmark.h"
+#include "cairoItems.h"
 #include "canvas.h"
 #include "clipboard.h"
 #include "dimension.h"

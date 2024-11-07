@@ -17,6 +17,8 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "pango.h"
+#include "cairoItems.h"
 #include "godleyExport.h"
 #include "flowCoef.h"
 #include "latexMarkup.h"

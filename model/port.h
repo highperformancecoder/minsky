@@ -68,7 +68,7 @@ namespace minsky
     /// @}
 
     /// returns a vector of weak references to the wires attached to this port
-    const std::vector<Wire*>& wires() const {return m_wires;}
+    std::vector<Wire*> const& wires() const {return m_wires;}
     std::size_t numWires() const {return m_wires.size();}
     
     /// remove wire from wires. No ownership passed.

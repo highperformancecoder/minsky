@@ -134,18 +134,18 @@ namespace minsky
     PlotWidget* plotWidgetCast() override {return this;}          
 
     /// shadowed label commands to allow latex intepretation
-    const std::string& xlabel() const {return m_xlabel;}
-    const std::string& xlabel(const std::string& x) {
+    std::string const& xlabel() const {return m_xlabel;}
+    std::string const& xlabel(const std::string& x) {
       ecolab::Plot::xlabel=latexToPangoNonItalicised(x);
       return m_xlabel=x;
     }
-    const std::string& ylabel() const {return m_ylabel;}
-    const std::string& ylabel(const std::string& x) {
+    std::string const& ylabel() const {return m_ylabel;}
+    std::string const& ylabel(const std::string& x) {
       ecolab::Plot::ylabel=latexToPangoNonItalicised(x);
       return m_ylabel=x;
     }
-    const std::string& y1label() const {return m_y1label;}
-    const std::string& y1label(const std::string& x) {
+    std::string const& y1label() const {return m_y1label;}
+    std::string const& y1label(const std::string& x) {
       ecolab::Plot::y1label=latexToPangoNonItalicised(x);
       return m_y1label=x;
     }
