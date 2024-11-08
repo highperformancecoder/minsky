@@ -276,14 +276,64 @@ struct CppWrapperType: public PyTypeObject
     RESTStream.close();
     Py_RETURN_NONE;
   }
+
+    // Function to find an object by type name
+  static PyObject* findObject(PyObject* self, PyObject* args)
+  {
+      const char* typeName;
+      if (!PyArg_ParseTuple(args, "s", &typeName))
+      {
+          PyErr_SetString(PyExc_TypeError, "Expected a string argument for typeName");
+          return NULL;
+      }
+
+      auto& minsky = minsky::minsky();
+      auto& canvas = minsky.canvas;
+
+      canvas.item.reset();
+      bool found = false;
+
+      if (std::string(typeName) == "Group" && !canvas.model->groups.empty())
+      {
+          canvas.item = canvas.model->groups.front();
+          found = true;
+      }
+      else
+      {
+          minsky.model->recursiveDo(&GroupItems::items, [&](const Items&, Items::const_iterator i)
+          {
+              if ((*i)->classType() == typeName)
+              {
+                  canvas.item = *i;
+                  found = true;
+                  return true; // Stop recursion
+              }
+              return false;
+          });
+      }
+
+      if (!found || !canvas.item)
+      {
+          Py_RETURN_NONE;
+      }
+
+      // Create a Python wrapper for the found item
+      std::string itemCommand = "minsky.canvas.item";
+      PyObjectRef itemWrapper = CppWrapper::create(itemCommand);
+      attachMethods(itemWrapper, itemCommand);
+
+      return itemWrapper.release();
+  }
   
+  // Add findObject to moduleMethods
   PyMethodDef moduleMethods[] = {
-    {"call", call, METH_VARARGS, "Backend call"},
-    {"openRESTStream", openRESTStream, METH_VARARGS, "Open REST Stream log"},
-    {"closeRESTStream", closeRESTStream, METH_VARARGS, "Close REST Stream log"},
-    {NULL, NULL, 0, NULL} 
+      {"call", call, METH_VARARGS, "Backend call"},
+      {"openRESTStream", openRESTStream, METH_VARARGS, "Open REST Stream log"},
+      {"closeRESTStream", closeRESTStream, METH_VARARGS, "Close REST Stream log"},
+      {"findObject", findObject, METH_VARARGS, "Find an object by type name"}, // New entry for findObject
+      {NULL, NULL, 0, NULL}
   };
-  
+
   PyModuleDef pyminsky = {
     PyModuleDef_HEAD_INIT,
     "pyminsky", // Module name
