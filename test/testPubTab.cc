@@ -133,6 +133,7 @@ SUITE(PubTab)
          {
            VariablePtr var(VariableBase::parameter, "foobar");
            model->addItem(var);
+           var->value(0);
            auto& tab=publicationTabs[0];
            tab.items.emplace_back(var);
            auto& item=tab.items[0];
