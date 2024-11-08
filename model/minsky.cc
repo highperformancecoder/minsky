@@ -1254,7 +1254,7 @@ namespace minsky
             canvas.itemIndicator=g;
         }
     
-    if (canvas.item)
+    if (canvas.itemIndicator)
       {
         auto physX=canvas.itemIndicator->x();
         auto physY=canvas.itemIndicator->y();

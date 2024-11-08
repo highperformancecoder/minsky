@@ -27,13 +27,12 @@ namespace minsky
   /// operations and variables
   struct Slider
   {
-    mutable bool sliderBoundsSet, ///< slider bounds have been initialised at some point
-      sliderStepRel;   /**< sliderStep is relative to the range
+    mutable bool sliderBoundsSet=false, ///< slider bounds have been initialised at some point
+      sliderStepRel=false;   /**< sliderStep is relative to the range
                           [sliderMin,sliderMax] */
 
     mutable double sliderMin, sliderMax, sliderStep;
     bool enableSlider=true;
-    Slider(): sliderBoundsSet(false), sliderStepRel(false) {}
   };
 }
 

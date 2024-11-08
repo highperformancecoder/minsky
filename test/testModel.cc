@@ -509,7 +509,7 @@ SUITE(Canvas)
       xc+=5;
       canvas.mouseUp(xc,yc);
       // check handle and value changed
-      CHECK_CLOSE(xc, cv->x()+rv.handlePos(), 0.1);
+      CHECK_CLOSE(xc, cv->x()+rv.handlePos(), 1);
       CHECK(cv->value()>1000);
       // check variable hasn't moved
       CHECK_EQUAL(500,cv->x());

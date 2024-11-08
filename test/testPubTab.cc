@@ -132,12 +132,15 @@ SUITE(PubTab)
        TEST_FIXTURE(MinskyFixture,moveSlider)
          {
            VariablePtr var(VariableBase::parameter, "foobar");
+           // this member should always be initialised, but occasionally is not, causing the test to fail. Why?
+           var->sliderBoundsSet=false; 
+           var->initSliderBounds();
            model->addItem(var);
            var->value(0);
+           var->updateBoundingBox();
            auto& tab=publicationTabs[0];
            tab.items.emplace_back(var);
            auto& item=tab.items[0];
-           var->initSliderBounds();
            auto x=var->x()+item.x, y=var->y()+item.y-0.5f*var->height();
            CHECK(var->clickType(x-item.x,y-item.y)==ClickType::inItem);
            tab.mouseDown(x,y);

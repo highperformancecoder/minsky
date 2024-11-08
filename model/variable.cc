@@ -577,6 +577,7 @@ void VariableBase::initSliderBounds() const
         }
       sliderStepRel=false;
       sliderBoundsSet=true;
+      sliderStep=0.01*(sliderMax-sliderMin);      
     }
   sliderStep=maxSliderSteps();      
 }

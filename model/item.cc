@@ -257,6 +257,8 @@ namespace minsky
 
   void Item::moveTo(float x, float y)
   {
+    // cowardly refuse to move to a nonsense coordinate
+    if (!finite(x)||!finite(y)) return;
     if (auto g=group.lock())
       {
         const float invZ=1/zoomFactor();

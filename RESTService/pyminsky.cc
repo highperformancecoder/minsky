@@ -240,7 +240,8 @@ struct CppWrapperType: public PyTypeObject
             replace(c.begin(),c.end(),'.','/');
             RESTStream<<'/'<<c<<' '<<write(args)<<endl;
           }
-        const PythonBuffer result(moduleMinsky().registry.process(command, args));
+        auto rr=moduleMinsky().registry.process(command, args);
+        const PythonBuffer result(rr->asBuffer());
         moduleMinsky().commandHook(command,args);
 
         auto pyResult=result.getPyObject();
