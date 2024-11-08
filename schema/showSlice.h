@@ -26,4 +26,6 @@ namespace minsky
 }
 
 #include "showSlice.cd"
+#include "showSlice.xcd"
+#include "showSlice.rcd"
 #endif

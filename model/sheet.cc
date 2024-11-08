@@ -27,7 +27,6 @@
 
 #include "itemT.rcd"
 #include "sheet.rcd"
-#include "showSlice.xcd"
 #include "minskyCairoRenderer.h"
 #include "ravelWrap.h"
 #include "tensorOp.h"
@@ -527,3 +526,6 @@ void Sheet::exportAsCSV(const string& filename, bool tabular) const
   VariableValue vv(VariableType::flow); vv=*value;
   vv.exportAsCSV(filename,"",tabular);
 }
+
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Sheet);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::ItemT<minsky::Sheet>);

@@ -37,7 +37,6 @@ but any renamed attributes require bumping the schema number.
 #include "polyJsonBase.h"
 #include "simulation.h"
 #include "showSlice.h"
-#include "showSlice.xcd"
 
 #include <xsd_generate_base.h>
 #include <vector>

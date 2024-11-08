@@ -33,7 +33,6 @@ using OpItemT=minsky::ItemT<minsky::Operation<T>,minsky::OperationBase>;
   CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Operation<minsky::OperationType::type>); \
   CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(OpItemT<minsky::OperationType::type>);
 
-DEFOP(copy)
 DEFOP(sqrt)
 DEFOP(exp)
 DEFOP(ln)
@@ -73,10 +72,4 @@ DEFOP(difference)
 DEFOP(differencePlus)
 DEFOP(innerProduct)
 DEFOP(outerProduct)
-DEFOP(index)
-DEFOP(gather)
-DEFOP(meld)
-DEFOP(merge)
-DEFOP(slice)
 DEFOP(numOps)
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::NamedOp);
