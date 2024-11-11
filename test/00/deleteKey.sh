@@ -39,6 +39,7 @@ minsky.canvas.recentre()
 # Store initial counts of items and wires
 numItems = minsky.model.numItems()
 numWires = minsky.model.numWires()
+print(f"Initial number of items: {numItems}, Initial number of wires: {numWires}")
 
 # Function to find a variable by name
 def findVariable(name):
@@ -56,8 +57,9 @@ def findVariable(name):
                     print(f"Failed to focus item at ({x}, {y}). Trying manual fallback.")
                     return (x, y)  # Return coordinates anyway for manual handling
         except Exception as e:
-            last_error = e
-            pass
+            last_error = e  # Capture the error in the except block
+
+    # Handle the error if it occurred
     if last_error:
         print(f"Error while finding variable '{name}' at last known coordinates: {last_error}")
     return None
@@ -69,7 +71,7 @@ def deleteKey(x, y):
         minsky.canvas.deleteWire()
         print(f"Wire deleted at ({x}, {y})")
     elif minsky.canvas.getItemAt(x, y):
-        item = minsky.canvas.item() 
+        item = minsky.canvas.item()  # Try to focus on the item
         if item is not None:
             print(f"Deleting item at ({x}, {y}), ID: {item.id()}, Type: {item.classType()}")
             minsky.canvas.deleteItem()
@@ -79,8 +81,8 @@ def deleteKey(x, y):
     else:
         print(f"No item found at ({x}, {y}).")
 
-# Step 1: Delete the wire at coordinates
-deleteKey(450, 50)
+# Step 1: Delete the wire at coordinates (415, 290)
+deleteKey(415, 290)
 assert minsky.model.numWires() == (numWires - 1), "Test wire deletion failed."
 
 # Step 2: Delete the variable 'emprate'
