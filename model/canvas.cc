@@ -29,7 +29,6 @@
 #include "canvas.rcd"
 #include "canvas.xcd"
 #include "eventInterface.rcd"
-#include "polyRESTProcessBase.xcd"
 #include "nobble.h"
 #include "minsky_epilogue.h"
 using namespace std;

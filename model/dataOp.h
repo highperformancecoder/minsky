@@ -31,6 +31,13 @@ namespace minsky
     CLASSDESC_ACCESS(DataOp);
     friend struct SchemaHelper;
     void updateBB() override {bb.update(*this);}
+    void draw(cairo_t* cairo) const override {
+      if (description().empty())
+        OperationBase::draw(cairo);
+      else
+        drawUserFunction(cairo);
+    }
+    
   public:
     ~DataOp() {}
     
@@ -48,16 +55,6 @@ namespace minsky
     double deriv(double) const;
     Units units(bool check) const override {return m_ports[1]->units(check);}
 
-    /// called to initialise a variable value when no input wire is connected
-    //    void initOutputVariableValue(VariableValue&) const;
-
-    void draw(cairo_t* cairo) const override {
-      if (description().empty())
-        OperationBase::draw(cairo);
-      else
-        drawUserFunction(cairo);
-    }
-    
     void pack(classdesc::pack_t& x, const std::string& d) const override;
     void unpack(classdesc::unpack_t& x, const std::string& d) override;
   };

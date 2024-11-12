@@ -19,13 +19,19 @@
 #ifndef CLASSDESC_ACCESS_H
 #define CLASSDESC_ACCESS_H
 
-#include <xml_pack_base.h>
-#include <xml_unpack_base.h>
-#include <xsd_generate_base.h>
+namespace classdesc
+{
+  template <class T> struct base_cast;
+}
 
 namespace classdesc_access
 {
-  template <class T, class Enable> struct access_RESTProcess;
+  template <class T> struct access_pack;
+  template <class T> struct access_unpack;
+  template <class T> struct access_xml_pack;
+  template <class T> struct access_xml_unpack;
+  template <class T> struct access_xsd_generate;
+  template <class T> struct access_random_init;
 }
 
 // redefine this to include xml_* descriptors
@@ -35,7 +41,7 @@ namespace classdesc_access
   friend struct classdesc_access::access_unpack<type>;          \
   friend struct classdesc_access::access_xml_pack<type>;        \
   friend struct classdesc_access::access_xml_unpack<type>;      \
-  friend struct classdesc_access::access_xsd_generate<type> 
-  //  friend struct classdesc_access::access_RESTProcess<type>  
+  friend struct classdesc_access::access_xsd_generate<type>;    \
+  friend struct classdesc_access::access_random_init<type>
 
 #endif

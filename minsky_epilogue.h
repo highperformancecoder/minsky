@@ -20,7 +20,7 @@
 #ifndef MINSKY_EPILOGUE_H
 #define MINSKY_EPILOGUE_H
 
-#if defined(RESTPROCESS_H)
+#if defined(CLASSDESC_RESTPROCESS_BASE_H)
 
 namespace classdesc
 {
@@ -44,13 +44,13 @@ namespace classdesc
     static string name() {return "std::vector<unsigned long long>::const_iterator";}
   };
   
-    #ifdef BOOST_GEOMETRY_GEOMETRIES_POINT_XY_HPP
+#ifdef BOOST_GEOMETRY_GEOMETRIES_POINT_XY_HPP
   template <>
   struct tn<boost::geometry::model::d2::point_xy<float>>
   {
     static string name() {return "boost::geometry::model::d2::point_xy<float>";}
   };
-    #endif
+#endif
  
   
 }
@@ -100,18 +100,14 @@ namespace classdesc_access
     public cd::NullDescriptor<cd::RESTProcess_t> {};
 #endif
   
-#ifdef XVECTOR_H
-  template <>
-  struct access_RESTProcess<minsky::XVector>: public classdesc::NullDescriptor<cd::RESTProcess_t> {};
-  template <>
-  struct access_json_pack<minsky::XVector>: public classdesc::NullDescriptor<cd::json_pack_t> {};
-  template <>
-  struct access_json_unpack<minsky::XVector>: public classdesc::NullDescriptor<cd::json_unpack_t> {};
-#endif
-  template <>
-  struct access_json_pack<cd::RESTProcess_t>: public classdesc::NullDescriptor<cd::json_pack_t> {};
-  template <>
-  struct access_json_unpack<cd::RESTProcess_t>: public classdesc::NullDescriptor<cd::json_unpack_t> {};
+//#ifdef CIVITA_XVECTOR_H
+//  template <>
+//  struct access_RESTProcess<minsky::XVector>: public classdesc::NullDescriptor<cd::RESTProcess_t> {};
+//  template <>
+//  struct access_json_pack<minsky::XVector>: public classdesc::NullDescriptor<cd::json_pack_t> {};
+//  template <>
+//  struct access_json_unpack<minsky::XVector>: public classdesc::NullDescriptor<cd::json_unpack_t> {};
+//#endif
   
 #ifdef BOOST_GEOMETRY_GEOMETRIES_POINT_XY_HPP
   template <>
@@ -142,7 +138,7 @@ namespace classdesc_access
 #include "hypercube.cd"
 #endif
 
-#ifdef JSON_PACK_BASE_H
+#ifdef CLASSDESC_JSON_PACK_BASE_H
 namespace classdesc_access
 {
 
@@ -179,13 +175,6 @@ namespace classdesc_access
   struct access_json_pack<ecolab::TCL_args>: public cd::NullDescriptor<cd::json_pack_t> {};
   template <>
   struct access_json_unpack<ecolab::TCL_args>: public cd::NullDescriptor<cd::json_unpack_t> {};
-
-#ifdef REST_PROCESS_BUFFER
-  template <>
-  struct access_json_pack<classdesc::RESTProcessBase>: public cd::NullDescriptor<cd::json_pack_t> {};
-  template <>
-  struct access_json_unpack<classdesc::RESTProcessBase>: public cd::NullDescriptor<cd::json_unpack_t> {};
-#endif
 
 }
 #endif

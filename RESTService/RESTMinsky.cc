@@ -21,7 +21,6 @@
 #include "cairoItems.h"
 #include "RESTProcess_base.h"
 #include "signature.h"
-#include "signature.xcd"
 #include "minsky_epilogue.h"
 using namespace std;
 

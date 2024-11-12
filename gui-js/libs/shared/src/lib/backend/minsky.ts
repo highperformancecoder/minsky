@@ -534,7 +534,6 @@ export class DataOp extends Item {
   }
   async deriv(a1: number): Promise<number> {return this.$callMethod('deriv',a1);}
   async description(...args: any[]): Promise<string> {return this.$callMethod('description',...args);}
-  async draw(a1: minsky__dummy): Promise<void> {return this.$callMethod('draw',a1);}
   async initRandom(a1: number,a2: number,a3: number): Promise<void> {return this.$callMethod('initRandom',a1,a2,a3);}
   async interpolate(a1: number): Promise<number> {return this.$callMethod('interpolate',a1);}
   async pack(a1: classdesc__pack_t,a2: string): Promise<void> {return this.$callMethod('pack',a1,a2);}
@@ -2295,7 +2294,7 @@ export class VariableValue extends CppClass {
   async hypercube(...args: any[]): Promise<civita__Hypercube> {return this.$callMethod('hypercube',...args);}
   async idx(): Promise<number> {return this.$callMethod('idx');}
   async idxInRange(): Promise<boolean> {return this.$callMethod('idxInRange');}
-  async imposeDimensions(a1: Map<string,civita__Dimension>): Promise<void> {return this.$callMethod('imposeDimensions',a1);}
+  async imposeDimensions(a1: Container<Pair<string,civita__Dimension>>): Promise<void> {return this.$callMethod('imposeDimensions',a1);}
   async index(...args: any[]): Promise<civita__Index> {return this.$callMethod('index',...args);}
   async init(...args: any[]): Promise<string> {return this.$callMethod('init',...args);}
   async isFlowVar(): Promise<boolean> {return this.$callMethod('isFlowVar');}
@@ -2412,7 +2411,7 @@ export class civita__ITensor extends CppClass {
   async cancel(a1: boolean): Promise<void> {return this.$callMethod('cancel',a1);}
   async data(): Promise<number[]> {return this.$callMethod('data');}
   async hypercube(...args: any[]): Promise<civita__Hypercube> {return this.$callMethod('hypercube',...args);}
-  async imposeDimensions(a1: Map<string,civita__Dimension>): Promise<void> {return this.$callMethod('imposeDimensions',a1);}
+  async imposeDimensions(a1: Container<Pair<string,civita__Dimension>>): Promise<void> {return this.$callMethod('imposeDimensions',a1);}
   async index(): Promise<civita__Index> {return this.$callMethod('index');}
   async rank(): Promise<number> {return this.$callMethod('rank');}
   async setArgument(a1: civita__ITensor,a2: civita__ITensor__Args): Promise<void> {return this.$callMethod('setArgument',a1,a2);}
@@ -2446,7 +2445,7 @@ export class civita__TensorVal extends CppClass {
   async data(): Promise<number[]> {return this.$callMethod('data');}
   async end(): Promise<number> {return this.$callMethod('end');}
   async hypercube(...args: any[]): Promise<civita__Hypercube> {return this.$callMethod('hypercube',...args);}
-  async imposeDimensions(a1: Map<string,civita__Dimension>): Promise<void> {return this.$callMethod('imposeDimensions',a1);}
+  async imposeDimensions(a1: Container<Pair<string,civita__Dimension>>): Promise<void> {return this.$callMethod('imposeDimensions',a1);}
   async index(...args: any[]): Promise<civita__Index> {return this.$callMethod('index',...args);}
   async rank(): Promise<number> {return this.$callMethod('rank');}
   async setArgument(a1: civita__ITensor,a2: civita__ITensor__Args): Promise<void> {return this.$callMethod('setArgument',a1,a2);}

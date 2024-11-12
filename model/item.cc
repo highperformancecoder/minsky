@@ -33,8 +33,6 @@
 #include "noteBase.rcd"
 #include "noteBase.xcd"
 #include "polyRESTProcessBase.h"
-#include "polyRESTProcessBase.rcd"
-#include "polyRESTProcessBase.xcd"
 #include "minsky_epilogue.h"
 #include <exception>
 

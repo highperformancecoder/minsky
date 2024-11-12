@@ -23,8 +23,6 @@
 #include "lasso.h"
 #include "RESTProcess_base.h"
 #include "signature.h"
-#include "signature.xcd"
-#include "signature.rcd"
 #include "item.rcd"
 
 #include "group.h"
@@ -39,8 +37,6 @@
 #include "plot.rcd"
 #include "plot.xcd"
 #include "port.rcd"
-#include "polyRESTProcessBase.rcd"
-#include "polyRESTProcessBase.xcd"
 #include "wire.h"
 #include "wire.rcd"
 #include "units.rcd"

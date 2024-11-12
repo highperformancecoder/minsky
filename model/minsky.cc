@@ -39,8 +39,6 @@
 #include "minsky.rcd"
 #include "minsky.xcd"
 #include "signature.h"
-#include "signature.rcd"
-#include "signature.xcd"
 #include "dimension.rcd"
 #include "callableFunction.rcd"
 #include "tensorInterface.xcd"
@@ -48,8 +46,6 @@
 #include "pannableTab.rcd"
 #include "pannableTab.xcd"
 #include "polyRESTProcessBase.h"
-#include "polyRESTProcessBase.rcd"
-#include "polyRESTProcessBase.xcd"
 #include "minsky_epilogue.h"
 
 #include <algorithm>

@@ -76,8 +76,9 @@ namespace classdesc
   template <class T>
   void xsd_generate(xsd_generate_t& g, const string& d, const minsky::Optional<T>& a) 
   {
-    xsd_generate_t::Optional o(g,true); 
-    xsd_generate(g,d,*a);
+    xsd_generate_t::Optional o(g,true);
+    T tmp; // a may be null
+    xsd_generate(g,d,tmp);
   }
 
   template <class T> inline void xml_pack(xml_pack_t& t,const string& d,minsky::Optional<T>& a)
