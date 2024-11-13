@@ -96,8 +96,6 @@ void processBuffer(const string& buffer)
 int main(int argc, const char* argv[])
 {
   const LocalMinsky lm(rminsky);
-  RESTProcess(rminsky.registry,"minsky",minsky::minsky());
-
   const bool batch=argc>1 && argv[1]==string("-batch");
     
   

@@ -14,16 +14,16 @@ numItems=len(minsky.model.items)
 
 for i in range(numItems):
     if minsky.canvas.getItemAt(minsky.model.items[i].x(), minsky.model.items[i].y()):
-        origClassType=minsky.canvas.item().classType()
+        origClassType=minsky.canvas.item.classType()
         # removing GodleyIcon removes dependent variables from model
         if origClassType=="Item" or origClassType=="GodleyIcon": continue
         minsky.canvas.copyItem()
         minsky.canvas.mouseUp(-500, -500)
         assert minsky.canvas.getItemAt(-500, -500)
         if origClassType=="IntOp":
-           assert "Variable:integral"==minsky.canvas.item().classType(),sys.argv[1]
+           assert "Variable:integral"==minsky.canvas.item.classType(),sys.argv[1]
         else:
-           assert origClassType==minsky.canvas.item().classType(), sys.argv[1]
+           assert origClassType==minsky.canvas.item.classType(), sys.argv[1]
         minsky.canvas.deleteItem()
 EOF
 

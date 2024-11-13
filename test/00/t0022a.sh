@@ -34,10 +34,10 @@ import sys
 sys.path.insert(0,'$here')
 from pyminsky import minsky
 minsky.canvas.addVariable('foo','flow')
-minsky.canvas.itemFocus().tooltip('foobar')
-minsky.canvas.itemFocus().detailedText('some longer text')
-assert "foobar"==minsky.canvas.itemFocus().tooltip()
-assert "some longer text"==minsky.canvas.itemFocus().detailedText()
+minsky.canvas.itemFocus.tooltip('foobar')
+minsky.canvas.itemFocus.detailedText('some longer text')
+assert "foobar"==minsky.canvas.itemFocus.tooltip()
+assert "some longer text"==minsky.canvas.itemFocus.detailedText()
 minsky.save('saved.mky')
 EOF
 

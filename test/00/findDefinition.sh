@@ -39,7 +39,7 @@ for i in range(len(minsky.model.items)):
   if item.visible() and  item.classType().startswith("Variable:") or item.classType().startswith("VarConstant"):
     minsky.canvas.getItemAt(item.x(), item.y())
     findResult=minsky.canvas.findVariableDefinition()
-    foundItem=minsky.canvas.itemIndicator()
+    foundItem=minsky.canvas.itemIndicator
     if item.name()=="undef": assert not findResult,"undef" 
     if item.name() in ["param1","3"]: assert item.id()==foundItem.id(), "paramConst" 
     if item.name()=="foo":

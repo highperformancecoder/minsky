@@ -52,9 +52,9 @@ assert len(minsky.canvas.selection.items)==2
 # check findDefinition
 assert findVariable('R')
 minsky.canvas.findVariableDefinition()
-assert minsky.canvas.itemIndicator().name()=="R"
+assert minsky.canvas.itemIndicator.name()=="R"
 # check that the selected variable has its input wired
-assert minsky.canvas.itemIndicator().inputWired()
+assert minsky.canvas.itemIndicator.inputWired()
 EOF
 
 python3 input.py

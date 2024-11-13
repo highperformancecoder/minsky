@@ -44,6 +44,7 @@ namespace minsky
           }
         Minsky::commandHook(command,nargs);
     }
+    RESTMinsky() {RESTProcess(registry,"minsky",static_cast<Minsky&>(*this));}
   };
 }
 

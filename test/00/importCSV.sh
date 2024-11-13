@@ -37,7 +37,7 @@ minsky.canvas.addVariable('par','parameter')
 csvDialog=minsky.variableValues[':par'].csvDialog
 csvDialog.url('$here/gui-js/examples/PatentsByCountry1980-2011.csv')
 csvDialog.loadFile()
-assert(len(csvDialog.parseLines())==csvDialog.numInitialLines())
+assert(len(csvDialog.parseLines()())==csvDialog.numInitialLines())
 # TODO - parseLines fails to report all lines in Python
 csvDialog.guessSpecAndLoadFile()
 assert(csvDialog.spec.nRowAxes()==1)

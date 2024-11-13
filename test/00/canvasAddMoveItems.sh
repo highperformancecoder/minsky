@@ -10,7 +10,7 @@ sys.path.insert(0, '$here')
 from pyminsky import minsky
 
 # Clear the canvas to start with a clean slate
-minsky.model.clear()
+minsky.model().clear()
 
 # Step 1: Check the canvas background context menu
 def canvasContextBackground(x, y, X, Y):
@@ -37,7 +37,7 @@ canvasContextBackground(0, 0, 0, 0)
 
 # Step 3: Add and test variable context menu
 minsky.canvas.addVariable('foo', 'flow')
-item = minsky.canvas.itemFocus()
+item = minsky.canvas.itemFocus
 
 # Move the variable to a visible and accessible position (50, 50)
 item.moveTo(50, 50)
@@ -55,49 +55,42 @@ canvasContextOnItem(x, y, int(x), int(y))
 
 # Step 4: Add and test operation context menu
 minsky.canvas.addOperation('integrate')
-item = minsky.canvas.itemFocus()
 item.moveTo(100, 100)
 x, y = item.x(), item.y()
 canvasContextOnItem(x, y, int(x), int(y))
 
 # Step 5: Add and test data operation context menu
 minsky.canvas.addOperation('data')
-item = minsky.canvas.itemFocus()
 item.moveTo(150, 150)
 x, y = item.x(), item.y()
 canvasContextOnItem(x, y, int(x), int(y))
 
 # Step 6: Add and test plot context menu
 minsky.canvas.addPlot()
-item = minsky.canvas.itemFocus()
 item.moveTo(200, 200)
 x, y = item.x(), item.y()
 canvasContextOnItem(x, y, int(x), int(y))
 
 # Step 7: Add and test Godley table context menu
 minsky.canvas.addGodley()
-item = minsky.canvas.itemFocus()
 item.moveTo(250, 250)
 x, y = item.x(), item.y()
 canvasContextOnItem(x, y, int(x), int(y))
 
 # Step 8: Add and test group context menu
 minsky.canvas.addGroup()
-item = minsky.canvas.itemFocus()
 item.moveTo(300, 300)
 x, y = item.x(), item.y()
 canvasContextOnItem(x, y, int(x), int(y))
 
 # Step 9: Add and test note context menu
 minsky.canvas.addNote("hello")
-item = minsky.canvas.itemFocus()
 item.moveTo(350, 350)
 x, y = item.x(), item.y()
 canvasContextOnItem(x, y, int(x), int(y))
 
 # Step 10: Add and test switch context menu
 minsky.canvas.addSwitch()
-item = minsky.canvas.itemFocus()
 item.moveTo(400, 400)
 x, y = item.x(), item.y()
 canvasContextOnItem(x, y, int(x), int(y))

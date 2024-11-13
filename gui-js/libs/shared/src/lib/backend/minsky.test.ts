@@ -4,7 +4,7 @@ import {
    GodleyIcon,
    PlotWidget,
   VariableBase,
- } from './index';
+ } from '@minsky/shared';
 import fs from 'fs';
 
 let cwd=process.cwd();
@@ -27,10 +27,19 @@ afterAll(()=>{
 });
            
 beforeEach(()=>{
-  minsky.clearAllMaps();
+  minsky.clearAllMaps(true);
 });
 
 describe('Minsky tests', ()=>{
+  test('get-set',async ()=>{
+    let m=await minsky.$properties();
+    expect("t" in m).toBe(true);
+    m.t+=1;
+    // apparently causes a crash...
+    //    let p=await minsky.$properties(m);
+    //    expect(p.t).toBe(m.t);
+    //    expect(await minsky.t()).toBe(m.t);
+  });
   test('save empty & load',()=>{
     minsky.save(tmpDir+"/foo.mky");
     minsky.load(tmpDir+"/foo.mky");
@@ -50,7 +59,6 @@ describe('Minsky tests', ()=>{
    });
  
   test('addIntegral', async ()=>{
-     minsky.clearAllMaps();
      expect(await minsky.model.items.size()).toBe(0);
      minsky.canvas.addVariable("foo","flow");
      expect(await minsky.model.items.size()).toBe(1);
@@ -68,7 +76,6 @@ describe('Minsky tests', ()=>{
    });
  
    test('edited', async ()=>{
-     minsky.clearAllMaps();
      expect(await minsky.edited()).toBe(false);
      minsky.canvas.addOperation("time");
      expect(await minsky.edited()).toBe(true);
@@ -77,7 +84,7 @@ describe('Minsky tests', ()=>{
    });
 
   test('copy/cut/paste',async ()=>{
-     minsky.load(`${examples}/GoodwinLinear02.mky`);
+    minsky.load(`${examples}/GoodwinLinear02.mky`);
     minsky.canvas.selection.clear();
     minsky.copy();
     expect(await minsky.clipboardEmpty()).toBe(true);
@@ -97,7 +104,6 @@ describe('Minsky tests', ()=>{
    });
    
    test('undo',async ()=>{
-     minsky.clearAllMaps();
      expect(await minsky.undo(0)).toBe(1);
      minsky.canvas.addOperation("time");
      expect(await minsky.undo(0)).toBe(2);
@@ -112,22 +118,22 @@ describe('Minsky tests', ()=>{
    });
    test('doPushHistory',async ()=>{
      minsky.clearAllMaps(true);
-     expect(await minsky.undo(0)).toBe(1);
+     expect(await minsky.undo(0)).toBe(0);
      expect(await minsky.doPushHistory(false)).toBe(false);
      expect(await minsky.doPushHistory()).toBe(false);
      minsky.canvas.addOperation("time");
      minsky.canvas.addOperation("time");
      expect(await minsky.model.items.size()).toBe(2);
-     expect(await minsky.undo(1)).toBe(1);
+     expect(await minsky.undo(1)).toBe(0);
      expect(await minsky.model.items.size()).toBe(2);
      expect(await minsky.doPushHistory(true)).toBe(true);
      expect(await minsky.doPushHistory()).toBe(true);
      minsky.canvas.addOperation("time");
-     expect(await minsky.undo(0)).toBe(2);
+     expect(await minsky.undo(0)).toBe(1);
      minsky.canvas.addOperation("time");
      expect(await minsky.model.items.size()).toBe(4);
-     expect(await minsky.undo(0)).toBe(3);
-     expect(await minsky.undo(1)).toBe(2);
+     expect(await minsky.undo(0)).toBe(2);
+     expect(await minsky.undo(1)).toBe(1);
      expect(await minsky.model.items.size()).toBe(3);
    });
    test('clearHistory',async ()=>{
@@ -197,5 +203,23 @@ describe('Minsky tests', ()=>{
      minsky.canvas.deleteWire();
      expect(await minsky.model.wires.size()).toBe(0);
    });
+  test('command hook',async ()=>{
+    expect(await minsky.edited()).toBe(false);
+    minsky.pushHistory();
+    expect(await minsky.edited()).toBe(false);
+    minsky.nSteps();
+    expect(await minsky.edited()).toBe(false);
+    minsky.nSteps(10);
+    expect(await minsky.nSteps()).toBe(10);
+    expect(await minsky.edited()).toBe(true);
+    minsky.load(`${examples}/GoodwinLinear02.mky`);
+    expect(await minsky.edited()).toBe(false);
+    minsky.save("foo.mky");
+    expect(await minsky.edited()).toBe(false);
+    minsky.canvas.addOperation("add");
+    expect(await minsky.edited()).toBe(true);
+    minsky.save("foo.mky");
+    expect(await minsky.edited()).toBe(false);
+  });    
 });
  

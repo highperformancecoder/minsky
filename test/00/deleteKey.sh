@@ -71,7 +71,7 @@ def deleteKey(x, y):
         minsky.canvas.deleteWire()
         print(f"Wire deleted at ({x}, {y})")
     elif minsky.canvas.getItemAt(x, y):
-        item = minsky.canvas.item()  # Try to focus on the item
+        item = minsky.canvas.item  # Try to focus on the item
         if item is not None:
             print(f"Deleting item at ({x}, {y}), ID: {item.id()}, Type: {item.classType()}")
             minsky.canvas.deleteItem()

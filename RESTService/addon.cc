@@ -199,7 +199,6 @@ namespace minsky
       
       AddOnMinsky(): thread([this](){run();}) {
         flags=0;
-        RESTProcess(registry,"minsky",static_cast<Minsky&>(*this));
       }
       
       ~AddOnMinsky() {

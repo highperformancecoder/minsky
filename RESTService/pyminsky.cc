@@ -19,13 +19,54 @@
 
 // TODO figure out how to switch buffer types... For now, use JSON
 //#define REST_PROCESS_BUFFER classdesc::PythonBuffer
-#include "RESTProcess_base.h"
+#include "minsky.h"
+#include "minsky_epilogue.h"
 #include "pythonBuffer.h"
 
-#include "RESTMinsky.h"
-#include "minsky_epilogue.h"
-#include <Python.h>
-#include <numeric>
+namespace pyminsky
+{
+  minsky::Minsky minsky;
+  CLASSDESC_ADD_GLOBAL(minsky);
+
+  minsky::Item& findObject(const std::string& typeName)
+  {
+    using namespace minsky;
+    auto& canvas = minsky.canvas;
+
+    canvas.item.reset();
+
+    if (typeName == "Group" && !canvas.model->groups.empty())
+      canvas.item = canvas.model->groups.front();
+    else
+      minsky.model->recursiveDo(&GroupItems::items, [&](const Items&, Items::const_iterator i)
+      {
+        if ((*i)->classType() == typeName)
+          {
+            canvas.item = *i;
+            return true; // Stop recursion
+          }
+        return false;
+      });
+
+    return *canvas.item;
+  }
+
+  CLASSDESC_ADD_FUNCTION(findObject);
+}
+
+CLASSDESC_PYTHON_MODULE(pyminsky);
+
+namespace minsky
+{
+  LocalMinsky::LocalMinsky(Minsky&) {}
+  LocalMinsky::~LocalMinsky() {}
+  // GUI callback needed only to solve linkage problems
+  void doOneEvent(bool) {}
+  Minsky& minsky() {return pyminsky::minsky;}
+}
+
+
+#if 0
 
 using namespace minsky;
 namespace
@@ -373,3 +414,4 @@ PyMODINIT_FUNC PyInit_pyminsky(void)
   return module;
 }
 
+#endif

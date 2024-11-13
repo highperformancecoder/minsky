@@ -60,7 +60,7 @@ with open(sys.argv[2]) as log:
                 valueDict[row[i]]=[float(row[i+1])]
 
 
-        for name in minsky.variableValues._keys():
+        for name in minsky.variableValues.keys():
             if re.search("^constant:",name) != None: continue
             value=minsky.variableValues[name]
             if value.temp(): continue
