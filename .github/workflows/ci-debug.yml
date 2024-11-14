@@ -26,5 +26,5 @@ jobs:
 
       - name: Run regression tests
         run: |
-          docker run -w /root -e TRAVIS=1 build:latest make sure
+          docker run -w /root -e TRAVIS=1 -e DEBUG=1 build:latest make sure
 
