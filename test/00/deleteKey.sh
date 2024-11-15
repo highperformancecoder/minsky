@@ -81,8 +81,8 @@ def deleteKey(x, y):
     else:
         print(f"No item found at ({x}, {y}).")
 
-# Step 1: Delete the wire at coordinates (415, 290)
-deleteKey(415, 290)
+# Step 1: Delete the wire at coordinates (450, 50)
+deleteKey(450, 50)
 assert minsky.model.numWires() == (numWires - 1), "Test wire deletion failed."
 
 # Step 2: Delete the variable 'emprate'
