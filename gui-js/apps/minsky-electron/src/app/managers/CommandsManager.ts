@@ -453,11 +453,12 @@ export class CommandsManager {
     if (WindowManager.currentTab?.$prefix().includes("publicationTabs"))
       WindowManager.renderFrame(); // required because undo rewrites all the pubtabs
   }
-  
+
+  // clears the system to an empty state
+  // return true if successful, false if user cancelled.
   static async createNewSystem() {
-    const canProceed = await this.canCurrentSystemBeClosed();
-    if (!canProceed) {
-      return;
+    if (!await this.canCurrentSystemBeClosed()) {
+      return false;
     }
 
     WindowManager.activeWindows.forEach((window) => {
@@ -479,6 +480,7 @@ export class CommandsManager {
     await minsky.doPushHistory(true);
     WindowManager.getMainWindow()?.webContents?.send(events.CHANGE_MAIN_TAB); // not necesarily removed, maybe added
     WindowManager.getMainWindow()?.webContents?.send(events.PUB_TAB_REMOVED); // not necesarily removed, maybe added
+    return true;
   }
 
   static async saveGroupAsFile(): Promise<void> {
@@ -552,7 +554,7 @@ export class CommandsManager {
   static async openNamedFile(filePath: string) {
     const autoBackupFileName = filePath + '#';
 
-    await this.createNewSystem();
+    if (!await this.createNewSystem()) return;
 
     WindowManager.scrollToCenter();
 
@@ -1007,6 +1009,7 @@ export class CommandsManager {
     WindowManager.getMainWindow().setTitle(filePath);
     this.currentMinskyModelFilePath=filePath;
     minsky.save(filePath);
+    minsky.setAutoSaveFile(filePath+'#');
     ipcMain.emit(events.ADD_RECENT_FILE, null, filePath);
   }
   

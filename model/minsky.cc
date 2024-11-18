@@ -1352,12 +1352,18 @@ namespace minsky
       "minsky.clearAllMaps",
       "minsky.doPushHistory",
       "minsky.fontScale",
+      "minsky.load",
       "minsky.model.zoom",
+      "minsky.multipleEquities",
       "minsky.openGroupInCanvas",
       "minsky.openModelInCanvas",
       "minsky.popFlags",
       "minsky.pushFlags",
       "minsky.pushHistory",
+      "minsky.redrawAllGodleyTables",
+      "minsky.reverse",
+      "minsky.running",
+      "minsky.save",
       "minsky.select",
       "minsky.selectVar",
       "minsky.setGodleyDisplayValue",
@@ -1367,14 +1373,9 @@ namespace minsky
       "minsky.setRavelIconResource",
       "minsky.setAutoSaveFile",
       "minsky.step",
-      "minsky.running",
-      "minsky.multipleEquities",
-      "minsky.undo",
-      "minsky.load",
-      "minsky.reverse",
-      "minsky.redrawAllGodleyTables"
+      "minsky.undo"
     };
-    if (doPushHistory && constableCommands.contains(command)==0 &&
+    if (doPushHistory && !constableCommands.contains(command) &&
         command.find("minsky.phillipsDiagram")==string::npos &&
         command.find("minsky.equationDisplay")==string::npos && 
         command.find("minsky.publicationTabs")==string::npos && 
