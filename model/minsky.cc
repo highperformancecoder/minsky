@@ -1036,6 +1036,7 @@ namespace minsky
           throw runtime_error("cannot save to "+filename);
       throw;
     }
+    pushHistory(); // ensure history is up to date to prevent trivial setting of dirty flag
     flags &= ~is_edited;
     fileVersion=minskyVersion;
     if (autoSaver)
