@@ -68,12 +68,29 @@ namespace minsky
     struct ValueAccessor: ecolab::TCLAccessor<minsky::VariableBase,double> {ValueAccessor();};
   }
 
+  /// caches need copy operations to be nobbled, because they hold a reference to the derived variable
+  class VariableCaches
+  {
+  CLASSDESC_ACCESS(VariableCaches);
+  protected:
+    /// cached Pango objects
+    mutable classdesc::Exclude<std::shared_ptr<RenderVariable>> cachedNameRender;
+    mutable classdesc::Exclude<std::shared_ptr<ecolab::Pango>> cachedMantissa;
+    mutable classdesc::Exclude<std::shared_ptr<ecolab::Pango>> cachedExponent;
+    mutable double cachedValue, cachedTime;
+  public:
+    VariableCaches()=default;
+    VariableCaches(const VariableCaches&) {}
+    VariableCaches& operator=(const VariableCaches&) {return *this;}
+  };
+  
   class VariableBase: virtual public classdesc::PolyPackBase,
                       public BottomRightResizerItem,
                       public Slider, public VariableType,
                       public VarAccessors::NameAccessor,
                       public VarAccessors::InitAccessor,
-                      public VarAccessors::ValueAccessor
+                      public VarAccessors::ValueAccessor,
+                      public VariableCaches
   {
   public:
     typedef VariableType::Type Type;
@@ -88,12 +105,6 @@ namespace minsky
     static int stockVarsPassed; ///< for detecting reentrancy in units()
 
     void insertControlled(Selection& selection) override;
-
-    /// cached Pango objects
-    mutable classdesc::Exclude<std::shared_ptr<RenderVariable>> cachedNameRender;
-    mutable classdesc::Exclude<std::shared_ptr<ecolab::Pango>> cachedMantissa;
-    mutable classdesc::Exclude<std::shared_ptr<ecolab::Pango>> cachedExponent;
-    mutable double cachedValue, cachedTime;
 
     /// miniature plot feature
     classdesc::Exclude<std::shared_ptr<ecolab::Plot>> miniPlot;
