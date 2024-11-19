@@ -50,7 +50,10 @@ namespace minsky
       {
         if (!item.itemRef) return;
         if (auto g=item.itemRef->group.lock())
-          g->relZoom=1/g->zoomFactor();
+          {
+            stashedZf=g->relZoom;
+            g->relZoom=1/g->zoomFactor();
+          }
         if (auto g=item.itemRef->godleyIconCast())
           {
             if ((variableDisplay=g->variableDisplay()))
