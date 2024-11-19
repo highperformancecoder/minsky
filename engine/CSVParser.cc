@@ -477,7 +477,7 @@ bool DataSpec::processChunk(std::istream& input, const TokenizerFunction& tf, si
       const vector<string> line(tok.begin(), tok.end());
       if (line.size()>uniqueVals.size())
         uniqueVals.resize(std::min(maxColumn, line.size()));
-      for (size_t i=0; i<uniqueVals.size(); ++i)
+      for (size_t i=0; i<std::min(line.size(), uniqueVals.size()); ++i)
         uniqueVals[i].insert(h(line[i]));
       starts.push_back(firstNumerical(line));
       nCols=std::max(nCols, line.size());
@@ -680,6 +680,7 @@ namespace minsky
                       col=i;
                       horizontalLabels.emplace_back(sliceLabelTokens[str(anyVal.back()(spec.dimensionNames[i]),spec.horizontalDimension.units)]);
                     }
+                    
                   if (spec.headerRow<spec.nRowAxes())
                     {
                       // check whether any further columns exist that are not in
@@ -691,6 +692,9 @@ namespace minsky
                       auto field=tok.begin();
                       for (size_t i=0; i<spec.dimensionNames.size() && field!=tok.end(); ++i, ++field);
                       for (; field!=tok.end(); ++field)
+                        if (field->empty())
+                          horizontalLabels.emplace_back(sliceLabelTokens[""]);
+                      else
                         horizontalLabels.emplace_back
                           (sliceLabelTokens[str(anyVal.back()(*field),spec.horizontalDimension.units)]);
                     }
@@ -701,7 +705,7 @@ namespace minsky
               set<typename Key::value_type> uniqueLabels;
               dimLabels.emplace_back();
               for (auto& i: horizontalLabels)
-                if (uniqueLabels.insert(i).second)
+                if (!sliceLabelTokens[i].empty() && uniqueLabels.insert(i).second)
                   {
                     dimLabels.back()[i]=hc.xvectors.back().size();
                     hc.xvectors.back().emplace_back(sliceLabelTokens[i]);
@@ -717,6 +721,7 @@ namespace minsky
           ++minsky().progressState;
 
           {
+            auto blankToken=sliceLabelTokens[""];
             ProgressUpdater pu(minsky().progressState, "Reading data",1);
             for (; getWholeLine(input, buf, spec); ++row)
               {
@@ -766,7 +771,11 @@ namespace minsky
                   if ((spec.dataCols.empty() && col>=spec.nColAxes()) || spec.dataCols.contains(col) || col>=spec.maxColumn) 
                     {
                       if (tabularFormat)
-                        key.emplace_back(horizontalLabels[dataCols]);
+                        {
+                          if (horizontalLabels[dataCols]==blankToken)
+                            continue; // ignore blank labelled columns
+                          key.emplace_back(horizontalLabels[dataCols]);
+                        }
                       else if (dataCols)
                         break; // only 1 value column, everything to right ignored
                   
