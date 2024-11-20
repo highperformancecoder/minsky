@@ -501,6 +501,7 @@ SUITE(Canvas)
       cv->value(1000);
       cv->sliderMin=0;
       cv->sliderMax=2000;
+      cv->sliderStep=20;
       // work out where slider is located
       RenderVariable rv(*cv);
       float xc=cv->x()+rv.handlePos(), yc=cv->y()-rv.height();
