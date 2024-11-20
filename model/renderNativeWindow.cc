@@ -77,7 +77,7 @@ namespace minsky
   void RenderNativeWindow::renderFrame(const RenderFrameArgs& args)
   {
     {
-      lock_guard lock(drawMutex);
+      const lock_guard lock(drawMutex);
       m_frameArgs=args;
       init();
       winInfoPtr = std::make_shared<WindowInformation>(stoull(args.parentWindowId), args.offsetLeft, args.offsetTop, args.childWidth, args.childHeight, args.scalingFactor, hasScrollBars(), [this](){draw();});
@@ -87,7 +87,7 @@ namespace minsky
   }
 
   void RenderNativeWindow::destroyFrame() {
-    lock_guard lock(drawMutex);
+    const lock_guard lock(drawMutex);
     winInfoPtr.reset();
   }
 
@@ -110,7 +110,7 @@ namespace minsky
   
   void RenderNativeWindow::draw()
   {
-    lock_guard lock(drawMutex);
+    const lock_guard lock(drawMutex);
     if (!winInfoPtr.get())
       {
         return;

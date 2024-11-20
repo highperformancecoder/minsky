@@ -577,8 +577,9 @@ lcov:
 
 compile_commands.json: Makefile
 	-rm *.o
-	bear $(MAKE)
+	bear -- $(MAKE)
 
+# Note - this doesn't work under the OneAPI development environment. 
 clang-tidy: compile_commands.json
 	run-clang-tidy
 

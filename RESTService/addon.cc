@@ -537,7 +537,7 @@ namespace minsky
       }
     };
     
-    static Minsky s_minsky; //This object is not really used, needed to avoid a null dereference in minsky()
+    Minsky s_minsky; //This object is not really used, needed to avoid a null dereference in minsky()
     Minsky* l_minsky=&s_minsky; //weak reference to global Minsky object
   }
 

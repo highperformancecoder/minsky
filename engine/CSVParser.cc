@@ -441,7 +441,7 @@ template <class TokenizerFunction, class UniqueVals>
 bool DataSpec::processChunk(std::istream& input, const TokenizerFunction& tf, size_t until, UniqueVals& uniqueVals)
 {
   string buf;
-  hash<string> h;
+  const hash<string> h;
   for (; getline(input, buf) && row<until; ++row)
     {
       if (buf.empty()) continue;
@@ -647,7 +647,7 @@ namespace minsky
       bool tabularFormat=false;
       vector<typename Key::value_type> horizontalLabels;
       vector<AnyVal> anyVal;
-      bool memUsageChecked=false;
+      //bool memUsageChecked=false;
 
       try
         {
@@ -694,9 +694,9 @@ namespace minsky
                       for (; field!=tok.end(); ++field)
                         if (field->empty())
                           horizontalLabels.emplace_back(sliceLabelTokens[""]);
-                      else
-                        horizontalLabels.emplace_back
-                          (sliceLabelTokens[str(anyVal.back()(*field),spec.horizontalDimension.units)]);
+                        else
+                          horizontalLabels.emplace_back
+                            (sliceLabelTokens[str(anyVal.back()(*field),spec.horizontalDimension.units)]);
                     }
                 }
             
