@@ -25,7 +25,12 @@ if [ $version = '"unknown"' ]; then
     version=0.0.0.0
 fi
 
-target=gui-js/dist/ravel-$version-`arch`.dmg
+# for some reason arch misreports x64 as i386 on Intel Macs
+if [ `arch` = i386 ]; then
+    target=gui-js/dist/ravel-$version-x64.dmg
+else
+    target=gui-js/dist/ravel-$version-`arch`.dmg
+fi
 
 # determine release or beta depending on the number of fields separated by '-' in the version string
 numFields=`echo $version|tr - ' '|wc -w`
