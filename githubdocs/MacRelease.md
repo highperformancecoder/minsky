@@ -10,7 +10,8 @@ NB unfortunately, the XCode command line tools package is out of date, so you wi
   - port install cairo pango gsl librsvg boost cmake pkgconfig tk n npm7
   - Minksy 3.x does not use Tk, so the X11 version suffices. For 2.x or earlier, tcl/tk needs to be installed from source code if using Aqua. See below. 
   - json_spirit needs to be installed from source code, but is not needed for Minsky 3.x
-- Currently, Mac builds are done on a High Sierra virtual machine, and the binary packages for High Sierra are used, so that is the mininum OS version for the MacOSX Minsky release. 
+- Currently, Mac builds are done on a High Sierra virtual machine, and the binary packages for High Sierra are used, so that is the mininum OS version for the MacOSX Minsky release. Arm64 builds are done on Ventura for the same reason.
+- Ports installs of Python do not create a python3 package for pkg-config, rather they are a more specific name like python-3.12.pc. Use find to find the location of the specific .pc file, and link it to python3.pc in the same place, which will allow python builds to work.
 
 # Enabling MacPorts to support earlier versions of MacOSX to the current system 
 - edit the file /opt/local/etc/macports/macports.conf, and add the following
