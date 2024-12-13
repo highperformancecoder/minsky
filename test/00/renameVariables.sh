@@ -29,32 +29,43 @@ pass()
 trap "fail" 1 2 3 15
 cat >input.py <<EOF
 import sys
-sys.path.insert(0,'$here')
-from pyminsky import minsky
+sys.path.insert(0, '$here')
+from pyminsky import minsky, findVariable
+
+# Load the model
 minsky.load('$here/examples/GoodwinLinear02.mky')
 
-def findVariable(name):
-    for i in range(len(minsky.model.items)):
-        try:
-          if minsky.model.items[i].name()==name:
-             minsky.canvas.getItemAt(minsky.model.items[i].x(),minsky.model.items[i].y())
-             return True
-        except:
-          pass
+try:
+    # Ensure the variable 'L' exists and get a reference to it
+    variable_L = findVariable("L")
+    assert variable_L is not None, "Variable 'L' not found in the model."
+    print(f"Found variable 'L': {variable_L.name()} at ({variable_L.x()}, {variable_L.y()})")
 
-assert findVariable('L')
-minsky.canvas.renameAllInstances('R')
-assert not findVariable('L')
-assert findVariable('R')
-minsky.canvas.selectAllVariables()
-assert len(minsky.canvas.selection.items)==2
+    # Rename all instances of 'L' to 'R'
+    minsky.canvas.renameAllInstances('R')
 
-# check findDefinition
-assert findVariable('R')
-minsky.canvas.findVariableDefinition()
-assert minsky.canvas.itemIndicator.name()=="R"
-# check that the selected variable has its input wired
-assert minsky.canvas.itemIndicator.inputWired()
+    # Ensure 'L' no longer exists
+    variable_L = findVariable("L")
+    assert variable_L is None, "Variable 'L' still exists after renaming."
+
+    # Ensure 'R' now exists
+    variable_R = findVariable("R")
+    assert variable_R is not None, "Variable 'R' not found after renaming."
+    print(f"Renamed variable: {variable_R.name()} at ({variable_R.x()}, {variable_R.y()})")
+
+    # Select all variables and verify selection
+    minsky.canvas.selectAllVariables()
+    assert len(minsky.canvas.selection.items) == 2, "Selection count does not match."
+
+    # Check findDefinition and wiring
+    variable_R = findVariable("R")
+    assert variable_R is not None, "Variable 'R' not found for findDefinition."
+    minsky.canvas.findVariableDefinition()
+    assert minsky.canvas.itemIndicator.name() == "R", "Selected variable for findDefinition is incorrect."
+    assert minsky.canvas.itemIndicator.inputWired(), "Selected variable input is not wired."
+
+except Exception as e:
+    print(f"Test failed with exception: {e}")
 EOF
 
 python3 input.py
