@@ -42,14 +42,7 @@ assert integrationOp is not None, "Integration operation not found or not focuse
 # Use findObject to locate the integral variable (Variable:integral)
 integralVariable = findObject("Variable:integral")
 assert integralVariable is not None, "Integral variable not found or not focused"
-
-# Match the integral variable's position with items in the model to retrieve valueId
-value_id = None
-for i in range(len(minsky.model.items)):
-    item = minsky.model.items[i]
-    if item.x() == integralVariable.x() and item.y() == integralVariable.y():
-        value_id = item.valueId()
-        break
+value_id=integralVariable.valueId()
 
 # Ensure the value_id is valid
 assert value_id is not None, "Integral variable does not have a valueId"
