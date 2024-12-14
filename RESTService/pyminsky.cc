@@ -30,28 +30,73 @@ namespace pyminsky
 
   minsky::Item& findObject(const std::string& typeName)
   {
-    using namespace minsky;
-    auto& canvas = minsky.canvas;
+      using namespace minsky;
+      auto& canvas = minsky.canvas;
 
-    canvas.item.reset();
+      canvas.item.reset(); // Reset the item to ensure no leftover references
 
-    if (typeName == "Group" && !canvas.model->groups.empty())
-      canvas.item = canvas.model->groups.front();
-    else
-      minsky.model->recursiveDo(&GroupItems::items, [&](const Items&, Items::const_iterator i)
+      bool found = false;
+
+      if (typeName == "Group" && !canvas.model->groups.empty())
       {
-        if ((*i)->classType() == typeName)
+          canvas.item = canvas.model->groups.front();
+          found = true;
+      }
+      else
+      {
+          found = minsky.model->recursiveDo(&GroupItems::items, [&](const Items&, Items::const_iterator i)
           {
-            canvas.item = *i;
-            return true; // Stop recursion
-          }
-        return false;
-      });
+              if ((*i)->classType() == typeName)
+              {
+                  canvas.item = *i;
+                  return true; // Stop recursion
+              }
+              return false;
+          });
+      }
 
-    return *canvas.item;
+      // Check if an object was found
+      if (!found || !canvas.item)
+      {
+          // std::cerr << "findObject: Object of type '" << typeName << "' not found or invalid!" << std::endl;
+          throw std::runtime_error("Object not found");
+      }
+
+      return *canvas.item; // Return the dereferenced item
   }
 
+  // Find a variable by its name
+  minsky::Item& findVariable(const std::string& name)
+  {
+      using namespace minsky;
+      auto& canvas = minsky.canvas;
+
+      canvas.item.reset(); // Reset item to ensure clean start
+
+      bool found = minsky.model->recursiveDo(
+          &GroupItems::items,
+          [&](const Items&, Items::const_iterator i) {
+              if (auto v = dynamic_cast<VariableBase*>(i->get()))
+              {
+                  if (v->name() == name)
+                  {
+                      canvas.item = *i;
+                      return true; // Stop recursion
+                  }
+              }
+              return false;
+          });
+
+      if (!found || !canvas.item)
+      {
+          // std::cerr << "findVariable: Variable '" << name << "' not found or invalid!" << std::endl;
+          throw std::runtime_error("Variable not found");
+      }
+
+      return *canvas.item; // Return the dereferenced item
+  }
   CLASSDESC_ADD_FUNCTION(findObject);
+  CLASSDESC_ADD_FUNCTION(findVariable);
 }
 
 CLASSDESC_PYTHON_MODULE(pyminsky);

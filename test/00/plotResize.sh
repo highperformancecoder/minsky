@@ -38,7 +38,6 @@ minsky.canvas.mouseUp(300, 200)  # Finalize the position
 
 # Attempt to select the PlotWidget
 plot_widget = findObject("PlotWidget")   
-#plot_widget=minsky.canvas.itemFocus() # minsky.canvas.itemFocus() does not work
 assert plot_widget is not None, "PlotWidget not found or not focused"
 print(f"Focused item: {plot_widget.classType()} at ({plot_widget.x()}, {plot_widget.y()})")
 
