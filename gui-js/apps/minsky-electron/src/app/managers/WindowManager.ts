@@ -2,7 +2,6 @@ import {
   ActiveWindow,
   AppLayoutPayload,
   CreateWindowPayload,
-  electronMenuBarHeightForWindows,
   Functions,
   minsky,
   OPEN_DEV_TOOLS_IN_DEV_BUILD,
@@ -233,7 +232,6 @@ export class WindowManager {
     }
 
     this.activeWindows.set(childWindow.id, childWindowDetails);
-//    logWindows(WindowManager.activeWindows);
 
     childWindow.on('close', (ev : Electron.Event) => {
       try {
@@ -266,10 +264,12 @@ export class WindowManager {
   static onAppLayoutChanged(payload: AppLayoutPayload) {
 
     this.topOffset = Math.round(payload.offset.top);
+    console.log("topOffset=",this.topOffset);
     this.leftOffset = Math.round(payload.offset.left);
     this.scaleFactor = screen.getPrimaryDisplay().scaleFactor;
     if (Functions.isWindows())
-      this.electronTopOffset = electronMenuBarHeightForWindows;
+      // calculate this offset internally in C++
+      this.electronTopOffset = 0;
     else
     {
       let size=this.getMainWindow().getSize();

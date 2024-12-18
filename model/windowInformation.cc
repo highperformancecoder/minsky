@@ -242,12 +242,20 @@ namespace minsky
         childHeight*=sf;
       }
 
-    {
-      RECT bb;
-      GetWindowRect(parentWindowId, &bb);
-    }
-    
-    auto style=GetWindowLong(parentWindowId, GWL_STYLE);
+    // compute menu bar offset
+    RECT window, client;
+    GetWindowRect(parentWindowId,&window);
+    GetClientRect(parentWindowId,&client);
+    POINT clientTopLeft{client.left,client.top};
+    ClientToScreen(parentWindowId,&clientTopLeft);
+
+    auto offs=clientTopLeft.y-window.top;
+    // adjust for borders
+    auto style=GetWindowLong(parentWindowId,GWL_STYLE);
+    if (style & WS_BORDER) offs-=GetSystemMetrics(SM_CYBORDER);
+    if (style & WS_THICKFRAME) offs-=GetSystemMetrics(SM_CYSIZEFRAME);
+    offsetTop += offs;
+
     SetWindowLongPtrA(parentWindowId, GWL_STYLE, style|WS_CLIPCHILDREN);
     childWindowId=CreateWindowA("Button", "", WS_CHILD | WS_VISIBLE|WS_CLIPSIBLINGS, offsetLeft, offsetTop, childWidth, childHeight, parentWindowId, nullptr, nullptr, nullptr);
     SetWindowRgn(childWindowId,CreateRectRgn(0,0,childWidth, childHeight),true);

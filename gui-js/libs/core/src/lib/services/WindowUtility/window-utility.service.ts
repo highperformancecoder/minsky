@@ -48,9 +48,10 @@ export class WindowUtilityService {
       // After setting the above, container gets scrollbars, so we need to compute drawableWidth & Height only now (clientWidth/clientHeight change after scrollbar addition)
 
       const clientRect = this.minskyCanvasContainer.getBoundingClientRect();
+      const documentRect = document.documentElement.getBoundingClientRect();
 
       this.leftOffset = clientRect.left;
-      this.topOffset = clientRect.top;
+      this.topOffset = clientRect.top-documentRect.top;
       this.drawableWidth = clientRect.right-clientRect.left;
       this.drawableHeight = clientRect.bottom-clientRect.top;
     }
