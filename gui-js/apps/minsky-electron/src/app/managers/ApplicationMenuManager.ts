@@ -1,5 +1,4 @@
 import {
-  electronMenuBarHeightForWindows,
   Functions,
   importCSVvariableName,
   minsky,
@@ -56,7 +55,7 @@ export class ApplicationMenuManager {
             WindowManager.createPopupWindowWithRouting({
               width: 500,
               useContentSize: true,
-              height: 550+(Functions.isWindows()? electronMenuBarHeightForWindows:0),
+              height: 550,
               title: 'Preferences',
               url: `#/headless/menu/options/preferences`,
             });
@@ -589,7 +588,7 @@ export class ApplicationMenuManager {
             WindowManager.createPopupWindowWithRouting({
               width: 500,
               useContentSize: true,
-              height: 550+(Functions.isWindows()? electronMenuBarHeightForWindows:0),
+              height: 550,
               title: 'Preferences',
               url: `#/headless/menu/options/preferences`,
             });

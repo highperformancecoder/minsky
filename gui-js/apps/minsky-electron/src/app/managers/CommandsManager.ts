@@ -5,7 +5,7 @@ import {
   Functions,
   HandleDimensionPayload,
   InitializePopupWindowPayload,
-  electronMenuBarHeightForWindows, HandleDescriptionPayload,
+  HandleDescriptionPayload,
   importCSVvariableName,
   minsky, GodleyIcon, Group, IntOp, Item, Lock, Ravel, VariableBase, Wire, Utility, DownloadCSVPayload
 } from '@minsky/shared';
@@ -228,7 +228,7 @@ export class CommandsManager {
       title: `Edit godley title`,
       url: `#/headless/edit-godley-title?title=${encodeURIComponent(title) || ''}&itemId=${godleyId}`,
       useContentSize: true,
-      height: 100+(Functions.isWindows()? electronMenuBarHeightForWindows:0),
+      height: 100,
       width: 400,
     });
   }
@@ -238,7 +238,7 @@ export class CommandsManager {
       title: `Edit godley currency`,
       url: `#/headless/edit-godley-currency`,
       useContentSize: true,
-      height: 100+(Functions.isWindows()? electronMenuBarHeightForWindows:0),
+      height: 100,
       width: 400,
     });
   }
