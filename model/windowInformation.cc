@@ -218,11 +218,16 @@ namespace minsky
 #endif
     hasScrollBars(hasScrollBars)
   {
+#if defined(MAC_OSX_TK)
+    return;
+#endif
+    
     offsetLeft = left;
     offsetTop = top;
 
-    childWidth = cWidth;
-    childHeight = cHeight;
+    auto scrollBarOffs=hasScrollBars? 20:0;
+    childWidth = cWidth - scrollBarOffs;
+    childHeight = cHeight - scrollBarOffs;
 
 #ifdef USE_WIN32_SURFACE
     parentWindowId = reinterpret_cast<HWND>(parentWin);
@@ -269,7 +274,6 @@ namespace minsky
       cairo_surface_set_device_scale(bufferSurface->surface(), sf, sf);
     SetWindowLongPtrA(childWindowId, GWLP_USERDATA, reinterpret_cast<LONG_PTR>(this));
     SetWindowLongPtrA(childWindowId, GWLP_WNDPROC, reinterpret_cast<LONG_PTR>(windowProc));
-#elif defined(MAC_OSX_TK)
 #elif defined(USE_X11)
     parentWindowId = parentWin;
     static const bool errorHandlingSet = (XSetErrorHandler(throwOnXError), true);
