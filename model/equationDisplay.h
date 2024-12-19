@@ -40,6 +40,7 @@ namespace minsky
     EquationDisplay& operator=(const EquationDisplay& x) {RenderNativeWindow::operator=(x); return *this;}
     EquationDisplay(const EquationDisplay&)=default;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
+    bool hasScrollBars() const override {return true;}
   };
 
 }

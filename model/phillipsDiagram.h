@@ -99,6 +99,7 @@ namespace minsky
     void moveTo(float x, float y) override {this->x=x; this->y=y; requestRedraw();}
     std::vector<float> position() const override {return {x,y};}
     void startRotatingItem(float x, float y);
+    bool hasScrollBars() const override {return true;}
   };
 }
 
