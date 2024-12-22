@@ -264,7 +264,6 @@ export class WindowManager {
   static onAppLayoutChanged(payload: AppLayoutPayload) {
 
     this.topOffset = Math.round(payload.offset.top);
-    console.log("topOffset=",this.topOffset);
     this.leftOffset = Math.round(payload.offset.left);
     this.scaleFactor = screen.getPrimaryDisplay().scaleFactor;
     if (Functions.isWindows())
