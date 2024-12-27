@@ -526,12 +526,12 @@ namespace schema3
           x1->name(*y.name);
         if (y.slider)
           {
-            x1->sliderBoundsSet=true;
-            x1->sliderStepRel=y.slider->stepRel;
-            x1->enableSlider=y.slider->visible;
-            x1->sliderMin=y.slider->min;
-            x1->sliderMax=y.slider->max;
-            x1->sliderStep=y.slider->step;
+            x1->sliderBoundsSet(true);
+            x1->sliderStepRel(y.slider->stepRel);
+            x1->enableSlider(y.slider->visible);
+            x1->sliderMin(y.slider->min);
+            x1->sliderMax(y.slider->max);
+            x1->sliderStep(y.slider->step);
           }
         x1->miniPlotEnabled(y.miniPlot);
         // variableValue attributes populated later once variable is homed in its group

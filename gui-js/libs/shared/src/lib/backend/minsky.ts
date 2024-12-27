@@ -231,7 +231,7 @@ export class VariableBase extends Item {
   async drawSelected(a1: minsky__dummy): Promise<void> {return this.$callMethod('drawSelected',a1);}
   async dummyDraw(): Promise<void> {return this.$callMethod('dummyDraw');}
   async editorMode(): Promise<boolean> {return this.$callMethod('editorMode');}
-  async enableSlider(...args: boolean[]): Promise<boolean> {return this.$callMethod('enableSlider',...args);}
+  async enableSlider(...args: any[]): Promise<boolean> {return this.$callMethod('enableSlider',...args);}
   async engExp(): Promise<object> {return this.$callMethod('engExp');}
   async ensureBBValid(): Promise<void> {return this.$callMethod('ensureBBValid');}
   async ensureValueExists(a1: VariableValue,a2: string): Promise<void> {return this.$callMethod('ensureValueExists',a1,a2);}
@@ -293,12 +293,12 @@ export class VariableBase extends Item {
   async selected(...args: boolean[]): Promise<boolean> {return this.$callMethod('selected',...args);}
   async setDimLabelsPicked(a1: string,a2: string): Promise<object> {return this.$callMethod('setDimLabelsPicked',a1,a2);}
   async setUnits(a1: string): Promise<void> {return this.$callMethod('setUnits',a1);}
-  async sliderBoundsSet(...args: boolean[]): Promise<boolean> {return this.$callMethod('sliderBoundsSet',...args);}
-  async sliderMax(...args: number[]): Promise<number> {return this.$callMethod('sliderMax',...args);}
-  async sliderMin(...args: number[]): Promise<number> {return this.$callMethod('sliderMin',...args);}
+  async sliderBoundsSet(...args: any[]): Promise<boolean> {return this.$callMethod('sliderBoundsSet',...args);}
+  async sliderMax(...args: any[]): Promise<number> {return this.$callMethod('sliderMax',...args);}
+  async sliderMin(...args: any[]): Promise<number> {return this.$callMethod('sliderMin',...args);}
   async sliderSet(a1: number): Promise<void> {return this.$callMethod('sliderSet',a1);}
-  async sliderStep(...args: number[]): Promise<number> {return this.$callMethod('sliderStep',...args);}
-  async sliderStepRel(...args: boolean[]): Promise<boolean> {return this.$callMethod('sliderStepRel',...args);}
+  async sliderStep(...args: any[]): Promise<number> {return this.$callMethod('sliderStep',...args);}
+  async sliderStepRel(...args: any[]): Promise<boolean> {return this.$callMethod('sliderStepRel',...args);}
   async sliderVisible(): Promise<boolean> {return this.$callMethod('sliderVisible');}
   async temp(): Promise<boolean> {return this.$callMethod('temp');}
   async throw_error(a1: string): Promise<void> {return this.$callMethod('throw_error',a1);}
@@ -2289,6 +2289,7 @@ export class VariableValue extends CppClass {
   async cancel(a1: boolean): Promise<void> {return this.$callMethod('cancel',a1);}
   async data(): Promise<number[]> {return this.$callMethod('data');}
   async detailedText(...args: string[]): Promise<string> {return this.$callMethod('detailedText',...args);}
+  async enableSlider(...args: boolean[]): Promise<boolean> {return this.$callMethod('enableSlider',...args);}
   async end(): Promise<number> {return this.$callMethod('end');}
   async exportAsCSV(a1: string,a2: string,a3: boolean): Promise<void> {return this.$callMethod('exportAsCSV',a1,a2,a3);}
   async godleyOverridden(...args: boolean[]): Promise<boolean> {return this.$callMethod('godleyOverridden',...args);}
@@ -2310,6 +2311,11 @@ export class VariableValue extends CppClass {
   async setValue(...args: any[]): Promise<number> {return this.$callMethod('setValue',...args);}
   async shape(): Promise<number[]> {return this.$callMethod('shape');}
   async size(): Promise<number> {return this.$callMethod('size');}
+  async sliderBoundsSet(...args: boolean[]): Promise<boolean> {return this.$callMethod('sliderBoundsSet',...args);}
+  async sliderMax(...args: number[]): Promise<number> {return this.$callMethod('sliderMax',...args);}
+  async sliderMin(...args: number[]): Promise<number> {return this.$callMethod('sliderMin',...args);}
+  async sliderStep(...args: number[]): Promise<number> {return this.$callMethod('sliderStep',...args);}
+  async sliderStepRel(...args: boolean[]): Promise<boolean> {return this.$callMethod('sliderStepRel',...args);}
   async sliderVisible(...args: boolean[]): Promise<boolean> {return this.$callMethod('sliderVisible',...args);}
   async summary(): Promise<object> {return this.$callMethod('summary');}
   async temp(): Promise<boolean> {return this.$callMethod('temp');}

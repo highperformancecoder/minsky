@@ -143,8 +143,8 @@ namespace schema3
       ItemBase(id,static_cast<const minsky::Item&>(v),ports),
       init(v.init()), miniPlot(v.miniPlotEnabled()) {
       name=v.rawName();
-      if (v.sliderBoundsSet)
-        slider.reset(new Slider(v.sliderStepRel,v.enableSlider,v.sliderMin,v.sliderMax,v.sliderStep));
+      if (v.sliderBoundsSet())
+        slider.reset(new Slider(v.sliderStepRel(),v.enableSlider(),v.sliderMin(),v.sliderMax(),v.sliderStep()));
       if (auto vv=v.vValue())
         {
           units=vv->units.str();

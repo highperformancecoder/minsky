@@ -371,15 +371,15 @@ namespace minsky
                 vector<string> spec;
                 for (size_t i=1; i<=match.size(); ++i) spec.push_back(match[i]);
                 if (!spec.empty() && regex_match(spec[0],match,number))
-                  v->sliderMin=stod(spec[0]);
+                  v->sliderMin(stod(spec[0]));
                 else
-                  v->sliderMin=0.1*stod(definition);
+                  v->sliderMin(0.1*stod(definition));
                 if (spec.size()>1 && regex_match(spec[1],match,number))
-                  v->sliderMax=stod(spec[1]);
+                  v->sliderMax(stod(spec[1]));
                 else
-                  v->sliderMax=10*stod(definition);
+                  v->sliderMax(10*stod(definition));
                 if (spec.size()>2 && regex_match(spec[2],match,number))
-                  v->sliderStep=stod(spec[2]);
+                  v->sliderStep(stod(spec[2]));
                 v->adjustSliderBounds();
               }
             else

@@ -29,6 +29,7 @@
 #include "index.rcd"
 #include "index.xcd"
 #include "nobble.h"
+#include "slider.rcd"
 #include "tensorInterface.rcd"
 #include "tensorInterface.xcd"
 #include "tensorVal.rcd"
@@ -533,6 +534,7 @@ namespace minsky
       definition,
       udfDefinition,
       init(),
+      sliderStep, sliderMin, sliderMax,
       value(),
       scopeName,
       godleyName,

@@ -41,7 +41,7 @@ namespace minsky
   typedef std::shared_ptr<Group> GroupPtr;
   using namespace civita;
 
-  struct VariableValueData: public civita::ITensorVal
+  struct VariableValueData: public civita::ITensorVal, public Slider
   {
     using ITensorVal::operator=;
     
