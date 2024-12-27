@@ -132,6 +132,7 @@ export interface CreateWindowPayload {
   minWidth?: number;
   minHeight?: number;
   alwaysOnTop?: boolean;
+  raiseIfPresent?: boolean; ///< if true, then raise an existing window instead of creating a duplicate
 }
 
 

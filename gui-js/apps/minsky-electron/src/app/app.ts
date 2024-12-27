@@ -149,6 +149,7 @@ export default class App {
       context: App.mainWindow,
       systemWindowId: WindowManager.getSystemWindowId(this.mainWindow),
       menu: null,
+      url: "",
     };
 
     WindowManager.activeWindows.set(App.mainWindow.id, mainWindowDetails);
