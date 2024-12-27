@@ -7,5 +7,5 @@ export interface ActiveWindow {
   context: BrowserWindow;
   systemWindowId: bigint;
   menu: Menu;
-  url: string;
+  url: string; /// url opened in this window, if any. Can be none or empty.
 }

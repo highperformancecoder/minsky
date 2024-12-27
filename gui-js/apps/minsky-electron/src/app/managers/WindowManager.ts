@@ -32,11 +32,11 @@ export class WindowManager {
   private static uidToWindowMap = new Map<string, ActiveWindow>();
 
   static getWindowByUid(uid: string): ActiveWindow {
-    return this.uidToWindowMap.get(uid);
+    return WindowManager.uidToWindowMap.get(uid);
   }
 
   static storeWindowMenu(win: BrowserWindow, menu: Menu) {
-    const details = this.activeWindows.get(win.id);
+    const details = WindowManager.activeWindows.get(win.id);
     if (details) {
       details.menu = menu;
     }
@@ -49,7 +49,7 @@ export class WindowManager {
 
   static setApplicationMenu(win: BrowserWindow) {
     if (Functions.isMacOS()) {
-      const details = this.activeWindows.get(win.id);
+      const details = WindowManager.activeWindows.get(win.id);
       if (details) {
         Menu.setApplicationMenu(details.menu);
       }
@@ -59,14 +59,14 @@ export class WindowManager {
   static async renderFrame() {
     try
     {
-      return this.currentTab?.renderFrame(
+      return WindowManager.currentTab?.renderFrame(
                                        {
-                                         parentWindowId: this.activeWindows.get(1).systemWindowId.toString(),
-                                         offsetLeft: this.leftOffset,
-                                         offsetTop: this.topOffset+this.electronTopOffset,
-                                         childWidth: this.canvasWidth,
-                                         childHeight: this.canvasHeight,
-                                         scalingFactor: this.scaleFactor
+                                         parentWindowId: WindowManager.activeWindows.get(1).systemWindowId.toString(),
+                                         offsetLeft: WindowManager.leftOffset,
+                                         offsetTop: WindowManager.topOffset+WindowManager.electronTopOffset,
+                                         childWidth: WindowManager.canvasWidth,
+                                         childHeight: WindowManager.canvasHeight,
+                                         scalingFactor: WindowManager.scaleFactor
                                        });
     }
     catch (err) {
@@ -76,10 +76,10 @@ export class WindowManager {
   }
     
   static async setCurrentTab(tab/*: RenderNativeWindow*/) {
-    if (this.currentTab!==tab) {
-      await this.currentTab?.destroyFrame();
-      this.currentTab=tab;
-      return this.renderFrame();
+    if (WindowManager.currentTab!==tab) {
+      await WindowManager.currentTab?.destroyFrame();
+      WindowManager.currentTab=tab;
+      return WindowManager.renderFrame();
     }
   }
   
@@ -103,11 +103,11 @@ export class WindowManager {
   }
 
   static getMainWindow(): BrowserWindow {
-    return this.activeWindows.get(1)?.context; // TODO:: Is this accurate?
+    return WindowManager.activeWindows.get(1)?.context; // TODO:: Is WindowManager accurate?
   }
 
   static focusIfWindowIsPresent(uid: string) {
-    const windowDetails = this.uidToWindowMap.get(uid);
+    const windowDetails = WindowManager.uidToWindowMap.get(uid);
     if (windowDetails) {
       windowDetails.context.focus();
       return true;
@@ -135,7 +135,7 @@ export class WindowManager {
   /// @return window if it exists, null otherwise
   static raiseWindow(url: string): BrowserWindow {
     let window=null;
-    for (let i of this.activeWindows) 
+    for (let i of WindowManager.activeWindows) 
       if (i[1].url==url) {
         window=i[1].context;
         break;
@@ -155,14 +155,14 @@ export class WindowManager {
       
       url.searchParams.set('systemWindowId',WindowManager.getSystemWindowId(window).toString());
       const relativeUrlString=(payload.url[0]=='#'?'#':'') +  url.pathname+'?'+url.searchParams.toString();
-      window.loadURL(this.getWindowUrl(relativeUrlString)); 
+      window.loadURL(WindowManager.getWindowUrl(relativeUrlString)); 
     return window;
   }
 
   static closeWindowByUid(uid: string) {
-    const windowDetails = this.uidToWindowMap.get(uid);
+    const windowDetails = WindowManager.uidToWindowMap.get(uid);
     if (windowDetails) {
-      this.uidToWindowMap.delete(uid);
+      WindowManager.uidToWindowMap.delete(uid);
       windowDetails.context.close();
     }
   }
@@ -192,7 +192,7 @@ export class WindowManager {
 
     // do not duplicate window if requested and window already exists
     if (payload.raiseIfPresent) {
-      const childWindow=this.raiseWindow(url);
+      const childWindow=WindowManager.raiseWindow(url);
       if (childWindow) return childWindow;
     }
     
@@ -206,7 +206,7 @@ export class WindowManager {
       useContentSize: true,
       minimizable: false,
       show: false,
-      parent: modal ? this.getMainWindow() : null,
+      parent: modal ? WindowManager.getMainWindow() : null,
       modal,
       backgroundColor,
       alwaysOnTop,
@@ -246,18 +246,18 @@ export class WindowManager {
     };
 
     if (payload.uid) {
-      this.uidToWindowMap.set(payload.uid, childWindowDetails);
+      WindowManager.uidToWindowMap.set(payload.uid, childWindowDetails);
     }
 
-    this.activeWindows.set(childWindow.id, childWindowDetails);
+    WindowManager.activeWindows.set(childWindow.id, childWindowDetails);
 
     childWindow.on('close', (ev : Electron.Event) => {
       try {
         if (payload?.uid) {
-          this.uidToWindowMap.delete(payload.uid);
+          WindowManager.uidToWindowMap.delete(payload.uid);
         }
         if (childWindow?.id) {
-          this.activeWindows.delete(childWindow.id);
+          WindowManager.activeWindows.delete(childWindow.id);
         }
         if (onCloseCallback) {
           onCloseCallback(ev);
@@ -267,13 +267,13 @@ export class WindowManager {
       }
     });
     // in the event the webcontents is closed without the containing window being so.
-    childWindow.webContents.on('destroyed', ()=> this.activeWindows.delete(childWindow.id));
+    childWindow.webContents.on('destroyed', ()=> WindowManager.activeWindows.delete(childWindow.id));
     return childWindow;
   }
 
   public static scrollToCenter() {
-    // TODO:: Replace this with something cleaner
-    this.getMainWindow().webContents.executeJavaScript(
+    // TODO:: Replace WindowManager with something cleaner
+    WindowManager.getMainWindow().webContents.executeJavaScript(
       `var container=document.getElementsByClassName('minsky-canvas-container')[0]; var canvas = container.getElementsByTagName('canvas')[0]; container.scrollTop=canvas.clientHeight/2; container.scrollLeft=canvas.clientWidth/2;`,
       false
     );
@@ -281,21 +281,21 @@ export class WindowManager {
 
   static onAppLayoutChanged(payload: AppLayoutPayload) {
 
-    this.topOffset = Math.round(payload.offset.top);
-    this.leftOffset = Math.round(payload.offset.left);
-    this.scaleFactor = screen.getPrimaryDisplay().scaleFactor;
+    WindowManager.topOffset = Math.round(payload.offset.top);
+    WindowManager.leftOffset = Math.round(payload.offset.left);
+    WindowManager.scaleFactor = screen.getPrimaryDisplay().scaleFactor;
     if (Functions.isWindows())
-      // calculate this offset internally in C++
-      this.electronTopOffset = 0;
+      // calculate WindowManager offset internally in C++
+      WindowManager.electronTopOffset = 0;
     else
     {
-      let size=this.getMainWindow().getSize();
-      let contentSize=this.getMainWindow().getContentSize();
-      this.electronTopOffset = size[1]-contentSize[1];
+      let size=WindowManager.getMainWindow().getSize();
+      let contentSize=WindowManager.getMainWindow().getContentSize();
+      WindowManager.electronTopOffset = size[1]-contentSize[1];
     }
 
-    this.canvasHeight = payload.drawableArea.height;
-    this.canvasWidth = payload.drawableArea.width;
+    WindowManager.canvasHeight = payload.drawableArea.height;
+    WindowManager.canvasWidth = payload.drawableArea.width;
 
   }
 
