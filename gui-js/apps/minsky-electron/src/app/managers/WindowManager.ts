@@ -131,6 +131,19 @@ export class WindowManager {
     return initialURL;
   }
 
+  /// if window already exists attached to \a url, then raise it
+  /// @return window if it exists, null otherwise
+  static raiseWindow(url: string): BrowserWindow {
+    let window=null;
+    for (let i of this.activeWindows) 
+      if (i[1].url==url) {
+        window=i[1].context;
+        break;
+      }
+    if (window) window.show();
+    return window;
+  }
+  
   static createPopupWindowWithRouting(
     payload: CreateWindowPayload,
     // eslint-disable-next-line @typescript-eslint/ban-types
@@ -167,8 +180,6 @@ export class WindowManager {
       slashes: true,
     });
 
-    console.log(payload.url);
-    console.log(filePath);
     window.loadURL(filePath);
     return window;
   }
@@ -177,8 +188,14 @@ export class WindowManager {
     payload: CreateWindowPayload,
     onCloseCallback?: (ev : Electron.Event) => void
   ) {
-    const { width, height, minWidth, minHeight, title, modal = true, backgroundColor=StoreManager.store.get('backgroundColor'), alwaysOnTop } = payload;
+    const { width, height, minWidth, minHeight, title, modal = true, backgroundColor=StoreManager.store.get('backgroundColor'), alwaysOnTop, url } = payload;
 
+    // do not duplicate window if requested and window already exists
+    if (payload.raiseIfPresent) {
+      const childWindow=this.raiseWindow(url);
+      if (childWindow) return childWindow;
+    }
+    
     const childWindow = new BrowserWindow({
       width,
       height,
@@ -225,6 +242,7 @@ export class WindowManager {
       context: childWindow,
       systemWindowId: windowId,
       menu: null,
+      url,
     };
 
     if (payload.uid) {
@@ -264,7 +282,6 @@ export class WindowManager {
   static onAppLayoutChanged(payload: AppLayoutPayload) {
 
     this.topOffset = Math.round(payload.offset.top);
-    console.log("topOffset=",this.topOffset);
     this.leftOffset = Math.round(payload.offset.left);
     this.scaleFactor = screen.getPrimaryDisplay().scaleFactor;
     if (Functions.isWindows())

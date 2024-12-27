@@ -6,5 +6,6 @@ export interface ActiveWindow {
   isMainWindow: boolean;
   context: BrowserWindow;
   systemWindowId: bigint;
-  menu : Menu
+  menu: Menu;
+  url: string;
 }
