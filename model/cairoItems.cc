@@ -96,8 +96,11 @@ bool RenderVariable::inImage(float x, float y)
 
 double RenderVariable::handlePos() const
 {
-  if (var.sliderStep()<std::numeric_limits<double>::min() || std::isnan(var.sliderStep())) var.initSliderBounds();   // this should only be used when sliderStep's value has not been set or is a nonsensicl
-  var.adjustSliderBounds();
+  if (auto vv=var.vValue())
+    {
+      if (vv->sliderStep<std::numeric_limits<double>::min() || std::isnan(vv->sliderStep)) vv->initSliderBounds();   // this should only be used when sliderStep's value has not been set or is a nonsensicle
+      vv->adjustSliderBounds();
+    }
   return (w<0.5*var.iWidth()? 0.5*var.iWidth() : w)*(var.value()-0.5*(var.sliderMin()+var.sliderMax()))/(var.sliderMax()-var.sliderMin());
 }
 

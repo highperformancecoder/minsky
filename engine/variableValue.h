@@ -187,6 +187,15 @@ namespace minsky
 
     const std::string& init() const {return m_init;}
     const std::string& init(const std::string& x);
+
+    /// sets variable value (or init value)
+    void sliderSet(double x);
+    /// increment slider by \a step
+    void incrSlider(double step);
+    
+    /// initialise slider bounds when slider first opened
+    void initSliderBounds() const;
+    void adjustSliderBounds() const;
   };
 
   struct ValueVector

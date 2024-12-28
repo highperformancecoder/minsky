@@ -190,14 +190,6 @@ namespace minsky
     /// returns true if slider is to be drawn
     bool sliderVisible() const;
     
-    /// sets variable value (or init value)
-    void sliderSet(double x);
-    /// initialise slider bounds when slider first opened
-    void initSliderBounds() const;
-    void adjustSliderBounds() const;
-    /// a maximum of at most 10000 slider steps permitted
-    double maxSliderSteps() const;    
-
     /// sets/gets the units associated with this type
     Units units(bool check) const override;
     Units units() const {return units(false);}

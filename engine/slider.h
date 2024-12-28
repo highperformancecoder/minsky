@@ -33,6 +33,12 @@ namespace minsky
 
     mutable double sliderMin, sliderMax, sliderStep;
     bool enableSlider=true;
+
+    /// ensure there are at most 10000 steps between sliderMin and Max. see ticket 1255. 	
+    double maxSliderSteps() const {
+      if ((sliderMax-sliderMin)/sliderStep > 1.0e04) return (sliderMax-sliderMin)/1.0e04;    
+      return sliderStep;
+    }
   };
 }
 

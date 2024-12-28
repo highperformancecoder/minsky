@@ -133,8 +133,9 @@ SUITE(PubTab)
          {
            VariablePtr var(VariableBase::parameter, "foobar");
            // this member should always be initialised, but occasionally is not, causing the test to fail. Why?
-           var->sliderBoundsSet(false); 
-           var->initSliderBounds();
+           auto vv=var->vValue();
+           vv->sliderBoundsSet=false; 
+           vv->initSliderBounds();
            model->addItem(var);
            var->value(0);
            var->updateBoundingBox();

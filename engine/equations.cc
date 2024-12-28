@@ -535,7 +535,7 @@ namespace MathDAG
                        {
                          // slightly convoluted to prevent sliderSet from overriding c->value
                          iv->init(c->value);
-                         iv->adjustSliderBounds();
+                         if (auto vv=iv->vValue()) vv->adjustSliderBounds();
                        }
                      else
                        throw error("only constants, parameters and variables can be connected to the initial value port");
