@@ -59,8 +59,6 @@ namespace minsky
     /// long and short descriptions - common to all variables of a given name
     std::string detailedText, tooltip;
 
-    
-    bool sliderVisible=false; // determined at reset time
     bool godleyOverridden=false;
     std::string name; // name of this variable
     classdesc::Exclude<std::weak_ptr<Group>> m_scope;

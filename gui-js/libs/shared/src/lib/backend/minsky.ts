@@ -200,7 +200,6 @@ export class VariableBase extends Item {
   async TCL_obj(a1: classdesc__TCL_obj_t,a2: string): Promise<void> {return this.$callMethod('TCL_obj',a1,a2);}
   async accessibleVars(): Promise<string[]> {return this.$callMethod('accessibleVars');}
   async adjustBookmark(): Promise<void> {return this.$callMethod('adjustBookmark');}
-  async adjustSliderBounds(): Promise<void> {return this.$callMethod('adjustSliderBounds');}
   async bookmark(...args: boolean[]): Promise<boolean> {return this.$callMethod('bookmark',...args);}
   async bookmarkId(): Promise<string> {return this.$callMethod('bookmarkId');}
   async bottom(): Promise<number> {return this.$callMethod('bottom');}
@@ -259,7 +258,6 @@ export class VariableBase extends Item {
   async m_y(...args: number[]): Promise<number> {return this.$callMethod('m_y',...args);}
   async makeConsistentWithValue(): Promise<void> {return this.$callMethod('makeConsistentWithValue');}
   async mantissa(a1: EngNotation,a2: number): Promise<string> {return this.$callMethod('mantissa',a1,a2);}
-  async maxSliderSteps(): Promise<number> {return this.$callMethod('maxSliderSteps');}
   async miniPlotEnabled(...args: any[]): Promise<boolean> {return this.$callMethod('miniPlotEnabled',...args);}
   async mouseFocus(...args: boolean[]): Promise<boolean> {return this.$callMethod('mouseFocus',...args);}
   async moveTo(a1: number,a2: number): Promise<void> {return this.$callMethod('moveTo',a1,a2);}
@@ -293,10 +291,8 @@ export class VariableBase extends Item {
   async selected(...args: boolean[]): Promise<boolean> {return this.$callMethod('selected',...args);}
   async setDimLabelsPicked(a1: string,a2: string): Promise<object> {return this.$callMethod('setDimLabelsPicked',a1,a2);}
   async setUnits(a1: string): Promise<void> {return this.$callMethod('setUnits',a1);}
-  async sliderBoundsSet(...args: any[]): Promise<boolean> {return this.$callMethod('sliderBoundsSet',...args);}
   async sliderMax(...args: any[]): Promise<number> {return this.$callMethod('sliderMax',...args);}
   async sliderMin(...args: any[]): Promise<number> {return this.$callMethod('sliderMin',...args);}
-  async sliderSet(a1: number): Promise<void> {return this.$callMethod('sliderSet',a1);}
   async sliderStep(...args: any[]): Promise<number> {return this.$callMethod('sliderStep',...args);}
   async sliderStepRel(...args: any[]): Promise<boolean> {return this.$callMethod('sliderStepRel',...args);}
   async sliderVisible(): Promise<boolean> {return this.$callMethod('sliderVisible');}
@@ -2282,6 +2278,7 @@ export class VariableValue extends CppClass {
     this.tensorInit=new civita__TensorVal(this.$prefix()+'.tensorInit');
     this.units=new Units(this.$prefix()+'.units');
   }
+  async adjustSliderBounds(): Promise<void> {return this.$callMethod('adjustSliderBounds');}
   async allocValue(): Promise<VariableValue> {return this.$callMethod('allocValue');}
   async at(a1: number): Promise<number> {return this.$callMethod('at',a1);}
   async atHCIndex(a1: number): Promise<number> {return this.$callMethod('atHCIndex',a1);}
@@ -2297,11 +2294,14 @@ export class VariableValue extends CppClass {
   async idx(): Promise<number> {return this.$callMethod('idx');}
   async idxInRange(): Promise<boolean> {return this.$callMethod('idxInRange');}
   async imposeDimensions(a1: Container<Pair<string,civita__Dimension>>): Promise<void> {return this.$callMethod('imposeDimensions',a1);}
+  async incrSlider(a1: number): Promise<void> {return this.$callMethod('incrSlider',a1);}
   async index(...args: any[]): Promise<civita__Index> {return this.$callMethod('index',...args);}
   async init(...args: any[]): Promise<string> {return this.$callMethod('init',...args);}
+  async initSliderBounds(): Promise<void> {return this.$callMethod('initSliderBounds');}
   async isFlowVar(): Promise<boolean> {return this.$callMethod('isFlowVar');}
   async isZero(): Promise<boolean> {return this.$callMethod('isZero');}
   async lhs(): Promise<boolean> {return this.$callMethod('lhs');}
+  async maxSliderSteps(): Promise<number> {return this.$callMethod('maxSliderSteps');}
   async name(...args: string[]): Promise<string> {return this.$callMethod('name',...args);}
   async rank(): Promise<number> {return this.$callMethod('rank');}
   async reset_idx(): Promise<void> {return this.$callMethod('reset_idx');}
@@ -2314,9 +2314,9 @@ export class VariableValue extends CppClass {
   async sliderBoundsSet(...args: boolean[]): Promise<boolean> {return this.$callMethod('sliderBoundsSet',...args);}
   async sliderMax(...args: number[]): Promise<number> {return this.$callMethod('sliderMax',...args);}
   async sliderMin(...args: number[]): Promise<number> {return this.$callMethod('sliderMin',...args);}
+  async sliderSet(a1: number): Promise<void> {return this.$callMethod('sliderSet',a1);}
   async sliderStep(...args: number[]): Promise<number> {return this.$callMethod('sliderStep',...args);}
   async sliderStepRel(...args: boolean[]): Promise<boolean> {return this.$callMethod('sliderStepRel',...args);}
-  async sliderVisible(...args: boolean[]): Promise<boolean> {return this.$callMethod('sliderVisible',...args);}
   async summary(): Promise<object> {return this.$callMethod('summary');}
   async temp(): Promise<boolean> {return this.$callMethod('temp');}
   async tooltip(...args: string[]): Promise<string> {return this.$callMethod('tooltip',...args);}

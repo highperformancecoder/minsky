@@ -547,9 +547,14 @@ bool VariableBase::sliderVisible() const
   return enableSlider() &&
     ((!vv && type()==parameter) ||
      (vv && vv->size()==1 &&
-      (type()==parameter || vv->sliderVisible)));
+      (type()==parameter || vv->enableSlider)));
 }
 
+void VariableBase::initSliderBounds()
+{
+  if (auto vv=vValue())
+    vv->initSliderBounds();
+}
 
 bool VariableBase::onKeyPress(int keySym, const std::string&,int)
 {
@@ -665,20 +670,6 @@ double VariableBase::sliderStep(double x) const
   return 0;
 }
 
-bool VariableBase::sliderBoundsSet() const
-{
-  if (auto vv=vValue())
-    return vv->sliderBoundsSet;
-  return false;
-}
-
-bool VariableBase::sliderBoundsSet(bool x) const
-{
-  if (auto vv=vValue())
-    return vv->sliderBoundsSet=x;
-  return false;
-}
-
 bool VariableBase::sliderStepRel() const
 {
   if (auto vv=vValue())
@@ -782,7 +773,7 @@ void VariableBase::draw(cairo_t *cairo) const
               {
                 cachedValue=value();
                 if (!isnan(value())) {
-                  if (sliderBoundsSet() && vv->sliderVisible)
+                  if (vv->sliderBoundsSet && sliderVisible())
                     l_cachedMantissa->setMarkup
                       (mantissa(val,
                                 int(1+

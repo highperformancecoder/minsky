@@ -526,7 +526,6 @@ namespace schema3
           x1->name(*y.name);
         if (y.slider)
           {
-            x1->sliderBoundsSet(true);
             x1->sliderStepRel(y.slider->stepRel);
             x1->enableSlider(y.slider->visible);
             x1->sliderMin(y.slider->min);
