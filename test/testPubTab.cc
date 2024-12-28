@@ -133,7 +133,7 @@ SUITE(PubTab)
          {
            VariablePtr var(VariableBase::parameter, "foobar");
            // this member should always be initialised, but occasionally is not, causing the test to fail. Why?
-           var->sliderBoundsSet=false; 
+           var->sliderBoundsSet(false); 
            var->initSliderBounds();
            model->addItem(var);
            var->value(0);
@@ -145,7 +145,7 @@ SUITE(PubTab)
            CHECK(var->clickType(x-item.x,y-item.y)==ClickType::inItem);
            tab.mouseDown(x,y);
            tab.mouseUp(x+0.5*var->width(),y);
-           CHECK_CLOSE(var->sliderMax,var->value(),0.1);
+           CHECK_CLOSE(var->sliderMax(),var->value(),0.1);
          }
        TEST_FIXTURE(MinskyFixture,redraw)
          {

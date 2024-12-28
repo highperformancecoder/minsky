@@ -26,6 +26,7 @@
 #include "str.h"
 #include "CSVDialog.h"
 #include "latexMarkup.h"
+#include "slider.h"
 #include "valueId.h"
 #include "variableSummary.h"
 #include <regex> 
