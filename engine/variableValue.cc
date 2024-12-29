@@ -221,6 +221,9 @@ namespace minsky
 
   void VariableValue::sliderSet(double x)
   {
+    if (!std::isfinite(x)) {
+        x = 0;  // or throw an exception
+    }
     if (x<sliderMin) x=sliderMin;
     if (x>sliderMax) x=sliderMax;
     sliderStep=maxSliderSteps();    
