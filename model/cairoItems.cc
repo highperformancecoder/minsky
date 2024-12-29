@@ -98,9 +98,10 @@ double RenderVariable::handlePos() const
 {
   if (auto vv=var.vValue())
     {
-      if (vv->sliderStep<std::numeric_limits<double>::min() || std::isnan(vv->sliderStep)) vv->initSliderBounds();   // this should only be used when sliderStep's value has not been set or is a nonsensicle
+      if (vv->sliderStep<std::numeric_limits<double>::min() || std::isnan(vv->sliderStep)) vv->initSliderBounds();   // this should only be used when sliderStep's value has not been set or is a nonsensical
       vv->adjustSliderBounds();
     }
+  if (var.sliderMax()==var.sliderMin()) return 0;
   return (w<0.5*var.iWidth()? 0.5*var.iWidth() : w)*(var.value()-0.5*(var.sliderMin()+var.sliderMax()))/(var.sliderMax()-var.sliderMin());
 }
 

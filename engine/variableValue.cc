@@ -260,7 +260,7 @@ namespace minsky
       {
         if (sliderMax<value())
             sliderMax=value()? 10*value():1;
-          if (sliderMin>value())
+          if (sliderMin>=value())
             sliderMin=value()? -10*value():-1;
           sliderStep=maxSliderSteps(); 
           sliderBoundsSet=true;	                    

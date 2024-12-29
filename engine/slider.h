@@ -36,7 +36,7 @@ namespace minsky
 
     /// ensure there are at most 10000 steps between sliderMin and Max. see ticket 1255. 	
     double maxSliderSteps() const {
-      if ((sliderMax-sliderMin)/sliderStep > 1.0e04) return (sliderMax-sliderMin)/1.0e04;    
+      if (!isfinite(sliderStep) || sliderMax-sliderMin > 1.0e04*sliderStep) return (sliderMax-sliderMin)/1.0e04;    
       return sliderStep;
     }
   };
