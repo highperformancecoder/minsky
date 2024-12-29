@@ -83,6 +83,10 @@ export class SummaryComponent implements OnInit {
       this.numVars[name]=this.godleys[name].length;
       this.numVars.godleys+=this.godleys[name].length;
     }
+
+    // prevent wiring tab handlers from interfering with this tab
+    document.body.onkeydown=null;
+    document.body.onkeyup=null;
   }
 
   types(category: string): string[] {

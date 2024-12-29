@@ -83,7 +83,7 @@ export class WiringComponent implements OnInit, OnDestroy {
       minskyCanvasContainer.scrollTop=scrollableArea.height/2 - pos[1];
     };
     this.cmService.resetScroll();
-    
+  
    this.zone.runOutsideAngular(() => {
       if (this.electronService.isElectron) {
         const handleScroll = async (scrollTop: number, scrollLeft: number) => {
