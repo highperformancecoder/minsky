@@ -237,7 +237,7 @@ namespace minsky
   {
     if (!sliderBoundsSet)
       {
-        if (value()==0)
+        if (!isfinite(value()) || value()==0)
           {
             sliderMin=-1;
             sliderMax=1;
