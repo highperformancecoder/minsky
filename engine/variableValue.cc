@@ -236,7 +236,7 @@ namespace minsky
   
   void VariableValue::adjustSliderBounds() const
   {
-    if (size()==1 && !isnan(value()))  // make sure sliderBoundsSet is defined. for tickets 1258/1263
+    if (size()==1 && !isnan(value()))
       {
         if (!finite(sliderMax) ||sliderMax<value())
           sliderMax=value()? 10*value():1;
