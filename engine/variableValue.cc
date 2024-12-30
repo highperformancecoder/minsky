@@ -234,7 +234,7 @@ namespace minsky
     sliderSet(value()+step*(sliderStepRel? value(): 1)*sliderStep);
   }
   
-  void VariableValue::adjustSliderBounds() const
+  void VariableValue::adjustSliderBounds()
   {
     if (size()==1 && !isnan(value()))
       {

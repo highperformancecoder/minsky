@@ -27,10 +27,10 @@ namespace minsky
   /// operations and variables
   struct Slider
   {
-    mutable bool sliderStepRel=false;   /**< sliderStep is relative to the range
+    bool sliderStepRel=false;   /**< sliderStep is relative to the range
                           [sliderMin,sliderMax] */
 
-    mutable double sliderMin=std::numeric_limits<double>::max(),
+    double sliderMin=std::numeric_limits<double>::max(),
       sliderMax=-sliderMin, sliderStep=0;
     bool enableSlider=true;
 

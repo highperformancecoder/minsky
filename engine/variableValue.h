@@ -191,7 +191,7 @@ namespace minsky
     /// increment slider by \a step
     void incrSlider(double step);
     
-    void adjustSliderBounds() const;
+    void adjustSliderBounds();
   };
 
   struct ValueVector
