@@ -366,24 +366,25 @@ namespace minsky
               }
             catch (...) {}
             v->detailedText(comments);
-            if (regex_match(sliderSpec,match,sliderSpecPattern))
+            if (auto vv=v->vValue())
               {
-                vector<string> spec;
-                for (size_t i=1; i<=match.size(); ++i) spec.push_back(match[i]);
-                if (!spec.empty() && regex_match(spec[0],match,number))
-                  v->sliderMin=stod(spec[0]);
-                else
-                  v->sliderMin=0.1*stod(definition);
-                if (spec.size()>1 && regex_match(spec[1],match,number))
-                  v->sliderMax=stod(spec[1]);
-                else
-                  v->sliderMax=10*stod(definition);
-                if (spec.size()>2 && regex_match(spec[2],match,number))
-                  v->sliderStep=stod(spec[2]);
-                v->adjustSliderBounds();
+                if (regex_match(sliderSpec,match,sliderSpecPattern))
+                  {
+                    vector<string> spec;
+                    for (size_t i=1; i<=match.size(); ++i) spec.push_back(match[i]);
+                    if (!spec.empty() && regex_match(spec[0],match,number))
+                      vv->sliderMin=stod(spec[0]);
+                    else
+                      vv->sliderMin=0.1*stod(definition);
+                    if (spec.size()>1 && regex_match(spec[1],match,number))
+                      vv->sliderMax=stod(spec[1]);
+                    else
+                      vv->sliderMax=10*stod(definition);
+                    if (spec.size()>2 && regex_match(spec[2],match,number))
+                      vv->sliderStep=stod(spec[2]);
+                  }
+                vv->adjustSliderBounds();
               }
-            else
-              v->initSliderBounds();
           }
         else
           {

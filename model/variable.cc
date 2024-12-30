@@ -544,64 +544,16 @@ bool VariableBase::visible() const
 bool VariableBase::sliderVisible() const
 {
   auto vv=vValue();
-  return enableSlider &&
+  return enableSlider() &&
     ((!vv && type()==parameter) ||
      (vv && vv->size()==1 &&
-      (type()==parameter || vv->sliderVisible)));
+      (type()==parameter || vv->enableSlider)));
 }
 
-
-void VariableBase::sliderSet(double x)
-{
-  if (x<sliderMin) x=sliderMin;
-  if (x>sliderMax) x=sliderMax;
-  sliderStep=maxSliderSteps();    
-  init(to_string(x));
-  value(x);
-}
-
-
-void VariableBase::initSliderBounds() const
-{
-  if (!sliderBoundsSet)
-    {
-      if (value()==0)
-        {
-          sliderMin=-1;
-          sliderMax=1;
-        }
-      else
-        {
-          sliderMin=-value()*10;
-          sliderMax=value()*10;
-        }
-      sliderStepRel=false;
-      sliderBoundsSet=true;
-      sliderStep=0.01*(sliderMax-sliderMin);      
-    }
-  sliderStep=maxSliderSteps();      
-}
-
-void VariableBase::adjustSliderBounds() const
+void VariableBase::adjustSliderBounds()
 {
   if (auto vv=vValue())
-  // For feature 47
-    if (vv->size()==1 && !isnan(vv->value()))  // make sure sliderBoundsSet is defined. for tickets 1258/1263
-      {
-        if (sliderMax<vv->value())
-          sliderMax=vv->value()? 10*vv->value():1;
-        if (sliderMin>vv->value())
-          sliderMin=vv->value()? -10*vv->value():-1;
-        sliderStep=maxSliderSteps(); 
-        sliderBoundsSet=true;	                    
-      }
-}
-
-double VariableBase::maxSliderSteps() const
-{
-    // ensure there are at most 10000 steps between sliderMin and Max. for ticket 1255. 	
-	if ((sliderMax-sliderMin)/sliderStep > 1.0e04) return (sliderMax-sliderMin)/1.0e04;    
-	return sliderStep;
+    vv->adjustSliderBounds();
 }
 
 bool VariableBase::onKeyPress(int keySym, const std::string&,int)
@@ -609,13 +561,13 @@ bool VariableBase::onKeyPress(int keySym, const std::string&,int)
   switch (keySym)
     {
     case 0xff52: case 0xff53: //Right, Up
-        sliderSet(value()+(sliderStepRel? value(): 1)*sliderStep);
-        if (!minsky().running) minsky().requestReset();
-        return true;
+      if (auto vv=vValue()) vv->incrSlider(1);
+      if (!minsky().running) minsky().requestReset();
+      return true;
     case 0xff51: case 0xff54: //Left, Down
-        sliderSet(value()-(sliderStepRel? value(): 1)*sliderStep);
-        if (!minsky().running) minsky().requestReset();
-        return true;
+      if (auto vv=vValue()) vv->incrSlider(-1);
+      if (!minsky().running) minsky().requestReset();
+      return true;
     default:
       return false;
     }
@@ -658,11 +610,14 @@ void VariableBase::resetMiniPlot()
 
 bool VariableBase::onMouseMotion(float x, float y) 
 {
-  const RenderVariable rv(*this);
-  const double rw=fabs(zoomFactor()*(rv.width()<iWidth()? 0.5*iWidth() : rv.width())*cos(rotation()*M_PI/180));
-  const double sliderPos=(x-this->x())* (sliderMax-sliderMin)/rw+0.5*(sliderMin+sliderMax);
-  const double sliderHatch=sliderPos-fmod(sliderPos,sliderStep);   // matches slider's hatch marks to sliderStep value. for ticket 1258
-  sliderSet(sliderHatch);
+  if (auto vv=vValue())
+    {
+      const RenderVariable rv(*this);
+      const double rw=fabs(zoomFactor()*(rv.width()<iWidth()? 0.5*iWidth() : rv.width())*cos(rotation()*M_PI/180));
+      const double sliderPos=(x-this->x())* (vv->sliderMax-vv->sliderMin)/rw+0.5*(vv->sliderMin+vv->sliderMax);
+      const double sliderHatch=sliderPos-fmod(sliderPos,vv->sliderStep);   // matches slider's hatch marks to sliderStep value. for ticket 1258
+      vv->sliderSet(sliderHatch);
+    }
   // push History to prevent an unnecessary reset when
   // adjusting the slider whilst paused. See ticket #812
   minsky().pushHistory();
@@ -672,6 +627,76 @@ bool VariableBase::onMouseMotion(float x, float y)
   return true;
 }
 
+double VariableBase::sliderMin() const
+{
+  if (auto vv=vValue())
+    return vv->sliderMin;
+  return 0;
+}
+
+
+double VariableBase::sliderMin(double x) const
+{
+  if (auto vv=vValue())
+    return vv->sliderMin=x;
+  return 0;
+}
+
+double VariableBase::sliderMax() const
+{
+  if (auto vv=vValue())
+    return vv->sliderMax;
+  return 0;
+}
+
+double VariableBase::sliderMax(double x) const
+{
+  if (auto vv=vValue())
+    return vv->sliderMax=x;
+  return 0;
+}
+
+double VariableBase::sliderStep() const
+{
+  if (auto vv=vValue())
+    return vv->sliderStep;
+  return 0;
+}
+
+double VariableBase::sliderStep(double x) const
+{
+  if (auto vv=vValue())
+    return vv->sliderStep=x;
+  return 0;
+}
+
+bool VariableBase::sliderStepRel() const
+{
+  if (auto vv=vValue())
+    return vv->sliderStepRel;
+  return false;
+}
+
+bool VariableBase::sliderStepRel(bool x) const
+ {
+  if (auto vv=vValue())
+    return vv->sliderStepRel=x;
+  return false;
+}
+ 
+bool VariableBase::enableSlider() const
+{
+  if (auto vv=vValue())
+    return vv->enableSlider;
+  return false;
+}
+ 
+bool VariableBase::enableSlider(bool x)
+{
+  if (auto vv=vValue())
+    return vv->enableSlider=x;
+  return false;
+}
 
 
 void VariableBase::draw(cairo_t *cairo) const
@@ -748,13 +773,13 @@ void VariableBase::draw(cairo_t *cairo) const
               {
                 cachedValue=value();
                 if (!isnan(value())) {
-                  if (sliderBoundsSet && vv->sliderVisible)
+                  if (sliderVisible())
                     l_cachedMantissa->setMarkup
                       (mantissa(val,
                                 int(1+
-                                    (sliderStepRel?
-                                     -log10(maxSliderSteps()):
-                                     log10(value()/maxSliderSteps())
+                                    (vv->sliderStepRel?
+                                     -log10(vv->maxSliderSteps()):
+                                     log10(vv->value()/vv->maxSliderSteps())
                                      ))));
                   else
                     l_cachedMantissa->setMarkup(mantissa(val));

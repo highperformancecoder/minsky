@@ -26,6 +26,7 @@
 #include "str.h"
 #include "CSVDialog.h"
 #include "latexMarkup.h"
+#include "slider.h"
 #include "valueId.h"
 #include "variableSummary.h"
 #include <regex> 
@@ -41,7 +42,7 @@ namespace minsky
   typedef std::shared_ptr<Group> GroupPtr;
   using namespace civita;
 
-  struct VariableValueData: public civita::ITensorVal
+  struct VariableValueData: public civita::ITensorVal, public Slider
   {
     using ITensorVal::operator=;
     
@@ -58,8 +59,6 @@ namespace minsky
     /// long and short descriptions - common to all variables of a given name
     std::string detailedText, tooltip;
 
-    
-    bool sliderVisible=false; // determined at reset time
     bool godleyOverridden=false;
     std::string name; // name of this variable
     classdesc::Exclude<std::weak_ptr<Group>> m_scope;
@@ -186,6 +185,14 @@ namespace minsky
 
     const std::string& init() const {return m_init;}
     const std::string& init(const std::string& x);
+
+    /// sets variable value (or init value)
+    void sliderSet(double x);
+    /// increment slider by \a step
+    void incrSlider(double step);
+
+    /// adjust slider bounds to encompass the current value
+    void adjustSliderBounds();
   };
 
   struct ValueVector
