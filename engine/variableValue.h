@@ -190,7 +190,8 @@ namespace minsky
     void sliderSet(double x);
     /// increment slider by \a step
     void incrSlider(double step);
-    
+
+    /// adjust slider bounds to encompass the current value
     void adjustSliderBounds();
   };
 
