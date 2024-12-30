@@ -382,10 +382,8 @@ namespace minsky
                       vv->sliderMax=10*stod(definition);
                     if (spec.size()>2 && regex_match(spec[2],match,number))
                       vv->sliderStep=stod(spec[2]);
-                    vv->adjustSliderBounds();
                   }
-                else
-                  vv->initSliderBounds();
+                vv->adjustSliderBounds();
               }
           }
         else

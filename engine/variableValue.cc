@@ -221,6 +221,7 @@ namespace minsky
 
   void VariableValue::sliderSet(double x)
   {
+    if (!isfinite(x)) return;
     if (x<sliderMin) x=sliderMin;
     if (x>sliderMax) x=sliderMax;
     sliderStep=maxSliderSteps();    
@@ -233,37 +234,16 @@ namespace minsky
     sliderSet(value()+step*(sliderStepRel? value(): 1)*sliderStep);
   }
   
-  void VariableValue::initSliderBounds() const
-  {
-    if (!sliderBoundsSet)
-      {
-        if (!isfinite(value()) || value()==0)
-          {
-            sliderMin=-1;
-            sliderMax=1;
-          }
-        else
-          {
-            sliderMin=-value()*10;
-            sliderMax=value()*10;
-          }
-        sliderStepRel=false;
-        sliderBoundsSet=true;
-        sliderStep=0.01*(sliderMax-sliderMin);      
-      }
-    sliderStep=maxSliderSteps();      
-  }
-
   void VariableValue::adjustSliderBounds() const
   {
     if (size()==1 && !isnan(value()))  // make sure sliderBoundsSet is defined. for tickets 1258/1263
       {
-        if (sliderMax<value())
-            sliderMax=value()? 10*value():1;
-          if (sliderMin>=value())
-            sliderMin=value()? -10*value():-1;
-          sliderStep=maxSliderSteps(); 
-          sliderBoundsSet=true;	                    
+        if (!finite(sliderMax) ||sliderMax<value())
+          sliderMax=value()? 10*value():1;
+        if (!finite(sliderMin) || sliderMin>=value())
+          sliderMin=value()? -10*value():-1;
+        assert(sliderMin<sliderMax);
+        sliderStep=maxSliderSteps(); 
       }
   }
 

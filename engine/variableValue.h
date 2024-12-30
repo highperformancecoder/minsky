@@ -191,8 +191,6 @@ namespace minsky
     /// increment slider by \a step
     void incrSlider(double step);
     
-    /// initialise slider bounds when slider first opened
-    void initSliderBounds() const;
     void adjustSliderBounds() const;
   };
 

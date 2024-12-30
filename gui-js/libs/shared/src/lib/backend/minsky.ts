@@ -200,6 +200,7 @@ export class VariableBase extends Item {
   async TCL_obj(a1: classdesc__TCL_obj_t,a2: string): Promise<void> {return this.$callMethod('TCL_obj',a1,a2);}
   async accessibleVars(): Promise<string[]> {return this.$callMethod('accessibleVars');}
   async adjustBookmark(): Promise<void> {return this.$callMethod('adjustBookmark');}
+  async adjustSliderBounds(): Promise<void> {return this.$callMethod('adjustSliderBounds');}
   async bookmark(...args: boolean[]): Promise<boolean> {return this.$callMethod('bookmark',...args);}
   async bookmarkId(): Promise<string> {return this.$callMethod('bookmarkId');}
   async bottom(): Promise<number> {return this.$callMethod('bottom');}
@@ -244,7 +245,6 @@ export class VariableBase extends Item {
   async importFromCSV(a1: string,a2: DataSpecSchema): Promise<void> {return this.$callMethod('importFromCSV',a1,a2);}
   async inItem(a1: number,a2: number): Promise<boolean> {return this.$callMethod('inItem',a1,a2);}
   async init(...args: any[]): Promise<string> {return this.$callMethod('init',...args);}
-  async initSliderBounds(): Promise<void> {return this.$callMethod('initSliderBounds');}
   async inputWired(): Promise<boolean> {return this.$callMethod('inputWired');}
   async ioVar(): Promise<boolean> {return this.$callMethod('ioVar');}
   async isStock(): Promise<boolean> {return this.$callMethod('isStock');}
@@ -2297,7 +2297,6 @@ export class VariableValue extends CppClass {
   async incrSlider(a1: number): Promise<void> {return this.$callMethod('incrSlider',a1);}
   async index(...args: any[]): Promise<civita__Index> {return this.$callMethod('index',...args);}
   async init(...args: any[]): Promise<string> {return this.$callMethod('init',...args);}
-  async initSliderBounds(): Promise<void> {return this.$callMethod('initSliderBounds');}
   async isFlowVar(): Promise<boolean> {return this.$callMethod('isFlowVar');}
   async isZero(): Promise<boolean> {return this.$callMethod('isZero');}
   async lhs(): Promise<boolean> {return this.$callMethod('lhs');}
@@ -2311,7 +2310,6 @@ export class VariableValue extends CppClass {
   async setValue(...args: any[]): Promise<number> {return this.$callMethod('setValue',...args);}
   async shape(): Promise<number[]> {return this.$callMethod('shape');}
   async size(): Promise<number> {return this.$callMethod('size');}
-  async sliderBoundsSet(...args: boolean[]): Promise<boolean> {return this.$callMethod('sliderBoundsSet',...args);}
   async sliderMax(...args: number[]): Promise<number> {return this.$callMethod('sliderMax',...args);}
   async sliderMin(...args: number[]): Promise<number> {return this.$callMethod('sliderMin',...args);}
   async sliderSet(a1: number): Promise<void> {return this.$callMethod('sliderSet',a1);}

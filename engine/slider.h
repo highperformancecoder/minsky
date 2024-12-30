@@ -27,11 +27,11 @@ namespace minsky
   /// operations and variables
   struct Slider
   {
-    mutable bool sliderBoundsSet=false, ///< slider bounds have been initialised at some point
-      sliderStepRel=false;   /**< sliderStep is relative to the range
+    mutable bool sliderStepRel=false;   /**< sliderStep is relative to the range
                           [sliderMin,sliderMax] */
 
-    mutable double sliderMin, sliderMax, sliderStep;
+    mutable double sliderMin=std::numeric_limits<double>::max(),
+      sliderMax=-sliderMin, sliderStep=0;
     bool enableSlider=true;
 
     /// ensure there are at most 10000 steps between sliderMin and Max. see ticket 1255. 	
