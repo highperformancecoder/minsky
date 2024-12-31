@@ -238,9 +238,9 @@ namespace minsky
   {
     if (size()==1 && !isnan(value()))
       {
-        if (!finite(sliderMax) ||sliderMax<value())
+        if (!isfinite(sliderMax) ||sliderMax<value())
           sliderMax=value()? abs(10*value()):1;
-        if (!finite(sliderMin) || sliderMin>=value())
+        if (!isfinite(sliderMin) || sliderMin>=value())
           sliderMin=value()? -abs(10*value()):-1;
         assert(sliderMin<sliderMax);
         sliderStep=maxSliderSteps(); 
