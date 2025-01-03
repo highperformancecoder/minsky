@@ -11,7 +11,7 @@ import {
 } from '@minsky/core';
 import {
   events,
-  isWindows,
+  Functions,
   VariablePane,
 } from '@minsky/shared';
 import { fromEvent, Observable, Subject, takeUntil } from 'rxjs';
@@ -71,7 +71,7 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
 
     this.leftOffset = Math.round(clientRect.left);
     // 20 pixel offset to allow for selector buttons. Not needed on Windows for some reason.
-    this.topOffset = isWindows()? 0: 20; 
+    this.topOffset = this.electronService.platform=='win32'? 0: 20; 
     
     this.height = Math.round(this.variablePaneContainer.clientHeight);
     this.width = Math.round(this.variablePaneContainer.clientWidth-this.topOffset);
