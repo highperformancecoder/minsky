@@ -1319,7 +1319,8 @@ namespace minsky
                      }
                    else
                      {
-                       v->name(newName);
+                       // ensure locality is preserved across the rename
+                       v->name(varScope==v->group.lock()? uqNewName: (':'+uqNewName));
                        if (auto vv=v->vValue()) 
                          v->retype(vv->type()); // ensure correct type. Note this invalidates v.
                      }
