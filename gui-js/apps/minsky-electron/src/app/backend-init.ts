@@ -51,12 +51,7 @@ export async function backend(command: string, ...args: any[]): Promise<any> {
     return {};
   }
   try {
-    var arg='';
-    if (args.length>1) {
-      arg=JSON5.stringify(args, {quote: '"'});
-    } else if (args.length===1) {
-      arg=JSON5.stringify(args[0], {quote: '"'});
-    }
+    var arg=JSON5.stringify(args, {quote: '"'});
     CppClass.record(`${command} ${arg}`);
 
     let response=await restService.call(command, arg);
