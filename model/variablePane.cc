@@ -33,7 +33,7 @@ using namespace std;
 namespace minsky
 {
   VariablePaneCell::VariablePaneCell(const VariableValue& var):
-    var(var.type(), var.name)
+    var(var.type(), ':'+uqName(var.name))
   {
     const ecolab::cairo::Surface surf
       (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
