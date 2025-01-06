@@ -222,15 +222,14 @@ namespace minsky
     offsetLeft = left;
     offsetTop = top;
 
-#if defined(MAC_OSX_TK)
+#ifdef MAC_OSX_TK
+    childWidth = cWidth;
     childHeight = cHeight;
-    return;
-#endif
-
+#else
     auto scrollBarOffs=hasScrollBars? 20:0;
     childWidth = cWidth - scrollBarOffs;
     childHeight = cHeight - scrollBarOffs;
-
+#endif
 
 #ifdef USE_WIN32_SURFACE
     parentWindowId = reinterpret_cast<HWND>(parentWin);
