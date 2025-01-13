@@ -86,7 +86,7 @@ namespace minsky
   
   class VariableBase: virtual public classdesc::PolyPackBase,
                       public BottomRightResizerItem,
-                      public Slider, public VariableType,
+                      public VariableType,
                       public VarAccessors::NameAccessor,
                       public VarAccessors::InitAccessor,
                       public VarAccessors::ValueAccessor,
@@ -190,14 +190,6 @@ namespace minsky
     /// returns true if slider is to be drawn
     bool sliderVisible() const;
     
-    /// sets variable value (or init value)
-    void sliderSet(double x);
-    /// initialise slider bounds when slider first opened
-    void initSliderBounds() const;
-    void adjustSliderBounds() const;
-    /// a maximum of at most 10000 slider steps permitted
-    double maxSliderSteps() const;    
-
     /// sets/gets the units associated with this type
     Units units(bool check) const override;
     Units units() const {return units(false);}
@@ -251,7 +243,21 @@ namespace minsky
     void resetMiniPlot();
     
     bool onMouseMotion(float x, float y) override;
- 
+
+    void adjustSliderBounds();
+    
+    /// @{ slider parameters
+    double sliderMin() const;
+    double sliderMin(double) const;
+    double sliderMax() const;
+    double sliderMax(double) const;
+    double sliderStep() const;
+    double sliderStep(double) const;
+    bool sliderStepRel() const;
+    bool sliderStepRel(bool) const;
+    bool enableSlider() const;
+    bool enableSlider(bool);
+    /// @}
   };
 
   template <minsky::VariableType::Type T>

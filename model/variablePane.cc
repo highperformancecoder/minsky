@@ -33,7 +33,7 @@ using namespace std;
 namespace minsky
 {
   VariablePaneCell::VariablePaneCell(const VariableValue& var):
-    var(var.type(), var.name)
+    var(var.type(), ':'+uqName(var.name))
   {
     const ecolab::cairo::Surface surf
       (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
@@ -47,7 +47,6 @@ namespace minsky
   void VariablePaneCell::show()
   {
     if (!cachedCairo || !var || var->type()==VariableType::undefined) return;
-    var->sliderBoundsSet=0; //TODO, this should be the case by default anyway
     RenderVariable rv(*var, cachedCairo);
     const ecolab::cairo::CairoSave cs(cachedCairo);
     cairo_translate(cachedCairo,0.5*m_width,0.5*m_height);

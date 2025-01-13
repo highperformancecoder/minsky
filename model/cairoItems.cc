@@ -96,9 +96,14 @@ bool RenderVariable::inImage(float x, float y)
 
 double RenderVariable::handlePos() const
 {
-  if (var.sliderStep<std::numeric_limits<double>::min() || std::isnan(var.sliderStep)) var.initSliderBounds();   // this should only be used when sliderStep's value has not been set or is a nonsensicl
-  var.adjustSliderBounds();
-  return (w<0.5*var.iWidth()? 0.5*var.iWidth() : w)*(var.value()-0.5*(var.sliderMin+var.sliderMax))/(var.sliderMax-var.sliderMin);
+  if (auto vv=var.vValue())
+    {
+      vv->adjustSliderBounds();
+      assert(vv->sliderMin<vv->sliderMax);
+      return (w<0.5*var.iWidth()? 0.5*var.iWidth() : w)*(vv->value()-0.5*(vv->sliderMin+vv->sliderMax))/(vv->sliderMax-vv->sliderMin);
+    }
+  else
+    return 0;
 }
 
 void minsky::drawTriangle

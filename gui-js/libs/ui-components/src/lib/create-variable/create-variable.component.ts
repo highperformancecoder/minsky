@@ -184,7 +184,7 @@ export class CreateVariableComponent implements OnInit, OnDestroy {
   saveVariableParams(item: VariableBase) {
     item.setUnits(this.units.value || '');
     item.init(this.value.value);
-    item.initSliderBounds(); // ensure slider bounds starts with a reasonable value
+    item.adjustSliderBounds(); // ensure slider bounds starts with a reasonable value
     item.rotation(this.rotation.value || 0);
     item.tooltip(this.shortDescription.value);
     item.detailedText(this.detailedDescription.value);

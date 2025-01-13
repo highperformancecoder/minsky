@@ -4,7 +4,17 @@ ARG project=minsky
 ARG version
 ADD . /root
 RUN dnf install -y 'dnf-command(config-manager)' util-linux
-RUN dnf config-manager --add-repo https://download.opensuse.org/repositories/home:hpcoder1/Fedora_$version/home:hpcoder1.repo
+
+# handle dnf syntax change
+ARG repo=https://download.opensuse.org/repositories/home:/hpcoder1/Fedora_$version/home:hpcoder1.repo
+RUN <<EOF
+if [ $version -le 40 ]; then
+  dnf config-manager --add-repo $repo
+else
+  dnf config-manager addrepo --from-repofile=$repo
+fi
+EOF
+
 RUN dnf install -y $project
 RUN useradd -m minsky
 RUN su - minsky -c "minsky --version --no-sandbox"

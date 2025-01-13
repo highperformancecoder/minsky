@@ -33,6 +33,7 @@ namespace minsky
     std::string definition; ///< LaTeXable definition 
     std::string udfDefinition; ///< use function compatible definition
     std::string init; ///< initial value
+    double sliderStep, sliderMin, sliderMax; ///< slider parameters
     double value=nan(""); ///< value, if scalar
     std::string scope; ///< name, id of scope if local, ":" if global
     std::string godley; ///< name or id of Godley table, if contained in a Godley table

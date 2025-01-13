@@ -29,6 +29,7 @@
 #include "index.rcd"
 #include "index.xcd"
 #include "nobble.h"
+#include "slider.rcd"
 #include "tensorInterface.rcd"
 #include "tensorInterface.xcd"
 #include "tensorVal.rcd"
@@ -214,10 +215,37 @@ namespace minsky
     if (rhs) return rhs->hypercube();
     // return the initialisation hypercube if not a defined flowVar
     if (tensorInit.rank()>0 && (!isFlowVar() || m_type==parameter || !cminsky().definingVar(valueId())))
-        return tensorInit.hypercube();
+      return tensorInit.hypercube();
     return m_hypercube;
   }
 
+  void VariableValue::sliderSet(double x)
+  {
+    if (!isfinite(x)) return;
+    if (x<sliderMin) x=sliderMin;
+    if (x>sliderMax) x=sliderMax;
+    sliderStep=maxSliderSteps();    
+    init(to_string(x));
+    setValue(x);
+  }
+
+  void VariableValue::incrSlider(double step)
+  {
+    sliderSet(value()+step*(sliderStepRel? value(): 1)*sliderStep);
+  }
+  
+  void VariableValue::adjustSliderBounds()
+  {
+    if (size()==1 && !isnan(value()))
+      {
+        if (!isfinite(sliderMax) ||sliderMax<value())
+          sliderMax=value()? abs(10*value()):1;
+        if (!isfinite(sliderMin) || sliderMin>=value())
+          sliderMin=value()? -abs(10*value()):-1;
+        assert(sliderMin<sliderMax);
+        sliderStep=maxSliderSteps(); 
+      }
+  }
 
   
   TensorVal VariableValues::initValue
@@ -245,7 +273,7 @@ namespace minsky
             if (tmp>0 && e>x && *e)
               {
                 x=e+1;
-              dims.push_back(tmp);
+                dims.push_back(tmp);
               }
             else
               break;
@@ -300,27 +328,27 @@ namespace minsky
   void VariableValues::resetValue(VariableValue& v) const
   {
     if (v.idx()<0) v.allocValue();
-      // initialise variable only if its variable is not defined or it is a stock
-      if (!v.isFlowVar() || !cminsky().definingVar(v.valueId()))
-        {
-          if (v.tensorInit.rank())
-            {
-              // ensure dimensions are correct
-              auto hc=v.tensorInit.hypercube();
-              for (auto& xv: hc.xvectors)
-                {
-                  auto dim=cminsky().dimensions.find(xv.name);
-                  if (dim!=cminsky().dimensions.end())
-                    xv.dimension=dim->second;
-                }
-              v.tensorInit.hypercube(hc);
-            }
-          if (v.tensorInit.rank())
-            v=v.tensorInit;
-          else
-            v=initValue(v);
-        }
-      assert(v.idxInRange());
+    // initialise variable only if its variable is not defined or it is a stock
+    if (!v.isFlowVar() || !cminsky().definingVar(v.valueId()))
+      {
+        if (v.tensorInit.rank())
+          {
+            // ensure dimensions are correct
+            auto hc=v.tensorInit.hypercube();
+            for (auto& xv: hc.xvectors)
+              {
+                auto dim=cminsky().dimensions.find(xv.name);
+                if (dim!=cminsky().dimensions.end())
+                  xv.dimension=dim->second;
+              }
+            v.tensorInit.hypercube(hc);
+          }
+        if (v.tensorInit.rank())
+          v=v.tensorInit;
+        else
+          v=initValue(v);
+      }
+    assert(v.idxInRange());
   }
 
 
@@ -344,7 +372,7 @@ namespace minsky
       resetValue(v.second->allocValue());
       assert(v.second->idxInRange());
     }
-}
+  }
 
   bool VariableValues::validEntries() const
   {
@@ -533,6 +561,7 @@ namespace minsky
       definition,
       udfDefinition,
       init(),
+      sliderStep, sliderMin, sliderMax,
       value(),
       scopeName,
       godleyName,

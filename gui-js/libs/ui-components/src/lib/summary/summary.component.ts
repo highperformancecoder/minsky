@@ -83,6 +83,10 @@ export class SummaryComponent implements OnInit {
       this.numVars[name]=this.godleys[name].length;
       this.numVars.godleys+=this.godleys[name].length;
     }
+
+    // prevent wiring tab handlers from interfering with this tab
+    document.body.onkeydown=null;
+    document.body.onkeyup=null;
   }
 
   types(category: string): string[] {
@@ -142,6 +146,15 @@ export class SummaryComponent implements OnInit {
     {
       case 'init':
       this.electronService.minsky.variableValues.elem(this.editRow.valueId).init(this.editCellContents);
+      break;
+      case 'sliderMin':
+      this.electronService.minsky.variableValues.elem(this.editRow.valueId).sliderMin(+this.editCellContents);
+      break;
+      case 'sliderMax':
+      this.electronService.minsky.variableValues.elem(this.editRow.valueId).sliderMax(+this.editCellContents);
+      break;
+      case 'sliderStep':
+      this.electronService.minsky.variableValues.elem(this.editRow.valueId).sliderStep(+this.editCellContents);
       break;
       case 'units':
       this.electronService.minsky.variableValues.elem(this.editRow.valueId).setUnits(this.editCellContents);

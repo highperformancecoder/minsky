@@ -499,9 +499,9 @@ SUITE(Canvas)
       cc->moveTo(500,300);
       auto cv=dynamic_cast<VariableBase*>(cc.get());
       cv->value(1000);
-      cv->sliderMin=0;
-      cv->sliderMax=2000;
-      cv->sliderStep=20;
+      cv->sliderMin(0);
+      cv->sliderMax(2000);
+      cv->sliderStep(20);
       // work out where slider is located
       RenderVariable rv(*cv);
       float xc=cv->x()+rv.handlePos(), yc=cv->y()-rv.height();
@@ -519,11 +519,11 @@ SUITE(Canvas)
       // now check that value is clamped to max/min
       canvas.mouseDown(xc,yc);
       canvas.mouseUp(xc+100,yc);
-      CHECK_EQUAL(cv->sliderMax, cv->value());
+      CHECK_EQUAL(cv->sliderMax(), cv->value());
       xc=cv->x()+rv.handlePos();
       canvas.mouseDown(xc,yc);
       canvas.mouseUp(xc-100,yc);
-      CHECK_EQUAL(cv->sliderMin, cv->value());
+      CHECK_EQUAL(cv->sliderMin(), cv->value());
     }
 
     TEST_FIXTURE(TestFixture,lasso)
@@ -919,9 +919,9 @@ SUITE(Canvas)
         auto v=model->addItem(new Variable<VariableType::parameter>("v"))->variableCast();
         
         v->value(1000);
-        v->sliderMin=0;
-        v->sliderMax=2000;
-        v->sliderStep=100;
+        v->sliderMin(0);
+        v->sliderMax(2000);
+        v->sliderStep(100);
         canvas.keyPress({0xff52,"",0,v->x(),v->y()});
         CHECK_EQUAL(1100,v->value());
         canvas.keyPress({0xff51,"",0,v->x(),v->y()});

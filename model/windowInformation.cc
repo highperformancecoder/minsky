@@ -218,16 +218,18 @@ namespace minsky
 #endif
     hasScrollBars(hasScrollBars)
   {
-#if defined(MAC_OSX_TK)
-    return;
-#endif
-    
+   
     offsetLeft = left;
     offsetTop = top;
 
+#ifdef MAC_OSX_TK
+    childWidth = cWidth;
+    childHeight = cHeight;
+#else
     auto scrollBarOffs=hasScrollBars? 20:0;
     childWidth = cWidth - scrollBarOffs;
     childHeight = cHeight - scrollBarOffs;
+#endif
 
 #ifdef USE_WIN32_SURFACE
     parentWindowId = reinterpret_cast<HWND>(parentWin);
