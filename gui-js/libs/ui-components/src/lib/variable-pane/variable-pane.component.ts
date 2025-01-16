@@ -11,7 +11,6 @@ import {
 } from '@minsky/core';
 import {
   events,
-  Functions,
   VariablePane,
 } from '@minsky/shared';
 import { fromEvent, Observable, Subject, takeUntil } from 'rxjs';
