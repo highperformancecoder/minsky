@@ -215,7 +215,7 @@ namespace minsky
             // Javascript needs the result returned as UTF-16.
             return String::New(env, utf_to_utf<char16_t>(doCommand(command, arguments)));
           }
-#ifdef _WIN32
+#if defined(_WIN32) || defined(MAC_OSX_TK)
         // renderFrame needs to be called synchronously, otherwise inexplicable hangs occur on Windows.
         if (command.ends_with(".renderFrame"))
           return String::New(env, utf_to_utf<char16_t>(doCommand(command, arguments)));
