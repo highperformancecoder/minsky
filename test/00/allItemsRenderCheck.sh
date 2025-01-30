@@ -5,7 +5,7 @@ here=`pwd`
 
 cat >input.py <<EOF
 import sys
-sys.path.append('$here')
+sys.path.insert(0,'$here')
 from pyminsky import minsky
 
 minsky.defaultFont('Sans')
