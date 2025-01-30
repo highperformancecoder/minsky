@@ -1071,7 +1071,7 @@ namespace MathDAG
   {
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {
-        parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);}, "<",">");
+        parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);}, "&lt;","&gt;");
       }
     else
       print(surf.cairo(),"0",Anchor::nw);
@@ -1115,7 +1115,7 @@ namespace MathDAG
           cairo_rel_move_to(surf.cairo(), 0, -0.5*base.height());
           print(surf.cairo(),"k",Anchor::nw); // TODO can we extract the actual exponent here?
           cairo_rel_move_to(surf.cairo(), 0, 0.5*base.height());
-        },"<",">");
+        },"&lt;","&gt;");
       }
     else
       print(surf.cairo(),"0",Anchor::nw);

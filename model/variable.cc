@@ -547,7 +547,7 @@ bool VariableBase::sliderVisible() const
   return enableSlider() &&
     ((!vv && type()==parameter) ||
      (vv && vv->size()==1 &&
-      (type()==parameter || vv->enableSlider)));
+      (type()==parameter || (type()==flow && vv->enableSlider))));
 }
 
 void VariableBase::adjustSliderBounds()
