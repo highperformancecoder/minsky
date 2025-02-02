@@ -1,6 +1,7 @@
 import {
   Functions,
   importCSVvariableName,
+  InstallCase,
   minsky,
 } from '@minsky/shared';
 import {
@@ -106,12 +107,12 @@ export class ApplicationMenuManager {
           submenu: [
             {
               label: 'Latest Ravel',
-              click() {CommandsManager.upgrade(true);},
+              click() {CommandsManager.upgrade(InstallCase.latestRavel);},
             },
             {
               label: 'Previous Ravel',
               enabled: ravelAvailable,
-              click() {/* TODO */},
+              click() {CommandsManager.upgrade(InstallCase.previousRavel)},
             },
           ],
         },

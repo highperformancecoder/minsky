@@ -141,3 +141,6 @@ export interface TypeValueName {
   value? : string | number,
   name? : string
 }
+
+export enum InstallCase {theLot, latestRavel, previousRavel};
+
