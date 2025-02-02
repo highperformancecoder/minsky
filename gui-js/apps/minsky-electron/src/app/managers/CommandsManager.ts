@@ -1290,7 +1290,7 @@ export class CommandsManager {
     });
   }
   
-  static async upgrade() {
+  static async upgrade(ravelOnly: boolean=false) {
     const window=this.createDownloadWindow();
 
     // handler for when user has logged in to initiate upgrades.
@@ -1306,7 +1306,7 @@ export class CommandsManager {
         let params=new URLSearchParams(installables);
         let minskyFile=params.get('minsky-asset');
         let ravelFile=params.get('ravel-asset');
-        if (minskyFile) {
+        if (minskyFile && !ravelOnly) {
           let minskyVersionRE=/(\d+)\.(\d+)\.(\d+)([.-])/;
           let [,major,minor,patch]=minskyVersionRE.exec(minskyFile);
           let [,currMajor,currMinor,currPatch,terminator]=minskyVersionRE.exec((await minsky.minskyVersion())+'.');
