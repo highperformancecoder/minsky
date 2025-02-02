@@ -1341,15 +1341,16 @@ export class CommandsManager {
 
     let clientId='I9sn5lKdemBdh8uTNA7H7YiplxQk3gI-pP0I9_2g1tcbE88T2C3Z9wOvoy51I4-U';
     // need to pass what platform we are
+    let state;
     switch (process.platform) {
     case 'win32':
-      var state={system: 'windows', distro: '', version: '', arch:'', previous: ''};
+      state={system: 'windows', distro: '', version: '', arch:'', previous: ''};
       break;
     case 'darwin':
-      var state={system: 'macos', distro: '', version: '', arch: `${process.arch}`, previous: ''};
+      state={system: 'macos', distro: '', version: '', arch: `${process.arch}`, previous: ''};
       break;
     case 'linux':
-      var state={system: 'linux', distro: '', version: '',arch:'', previous: ''};
+      state={system: 'linux', distro: '', version: '',arch:'', previous: ''};
       // figure out distro and version from /etc/os-release
       let aexec=promisify(exec);
       let distroInfo=await aexec('grep ^ID= /etc/os-release');
@@ -1368,7 +1369,7 @@ export class CommandsManager {
       return;
       break;
     }
-    if (minsky.ravelAvailable() && installCase==InstallCase.previousRavel) 
+    if (await minsky.ravelAvailable() && installCase==InstallCase.previousRavel) 
       state.previous=/[^:]*/.exec(await minsky.ravelVersion())[0];
     let encodedState=encodeURI(JSON.stringify(state));
     // load patreon's login page
