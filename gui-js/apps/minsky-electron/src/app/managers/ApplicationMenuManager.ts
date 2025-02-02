@@ -1,6 +1,7 @@
 import {
   Functions,
   importCSVvariableName,
+  InstallCase,
   minsky,
 } from '@minsky/shared';
 import {
@@ -78,9 +79,9 @@ export class ApplicationMenuManager {
   private static async getFileMenu(): Promise<MenuItemConstructorOptions> {
     const scope = this;
     const ravelAvailable=await minsky.ravelAvailable();
-    let upgradeLabel='Upgrade';
+    let ravelUpgradeLabel='Upgrade Ravel';
     if (!ravelAvailable)
-      upgradeLabel+=' to Ravel';
+      ravelUpgradeLabel='Install Ravel';
     return {
       label: 'File',
       submenu: [
@@ -98,8 +99,22 @@ export class ApplicationMenuManager {
           },
         },
         {
-          label: upgradeLabel,
+          label: 'Upgrade',
           click() {CommandsManager.upgrade();},
+        },
+        {
+          label: ravelUpgradeLabel,
+          submenu: [
+            {
+              label: 'Latest Ravel',
+              click() {CommandsManager.upgrade(InstallCase.latestRavel);},
+            },
+            {
+              label: 'Previous Ravel',
+              enabled: ravelAvailable,
+              click() {CommandsManager.upgrade(InstallCase.previousRavel)},
+            },
+          ],
         },
         {
           label: 'Logout from Patreon',
