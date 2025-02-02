@@ -1307,7 +1307,7 @@ export class CommandsManager {
         let params=new URLSearchParams(installables);
         let minskyFile=params.get('minsky-asset');
         let ravelFile=params.get('ravel-asset');
-        if (minskyFile && installCase==InstallCase.theLot) {
+        if (minskyFile && installCase===InstallCase.theLot) {
           let minskyVersionRE=/(\d+)\.(\d+)\.(\d+)([.-])/;
           let [,major,minor,patch]=minskyVersionRE.exec(minskyFile);
           let [,currMajor,currMinor,currPatch,terminator]=minskyVersionRE.exec((await minsky.minskyVersion())+'.');
@@ -1369,7 +1369,7 @@ export class CommandsManager {
       return;
       break;
     }
-    if (await minsky.ravelAvailable() && installCase==InstallCase.previousRavel) 
+    if (await minsky.ravelAvailable() && installCase===InstallCase.previousRavel) 
       state.previous=/[^:]*/.exec(await minsky.ravelVersion())[0];
     let encodedState=encodeURI(JSON.stringify(state));
     // load patreon's login page
