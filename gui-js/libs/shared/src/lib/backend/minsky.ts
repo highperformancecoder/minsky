@@ -242,7 +242,7 @@ export class VariableBase extends Item {
   async iHeight(...args: any[]): Promise<number> {return this.$callMethod('iHeight',...args);}
   async iWidth(...args: any[]): Promise<number> {return this.$callMethod('iWidth',...args);}
   async id(): Promise<string> {return this.$callMethod('id');}
-  async importFromCSV(a1: string,a2: DataSpecSchema): Promise<void> {return this.$callMethod('importFromCSV',a1,a2);}
+  async importFromCSV(a1: string[],a2: DataSpecSchema): Promise<void> {return this.$callMethod('importFromCSV',a1,a2);}
   async inItem(a1: number,a2: number): Promise<boolean> {return this.$callMethod('inItem',a1,a2);}
   async init(...args: any[]): Promise<string> {return this.$callMethod('init',...args);}
   async inputWired(): Promise<boolean> {return this.$callMethod('inputWired');}

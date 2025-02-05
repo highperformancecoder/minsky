@@ -49,7 +49,7 @@ export class ElectronService {
   
   async closeWindow(): Promise<void> {return this.ipcRenderer.invoke(events.CLOSE_WINDOW);}
 
-  async openFileDialog(options): Promise<string> {
+  async openFileDialog(options): Promise<string|string[]> {
     return await this.ipcRenderer.invoke(events.OPEN_FILE_DIALOG, options);
   }
   
