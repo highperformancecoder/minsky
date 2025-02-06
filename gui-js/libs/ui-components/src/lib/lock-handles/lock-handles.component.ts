@@ -5,6 +5,7 @@ import {Ravel} from '@minsky/shared';
 import JSON5 from 'json5';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
+import { LatexDirective } from '../directives/latex.directive';
 import { NgFor } from '@angular/common';
 
 @Component({
@@ -15,6 +16,7 @@ import { NgFor } from '@angular/common';
     imports: [
         NgFor,
         FormsModule,
+        LatexDirective,
         MatButtonModule,
     ],
 })
