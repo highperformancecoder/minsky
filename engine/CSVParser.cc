@@ -637,6 +637,33 @@ namespace minsky
     Hypercube hc;
 
     template <class E>
+    ParseCSV(istream& input, const DataSpec& spec, uintmax_t fileSize, E& onError, bool checkValues=false)
+    {
+      //istream inputs do not support progress bars
+      parse(input,spec,fileSize,onError,checkValues);
+    }
+    
+    template <class E>
+    ParseCSV(const vector<string>& filenames, const DataSpec& spec, uintmax_t, E& onError, bool checkValues=false)
+    {
+      const ProgressUpdater pu(minsky().progressState, "Reading files",filenames.size());
+      for (auto& f: filenames)
+        {
+          ifstream input(f);
+          try
+            {
+              parse(input,spec,std::filesystem::file_size(f),onError);
+            }
+          catch (const std::exception& ex)
+            {
+              // prepend filename here
+              throw std::runtime_error(f+": "+ex.what());
+            }
+          ++minsky().progressState;
+        }
+    }
+    
+    template <class E>
     void parse(istream& input, const DataSpec& spec, uintmax_t fileSize, E& onError, bool checkValues=false)
     {
       const BusyCursor busy(minsky());
@@ -894,8 +921,8 @@ namespace minsky
     }
   };
   
-  template <class P,  class E>
-  void loadValueFromCSVFileT(VariableValue& vv, const vector<string>& filenames, const DataSpec& spec, E& onError)
+  template <class P,  class E, class S>
+  void loadValueFromCSVFileT(VariableValue& vv, S& stream, const DataSpec& spec, E& onError)
   {
     const BusyCursor busy(minsky());
     const ProgressUpdater pu(minsky().progressState, "Importing CSVs",4);
@@ -910,23 +937,8 @@ namespace minsky
     
     try
       {
-        const ProgressUpdater pu(minsky().progressState, "Reading files",filenames.size());
-        ParseCSV<P> parseCSV;
+        ParseCSV<P> parseCSV(stream,spec,0/*not used*/,onError);
 
-        for (auto& f: filenames)
-          {
-            ifstream input(f);
-            try
-              {
-                parseCSV.parse(input,spec,std::filesystem::file_size(f),onError);
-              }
-            catch (const std::exception& ex)
-              {
-                // prepend filename here
-                throw std::runtime_error(f+": "+ex.what());
-              }
-          }
-        
         auto& tmpData=parseCSV.tmpData;
         auto& dimLabels=parseCSV.dimLabels;
         auto& hc=parseCSV.hc;
@@ -1032,8 +1044,9 @@ namespace minsky
         throw MemoryExhausted();
       }
   }  
-  
-  void loadValueFromCSVFile(VariableValue& v, const vector<string>& filenames, const DataSpec& spec)
+
+  template <class S>
+  void loadValueFromCSVFileS(VariableValue& v, S& filenames, const DataSpec& spec)
   {
     OnError onError;
     if (spec.separator==' ')
@@ -1042,6 +1055,11 @@ namespace minsky
       loadValueFromCSVFileT<Parser>(v,filenames,spec,onError);
   }
 
+  void loadValueFromCSVFile(VariableValue& v, const vector<string>& filenames, const DataSpec& spec)
+  {loadValueFromCSVFileS(v,filenames,spec);}
+   void loadValueFromCSVFile(VariableValue& v, istream& input, const DataSpec& spec)
+  {loadValueFromCSVFileS(v,input,spec);}
+ 
   struct FailedToRewind: public std::exception
   {
     const char* what() const noexcept override {return "Failed to rewind input";}
@@ -1072,8 +1090,7 @@ namespace minsky
     } onError;
 
     // parse file to extract error locations
-    ParseCSV<P> parseCSV;
-    parseCSV.parse(input, spec, fileSize, onError, /*checkValues=*/true);
+    ParseCSV<P> parseCSV(input, spec, fileSize, onError, /*checkValues=*/true);
 
     input.clear();
     input.seekg(0);
