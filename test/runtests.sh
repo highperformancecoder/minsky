@@ -23,9 +23,6 @@ for i in test/00/*.sh; do
     # we need to expose output generated here to prevent a build timeout
     if [ "$TRAVIS" = 1 -a $i = test/00/checkOverrides.sh ]; then
         sh $i
-# items failing in DEBUG, ticketed on SF
-    elif [ -n "$DEBUG" -a $i = test/00/oldSchemas.sh ]; then
-        echo disabled; continue;
 # foir diagnostic purposes
 #    elif [ "$TRAVIS" = 1 -a $i = test/00/jest-tests.sh ]; then
 #        sh $i
