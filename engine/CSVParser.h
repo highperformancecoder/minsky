@@ -121,7 +121,7 @@ namespace minsky
   /// load a variableValue from a list of files according to data spec
   void loadValueFromCSVFile(VariableValue&,const std::vector<std::string>& filenames,const DataSpec&);
   /// load a variableValue from a stream according to data spec
-  void loadValueFromCSVFile(VariableValue&,std::istream& filenames,const DataSpec&);
+  void loadValueFromCSVFile(VariableValue&, std::istream& input, const DataSpec&);
 
   /// replace doubled quotes with escaped quotes
   void escapeDoubledQuotes(std::string&,const DataSpec&);
