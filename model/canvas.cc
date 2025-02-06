@@ -326,13 +326,8 @@ namespace minsky
             model->recursiveDo(&Group::groups, [&](Groups&,Groups::iterator& i)
                                                {
                                                  auto ct=(*i)->clickType(x,y);
-                                                 const bool mf=!mouseFocusSet && ct!=ClickType::outside;
-                                                 if (mf) mouseFocusSet=true;
-                                                 if (mf!=(*i)->mouseFocus)
-                                                   {
-                                                     (*i)->mouseFocus=mf;
-                                                     requestRedraw();
-                                                   }
+                                                 setFlagAndRequestRedraw((*i)->mouseFocus, !mouseFocusSet && ct!=ClickType::outside);
+                                                 if ((*i)->mouseFocus) mouseFocusSet=true;
                                                  const bool onResize = ct==ClickType::onResize;
                                                  if (onResize!=(*i)->onResizeHandles)
                                                    {
