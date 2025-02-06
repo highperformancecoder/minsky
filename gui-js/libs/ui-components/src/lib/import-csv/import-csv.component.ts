@@ -11,6 +11,7 @@ import {
   Zoomable,
 } from '@minsky/shared';
 import { MessageBoxSyncOptions } from 'electron/renderer';
+import {OpenDialogOptions} from 'electron';
 import { Subject, takeUntil } from 'rxjs';
 import { NgIf, NgFor, NgStyle } from '@angular/common';
 import { MatOptionModule } from '@angular/material/core';
@@ -105,6 +106,8 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   mouseDown = -1;       ///< record of column of previous mouseDown
   dialogState: any;
   uniqueValues = [];
+  files: string[]=[];
+                             
 
   existingDimensionNames: string[] = [];
   selectableDimensionNames: string[][] = [];
@@ -291,18 +294,26 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   }
 
   async selectFile(defaultPath: string = '') {
-    let options = {
+    let options: OpenDialogOptions = {
       filters: [
         { extensions: ['csv'], name: 'CSV' },
         { extensions: ['*'], name: 'All Files' },
       ],
+      properties: ['multiSelections'],
     };
     if (defaultPath) options['defaultPath'] = defaultPath;
-    const filePath = await this.electronService.openFileDialog(options);
+    const filePaths = await this.electronService.openFileDialog(options);
 
-    if (!filePath) { return; }
-    this.url.setValue(filePath);
-    this.dialogState.url = filePath;
+    if (!filePaths) return;
+    if (typeof filePaths=='string') {
+      this.files=[filePaths];
+      this.url.setValue(filePaths);
+      this.dialogState.url = filePaths;
+    } else {
+      this.files=filePaths;
+      this.url.setValue(filePaths[0]);
+      this.dialogState.url = filePaths[0];
+    }
 
     await this.load(1);
   }
@@ -315,6 +326,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
     if (this.url.value.includes('://')) {
       const savePath = await this.electronService.downloadCSV({ windowUid: this.itemId, url: this.url.value });
       this.url.setValue(savePath);
+      this.files=[savePath];
     }
 
     const fileUrlOnServer = await this.variableValuesSubCommand.csvDialog.url();
@@ -541,7 +553,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
       this.dialogState.spec.counter = true;
     let v = new VariableBase(this.electronService.minsky.canvas.item);
     // returns an error message on error
-    const res = await v.importFromCSV(this.url.value, this.dialogState.spec) as unknown as string;
+    const res = await v.importFromCSV(this.files, this.dialogState.spec) as unknown as string;
 
     if (typeof res === 'string') {
       const positiveResponseText = 'Yes';

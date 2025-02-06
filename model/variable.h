@@ -232,8 +232,9 @@ namespace minsky
     /// export this variable as a CSV file
     /// @param tabular - if true, the longest dimension is split across columns as a horizontal dimension
     void exportAsCSV(const std::string& filename, bool tabular) const;
-    /// import CSV file, using \a spec
-    void importFromCSV(std::string filename, const DataSpecSchema& spec) const;
+    /// import CSV files, using \a spec
+    void importFromCSV(const std::vector<std::string>& filenames,
+                       const DataSpecSchema& spec) const;
 
     /// clean up popup window structures on window close
     void destroyFrame() override;
