@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { events, CurrentWindowDetails, HandleDescriptionPayload, HandleDimensionPayload, DownloadCSVPayload,} from '@minsky/shared';
 import isElectron from 'is-electron';
 import {Minsky, CppClass} from '@minsky/shared';
+import {OpenDialogOptions} from 'electron';
 
 @Injectable({
   providedIn: 'root',
@@ -49,7 +50,7 @@ export class ElectronService {
   
   async closeWindow(): Promise<void> {return this.ipcRenderer.invoke(events.CLOSE_WINDOW);}
 
-  async openFileDialog(options): Promise<string|string[]> {
+  async openFileDialog(options: OpenDialogOptions): Promise<string|string[]> {
     return await this.ipcRenderer.invoke(events.OPEN_FILE_DIALOG, options);
   }
   

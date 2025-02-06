@@ -11,6 +11,7 @@ import {
   Zoomable,
 } from '@minsky/shared';
 import { MessageBoxSyncOptions } from 'electron/renderer';
+import {OpenDialogOptions} from 'electron';
 import { Subject, takeUntil } from 'rxjs';
 import { NgIf, NgFor, NgStyle } from '@angular/common';
 import { MatOptionModule } from '@angular/material/core';
@@ -293,7 +294,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   }
 
   async selectFile(defaultPath: string = '') {
-    let options = {
+    let options: OpenDialogOptions = {
       filters: [
         { extensions: ['csv'], name: 'CSV' },
         { extensions: ['*'], name: 'All Files' },
