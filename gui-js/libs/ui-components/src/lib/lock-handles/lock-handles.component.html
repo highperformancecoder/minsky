@@ -1,20 +1,23 @@
 <div class="container">
   <div class="form-body">
-    <div class="form-row">
-      <div class="header-cell" *ngFor="let ravelName of ravelNames; let i = index">{{ravelName}}</div>
-      <div class="header-cell" *ngFor="let attribute of attributes" [title]="attribute.tooltip">{{attribute.label}}</div>
-    </div>
-    <div class="form-row" *ngFor="let handle of handleLockInfo">
-      <div class="form-cell" *ngFor="let ravelName of ravelNames; let i = index">
-        <select [(ngModel)]="handle.handleNames[i]">
-          <option value="">
-          <option *ngFor="let lockHandle of lockHandles" [value]="lockHandle">{{lockHandle}}</option>
-        </select>
-      </div>
-      <div class="form-cell" *ngFor="let attribute of attributes" [title]="attribute.tooltip">
-        <input [(ngModel)]="handle[attribute.key]" type="checkbox"/>
-      </div>
-    </div>
+    <table>
+      <tr class="form-row1">
+        <td class="header-cell" *ngFor="let ravelName of ravelNames;
+                                        let i = index" latex [equation]="ravelName"></td>
+        <td class="header-cell" *ngFor="let attribute of attributes" [title]="attribute.tooltip">{{attribute.label}}</td>
+      </tr>
+      <tr class="form-row1" *ngFor="let handle of handleLockInfo">
+        <td class="form-cell" *ngFor="let ravelName of ravelNames; let i = index">
+          <select [(ngModel)]="handle.handleNames[i]">
+            <option value="">
+            <option *ngFor="let lockHandle of lockHandles" [value]="lockHandle">{{lockHandle}}</option>
+          </select>
+        </td>
+        <td class="form-cell" *ngFor="let attribute of attributes" [title]="attribute.tooltip">
+          <input [(ngModel)]="handle[attribute.key]" type="checkbox"/>
+        </td>
+      </tr>
+    </table>
   </div>
   <div class="buttons">
     <button mat-raised-button (click)="closeWindow()">Cancel</button>
