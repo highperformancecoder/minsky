@@ -71,6 +71,8 @@ ipcMain.handle(events.OPEN_FILE_DIALOG, async (event, options) => {
   const fileDialog = await dialog.showOpenDialog(options);
 
   if (fileDialog.canceled || !fileDialog.filePaths) return "";
+  if (options?.properties?.includes('multiSelections'))
+    return fileDialog.filePaths.map((x)=>x.toString());
   return fileDialog.filePaths[0].toString();
 });
 

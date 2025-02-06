@@ -118,9 +118,10 @@ namespace minsky
   /// begining of file, with a column for error messages
   void reportFromCSVFile(std::istream& input, std::ostream& output, const DataSpec& spec, uintmax_t fileSize);
 
+  /// load a variableValue from a list of files according to data spec
+  void loadValueFromCSVFile(VariableValue&,const std::vector<std::string>& filenames,const DataSpec&);
   /// load a variableValue from a stream according to data spec
-  /// @param fileSize size of file to read (for progress bar)
-  void loadValueFromCSVFile(VariableValue&,std::istream&,const DataSpec&,uintmax_t fileSize);
+  void loadValueFromCSVFile(VariableValue&, std::istream& input, const DataSpec&);
 
   /// replace doubled quotes with escaped quotes
   void escapeDoubledQuotes(std::string&,const DataSpec&);

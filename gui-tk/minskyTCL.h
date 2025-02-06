@@ -341,7 +341,7 @@ namespace minsky
           if (auto v=canvas.item->variableCast())
             {
               setBusyCursor();
-              v->importFromCSV(filename, spec->memberptr->toSchema());
+              v->importFromCSV({filename}, spec->memberptr->toSchema());
               clearBusyCursor();
             }
     }

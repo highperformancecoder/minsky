@@ -114,9 +114,9 @@ SUITE(CSVParser)
       dimensions[0].type=Dimension::time;
       dimensions[0].units="%Y-Q%Q";
       VariableValue v(VariableType::parameter,":foo");
-      CHECK_THROW(loadValueFromCSVFile(v,is,*this,2),std::exception);
+      CHECK_THROW(loadValueFromCSVFile(v,is,*this),std::exception);
       is.clear(); is.seekg(0);
-      try {loadValueFromCSVFile(v,is,*this,2);}
+      try {loadValueFromCSVFile(v,is,*this);}
       catch (const std::exception& ex) {
         CHECK(string(ex.what()).starts_with("Invalid"));
       }
@@ -247,7 +247,7 @@ SUITE(CSVParser)
       horizontalDimName="foobar";
       
       VariableValue v(VariableType::parameter);
-      loadValueFromCSVFile(v,is,*this,0);
+      loadValueFromCSVFile(v,is,*this);
 
       CHECK_EQUAL(3, v.rank());
       CHECK_ARRAY_EQUAL(vector<unsigned>({2,2,3}),v.hypercube().dims(),3);
@@ -289,7 +289,7 @@ SUITE(CSVParser)
       horizontalDimName="foobar";
       
       VariableValue v(VariableType::parameter);
-      loadValueFromCSVFile(v,is,*this,0);
+      loadValueFromCSVFile(v,is,*this);
 
       CHECK_EQUAL(3, v.rank());
       CHECK_ARRAY_EQUAL(vector<unsigned>({2,2,3}),v.hypercube().dims(),3);
@@ -329,7 +329,7 @@ SUITE(CSVParser)
       horizontalDimension.type=Dimension::time;
       
       VariableValue v(VariableType::parameter);
-      loadValueFromCSVFile(v,is,*this,0);
+      loadValueFromCSVFile(v,is,*this);
 
       CHECK_EQUAL(2, v.rank());
       CHECK_ARRAY_EQUAL(vector<unsigned>({2,2}),v.hypercube().dims(),2);
@@ -365,7 +365,7 @@ SUITE(CSVParser)
       horizontalDimension.type=Dimension::time;
       
       VariableValue v(VariableType::parameter);
-      loadValueFromCSVFile(v,is,*this,0);
+      loadValueFromCSVFile(v,is,*this);
 
       CHECK_EQUAL(2, v.rank());
       CHECK_ARRAY_EQUAL(vector<unsigned>({2,3}),v.hypercube().dims(),2);
@@ -402,7 +402,7 @@ SUITE(CSVParser)
       horizontalDimName="foobar";
       
       VariableValue v;
-      loadValueFromCSVFile(v,is,*this,0);
+      loadValueFromCSVFile(v,is,*this);
 
       CHECK_EQUAL(3, v.rank());
       CHECK_ARRAY_EQUAL(vector<unsigned>({2,2,3}),v.hypercube().dims(),3);
@@ -485,41 +485,41 @@ SUITE(CSVParser)
       VariableValue v(VariableType::parameter);
       {
         istringstream is(input);
-        CHECK_THROW(loadValueFromCSVFile(v,is,*this,0), std::exception);
+        CHECK_THROW(loadValueFromCSVFile(v,is,*this), std::exception);
       }
       
       {
         istringstream is(input);
         duplicateKeyAction=sum;
-        loadValueFromCSVFile(v,is,*this,0);
+        loadValueFromCSVFile(v,is,*this);
         CHECK_EQUAL(2.2, v.tensorInit[0]);
       }
       
       {
         istringstream is(input);
         duplicateKeyAction=product;
-        loadValueFromCSVFile(v,is,*this,0);
+        loadValueFromCSVFile(v,is,*this);
         CHECK_EQUAL(1.2, v.tensorInit[0]);
       }
       
       {
         istringstream is(input);
         duplicateKeyAction=min;
-        loadValueFromCSVFile(v,is,*this,0);
+        loadValueFromCSVFile(v,is,*this);
         CHECK_EQUAL(1, v.tensorInit[0]);
       }
       
       {
         istringstream is(input);
         duplicateKeyAction=max;
-        loadValueFromCSVFile(v,is,*this,0);
+        loadValueFromCSVFile(v,is,*this);
         CHECK_EQUAL(1.2, v.tensorInit[0]);
       }
       
       {
         istringstream is(input);
         duplicateKeyAction=av;
-        loadValueFromCSVFile(v,is,*this,0);
+        loadValueFromCSVFile(v,is,*this);
         CHECK_EQUAL(1.1, v.tensorInit[0]);
       }
     }
@@ -556,7 +556,7 @@ SUITE(CSVParser)
       VariableValue newV(VariableType::flow);
       {
         ifstream f("tmp.csv");
-        loadValueFromCSVFile(newV,f,spec,0);
+        loadValueFromCSVFile(newV,f,spec);
       }
 
       CHECK(newV.hypercube().xvectors==v.hypercube().xvectors);
