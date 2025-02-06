@@ -298,6 +298,7 @@ namespace minsky
               requestRedraw();
             };
             // set mouse focus to display ports etc.
+            bool mouseFocusSet=false; // ensure only one item is focused by mouse.
             model->recursiveDo(&Group::items, [&](Items&,Items::iterator& i)
                                               {
                                                 (*i)->disableDelayedTooltip();
@@ -311,7 +312,8 @@ namespace minsky
                                                 else
                                                   {
                                                     auto ct=(*i)->clickType(x,y);
-                                                    setFlagAndRequestRedraw((*i)->mouseFocus, ct!=ClickType::outside);
+                                                    setFlagAndRequestRedraw((*i)->mouseFocus, !mouseFocusSet && ct!=ClickType::outside);
+                                                    if ((*i)->mouseFocus) mouseFocusSet=true;
                                                     setFlagAndRequestRedraw((*i)->onResizeHandles, ct==ClickType::onResize);
                                                     setFlagAndRequestRedraw((*i)->onBorder, ct==ClickType::onItem);
                                                     if (ct==ClickType::outside)
@@ -324,7 +326,8 @@ namespace minsky
             model->recursiveDo(&Group::groups, [&](Groups&,Groups::iterator& i)
                                                {
                                                  auto ct=(*i)->clickType(x,y);
-                                                 const bool mf=ct!=ClickType::outside;
+                                                 const bool mf=!mouseFocusSet && ct!=ClickType::outside;
+                                                 if (mf) mouseFocusSet=true;
                                                  if (mf!=(*i)->mouseFocus)
                                                    {
                                                      (*i)->mouseFocus=mf;
