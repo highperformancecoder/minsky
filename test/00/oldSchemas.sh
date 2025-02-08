@@ -26,7 +26,9 @@ pass()
 
 trap "fail" 1 2 3 15
 
-# check that old schmea can still be read correctly
+# ensure pyminsky module can be found
+export PYTHONPATH=$here
+# check that old schema can still be read correctly
 cd $here/test/oldSchema
 for i in */*.mky; do
     # this example has a constant and variable of the same name, so will fail this test
