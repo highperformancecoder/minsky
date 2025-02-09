@@ -126,6 +126,9 @@ namespace minsky
   /// replace doubled quotes with escaped quotes
   void escapeDoubledQuotes(std::string&,const DataSpec&);
 
+  /// get complete line from input, allowing for quoted linefeed
+  bool getWholeLine(std::istream& input, std::string& line, const DataSpec& spec);
+
   namespace escapedListSeparator
 {
   // pinched from boost::escape_list_separator, and modified to not throw
@@ -186,11 +189,12 @@ namespace minsky
 
   public:
 
-    explicit EscapedListSeparator(Char  e = '\\',
-                                  Char c = ',',Char  q = '\"')
-      : escape_(1,e), c_(1,c), quote_(1,q), last_(false) { }
-
-    EscapedListSeparator(string_type e, string_type c, string_type q)
+    explicit EscapedListSeparator(Char  e = '\\')
+      : escape_(1,e), c_(1,','), quote_(1,'\"'), last_(false) { }
+    EscapedListSeparator(Char  e, Char c,Char  q = '\"')
+      : escape_(1,'\\'), c_(1,','), quote_(1,q), last_(false) { }
+    EscapedListSeparator(EscapedListSeparator::string_type e, EscapedListSeparator::string_type c,
+                         EscapedListSeparator::string_type q)
       : escape_(e), c_(c), quote_(q), last_(false) { }
 
     void reset() {last_=false;}

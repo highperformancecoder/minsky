@@ -22,6 +22,7 @@
 
 #include "CSVParser.h"
 
+#include <soci/soci.h>
 #include <string>
 #include <vector>
 
@@ -30,16 +31,22 @@ namespace minsky
   class DatabaseIngestor
   {
     soci::session session;
-    template <class T> DatabaseIngestor::load
-    (const std::vector<std::string>& filenames, const DataSpecSchema& spec);
+    template <class T> void load(const std::vector<std::string>&, const DataSpec&);
+    CLASSDESC_ACCESS(DatabaseIngestor);
   public:
+    ///< connect to a database. Consult SOCI documentation for meaning of the two parameters
     void connect(const std::string& dbType, const std::string& connection)
     {session.open(dbType,connection);}
-    std::string table; // table name to use
+    std::string table; ///< table name to use
+    /// create an empty table satisfying \a filenames and \a spec
+    void createTable
+    (const std::vector<std::string>& filenames, const DataSpec& spec);
     /// import CSV files, using \a spec
     void importFromCSV(const std::vector<std::string>& filenames,
-                       const DataSpecSchema& spec);
+                       const DataSpec& spec);
   };
 }
 
+#include "databaseIngestor.cd"
+#include "databaseIngestor.xcd"
 #endif

@@ -18,8 +18,13 @@
 */
 
 #include "databaseIngestor.h"
+#include "databaseIngestor.rcd"
+#include "minsky_epilogue.h"
+
+using civita::Dimension;
 using soci::use;
 using soci::transaction;
+using namespace std;
 
 namespace minsky
 {
@@ -29,15 +34,15 @@ namespace minsky
       {
         SpaceSeparatorParser csvParser;
         const boost::tokenizer<SpaceSeparatorParser> tok(line.begin(),line.end(), csvParser);
-        return {tok.begin(), tok.end();}
+        return {tok.begin(), tok.end()};
       }
     Parser csvParser;
     const boost::tokenizer<Parser> tok(line.begin(),line.end(), csvParser);
-    return {tok.begin(), tok.end();}
+    return {tok.begin(), tok.end()};
   }
   
   void DatabaseIngestor::createTable
-  (const std::vector<std::string>& filenames, const DataSpecSchema& spec)
+  (const std::vector<std::string>& filenames, const DataSpec& spec)
   {
     session<<"drop "+table+" if exists";
     // for now, load time data as strings - TODO handle date-time parsing
@@ -57,8 +62,9 @@ namespace minsky
       }
     if (!filenames.empty())
       {
-        ifstream input(filenames.begin());
-        for (; getWholeLine(input,line,spec) && row<spec.nRowAxes; ++row); // skip header rows
+        ifstream input(filenames.front());
+        string line;
+        for (; getWholeLine(input,line,spec) && row<spec.nRowAxes(); ++row); // skip header rows
         auto parsedRow=parseRow(input, spec.separator);
         for (size_t i=spec.maxColumn; i<parsedRow.size(); ++i) // remaining columns are data
           def+=parsedRow[i]+" double ";
@@ -66,6 +72,7 @@ namespace minsky
     def+=")";
     session<<def;
   }
+  
   
   template <class Tokeniser> DatabaseIngestor::load
   (soci::statement& stmt, const std::vector<std::string>& filenames,
