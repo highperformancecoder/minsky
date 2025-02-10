@@ -192,7 +192,7 @@ namespace minsky
     explicit EscapedListSeparator(Char  e = '\\')
       : escape_(1,e), c_(1,','), quote_(1,'\"'), last_(false) { }
     EscapedListSeparator(Char  e, Char c,Char  q = '\"')
-      : escape_(1,'\\'), c_(1,','), quote_(1,q), last_(false) { }
+      : escape_(1,e), c_(1,c), quote_(1,q), last_(false) { }
 //    EscapedListSeparator(typename EscapedListSeparator<Char,Traits>::string_type e,
 //                         typename EscapedListSeparator::string_type c,
 //                         EscapedListSeparator::string_type q)

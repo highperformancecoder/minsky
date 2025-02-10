@@ -204,6 +204,7 @@ namespace minsky
 
   VariablePtr Minsky::definingVar(const string& valueId) const 
   {
+    if (!model) return {};
     return dynamic_pointer_cast<VariableBase>
       (model->findAny(&Group::items, [&](const ItemPtr& x) {
         auto v=x->variableCast();

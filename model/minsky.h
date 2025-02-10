@@ -155,7 +155,6 @@ namespace minsky
     FontDisplay fontSampler;
     PhillipsDiagram phillipsDiagram;
     std::vector<PubTab> publicationTabs;
-    DatabaseIngestor databaseIngestor;
 
     void addNewPublicationTab(const std::string& name) {publicationTabs.emplace_back(name);}
     void addCanvasItemToPublicationTab(size_t i) {
@@ -256,6 +255,7 @@ namespace minsky
 
     GroupPtr model{new Group};
     Canvas canvas{model};
+    DatabaseIngestor databaseIngestor;
 
     void clearAllMaps(bool clearHistory);
     void clearAllMaps() {clearAllMaps(true);}

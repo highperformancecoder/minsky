@@ -41,10 +41,14 @@ namespace minsky
     return {tok.begin(), tok.end()};
   }
   
+  void DatabaseIngestor::connect(const string& dbType, const string& connection)
+  {session=make_shared<soci::session>(dbType,connection);}
+
   void DatabaseIngestor::createTable
   (const std::vector<std::string>& filenames, const DataSpec& spec)
   {
-    session<<"drop "+table+" if exists";
+    if (!session) return;
+    *session<<"drop "+table+" if exists";
     // for now, load time data as strings - TODO handle date-time parsing
     string def="create table "+table+" (";
     for (size_t i=0; i<spec.maxColumn; ++i)
@@ -73,25 +77,25 @@ namespace minsky
           }
       }
     def+=")";
-    session<<def;
+    *session<<def;
   }
   
   
   template <class Tokeniser> void DatabaseIngestor::load
-  (const std::vector<std::string>& filenames,
-   const DataSpec& spec)
+  (const std::vector<std::string>& filenames, const DataSpec& spec)
   {
+    if (!session) return;
     Tokeniser csvParser;
     vector<string> cells;
     // prepare the insertion string based on spec
-    soci::statement statement=(session.prepare<<"upsert into "+table+" ...",use(cells));
+    soci::statement statement=(session->prepare<<"upsert into "+table+" ...",use(cells));
     for (auto f: filenames)
       {
         ifstream input(f);
         size_t row=0;
         string line;
         for (; getWholeLine(input,line,spec) && row<spec.nRowAxes(); ++row); // skip header rows
-        transaction tr(session); // does implicit session.begin(). RAII to cleanup in case of exception
+        transaction tr(*session); // does implicit session.begin(). RAII to cleanup in case of exception
         for (; getWholeLine(input,line,spec); ++row)
           {
             const boost::tokenizer<Tokeniser> tok(line.begin(),line.end(), csvParser);
@@ -99,8 +103,8 @@ namespace minsky
             statement.execute(true);
             if (row%100==0)
               {
-                session.commit();
-                session.begin();
+                session->commit();
+                session->begin();
               }
           }
         tr.commit();
@@ -110,8 +114,9 @@ namespace minsky
   void DatabaseIngestor::importFromCSV
   (const std::vector<std::string>& filenames, const DataSpec& spec)
   {
-    if (!session.is_connected()) session.reconnect();
-    if (!session.is_connected()) return;
+    if (!session) return;
+    if (!session->is_connected()) session->reconnect();
+    if (!session->is_connected()) return;
 
     // TODO check if table exists, and call createTable if not
     // select * from table limit 1 - and check for exception thrown?

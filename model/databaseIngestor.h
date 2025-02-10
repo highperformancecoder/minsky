@@ -30,20 +30,19 @@ namespace minsky
 {
   class DatabaseIngestor
   {
-    classdesc::Exclude<soci::session> session;
+    classdesc::Exclude<std::shared_ptr<soci::session>> session;
     template <class T> void load(const std::vector<std::string>&, const DataSpec&);
     CLASSDESC_ACCESS(DatabaseIngestor);
   public:
-    ///< connect to a database. Consult SOCI documentation for meaning of the two parameters
-    void connect(const std::string& dbType, const std::string& connection)
-    {session.open(dbType,connection);}
     std::string table; ///< table name to use
-    /// create an empty table satisfying \a filenames and \a spec
+    ///< connect to a database. Consult SOCI documentation for meaning of the two parameters
+    void connect(const std::string& dbType, const std::string& connection);
+    /// create an empty table satisfying \a filenames and \a spec. drops any preexisting table
     void createTable
     (const std::vector<std::string>& filenames, const DataSpec& spec);
     /// import CSV files, using \a spec
-    void importFromCSV(const std::vector<std::string>& filenames,
-                       const DataSpec& spec);
+    void importFromCSV
+    (const std::vector<std::string>& filenames, const DataSpec& spec);
   };
 }
 

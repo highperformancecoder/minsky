@@ -554,10 +554,7 @@ SUITE(CSVParser)
         spec.guessFromStream(f);
       }
       VariableValue newV(VariableType::flow);
-      {
-        ifstream f("tmp.csv");
-        loadValueFromCSVFile(newV,f,spec);
-      }
+      loadValueFromCSVFile(newV,{"tmp.csv"},spec);
 
       CHECK(newV.hypercube().xvectors==v.hypercube().xvectors);
       CHECK_EQUAL(v.size(), newV.size());
