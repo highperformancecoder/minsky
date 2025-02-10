@@ -17,7 +17,7 @@ FLAGS+=-std=c++20  -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -DUSE_UNROLLED -DCLA
   -Wno-unknown-warning-option -Wno-unused-local-typedefs -Wno-unused-command-line-argument -I../model -I../engine -I../schema
 LIBS+=-L../RavelCAPI -lravelCAPI -L../RavelCAPI/civita -lcivita -lboost_system -lboost_thread \
 	-lboost_regex -lboost_date_time -lboost_filesystem -lclipboard -lxcb -lX11 \
-	-lUnitTest++ -lgsl -lssl -lcrypto -lgslcblas  -lxml2 -ltiff -ldl
+	-lUnitTest++ -lsoci_core -lgsl -lssl -lcrypto -lgslcblas  -lxml2 -ltiff -ldl
 
 ifdef MXE
 else
