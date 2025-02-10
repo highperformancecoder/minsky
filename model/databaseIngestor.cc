@@ -64,48 +64,51 @@ namespace minsky
       {
         ifstream input(filenames.front());
         string line;
-        for (; getWholeLine(input,line,spec) && row<spec.nRowAxes(); ++row); // skip header rows
-        auto parsedRow=parseRow(input, spec.separator);
-        for (size_t i=spec.maxColumn; i<parsedRow.size(); ++i) // remaining columns are data
-          def+=parsedRow[i]+" double ";
+        for (size_t row=0; getWholeLine(input,line,spec) && row<spec.nRowAxes(); ++row); // skip header rows
+        if (getWholeLine(input,line,spec))
+          {
+            auto parsedRow=parseRow(line, spec.separator);
+            for (size_t i=spec.maxColumn; i<parsedRow.size(); ++i) // remaining columns are data
+              def+=parsedRow[i]+" double ";
+          }
       }
     def+=")";
     session<<def;
   }
   
   
-  template <class Tokeniser> DatabaseIngestor::load
-  (soci::statement& stmt, const std::vector<std::string>& filenames,
-   const DataSpecSchema& spec)
+  template <class Tokeniser> void DatabaseIngestor::load
+  (const std::vector<std::string>& filenames,
+   const DataSpec& spec)
   {
     Tokeniser csvParser;
     vector<string> cells;
     // prepare the insertion string based on spec
-    auto statement=(session.prepare<<"upsert into "+table+" ...",use(cells));
+    soci::statement statement=(session.prepare<<"upsert into "+table+" ...",use(cells));
     for (auto f: filenames)
       {
         ifstream input(f);
         size_t row=0;
         string line;
-        for (; getWholeLine(input,line,spec) && row<spec.nRowAxes; ++row); // skip header rows
-        transaction(session); // does implicit session.begin(). RAII to cleanup in case of exception
+        for (; getWholeLine(input,line,spec) && row<spec.nRowAxes(); ++row); // skip header rows
+        transaction tr(session); // does implicit session.begin(). RAII to cleanup in case of exception
         for (; getWholeLine(input,line,spec); ++row)
           {
             const boost::tokenizer<Tokeniser> tok(line.begin(),line.end(), csvParser);
             cells.assign(tok.begin(), tok.end());
-            stmt.execute(true);
+            statement.execute(true);
             if (row%100==0)
               {
                 session.commit();
                 session.begin();
               }
           }
-        transaction.commit();
+        tr.commit();
       }
   }
   
   void DatabaseIngestor::importFromCSV
-  (const std::vector<std::string>& filenames, const DataSpecSchema& spec)
+  (const std::vector<std::string>& filenames, const DataSpec& spec)
   {
     if (!session.is_connected()) session.reconnect();
     if (!session.is_connected()) return;
@@ -115,9 +118,11 @@ namespace minsky
     
 
     if (spec.separator==' ')
-      load<SpaceSeparatorParser>(statement,filenames,spec);
+      load<SpaceSeparatorParser>(filenames,spec);
     else
-      load<Parser>(statement,filenames,spec);
+      load<Parser>(filenames,spec);
   }
 
 }
+
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::DatabaseIngestor);

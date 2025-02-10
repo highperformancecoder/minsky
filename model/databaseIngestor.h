@@ -30,7 +30,7 @@ namespace minsky
 {
   class DatabaseIngestor
   {
-    soci::session session;
+    classdesc::Exclude<soci::session> session;
     template <class T> void load(const std::vector<std::string>&, const DataSpec&);
     CLASSDESC_ACCESS(DatabaseIngestor);
   public:

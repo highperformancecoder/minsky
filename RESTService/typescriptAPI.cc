@@ -12,6 +12,7 @@
 #include "CSVDialog.tcd"
 #include "CSVParser.tcd"
 #include "constMap.tcd"
+#include "databaseIngestor.tcd"
 #include "dataSpecSchema.tcd"
 #include "dataOp.h"
 #include "dataOp.tcd"

@@ -608,6 +608,16 @@ export class DataSpecSchema extends CppClass {
   async separator(...args: number[]): Promise<number> {return this.$callMethod('separator',...args);}
 }
 
+export class DatabaseIngestor extends CppClass {
+  constructor(prefix: string){
+    super(prefix);
+  }
+  async connect(a1: string,a2: string): Promise<void> {return this.$callMethod('connect',a1,a2);}
+  async createTable(a1: string[],a2: DataSpec): Promise<void> {return this.$callMethod('createTable',a1,a2);}
+  async importFromCSV(a1: string[],a2: DataSpec): Promise<void> {return this.$callMethod('importFromCSV',a1,a2);}
+  async table(...args: string[]): Promise<string> {return this.$callMethod('table',...args);}
+}
+
 export class EngNotation extends CppClass {
   constructor(prefix: string){
     super(prefix);
@@ -1281,6 +1291,7 @@ export class Lock extends Item {
 export class Minsky extends CppClass {
   canvas: Canvas;
   conversions: civita__Conversions;
+  databaseIngestor: DatabaseIngestor;
   dimensions: Map<string,civita__Dimension>;
   equationDisplay: EquationDisplay;
   evalGodley: EvalGodley;
@@ -1302,6 +1313,7 @@ export class Minsky extends CppClass {
     super(prefix);
     this.canvas=new Canvas(this.$prefix()+'.canvas');
     this.conversions=new civita__Conversions(this.$prefix()+'.conversions');
+    this.databaseIngestor=new DatabaseIngestor(this.$prefix()+'.databaseIngestor');
     this.dimensions=new Map<string,civita__Dimension>(this.$prefix()+'.dimensions',civita__Dimension);
     this.equationDisplay=new EquationDisplay(this.$prefix()+'.equationDisplay');
     this.evalGodley=new EvalGodley(this.$prefix()+'.evalGodley');

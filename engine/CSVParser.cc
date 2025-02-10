@@ -439,7 +439,7 @@ namespace minsky
   }
   
   // gets a line, accounting for quoted newlines
-  bool getWholeLine(istream& input, string& line, const DataSpec& spec)
+  bool getWholeLine(istream& input, string& line, const DataSpecSchema& spec)
   {
     line.clear();
     bool r=getline(input,line).good();
@@ -460,7 +460,7 @@ namespace minsky
     return r || !line.empty();
   }
 
-  void escapeDoubledQuotes(std::string& line,const DataSpec& spec)
+  void escapeDoubledQuotes(std::string& line,const DataSpecSchema& spec)
   {
     // replace doubled quotes with escape quote
     for (size_t i=1; i<line.size(); ++i)
