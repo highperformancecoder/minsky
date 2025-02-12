@@ -274,6 +274,15 @@ namespace minsky
     /// update region given by updateRegion
     bool redrawUpdateRegion();
 
+    struct ZoomCrop
+    {
+      double zoom, left, top, width, height;
+    };
+
+    /// Render to a PNG file \a filename, scaling the canvas temporarily by \a zoom, shifts it to \a left, \a top, and crops to \a width, \a height
+    void renderToPNGCropped(const std::string& filename, const ZoomCrop&);
+
+    
     /// adjust canvas so that -ve coordinates appear on canvas
     void recentre();
 

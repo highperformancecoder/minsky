@@ -244,6 +244,7 @@ int main()
 
   // supporting types
   api.addClass<Bookmark>();
+  api.addClass<Canvas::ZoomCrop>();
   api.addClass<civita::Dimension>();
   api.addClass<civita::Hypercube>();
   api.addClass<civita::Index>();

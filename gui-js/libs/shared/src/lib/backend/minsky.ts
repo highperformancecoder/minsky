@@ -493,6 +493,7 @@ export class Canvas extends RenderNativeWindow {
   async renderToEMF(a1: string): Promise<void> {return this.$callMethod('renderToEMF',a1);}
   async renderToPDF(a1: string): Promise<void> {return this.$callMethod('renderToPDF',a1);}
   async renderToPNG(a1: string): Promise<void> {return this.$callMethod('renderToPNG',a1);}
+  async renderToPNGCropped(a1: string,a2: minsky__Canvas__ZoomCrop): Promise<void> {return this.$callMethod('renderToPNGCropped',a1,a2);}
   async renderToPS(a1: string): Promise<void> {return this.$callMethod('renderToPS',a1);}
   async renderToSVG(a1: string): Promise<void> {return this.$callMethod('renderToSVG',a1);}
   async reportDrawTime(a1: number): Promise<void> {return this.$callMethod('reportDrawTime',a1);}
@@ -1418,7 +1419,7 @@ export class Minsky extends CppClass {
   async renderAllPlotsAsSVG(a1: string): Promise<void> {return this.$callMethod('renderAllPlotsAsSVG',a1);}
   async renderCanvasToEMF(a1: string): Promise<void> {return this.$callMethod('renderCanvasToEMF',a1);}
   async renderCanvasToPDF(a1: string): Promise<void> {return this.$callMethod('renderCanvasToPDF',a1);}
-  async renderCanvasToPNG(a1: string): Promise<void> {return this.$callMethod('renderCanvasToPNG',a1);}
+  async renderCanvasToPNG(...args: any[]): Promise<void> {return this.$callMethod('renderCanvasToPNG',...args);}
   async renderCanvasToPS(a1: string): Promise<void> {return this.$callMethod('renderCanvasToPS',a1);}
   async renderCanvasToSVG(a1: string): Promise<void> {return this.$callMethod('renderCanvasToSVG',a1);}
   async requestRedraw(): Promise<void> {return this.$callMethod('requestRedraw');}
@@ -2496,6 +2497,17 @@ export class ecolab__cairo__Colour extends CppClass {
   async b(...args: number[]): Promise<number> {return this.$callMethod('b',...args);}
   async g(...args: number[]): Promise<number> {return this.$callMethod('g',...args);}
   async r(...args: number[]): Promise<number> {return this.$callMethod('r',...args);}
+}
+
+export class minsky__Canvas__ZoomCrop extends CppClass {
+  constructor(prefix: string){
+    super(prefix);
+  }
+  async height(...args: number[]): Promise<number> {return this.$callMethod('height',...args);}
+  async left(...args: number[]): Promise<number> {return this.$callMethod('left',...args);}
+  async top(...args: number[]): Promise<number> {return this.$callMethod('top',...args);}
+  async width(...args: number[]): Promise<number> {return this.$callMethod('width',...args);}
+  async zoom(...args: number[]): Promise<number> {return this.$callMethod('zoom',...args);}
 }
 
 export class ravel__HandleState extends CppClass {

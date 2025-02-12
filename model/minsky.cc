@@ -1544,6 +1544,7 @@ namespace minsky
         }
   }
 
+  
   void Minsky::renderAllPlotsAsSVG(const string& prefix) const
   {
     unsigned plotNum=0;

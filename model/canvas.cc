@@ -940,6 +940,21 @@ namespace minsky
     minsky().maxWaitMS=(t>0.03)? 3000*t: 100.0;
   }
 
+    void Canvas::renderToPNGCropped(const std::string& filename, const ZoomCrop& z)
+  {
+    model->zoom(model->x(),model->y(),z.zoom);
+    model->moveTo(model->x()-z.left,model->y()-z.top);
+    cairo::SurfacePtr tmp(new cairo::Surface(cairo_image_surface_create(CAIRO_FORMAT_ARGB32,z.width,z.height)));
+    tmp.swap(surface());
+    redraw(0,0,z.width,z.height);
+    tmp.swap(surface());
+    cairo_surface_write_to_png(tmp->surface(),filename.c_str());
+    model->moveTo(model->x()+z.left,model->y()+z.top);
+    model->zoom(model->x(),model->y(),1/z.zoom);
+  }
+
+
+
   void Canvas::applyDefaultPlotOptions() {
       if (auto p=item->plotWidgetCast()) {
         // stash titles to restore later
