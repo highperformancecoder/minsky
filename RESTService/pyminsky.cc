@@ -97,6 +97,8 @@ namespace pyminsky
   }
   CLASSDESC_ADD_FUNCTION(findObject);
   CLASSDESC_ADD_FUNCTION(findVariable);
+  using minsky::DataSpec;
+  CLASSDESC_DECLARE_TYPE(DataSpec);
 }
 
 CLASSDESC_PYTHON_MODULE(pyminsky);

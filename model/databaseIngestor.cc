@@ -47,23 +47,25 @@ namespace minsky
   void DatabaseIngestor::createTable
   (const std::vector<std::string>& filenames, const DataSpec& spec)
   {
-    if (!session) return;
-    *session<<"drop "+table+" if exists";
+    if (!session.get()) return;
+    *session<<"drop table if exists "+table;
     // for now, load time data as strings - TODO handle date-time parsing
     string def="create table "+table+" (";
-    for (size_t i=0; i<spec.maxColumn; ++i)
-      {
-        def+=spec.dimensionNames[i];
-        if (spec.dimensionCols.contains(i))
-          {
-            if (spec.dimensions[i].type==Dimension::value)
-              def+=" double ";
-            else
-              def+=" char(255) "; // TODO - better string type?
-          }
-        else if (spec.dataCols.contains(i))
-          def+=" double ";
-      }
+    for (size_t i=0; i<spec.dimensionNames.size() &&
+           i<spec.dimensions.size() && i<spec.maxColumn; ++i)
+      if (spec.dimensionCols.contains(i)||spec.dataCols.contains(i))
+        {
+          def+=(i? ", '":"'")+spec.dimensionNames[i]+"'";
+          if (spec.dimensionCols.contains(i))
+            {
+              if (spec.dimensions[i].type==Dimension::value)
+                def+=" double";
+              else
+                def+=" char(255)"; // TODO - better string type?
+            }
+          else
+            def+=" double";
+        }
     if (!filenames.empty())
       {
         ifstream input(filenames.front());
@@ -84,27 +86,51 @@ namespace minsky
   template <class Tokeniser> void DatabaseIngestor::load
   (const std::vector<std::string>& filenames, const DataSpec& spec)
   {
-    if (!session) return;
     Tokeniser csvParser;
-    vector<string> cells;
+    set<unsigned> insertCols;
+    // compute complement of dimensionCols union dataCols
+    for (unsigned i=0; i<spec.numCols; ++i)
+      if (spec.dimensionCols.contains(i) || spec.dataCols.contains(i))
+        insertCols.insert(i);
+    vector<string> cells(insertCols.size());
+    
     // prepare the insertion string based on spec
-    soci::statement statement=(session->prepare<<"upsert into "+table+" ...",use(cells));
+    string insertStatement="insert into "+table+"(";
+    for (size_t i=0; i<spec.numCols; ++i)
+      if (insertCols.contains(i))
+        insertStatement+=(i?",'":"'")+spec.dimensionNames[i]+"'";
+    insertStatement+=") values(";
+    for (size_t i=0; i<spec.numCols; ++i)
+      if (insertCols.contains(i))
+        insertStatement+=(i?",:a":":a")+to_string(i);
+    insertStatement+=")";
+    cout<<insertStatement<<endl;
+
+    auto temp=session->prepare<<insertStatement;
+    for (auto& c: cells) temp=(temp,use(c));
+    soci::statement statement(temp);
     for (auto f: filenames)
       {
         ifstream input(f);
         size_t row=0;
+        size_t bytesRead=0;
         string line;
         for (; getWholeLine(input,line,spec) && row<spec.nRowAxes(); ++row); // skip header rows
         transaction tr(*session); // does implicit session.begin(). RAII to cleanup in case of exception
         for (; getWholeLine(input,line,spec); ++row)
           {
+            bytesRead+=line.size();
             const boost::tokenizer<Tokeniser> tok(line.begin(),line.end(), csvParser);
-            cells.assign(tok.begin(), tok.end());
+            unsigned col=0, cell=0;
+            for (auto t: tok)
+              if (insertCols.contains(col++))
+                cells[cell++]=t;
             statement.execute(true);
-            if (row%100==0)
+            if (row%1000==0)
               {
                 session->commit();
                 session->begin();
+                cout<<f<<": "<<(double(bytesRead)/filesystem::file_size(f))<<"%\r"<<flush;
               }
           }
         tr.commit();
@@ -114,7 +140,7 @@ namespace minsky
   void DatabaseIngestor::importFromCSV
   (const std::vector<std::string>& filenames, const DataSpec& spec)
   {
-    if (!session) return;
+    if (!session.get()) return;
     if (!session->is_connected()) session->reconnect();
     if (!session->is_connected()) return;
 
