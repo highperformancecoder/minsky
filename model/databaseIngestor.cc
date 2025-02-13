@@ -57,12 +57,18 @@ namespace minsky
         {
           def+=(i? ", '":"'")+spec.dimensionNames[i]+"'";
           if (spec.dimensionCols.contains(i))
-            {
-              if (spec.dimensions[i].type==Dimension::value)
+            switch (spec.dimensions[i].type)
+              {
+              case Dimension::value:
                 def+=" double";
-              else
-                def+=" char(255)"; // TODO - better string type?
-            }
+                break;
+              case Dimension::string:
+                def+=" varchar(255)";
+                break;
+              case Dimension::time:
+                def+=" timestamp with timezone";
+                break;
+              }
           else
             def+=" double";
         }
@@ -122,9 +128,19 @@ namespace minsky
             bytesRead+=line.size();
             const boost::tokenizer<Tokeniser> tok(line.begin(),line.end(), csvParser);
             unsigned col=0, cell=0;
-            for (auto t: tok)
-              if (insertCols.contains(col++))
-                cells[cell++]=t;
+            for (auto& t: tok)
+              {
+                if (insertCols.contains(col))
+                  {
+                    if (spec.dimensions[col].type==Dimension::time)
+                      // reformat input as ISO standard
+                      cells[cell++]=str(anyVal(spec.dimensions[col],t));
+                    else
+                      cells[cell++]=t;
+                  }
+                ++col;
+              }
+            
             statement.execute(true);
             if (row%1000==0)
               {
