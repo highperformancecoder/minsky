@@ -276,7 +276,7 @@ namespace minsky
 
     struct ZoomCrop
     {
-      double zoom, left, top, width, height;
+      double zoom=1, left=0, top=0, width=1000, height=1000;
     };
 
     /// Render to a PNG file \a filename, scaling the canvas temporarily by \a zoom, shifts it to \a left, \a top, and crops to \a width, \a height
