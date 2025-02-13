@@ -547,7 +547,9 @@ bool VariableBase::sliderVisible() const
   return enableSlider() &&
     ((!vv && type()==parameter) ||
      (vv && vv->size()==1 &&
-      (type()==parameter || (type()==flow && vv->enableSlider))));
+      (type()==parameter ||
+       // !inputWired() short circuits the more expensive definingVar operation.
+       (type()==flow && !inputWired() && !cminsky().definingVar(valueId())))));
 }
 
 void VariableBase::adjustSliderBounds()
