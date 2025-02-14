@@ -1,7 +1,8 @@
 import sys
 import json
 from pyminsky import minsky, DataSpec
-minsky.databaseIngestor.connect("sqlite3","db=citibike.sqlite")
+#minsky.databaseIngestor.connect("sqlite3","db=citibike.sqlite")
+minsky.databaseIngestor.connect("sqlite3","db=foo.sqlite")
 # sys.argv[0] is this script name
 filenames=sys.argv[1:]
 
@@ -22,4 +23,4 @@ spec.numCols(15)
 
 minsky.databaseIngestor.table("citibike")
 minsky.databaseIngestor.createTable(filenames,spec())
-minsky.databaseIngestor.importFromCSV(filenames,spec())
+#minsky.databaseIngestor.importFromCSV(filenames,spec())

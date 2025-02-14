@@ -42,7 +42,10 @@ namespace minsky
   }
   
   void DatabaseIngestor::connect(const string& dbType, const string& connection)
-  {session=make_shared<soci::session>(dbType,connection);}
+  {
+    session=make_shared<soci::session>(dbType,connection);
+    this->dbType=dbType;
+  }
 
   void DatabaseIngestor::createTable
   (const std::vector<std::string>& filenames, const DataSpec& spec)
@@ -66,7 +69,10 @@ namespace minsky
                 def+=" varchar(255)";
                 break;
               case Dimension::time:
-                def+=" timestamp with timezone";
+                if (dbType=="sqlite3") // sqlite backend returns an integer type, not time type.
+                  def+=" datetime";
+                else
+                  def+=" "+session->get_backend()->create_column_type(soci::dt_date,0,0);
                 break;
               }
           else
@@ -86,6 +92,23 @@ namespace minsky
       }
     def+=")";
     *session<<def;
+
+    soci::row result;
+    *session<<"select * from "+table+" limit 1",soci::into(result);
+    for (size_t i=0; i<result.size(); ++i)
+      cout<<result.get_properties(i).get_name()<<" "<<result.get_properties(i).get_data_type()<<endl;
+//    soci::statement s((session->prepare<<"select * from "+table+" limit 1",soci::into(result)));
+//    s.execute(false);
+//    soci::data_type type;
+//    std::string name;
+//    auto backEnd=s.get_backend();
+//    auto numCols=backEnd->prepare_for_describe();
+//    for (int i=0; i<numCols; ++i)
+//      {
+//        backEnd->describe_column(i,type,name);
+//        std::cout<<i<<" "<<type<<" "<<name<<endl;
+//      }
+
   }
   
   
@@ -110,7 +133,6 @@ namespace minsky
       if (insertCols.contains(i))
         insertStatement+=(i?",:a":":a")+to_string(i);
     insertStatement+=")";
-    cout<<insertStatement<<endl;
 
     auto temp=session->prepare<<insertStatement;
     for (auto& c: cells) temp=(temp,use(c));

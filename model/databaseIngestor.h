@@ -31,6 +31,7 @@ namespace minsky
   class DatabaseIngestor
   {
     classdesc::Exclude<std::shared_ptr<soci::session>> session;
+    std::string dbType; //stash the database type here
     template <class T> void load(const std::vector<std::string>&, const DataSpec&);
     CLASSDESC_ACCESS(DatabaseIngestor);
   public:
