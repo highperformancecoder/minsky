@@ -15,6 +15,8 @@ for i in Dockerfile-*[^~]; do
         Dockerfile-leap) versions="15.4 15.5";;
         *) versions=default;;
     esac
+    # Rawhide not currently building, see #1783.
+    if [ $i = "Dockerfile-rawhide" ]; then continue; fi
     for version in $versions; do
         if docker build --label obsSmokeTest --network=host --build-arg project=$project --build-arg version=$version --pull --no-cache -f $i .; then
             echo "$i-$version PASSED" >$i-$version.log
