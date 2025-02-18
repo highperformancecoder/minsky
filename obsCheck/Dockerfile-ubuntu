@@ -12,5 +12,6 @@ RUN echo "deb http://download.opensuse.org/repositories/home:/hpcoder1/xUbuntu_$
 RUN apt-get update -qq -y
 RUN apt-get install -y --allow-unauthenticated $project
 RUN useradd -m minsky
+# Get Failed to connect to the bus: Failed to connect to socket /run/dbus/system_bus_socket: No such file or directory
 #RUN su - minsky -c "minsky --version  --no-sandbox"
 RUN python3 -c "import pyminsky"
