@@ -15,7 +15,7 @@ jobs:
         ubuntu_ver: [20.04]
         product: [ minsky, minsky-beta ]
 
-    name: ubuntu-${{ matrix.ubuntu_ver }}
+    name: ${{ matrix.product }}
 
     steps:
       - name: Checkout
