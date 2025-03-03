@@ -7,6 +7,8 @@ export const updateServerUrl = 'https://deployment-server-url.com'; // TODO: ins
 
 export const defaultBackgroundColor = '#ffffff';
 
+export const numLinkGroupColours=8;
+
 export const ZOOM_IN_FACTOR = 1.1;
 export const ZOOM_OUT_FACTOR = 0.91;
 export const RESET_ZOOM_FACTOR = 1;
