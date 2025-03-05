@@ -33,7 +33,6 @@
 #include <boost/math/special_functions/polygamma.hpp>
 
 using namespace boost::posix_time;
-using namespace boost::math;
 
 namespace minsky
 {
