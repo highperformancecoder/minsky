@@ -14,6 +14,11 @@ Minsky is an open source program with prebuilt binaries available for:
 - [Mac OS X](https://sourceforge.net/projects/minsky/files/Mac%20Binaries/)
 - [various Linux distributions](https://build.opensuse.org/package/show/home:hpcoder1/minsky)
 
+## Using Minsky in "batch mode" from Python
+A little known secret is that Minsky can be used in a headless batch mode, a capability it has had from the beginning in the form of TCL scripting. Since March 2024, Python scripting has been available in Linux builds, and is coming soon to Windows and Mac builds (version 3.12). TCL scripting is deprecated and will soon be removed from the codebase.
+
+[Introduction to scripting Minsky in Python]
+
 ## Compiling Minsky from source code
 
 Official releases are available from [SourceForge](https://sourceforge.net/projects/minsky/files/Sources/). You may also obtain later releases from this Github project, as release are tagged within git.
