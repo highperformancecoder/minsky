@@ -17,7 +17,7 @@ Minsky is an open source program with prebuilt binaries available for:
 ## Using Minsky in "batch mode" from Python
 A little known secret is that Minsky can be used in a headless batch mode, a capability it has had from the beginning in the form of TCL scripting. Since March 2024, Python scripting has been available in Linux builds, and is coming soon to Windows and Mac builds (version 3.12). TCL scripting is deprecated and will soon be removed from the codebase.
 
-[Introduction to scripting Minsky in Python]
+[Introduction to scripting Minsky in Python](python-minsky.md)
 
 ## Compiling Minsky from source code
 
