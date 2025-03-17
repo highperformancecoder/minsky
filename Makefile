@@ -272,6 +272,9 @@ ifdef MXE
 BOOST_EXT=-mt-x64
 EXE=.exe
 DL=dll
+FLAGS+=-DMXE
+PYMINSKY=gui-js/dynamic_libraries/pyminsky.pyd
+PYTHONCAPI=ecolab/classdesc/pythonCAPI.o # extra python.lib shims required on Windows
 FLAGS+=-D_WIN32 -DUSE_UNROLLED -Wa,-mbig-obj
 # DLLS that need to be copied into the binary directory
 MXE_DLLS=libboost_filesystem-mt-x64 libboost_thread-mt-x64 \
@@ -288,6 +291,7 @@ DLLS=$(wildcard $(MXE_DLLS:%=$(BINDIR)/%*.dll))
 else
 EXE=
 DL=so
+PYMINSKY=pyminsky.so
 BOOST_EXT=
 # try to autonomously figure out which boost extension we should be using
   ifeq ($(shell if $(CPLUSPLUS) test/testmain.cc $(LIBS) -lboost_system>&/dev/null; then echo 1; else echo 0; fi),0)
@@ -329,8 +333,9 @@ FLAGS+=-DBOOST_SIGNALS_NO_DEPRECATION_WARNING
 
 # add the python module build here
 ifeq ($(OS),Linux)
+EXES+=$(PYMINSKY)
 ifndef MXE
-EXES+=pyminsky.so createLinkGroupIcons
+EXES+=createLinkGroupIcons
 endif
 endif
 
@@ -445,7 +450,7 @@ endif
 libminsky.a: $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS)
 	ar r $@ $^
 
-pyminsky.so: pyminsky.o libminsky.a
+$(PYMINSKY): pyminsky.o $(PYTHONCAPI) libminsky.a
 	$(LINK) -shared -o $@ $^ libminsky.a $(LIBS)
 
 # used to find undefined symbols in pyminsky.so
