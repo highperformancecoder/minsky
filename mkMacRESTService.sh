@@ -44,7 +44,9 @@ rewrite_dylib()
 {
     local dylib=$1
     local target=$2
-    cp -f $dylib $MAC_DIST_DIR
+    if [ ! -x $MAC_DIST_DIR/${dylib##*/} ]; then
+        cp -f $dylib $MAC_DIST_DIR
+    fi
     chmod u+rw $MAC_DIST_DIR/${dylib##*/}
     rewrite_dylibs $MAC_DIST_DIR/${dylib##*/}
     echo "install_name_tool -change $dylib @loader_path/${dylib##*/} $target"
@@ -75,6 +77,7 @@ rm -rf $MAC_DIST_DIR/*.dylib
 mkdir -p $MAC_DIST_DIR
 
 rewrite_dylibs $MAC_DIST_DIR/minskyRESTService.node
+rewrite_dylibs $MAC_DIST_DIR/pyminsky.so
 
 pushd gui-js
 # libravel.so expects certain dylibs in node-addons for legacy
