@@ -69,3 +69,13 @@ You can set/get their values like any other C++ type, but if you attempt to set 
 ### Method calls
 C++ methods are called, and passed python parameters are converted into their C++ equivalents where possible, and an exception thrown where not. Mostly, the obvious thing will work, but some peculiarities can occur. For example if a method is overloaded with both an int argument and a double argument, then calling the method on 3 will call the int version, but calling it on 3.0 will call the double version. Sometimes it can be non-obvious which method will be called, so some experimentation is in order. Structs, and class public members on parameters can be set by passing a dict object. members not set within the dict are set to the default values, as though default constructed in C++.
 
+## Introspection and Minsky API
+
+Introspection is possible on any C++ object by the following methods:
+- `_list()`: return a list of methods/attributes available on the object
+- `_signature()`: return and arguments types for all overloads of a function
+- `_type()`: type of the object. This is a C++ name, but allows you to look up the type in the [API documentation](https://minsky.sourceforge.io/doxydoc/html/index.html)
+- `keys()`: returns the list of keys of a map object (eg std::map, std::unordered_map, etc).
+- `pyminsky.enum`: is a dict containing all enumerators for all enums registered in the system
+
+Minsky is open source, so ultimately the documented API is found by consulting the source code. However, as useful annotated API summary is created by running the Doxygen tool in the top level directory, [the results of which for the latest release can be found online](https://minsky.sourceforge.io/doxydoc/html/index.html).
