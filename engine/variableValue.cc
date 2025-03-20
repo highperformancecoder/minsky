@@ -417,6 +417,8 @@ namespace minsky
   void VariableValue::exportAsCSV(const string& filename, const string& comment, bool tabular) const
   {
     ofstream of(filename);
+    if (!of)
+      throw runtime_error("Unable to open "+filename+" for writing.");
     if (!comment.empty())
       of<<R"(""")"<<comment<<R"(""")"<<endl;
                
@@ -433,14 +435,14 @@ namespace minsky
         os<<json(static_cast<const NamedDimension&>(i));
       }
     of<<quoted("RavelHypercube=["+os.str()+"]")<<endl;
-    if (tabular)
+    if (tabular && rank()>0)
       of<<"HorizontalDimension="<<quoted(xv[longestDim].name)<<endl;
     
     for (size_t i=0; i<xv.size(); ++i)
       if (!tabular || i!=longestDim)
         of<<CSVQuote(xv[i].name,',')<<",";
 
-    if (tabular)
+    if (tabular && rank()>0)
       for (size_t k=0; k<dims[longestDim]; ++k)
         {
           if (k>0) of<<",";
@@ -452,7 +454,7 @@ namespace minsky
 
     auto idxv=index();
 
-    if (tabular)
+    if (tabular && rank()>0)
       {
         size_t stride=1;
         for (size_t i=0; i<longestDim; ++i)
