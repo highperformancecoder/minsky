@@ -78,6 +78,8 @@ mkdir -p $MAC_DIST_DIR
 
 rewrite_dylibs $MAC_DIST_DIR/minskyRESTService.node
 rewrite_dylibs $MAC_DIST_DIR/pyminsky.so
+cp /opt/local//lib/libsoci_core.4.0.dylib $MAC_DIST_DIR/
+rewrite_dylibs $MAC_DIST_DIR/libsoci_core.4.0.dylib
 
 pushd gui-js
 # libravel.so expects certain dylibs in node-addons for legacy
