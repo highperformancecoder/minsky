@@ -73,7 +73,7 @@ namespace pyminsky
 
       canvas.item.reset(); // Reset item to ensure clean start
 
-      bool found = minsky.model->recursiveDo(
+      const bool found = minsky.model->recursiveDo(
           &GroupItems::items,
           [&](const Items&, Items::const_iterator i) {
               if (auto v = dynamic_cast<VariableBase*>(i->get()))

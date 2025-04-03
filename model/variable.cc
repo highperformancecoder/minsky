@@ -44,7 +44,6 @@
 #include <boost/locale.hpp>
 #include <boost/filesystem.hpp>
 using namespace boost::locale::conv;
-using boost::filesystem::file_size;
 
 using namespace classdesc;
 using namespace ecolab;
@@ -552,7 +551,7 @@ bool VariableBase::sliderVisible() const
        (type()==flow && !inputWired() && !cminsky().definingVar(valueId())))));
 }
 
-void VariableBase::adjustSliderBounds()
+void VariableBase::adjustSliderBounds() const 
 {
   if (auto vv=vValue())
     vv->adjustSliderBounds();
@@ -693,7 +692,7 @@ bool VariableBase::enableSlider() const
   return false;
 }
  
-bool VariableBase::enableSlider(bool x)
+bool VariableBase::enableSlider(bool x) const
 {
   if (auto vv=vValue())
     return vv->enableSlider=x;
