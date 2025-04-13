@@ -56,7 +56,7 @@ namespace minsky
  
   void SVGRenderer::setResource(const std::string& resource)
   {
-    if (svg) /*rsvg_handle_free*/ g_object_unref(svg);
+    if (svg) g_object_unref(svg);
     GError* err=nullptr;
     svg=rsvg_handle_new_from_file(resource.c_str(),&err);
     if (err)
@@ -66,23 +66,24 @@ namespace minsky
         g_error_free(err);
         throw runtime_error(msg);
       }
-    RsvgDimensionData dims;
-    rsvg_handle_get_dimensions(svg, &dims);
-    m_width=dims.width;
-    m_height=dims.height;
+    rsvg_handle_get_intrinsic_size_in_pixels(svg, &m_width, &m_height);
   }
   
 
   SVGRenderer::~SVGRenderer()
   {
     if (svg)
-      /*rsvg_handle_free*/ g_object_unref(svg);
+      g_object_unref(svg);
   }
 
   void SVGRenderer::render(cairo_t* cairo) const
   {
     if (svg)
-      rsvg_handle_render_cairo(svg,cairo);
+      {
+        GError* err=nullptr;
+        RsvgRectangle rect{0,0,m_width,m_height};
+        rsvg_handle_render_document(svg,cairo,&rect,&err);
+      }
   }
 
 }
