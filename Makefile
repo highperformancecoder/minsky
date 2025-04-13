@@ -210,9 +210,6 @@ ifeq ($(CPLUSPLUS),clang++)
 FLAGS+=-Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-defaulted-function-deleted -Wno-uninitialized
 endif
 
-# NB see #1486 - we need to update the use of rsvg, then we can remove -Wno-deprecated-declarations
-#-fvisibility-inlines-hidden
-
 ifeq ($(DEBUG), 1)
 FLAGS+=-Wp,-D_GLIBCXX_ASSERTIONS
 endif
