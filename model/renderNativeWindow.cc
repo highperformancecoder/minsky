@@ -35,6 +35,7 @@ Please especially review the lifecycle (constructors, desctructors and copy cons
 #include "renderNativeWindow.xcd"
 #include "plot.rcd"
 #include "plot.xcd"
+
 #include "minsky_epilogue.h"
 
 #include <stdexcept>
@@ -91,11 +92,12 @@ namespace minsky
     winInfoPtr.reset();
   }
 
-  void RenderNativeWindow::macOSXRedraw()
+void macOSXRedraw(RenderNativeWindow& window,const std::shared_ptr<std::lock_guard<std::mutex>>& lock)
   {
 #ifdef MAC_OSX_TK
-    if (!winInfoPtr.get()) return;
-    winInfoPtr->requestRedraw();
+    if (!window->winInfoPtr.get()) return;
+    window->winInfoPtr->lock=macOSXDrawLock;
+    window->winInfoPtr->requestRedraw();
 #endif
   }
 
@@ -103,7 +105,6 @@ namespace minsky
   void RenderNativeWindow::requestRedraw()
   {
     if (!winInfoPtr.get()) return;
-    macOSXRedraw();
     minsky().nativeWindowsToRedraw.insert(this);
   }
 

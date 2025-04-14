@@ -276,10 +276,11 @@ namespace minsky
 
       void macOSXDrawNativeWindows()
       {
-        const lock_guard<mutex> lock(minskyCmdMutex);
+        // share the lock with all window redraw routines - when all windows redrawn, lock is released
+        auto lock=make_shared<lock_guard<mutex>>(minskyCmdMutex);
         const Timer timer(timers["draw"]);
         for (auto i: nativeWindowsToRedraw)
-          i->macOSXRedraw();
+          macOSXRedraw(*i,lock);
         nativeWindowsToRedraw.clear();
         drawLaunched=false;
        }
