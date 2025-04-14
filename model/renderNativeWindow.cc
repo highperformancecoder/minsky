@@ -95,9 +95,9 @@ namespace minsky
 void macOSXRedraw(RenderNativeWindow& window,const std::shared_ptr<std::lock_guard<std::mutex>>& lock)
   {
 #ifdef MAC_OSX_TK
-    if (!window->winInfoPtr.get()) return;
-    window->winInfoPtr->lock=macOSXDrawLock;
-    window->winInfoPtr->requestRedraw();
+    if (!window.winInfoPtr.get()) return;
+    window.winInfoPtr->lock=lock;
+    window.winInfoPtr->requestRedraw();
 #endif
   }
 
