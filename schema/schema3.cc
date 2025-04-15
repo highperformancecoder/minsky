@@ -18,6 +18,7 @@
 */
 #include "dataOp.h"
 #include "schema3.h"
+#include "CSVTools.xcd"
 #include "sheet.h"
 #include "userFunction.h"
 #include "minsky_epilogue.h"

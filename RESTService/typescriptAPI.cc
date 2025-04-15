@@ -11,6 +11,7 @@
 #include "canvas.tcd"
 #include "CSVDialog.tcd"
 #include "CSVParser.tcd"
+#include "CSVTools.tcd"
 #include "constMap.tcd"
 #include "databaseIngestor.tcd"
 #include "dataSpecSchema.tcd"

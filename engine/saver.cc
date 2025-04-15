@@ -19,6 +19,7 @@
 
 #include "saver.h"
 #include "schema3.h"
+#include "CSVTools.xcd"
 #include "minsky_epilogue.h"
 
 namespace minsky

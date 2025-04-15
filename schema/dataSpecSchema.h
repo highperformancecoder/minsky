@@ -19,20 +19,19 @@
 
 #ifndef DATASPECSCHEMA_H
 #define DATASPECSCHEMA_H
+#include "CSVTools.h"
 #include <set>
 #include <vector>
 #include <math.h>
 
 namespace minsky
 {
-  struct DataSpecSchema
+  struct DataSpecSchema: public ravel::CSVSpec
   {
     // these fields are only used for persistence. Need to be handled specially within schema code
     std::size_t dataRowOffset, dataColOffset;
     std::size_t numCols=0; ///< number of columns in CSV. Must be > dataColOffset
 
-    // NB escape character might be backslash ('\\'), but not usually used in CSV files, so set to nul.
-    char separator=',', quote='"', escape='\0', decSeparator='.';
     bool mergeDelimiters=false;
     bool counter=false; ///< count data items, not read their values
     bool dontFail=false; ///< do not throw an error on corrupt data

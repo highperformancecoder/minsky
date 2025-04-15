@@ -21,175 +21,23 @@
 #include "databaseIngestor.rcd"
 #include "minsky_epilogue.h"
 
-using civita::Dimension;
-using soci::use;
-using soci::transaction;
 using namespace std;
 
 namespace minsky
 {
-  vector<string> parseRow(const string& line, char separator)
-  {
-    if (separator==' ')
-      {
-        SpaceSeparatorParser csvParser;
-        const boost::tokenizer<SpaceSeparatorParser> tok(line.begin(),line.end(), csvParser);
-        return {tok.begin(), tok.end()};
-      }
-    Parser csvParser;
-    const boost::tokenizer<Parser> tok(line.begin(),line.end(), csvParser);
-    return {tok.begin(), tok.end()};
-  }
-  
   void DatabaseIngestor::connect(const string& dbType, const string& connection)
   {
-    session=make_shared<soci::session>(dbType,connection);
-    this->dbType=dbType;
   }
 
   void DatabaseIngestor::createTable
   (const std::vector<std::string>& filenames, const DataSpec& spec)
   {
-    if (!session.get()) return;
-    *session<<"drop table if exists "+table;
-    // for now, load time data as strings - TODO handle date-time parsing
-    string def="create table "+table+" (";
-    for (size_t i=0; i<spec.dimensionNames.size() &&
-           i<spec.dimensions.size() && i<spec.maxColumn; ++i)
-      if (spec.dimensionCols.contains(i)||spec.dataCols.contains(i))
-        {
-          def+=(i? ", '":"'")+spec.dimensionNames[i]+"'";
-          if (spec.dimensionCols.contains(i))
-            switch (spec.dimensions[i].type)
-              {
-              case Dimension::value:
-                def+=" double";
-                break;
-              case Dimension::string:
-                def+=" varchar(255)";
-                break;
-              case Dimension::time:
-                if (dbType=="sqlite3") // sqlite backend returns an integer type, not time type.
-                  def+=" datetime";
-                else
-                  def+=" "+session->get_backend()->create_column_type(soci::dt_date,0,0);
-                break;
-              }
-          else
-            def+=" double";
-        }
-    if (!filenames.empty())
-      {
-        ifstream input(filenames.front());
-        string line;
-        for (size_t row=0; getWholeLine(input,line,spec) && row<spec.nRowAxes(); ++row); // skip header rows
-        if (getWholeLine(input,line,spec))
-          {
-            auto parsedRow=parseRow(line, spec.separator);
-            for (size_t i=spec.maxColumn; i<parsedRow.size(); ++i) // remaining columns are data
-              def+=parsedRow[i]+" double ";
-          }
-      }
-    def+=")";
-    *session<<def;
-
-    soci::row result;
-    *session<<"select * from "+table+" limit 1",soci::into(result);
-    for (size_t i=0; i<result.size(); ++i)
-      cout<<result.get_properties(i).get_name()<<" "<<result.get_properties(i).get_data_type()<<endl;
-//    soci::statement s((session->prepare<<"select * from "+table+" limit 1",soci::into(result)));
-//    s.execute(false);
-//    soci::data_type type;
-//    std::string name;
-//    auto backEnd=s.get_backend();
-//    auto numCols=backEnd->prepare_for_describe();
-//    for (int i=0; i<numCols; ++i)
-//      {
-//        backEnd->describe_column(i,type,name);
-//        std::cout<<i<<" "<<type<<" "<<name<<endl;
-//      }
-
   }
   
-  
-  template <class Tokeniser> void DatabaseIngestor::load
-  (const std::vector<std::string>& filenames, const DataSpec& spec)
-  {
-    Tokeniser csvParser;
-    set<unsigned> insertCols;
-    // compute complement of dimensionCols union dataCols
-    for (unsigned i=0; i<spec.numCols; ++i)
-      if (spec.dimensionCols.contains(i) || spec.dataCols.contains(i))
-        insertCols.insert(i);
-    vector<string> cells(insertCols.size());
-    
-    // prepare the insertion string based on spec
-    string insertStatement="insert into "+table+"(";
-    for (size_t i=0; i<spec.numCols; ++i)
-      if (insertCols.contains(i))
-        insertStatement+=(i?",'":"'")+spec.dimensionNames[i]+"'";
-    insertStatement+=") values(";
-    for (size_t i=0; i<spec.numCols; ++i)
-      if (insertCols.contains(i))
-        insertStatement+=(i?",:a":":a")+to_string(i);
-    insertStatement+=")";
-
-    auto temp=session->prepare<<insertStatement;
-    for (auto& c: cells) temp=(temp,use(c));
-    soci::statement statement(temp);
-    for (auto f: filenames)
-      {
-        ifstream input(f);
-        size_t row=0;
-        size_t bytesRead=0;
-        string line;
-        for (; getWholeLine(input,line,spec) && row<spec.nRowAxes(); ++row); // skip header rows
-        transaction tr(*session); // does implicit session.begin(). RAII to cleanup in case of exception
-        for (; getWholeLine(input,line,spec); ++row)
-          {
-            bytesRead+=line.size();
-            const boost::tokenizer<Tokeniser> tok(line.begin(),line.end(), csvParser);
-            unsigned col=0, cell=0;
-            for (auto& t: tok)
-              {
-                if (insertCols.contains(col))
-                  {
-                    if (spec.dimensions[col].type==Dimension::time)
-                      // reformat input as ISO standard
-                      cells[cell++]=str(anyVal(spec.dimensions[col],t));
-                    else
-                      cells[cell++]=t;
-                  }
-                ++col;
-              }
-            
-            statement.execute(true);
-            if (row%1000==0)
-              {
-                session->commit();
-                session->begin();
-                cout<<f<<": "<<(double(bytesRead)/filesystem::file_size(f))<<"%\r"<<flush;
-              }
-          }
-        tr.commit();
-      }
-  }
   
   void DatabaseIngestor::importFromCSV
   (const std::vector<std::string>& filenames, const DataSpec& spec)
   {
-    if (!session.get()) return;
-    if (!session->is_connected()) session->reconnect();
-    if (!session->is_connected()) return;
-
-    // TODO check if table exists, and call createTable if not
-    // select * from table limit 1 - and check for exception thrown?
-    
-
-    if (spec.separator==' ')
-      load<SpaceSeparatorParser>(filenames,spec);
-    else
-      load<Parser>(filenames,spec);
   }
 
 }

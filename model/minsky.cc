@@ -35,6 +35,7 @@
 
 #include "minskyVersion.h"
 
+#include "CSVTools.xcd"
 #include "fontDisplay.rcd"
 #include "minsky.rcd"
 #include "minsky.xcd"

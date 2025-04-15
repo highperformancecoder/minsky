@@ -17,12 +17,12 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef DATABSE_INGESTOR_H
-#define DATABSE_INGESTOR_H
+#ifndef DATABASE_INGESTOR_H
+#define DATABASE_INGESTOR_H
 
 #include "CSVParser.h"
+#include <classdesc_access.h>
 
-#include <soci/soci.h>
 #include <string>
 #include <vector>
 
@@ -30,9 +30,6 @@ namespace minsky
 {
   class DatabaseIngestor
   {
-    classdesc::Exclude<std::shared_ptr<soci::session>> session;
-    std::string dbType; //stash the database type here
-    template <class T> void load(const std::vector<std::string>&, const DataSpec&);
     CLASSDESC_ACCESS(DatabaseIngestor);
   public:
     std::string table; ///< table name to use
