@@ -1,72 +1,35 @@
 #! /bin/sh
 
 here=`pwd`
-if test $? -ne 0; then exit 2; fi
-tmp=/tmp/$$
-mkdir $tmp
-if test $? -ne 0; then exit 2; fi
-cd $tmp
-if test $? -ne 0; then exit 2; fi
+. $here/test/common-test.sh
 
-fail()
-{
-    echo "FAILED" 1>&2
-    cd $here
-    chmod -R u+w $tmp
-    rm -rf $tmp
-    exit 1
-}
+cat >input.py <<EOF
+import sys
+sys.path.insert(0, '$here')
+from pyminsky import minsky
 
-pass()
-{
-    echo "PASSED" 1>&2
-    cd $here
-    chmod -R u+w $tmp
-    rm -rf $tmp
-    exit 0
-}
+minsky.load('$here/examples/GoodwinLinear.mky')
+minsky.logVarList(minsky.variableValues.keys())
+minsky.openLogFile('tmp1.dat')
+nsteps=10
+with open('tmp2.dat', 'w') as out:
+     out.write("#time")
+     for name in minsky.variableValues.keys():
+         out.write(' '+minsky.variableValues[name].name())
+     out.write('\n')
 
-trap "fail" 1 2 3 15
+     minsky.running(True)
+     for step in range(nsteps):
+         minsky.step()
+         out.write('%g'%minsky.t())
+         for name in minsky.variableValues.keys():
+             out.write(' %g'%minsky.variableValues[name].value(0))
+         out.write('\n')
 
-# insert ecolab script code here
-# use \$ in place of $ to refer to variable contents
-# exit 0 to indicate pass, and exit 1 to indicate failure
-cat >input.tcl <<EOF
-source $here/gui-tk/library/init.tcl
-use_namespace minsky
-minsky.load $here/examples/GoodwinLinear.mky
-logVarList [minsky.variableValues.#keys]
-openLogFile tmp1.dat
-set nsteps 10
-set out [open tmp2.dat w]
-puts -nonewline \$out "#time"
-foreach name [variableValues.#keys] {
-  getValue \$name
-  puts -nonewline \$out " [minsky.value.name]"
-}
-puts \$out ""
-
-# prepare element accessors for later use
-foreach name [variableValues.#keys] {
-        variableValues.@elem \$name
-}
-use_namespace minsky
-
-running 1
-for {set step 0} {\$step<\$nsteps} {incr step} {
-  step
-  puts -nonewline \$out "[t]"
-  foreach name [variableValues.#keys] {
-    puts -nonewline \$out " [variableValues(\$name).value 0]"
-  }
-  puts \$out ""
-}
-close \$out
-reset #closes tmp1.dat
-tcl_exit
+minsky.reset() #closes tmp1.dat
 EOF
 
-$here/gui-tk/minsky input.tcl
+python3 input.py
 if test $? -ne 0; then fail; fi
 
 diff tmp1.dat tmp2.dat
