@@ -408,6 +408,14 @@ namespace minsky
     void renderCanvasToSVG(const std::string& filename) {canvas.renderToSVG(filename);}
     /// render canvas to a PNG image file
     void renderCanvasToPNG(const std::string& filename) {canvas.renderToPNG(filename);}
+
+    
+    /// Render canvas to a PNG file \a filename, scaling the canvas
+    /// temporarily by \a zoom, shifts it to \a left, \a top, and
+    /// crops to \a width, \a height (in ZoomCrop struct).
+    void renderCanvasToPNG(const std::string& filename, const Canvas::ZoomCrop& z)
+    {canvas.renderToPNGCropped(filename,z);}
+      
     /// render canvas to a EMF image file (Windows only)
     void renderCanvasToEMF(const std::string& filename) {canvas.renderToEMF(filename);}
     

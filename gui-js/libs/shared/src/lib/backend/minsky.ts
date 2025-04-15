@@ -16,6 +16,7 @@ class classdesc__pack_t {}
 class classdesc__RESTProcess_t {}
 class classdesc__TCL_obj_t {}
 class ecolab__cairo__Surface {}
+class std__lock_guard {}
 
 export class EventInterface extends CppClass {
   item: Item;
@@ -172,7 +173,6 @@ export class RenderNativeWindow extends EventInterface {
   async frameArgs(): Promise<minsky__RenderNativeWindow__RenderFrameArgs> {return this.$callMethod('frameArgs');}
   async hasScrollBars(): Promise<boolean> {return this.$callMethod('hasScrollBars');}
   async init(): Promise<void> {return this.$callMethod('init');}
-  async macOSXRedraw(): Promise<void> {return this.$callMethod('macOSXRedraw');}
   async registerImage(): Promise<void> {return this.$callMethod('registerImage');}
   async renderFrame(a1: minsky__RenderNativeWindow__RenderFrameArgs): Promise<void> {return this.$callMethod('renderFrame',a1);}
   async renderToEMF(a1: string): Promise<void> {return this.$callMethod('renderToEMF',a1);}
@@ -376,7 +376,6 @@ export class CSVDialog extends CppClass {
   async keyPress(a1: minsky__EventInterface__KeyPressArgs): Promise<boolean> {return this.$callMethod('keyPress',a1);}
   async loadFile(): Promise<void> {return this.$callMethod('loadFile');}
   async loadFileFromName(a1: string): Promise<void> {return this.$callMethod('loadFileFromName',a1);}
-  async macOSXRedraw(): Promise<void> {return this.$callMethod('macOSXRedraw');}
   async mouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseDown',a1,a2);}
   async mouseMove(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseMove',a1,a2);}
   async mouseUp(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseUp',a1,a2);}
@@ -470,7 +469,6 @@ export class Canvas extends RenderNativeWindow {
   async keyPress(a1: minsky__EventInterface__KeyPressArgs): Promise<boolean> {return this.$callMethod('keyPress',a1);}
   async lassoMode(...args: string[]): Promise<string> {return this.$callMethod('lassoMode',...args);}
   async lockRavelsInSelection(): Promise<void> {return this.$callMethod('lockRavelsInSelection');}
-  async macOSXRedraw(): Promise<void> {return this.$callMethod('macOSXRedraw');}
   async mouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseDown',a1,a2);}
   async mouseMove(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseMove',a1,a2);}
   async mouseUp(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseUp',a1,a2);}
@@ -493,6 +491,7 @@ export class Canvas extends RenderNativeWindow {
   async renderToEMF(a1: string): Promise<void> {return this.$callMethod('renderToEMF',a1);}
   async renderToPDF(a1: string): Promise<void> {return this.$callMethod('renderToPDF',a1);}
   async renderToPNG(a1: string): Promise<void> {return this.$callMethod('renderToPNG',a1);}
+  async renderToPNGCropped(a1: string,a2: minsky__Canvas__ZoomCrop): Promise<void> {return this.$callMethod('renderToPNGCropped',a1,a2);}
   async renderToPS(a1: string): Promise<void> {return this.$callMethod('renderToPS',a1);}
   async renderToSVG(a1: string): Promise<void> {return this.$callMethod('renderToSVG',a1);}
   async reportDrawTime(a1: number): Promise<void> {return this.$callMethod('reportDrawTime',a1);}
@@ -650,7 +649,6 @@ export class EquationDisplay extends RenderNativeWindow {
   async init(): Promise<void> {return this.$callMethod('init');}
   async keyPress(a1: minsky__EventInterface__KeyPressArgs): Promise<boolean> {return this.$callMethod('keyPress',a1);}
   async m_zoomFactor(...args: number[]): Promise<number> {return this.$callMethod('m_zoomFactor',...args);}
-  async macOSXRedraw(): Promise<void> {return this.$callMethod('macOSXRedraw');}
   async mouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseDown',a1,a2);}
   async mouseMove(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseMove',a1,a2);}
   async mouseUp(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseUp',a1,a2);}
@@ -702,7 +700,6 @@ export class FontDisplay extends CppClass {
   async hasScrollBars(): Promise<boolean> {return this.$callMethod('hasScrollBars');}
   async init(): Promise<void> {return this.$callMethod('init');}
   async keyPress(a1: minsky__EventInterface__KeyPressArgs): Promise<boolean> {return this.$callMethod('keyPress',a1);}
-  async macOSXRedraw(): Promise<void> {return this.$callMethod('macOSXRedraw');}
   async mouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseDown',a1,a2);}
   async mouseMove(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseMove',a1,a2);}
   async mouseUp(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseUp',a1,a2);}
@@ -954,7 +951,6 @@ export class GodleyTableWindow extends CppClass {
   async insertIdx(...args: number[]): Promise<number> {return this.$callMethod('insertIdx',...args);}
   async keyPress(...args: any[]): Promise<boolean> {return this.$callMethod('keyPress',...args);}
   async leftTableOffset(...args: number[]): Promise<number> {return this.$callMethod('leftTableOffset',...args);}
-  async macOSXRedraw(): Promise<void> {return this.$callMethod('macOSXRedraw');}
   async matchingTableColumns(a1: number): Promise<string[]> {return this.$callMethod('matchingTableColumns',a1);}
   async matchingTableColumnsByCol(a1: number): Promise<string[]> {return this.$callMethod('matchingTableColumnsByCol',a1);}
   async maxHistory(...args: number[]): Promise<number> {return this.$callMethod('maxHistory',...args);}
@@ -1430,7 +1426,7 @@ export class Minsky extends CppClass {
   async renderAllPlotsAsSVG(a1: string): Promise<void> {return this.$callMethod('renderAllPlotsAsSVG',a1);}
   async renderCanvasToEMF(a1: string): Promise<void> {return this.$callMethod('renderCanvasToEMF',a1);}
   async renderCanvasToPDF(a1: string): Promise<void> {return this.$callMethod('renderCanvasToPDF',a1);}
-  async renderCanvasToPNG(a1: string): Promise<void> {return this.$callMethod('renderCanvasToPNG',a1);}
+  async renderCanvasToPNG(...args: any[]): Promise<void> {return this.$callMethod('renderCanvasToPNG',...args);}
   async renderCanvasToPS(a1: string): Promise<void> {return this.$callMethod('renderCanvasToPS',a1);}
   async renderCanvasToSVG(a1: string): Promise<void> {return this.$callMethod('renderCanvasToSVG',a1);}
   async requestRedraw(): Promise<void> {return this.$callMethod('requestRedraw');}
@@ -1498,7 +1494,6 @@ export class PhillipsDiagram extends RenderNativeWindow {
   async hasScrollBars(): Promise<boolean> {return this.$callMethod('hasScrollBars');}
   async init(): Promise<void> {return this.$callMethod('init');}
   async keyPress(a1: minsky__EventInterface__KeyPressArgs): Promise<boolean> {return this.$callMethod('keyPress',a1);}
-  async macOSXRedraw(): Promise<void> {return this.$callMethod('macOSXRedraw');}
   async mouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseDown',a1,a2);}
   async mouseMove(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseMove',a1,a2);}
   async mouseUp(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseUp',a1,a2);}
@@ -1660,7 +1655,6 @@ export class PlotWidget extends Item {
   async lh(a1: number,a2: number): Promise<number> {return this.$callMethod('lh',a1,a2);}
   async logx(...args: boolean[]): Promise<boolean> {return this.$callMethod('logx',...args);}
   async logy(...args: boolean[]): Promise<boolean> {return this.$callMethod('logy',...args);}
-  async macOSXRedraw(): Promise<void> {return this.$callMethod('macOSXRedraw');}
   async makeDisplayPlot(): Promise<void> {return this.$callMethod('makeDisplayPlot');}
   async maxx(...args: number[]): Promise<number> {return this.$callMethod('maxx',...args);}
   async maxy(...args: number[]): Promise<number> {return this.$callMethod('maxy',...args);}
@@ -1905,7 +1899,6 @@ export class RavelPopup extends CppClass {
   async hasScrollBars(): Promise<boolean> {return this.$callMethod('hasScrollBars');}
   async init(): Promise<void> {return this.$callMethod('init');}
   async keyPress(a1: minsky__EventInterface__KeyPressArgs): Promise<boolean> {return this.$callMethod('keyPress',a1);}
-  async macOSXRedraw(): Promise<void> {return this.$callMethod('macOSXRedraw');}
   async mouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseDown',a1,a2);}
   async mouseLeave(): Promise<void> {return this.$callMethod('mouseLeave');}
   async mouseMove(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseMove',a1,a2);}
@@ -2233,7 +2226,6 @@ export class VariablePane extends CppClass {
   async justification(a1: number): Promise<string> {return this.$callMethod('justification',a1);}
   async keyPress(a1: minsky__EventInterface__KeyPressArgs): Promise<boolean> {return this.$callMethod('keyPress',a1);}
   async m_zoomFactor(...args: number[]): Promise<number> {return this.$callMethod('m_zoomFactor',...args);}
-  async macOSXRedraw(): Promise<void> {return this.$callMethod('macOSXRedraw');}
   async mouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseDown',a1,a2);}
   async mouseMove(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseMove',a1,a2);}
   async mouseUp(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseUp',a1,a2);}
@@ -2508,6 +2500,17 @@ export class ecolab__cairo__Colour extends CppClass {
   async b(...args: number[]): Promise<number> {return this.$callMethod('b',...args);}
   async g(...args: number[]): Promise<number> {return this.$callMethod('g',...args);}
   async r(...args: number[]): Promise<number> {return this.$callMethod('r',...args);}
+}
+
+export class minsky__Canvas__ZoomCrop extends CppClass {
+  constructor(prefix: string){
+    super(prefix);
+  }
+  async height(...args: number[]): Promise<number> {return this.$callMethod('height',...args);}
+  async left(...args: number[]): Promise<number> {return this.$callMethod('left',...args);}
+  async top(...args: number[]): Promise<number> {return this.$callMethod('top',...args);}
+  async width(...args: number[]): Promise<number> {return this.$callMethod('width',...args);}
+  async zoom(...args: number[]): Promise<number> {return this.$callMethod('zoom',...args);}
 }
 
 export class ravel__HandleState extends CppClass {

@@ -1,6 +1,6 @@
 import {
   CanvasItem,ClassType,
-  minsky, DataOp, GodleyIcon, Group, IntOp, Lock, OperationBase, PlotWidget, PubTab,
+  minsky, DataOp, GodleyIcon, Group, IntOp, Lock, numLinkGroupColours, OperationBase, PlotWidget, PubTab,
   Ravel, RenderNativeWindow, Sheet, SwitchIcon,VariableBase, VariableValue, Functions, events
 } from '@minsky/shared';
 import { BrowserWindow, Menu, MenuItem, IpcMainEvent } from 'electron';
@@ -886,7 +886,7 @@ export class ContextMenuManager {
     let linkGroupColours=await ravel.lockGroupColours();
     let linkGroups=[];
     for (let i=0; i<linkGroupColours.length; ++i) {
-      let icon=`${__dirname}/assets/linkGroup${linkGroupColours[i]}.png`;
+      let icon=`${__dirname}/assets/linkGroup${linkGroupColours[i]%numLinkGroupColours}.png`;
       linkGroups.push(new MenuItem({
         icon: icon,
         click: ()=>{ravel.joinLockGroup(linkGroupColours[i]);}

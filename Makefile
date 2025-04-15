@@ -187,7 +187,7 @@ EXES=gui-tk/minsky$(EXE)
 endif
 
 
-DYLIBS=libminsky.$(DL) libminskyEngine.$(DL) libcivita.$(DL)
+DYLIBS=libminsky.$(DL) libminskyEngine.$(DL) libcivita.$(DL) 
 MINSKYLIBS=-lminsky -lminskyEngine -lcivita
 
 
@@ -203,15 +203,12 @@ ifdef CLASSDESC_ARITIES
 FLAGS+=-DUSE_UNROLLED -DCLASSDESC_ARITIES=$(CLASSDESC_ARITIES)
 endif
 
-FLAGS+=-std=c++20 -UTR1 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -IRavelCAPI/civita -IRavelCAPI -DCLASSDESC $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-deprecated-declarations -Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-attributes -DCIVITA_ALLOCATOR=civita::LibCAllocator
+FLAGS+=-std=c++20 -UTR1 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -IRavelCAPI/civita -IRavelCAPI -DCLASSDESC $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-attributes -DCIVITA_ALLOCATOR=civita::LibCAllocator
 
 ifeq ($(CPLUSPLUS),clang++)
 # note some of these flags are disabling warnings that are invalid in some circumstances
 FLAGS+=-Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-defaulted-function-deleted -Wno-uninitialized
 endif
-
-# NB see #1486 - we need to update the use of rsvg, then we can remove -Wno-deprecated-declarations
-#-fvisibility-inlines-hidden
 
 ifeq ($(DEBUG), 1)
 FLAGS+=-Wp,-D_GLIBCXX_ASSERTIONS
@@ -272,6 +269,9 @@ ifdef MXE
 BOOST_EXT=-mt-x64
 EXE=.exe
 DL=dll
+FLAGS+=-DMXE
+PYMINSKY=gui-js/dynamic_libraries/pyminsky.pyd
+PYTHONCAPI=ecolab/classdesc/pythonCAPI.o # extra python.lib shims required on Windows
 FLAGS+=-D_WIN32 -DUSE_UNROLLED -Wa,-mbig-obj
 # DLLS that need to be copied into the binary directory
 MXE_DLLS=libboost_filesystem-mt-x64 libboost_thread-mt-x64 \
@@ -288,6 +288,7 @@ DLLS=$(wildcard $(MXE_DLLS:%=$(BINDIR)/%*.dll))
 else
 EXE=
 DL=so
+PYMINSKY=pyminsky.so
 BOOST_EXT=
 # try to autonomously figure out which boost extension we should be using
   ifeq ($(shell if $(CPLUSPLUS) test/testmain.cc $(LIBS) -lboost_system>&/dev/null; then echo 1; else echo 0; fi),0)
@@ -328,9 +329,10 @@ GUI_LIBS=
 FLAGS+=-DBOOST_SIGNALS_NO_DEPRECATION_WARNING
 
 # add the python module build here
+EXES+=$(PYMINSKY)
 ifeq ($(OS),Linux)
 ifndef MXE
-EXES+=pyminsky.so createLinkGroupIcons
+EXES+=createLinkGroupIcons
 endif
 endif
 
@@ -445,8 +447,13 @@ endif
 libminsky.a: $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS)
 	ar r $@ $^
 
-pyminsky.so: pyminsky.o libminsky.a
+$(PYMINSKY): pyminsky.o $(PYTHONCAPI) libminsky.a
+ifeq ($(OS),Darwin)
+	c++ -bundle -undefined dynamic_lookup -Wl,-no_pie -Wl,-search_paths_first -mmacosx-version-min=$(MACOSX_MIN_VERSION) -arch $(ARCH) -stdlib=libc++  -o $@  $^ $(LIBS)
+	cp pyminsky.so gui-js/build/
+else
 	$(LINK) -shared -o $@ $^ libminsky.a $(LIBS)
+endif
 
 # used to find undefined symbols in pyminsky.so
 pyminsky-test: test/testmain.o pyminsky.o libminsky.a
@@ -489,7 +496,8 @@ clean:
 mac-dist:
 # force rebuild of the node file to force rewriting of dependent dylibs
 	rm -rf gui-js/build
-	$(MAKE) gui-js/build/minskyRESTService.node
+	$(MAKE) gui-js/build/minskyRESTService.node pyminsky.so
+	cp pyminsky.so gui-js/build
 # create executable in the app package directory. Make it 32 bit only
 #	mkdir -p minsky.app/Contents/MacOS
 #	sh -v mkMacDist.sh

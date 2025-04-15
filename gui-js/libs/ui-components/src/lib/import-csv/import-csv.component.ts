@@ -299,7 +299,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
         { extensions: ['csv'], name: 'CSV' },
         { extensions: ['*'], name: 'All Files' },
       ],
-      properties: ['multiSelections'],
+      properties: ['openFile','multiSelections'], 
     };
     if (defaultPath) options['defaultPath'] = defaultPath;
     const filePaths = await this.electronService.openFileDialog(options);

@@ -28,9 +28,9 @@ namespace minsky
 {
   class SVGRenderer
   {
-    classdesc::Exclude<RsvgHandle*> svg;
+    classdesc::Exclude<RsvgHandle*> svg=nullptr;
     CLASSDESC_ACCESS(SVGRenderer);
-    double m_width, m_height;
+    double m_width=0, m_height=0;
   public:
     SVGRenderer() {}
     SVGRenderer(const std::string& resource) {setResource(resource);}

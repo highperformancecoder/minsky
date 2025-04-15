@@ -116,6 +116,7 @@ namespace minsky
     cairo_surface_set_device_offset(winfo->bufferSurface->surface(), 0, 20);
   winfo->draw();
   winfo->bufferSurface.reset();
+  winfo->lock.reset(); // unlock any mutex attached to this window
 }
 - (NSView *) hitTest: (NSPoint) aPoint
 {

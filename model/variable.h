@@ -245,7 +245,7 @@ namespace minsky
     
     bool onMouseMotion(float x, float y) override;
 
-    void adjustSliderBounds();
+    void adjustSliderBounds() const;
     
     /// @{ slider parameters
     double sliderMin() const;
@@ -257,7 +257,7 @@ namespace minsky
     bool sliderStepRel() const;
     bool sliderStepRel(bool) const;
     bool enableSlider() const;
-    bool enableSlider(bool);
+    bool enableSlider(bool) const;
     /// @}
   };
 

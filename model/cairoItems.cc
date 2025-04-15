@@ -102,8 +102,7 @@ double RenderVariable::handlePos() const
       assert(vv->sliderMin<vv->sliderMax);
       return (w<0.5*var.iWidth()? 0.5*var.iWidth() : w)*(vv->value()-0.5*(vv->sliderMin+vv->sliderMax))/(vv->sliderMax-vv->sliderMin);
     }
-  else
-    return 0;
+  return 0;
 }
 
 void minsky::drawTriangle

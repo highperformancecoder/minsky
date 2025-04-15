@@ -13,8 +13,9 @@ jobs:
       fail-fast: false
       matrix:
         ubuntu_ver: [20.04]
+        product: [ minsky, minsky-beta ]
 
-    name: ubuntu-${{ matrix.ubuntu_ver }}
+    name: ${{ matrix.product }}
 
     steps:
       - name: Checkout
@@ -29,4 +30,4 @@ jobs:
       - name: Run smoke test
         run: |
           cd obsCheck
-          bash smokeTest.sh
+          bash smokeTest.sh $product

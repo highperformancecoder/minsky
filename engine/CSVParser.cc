@@ -493,7 +493,7 @@ namespace minsky
       size_t row=0, col=0;
       P csvParser(spec.escape,spec.separator,spec.quote);
       string buf;
-      bool tabularFormat=spec.dataCols.size()>1 || (spec.dataCols.empty() && spec.numCols>spec.nColAxes()+1);
+      const bool tabularFormat=spec.dataCols.size()>1 || (spec.dataCols.empty() && spec.numCols>spec.nColAxes()+1);
       uintmax_t bytesRead=0;
       
       try
@@ -909,7 +909,7 @@ namespace minsky
     } onError;
 
     // parse file to extract error locations
-    ParseCSV<P> parseCSV(input, spec, fileSize, onError, /*checkValues=*/true);
+    const ParseCSV<P> parseCSV(input, spec, fileSize, onError, /*checkValues=*/true);
 
     input.clear();
     input.seekg(0);

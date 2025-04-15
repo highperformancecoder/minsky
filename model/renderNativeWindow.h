@@ -25,6 +25,17 @@
 #include <cairoSurfaceImage.h>
 #include <plot.h>
 
+#ifndef CLASSDESC_TYPENAME___std__lock_guard__mutex___
+#define CLASSDESC_TYPENAME___std__lock_guard__mutex___
+namespace classdesc
+{
+  template <> struct tn<std::lock_guard<std::mutex>>
+  {
+    static string name() {return "std::lock_guard<std::mutex>";}
+  };
+}
+#endif
+
 namespace minsky
 {  
   class WindowInformation;
@@ -53,7 +64,8 @@ namespace minsky
     void destroyFrame();
     void draw();
     void requestRedraw();
-    void macOSXRedraw();
+    // implemented as a free function to avoid Classdesc exposing this to Typescript
+    friend void macOSXRedraw(RenderNativeWindow&,const std::shared_ptr<std::lock_guard<std::mutex>>&);
     // do not clobber winInfoPtr on load of model
     RenderNativeWindow& operator=(const RenderNativeWindow& x) {ecolab::CairoSurface::operator=(x); return *this;}
     RenderNativeWindow()=default;
@@ -75,6 +87,9 @@ namespace minsky
     };
     classdesc::Exclude<CopiableMutux> drawMutex;
   };
+
+  //void macOSXRedraw(RenderNativeWindow&,const std::shared_ptr<std::lock_guard<std::mutex>>&);
+  
 } // namespace minsky
 
 #include "renderNativeWindow.cd"
