@@ -4,9 +4,6 @@ here=`pwd`
 . $here/test/common-test.sh
 # double entry bookkeeping tests
 
-# insert ecolab script code here
-# use \$ in place of $ to refer to variable contents
-# exit 0 to indicate pass, and exit 1 to indicate failure
 cat >input.py <<EOF
 import sys
 sys.path.insert(0, '$here')
