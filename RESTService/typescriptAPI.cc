@@ -13,11 +13,11 @@
 #include "CSVParser.tcd"
 #include "CSVTools.tcd"
 #include "constMap.tcd"
-#include "databaseIngestor.tcd"
 #include "dataSpecSchema.tcd"
 #include "dataOp.h"
 #include "dataOp.tcd"
 #include "dimension.tcd"
+#include "dynamicRavelCAPI.tcd"
 #include "engNotation.tcd"
 #include "equationDisplay.tcd"
 #include "evalGodley.tcd"
@@ -260,6 +260,7 @@ int main()
   api.addClass<HandleLockInfo>();
   api.addClass<Port>();
   api.addClass<PubItem>();
+  //  api.addClass<ravel::Database>();
   api.addClass<ravel::HandleState>();
   api.addClass<ravel::RavelState>();
   api.addClass<Units>();

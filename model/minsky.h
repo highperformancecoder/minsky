@@ -26,8 +26,8 @@
 #include "cairoItems.h"
 #include "canvas.h"
 #include "clipboard.h"
-#include "databaseIngestor.h"
 #include "dimension.h"
+#include "dynamicRavelCAPI.h"
 #include "evalOp.h"
 #include "equationDisplay.h"
 #include "equations.h"
@@ -255,7 +255,7 @@ namespace minsky
 
     GroupPtr model{new Group};
     Canvas canvas{model};
-    DatabaseIngestor databaseIngestor;
+    ravel::Database databaseIngestor;
 
     void clearAllMaps(bool clearHistory);
     void clearAllMaps() {clearAllMaps(true);}

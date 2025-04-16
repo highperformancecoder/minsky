@@ -36,6 +36,8 @@
 #include "minskyVersion.h"
 
 #include "CSVTools.xcd"
+#include "dynamicRavelCAPI.rcd"
+#include "dynamicRavelCAPI.xcd"
 #include "fontDisplay.rcd"
 #include "minsky.rcd"
 #include "minsky.xcd"
@@ -1818,3 +1820,4 @@ CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Minsky);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(classdesc::Signature);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(classdesc::PolyRESTProcessBase);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::CallableFunction);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(ravel::Database);
