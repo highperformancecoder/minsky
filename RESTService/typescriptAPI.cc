@@ -248,6 +248,7 @@ int main()
   api.addClass<Bookmark>();
   api.addClass<Canvas::ZoomCrop>();
   api.addClass<civita::Dimension>();
+  api.addClass<civita::NamedDimension>();
   api.addClass<civita::Hypercube>();
   api.addClass<civita::Index>();
   api.addClass<civita::ITensor>();
@@ -260,7 +261,7 @@ int main()
   api.addClass<HandleLockInfo>();
   api.addClass<Port>();
   api.addClass<PubItem>();
-  //  api.addClass<ravel::Database>();
+  api.addClass<ravel::DataSpec>();
   api.addClass<ravel::HandleState>();
   api.addClass<ravel::RavelState>();
   api.addClass<Units>();

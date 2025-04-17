@@ -20,6 +20,7 @@
 #ifndef DATASPECSCHEMA_H
 #define DATASPECSCHEMA_H
 #include "CSVTools.h"
+#include "ravelState.h"
 #include <set>
 #include <vector>
 #include <math.h>

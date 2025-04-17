@@ -245,6 +245,7 @@ void DataSpec::setDataArea(size_t row, size_t col)
     dataCols.erase(i);
   for (unsigned i=m_nColAxes; i<numCols && i<maxColumn; ++i)
     dataCols.insert(i);
+  toSchema();
 }
 
 

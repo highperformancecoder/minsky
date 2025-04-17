@@ -83,6 +83,21 @@ namespace minsky
       guessFromStream(is, std::filesystem::file_size(fileName));
     }
 
+    // converts this to the ravel data spec. TODO - can we eliminate, or at least eviscerate this type?
+    operator ravel::DataSpec() const {
+      ravel::DataSpec r; static_cast<ravel::CSVSpec&>(r)=*this;
+      r.dataRowOffset=dataRowOffset; // TODO: non-normalisation between dataRowOffset and m_nRowAxes causes problems...
+      r.headerRow=headerRow;
+      r.mergeDelimiters=mergeDelimiters;
+      r.counter=counter;
+      r.dontFail=dontFail;
+      r.dimensionCols=dimensionCols;
+      r.dataCols=dataCols;
+      for (size_t i=0; i<std::min(dimensions.size(), dimensionNames.size()); ++i)
+        r.dimensions.emplace_back(dimensionNames[i],dimensions[i]);
+      return r;
+    }
+
     /// populates this spec from a "RavelHypercube" entry, \a row is the row being read, used to set the headerRow attribute
     /// \a If horizontalName is one of the dimensions, data is written in a tabular format
     void populateFromRavelMetadata(const std::string& metadata, const std::string& horizontalName, std::size_t row);

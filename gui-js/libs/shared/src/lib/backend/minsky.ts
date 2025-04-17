@@ -611,10 +611,11 @@ export class DatabaseIngestor extends CppClass {
   constructor(prefix: string){
     super(prefix);
   }
-  async connect(a1: string,a2: string): Promise<void> {return this.$callMethod('connect',a1,a2);}
-  async createTable(a1: string[],a2: DataSpec): Promise<void> {return this.$callMethod('createTable',a1,a2);}
-  async importFromCSV(a1: string[],a2: DataSpec): Promise<void> {return this.$callMethod('importFromCSV',a1,a2);}
-  async table(...args: string[]): Promise<string> {return this.$callMethod('table',...args);}
+  async close(): Promise<void> {return this.$callMethod('close');}
+  async connect(a1: string,a2: string,a3: string): Promise<void> {return this.$callMethod('connect',a1,a2,a3);}
+  async createTable(a1: string,a2: DataSpec): Promise<void> {return this.$callMethod('createTable',a1,a2);}
+  async deduplicate(a1: string,a2: DataSpec): Promise<void> {return this.$callMethod('deduplicate',a1,a2);}
+  async loadDatabase(a1: string[],a2: DataSpec): Promise<void> {return this.$callMethod('loadDatabase',a1,a2);}
 }
 
 export class EngNotation extends CppClass {
@@ -2441,6 +2442,15 @@ export class civita__Index extends CppClass {
   async size(): Promise<number> {return this.$callMethod('size');}
 }
 
+export class civita__NamedDimension extends CppClass {
+  dimension: civita__Dimension;
+  constructor(prefix: string){
+    super(prefix);
+    this.dimension=new civita__Dimension(this.$prefix()+'.dimension');
+  }
+  async name(...args: string[]): Promise<string> {return this.$callMethod('name',...args);}
+}
+
 export class civita__TensorVal extends CppClass {
   constructor(prefix: string){
     super(prefix);
@@ -2511,6 +2521,27 @@ export class minsky__Canvas__ZoomCrop extends CppClass {
   async top(...args: number[]): Promise<number> {return this.$callMethod('top',...args);}
   async width(...args: number[]): Promise<number> {return this.$callMethod('width',...args);}
   async zoom(...args: number[]): Promise<number> {return this.$callMethod('zoom',...args);}
+}
+
+export class ravel__DataSpec extends CppClass {
+  dataCols: Container<number>;
+  dimensionCols: Container<number>;
+  dimensions: Sequence<civita__NamedDimension>;
+  constructor(prefix: string){
+    super(prefix);
+    this.dataCols=new Container<number>(this.$prefix()+'.dataCols');
+    this.dimensionCols=new Container<number>(this.$prefix()+'.dimensionCols');
+    this.dimensions=new Sequence<civita__NamedDimension>(this.$prefix()+'.dimensions',civita__NamedDimension);
+  }
+  async counter(...args: boolean[]): Promise<boolean> {return this.$callMethod('counter',...args);}
+  async dataRowOffset(...args: number[]): Promise<number> {return this.$callMethod('dataRowOffset',...args);}
+  async decSeparator(...args: number[]): Promise<number> {return this.$callMethod('decSeparator',...args);}
+  async dontFail(...args: boolean[]): Promise<boolean> {return this.$callMethod('dontFail',...args);}
+  async escape(...args: number[]): Promise<number> {return this.$callMethod('escape',...args);}
+  async headerRow(...args: number[]): Promise<number> {return this.$callMethod('headerRow',...args);}
+  async mergeDelimiters(...args: boolean[]): Promise<boolean> {return this.$callMethod('mergeDelimiters',...args);}
+  async quote(...args: number[]): Promise<number> {return this.$callMethod('quote',...args);}
+  async separator(...args: number[]): Promise<number> {return this.$callMethod('separator',...args);}
 }
 
 export class ravel__HandleState extends CppClass {

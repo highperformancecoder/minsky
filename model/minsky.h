@@ -128,6 +128,23 @@ namespace minsky
       ecolab::TCLAccessor<Minsky,bool>(name,g,s) {}  
   };
 
+  // a wrapper around ravel::Database that converts the spec format
+  class DatabaseIngestor
+  {
+    ravel::Database db;
+    CLASSDESC_ACCESS(DatabaseIngestor);
+  public:
+    void connect(const std::string& dbType, const std::string& connect, const std::string& table)
+    {db.connect(dbType,connect,table);}
+    void close() {db.close();}
+
+    void createTable(const string& filename, const DataSpec& spec)
+    {db.createTable(filename,spec);}
+    void loadDatabase(const vector<string>& filenames, const DataSpec& spec)
+    {db.loadDatabase(filenames,spec);}
+    void deduplicate(ravel::DuplicateKeyAction::Type action, const DataSpec& spec)
+    {db.deduplicate(action,spec);}
+  };
   
   class Minsky: public Exclude<MinskyExclude>, public RungeKutta, public Minsky_multipleEquities
   {
@@ -255,7 +272,7 @@ namespace minsky
 
     GroupPtr model{new Group};
     Canvas canvas{model};
-    ravel::Database databaseIngestor;
+    DatabaseIngestor databaseIngestor;
 
     void clearAllMaps(bool clearHistory);
     void clearAllMaps() {clearAllMaps(true);}
