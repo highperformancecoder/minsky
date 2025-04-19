@@ -205,15 +205,10 @@ endif
 
 FLAGS+=-std=c++20 -UTR1 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -IRavelCAPI/civita -IRavelCAPI -DCLASSDESC $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-attributes -DCIVITA_ALLOCATOR=civita::LibCAllocator
 
-#-Wno-deprecated-declarations 
-
 ifeq ($(CPLUSPLUS),clang++)
 # note some of these flags are disabling warnings that are invalid in some circumstances
 FLAGS+=-Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-defaulted-function-deleted -Wno-uninitialized
 endif
-
-# NB see #1486 - we need to update the use of rsvg, then we can remove -Wno-deprecated-declarations
-#-fvisibility-inlines-hidden
 
 ifeq ($(DEBUG), 1)
 FLAGS+=-Wp,-D_GLIBCXX_ASSERTIONS
