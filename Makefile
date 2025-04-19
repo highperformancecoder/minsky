@@ -203,7 +203,9 @@ ifdef CLASSDESC_ARITIES
 FLAGS+=-DUSE_UNROLLED -DCLASSDESC_ARITIES=$(CLASSDESC_ARITIES)
 endif
 
-FLAGS+=-std=c++20 -UTR1 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -IRavelCAPI/civita -IRavelCAPI -DCLASSDESC $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-deprecated-declarations -Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-attributes -DCIVITA_ALLOCATOR=civita::LibCAllocator
+FLAGS+=-std=c++20 -UTR1 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -IRavelCAPI/civita -IRavelCAPI -DCLASSDESC $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-attributes -DCIVITA_ALLOCATOR=civita::LibCAllocator
+
+#-Wno-deprecated-declarations 
 
 ifeq ($(CPLUSPLUS),clang++)
 # note some of these flags are disabling warnings that are invalid in some circumstances
