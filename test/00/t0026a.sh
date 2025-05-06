@@ -1,105 +1,70 @@
 #! /bin/sh
 
 here=`pwd`
-if test $? -ne 0; then exit 2; fi
-tmp=/tmp/$$
-mkdir $tmp
-if test $? -ne 0; then exit 2; fi
-cd $tmp
-if test $? -ne 0; then exit 2; fi
+. $here/test/common-test.sh
 
-fail()
-{
-    echo "FAILED" 1>&2
-    cd $here
-    chmod -R u+w $tmp
-    rm -rf $tmp
-    exit 1
-}
+cat >cut-paste.py <<EOF
+import sys
+sys.path.insert(0,'$here')
+from pyminsky import minsky, findObject, findVariable
+model=minsky.model
+canvas=minsky.canvas
 
-pass()
-{
-    echo "PASSED" 1>&2
-    cd $here
-    chmod -R u+w $tmp
-    rm -rf $tmp
-    exit 0
-}
-
-trap "fail" 1 2 3 15
-
-# insert ecolab script code here
-
-cat >cut-paste.tcl <<EOF
-source assert.tcl
-proc afterMinskyStarted {} {
-
-minsky.load $here/examples/GoodwinLinear02.mky
-recentreCanvas
-assert {[model.numItems]==26} {}
-assert {[model.numWires]==27} {}
+minsky.load('$here/examples/GoodwinLinear02.mky')
+canvas.recentre()
+assert model.numItems()==26
+assert model.numWires()==27
 # find "N" and use this work out a selection area
-minsky.findVariable N
-set x1 [expr [canvas.item.x]-15]
-set y1 [expr [canvas.item.y]-73]
-set x2 [expr [canvas.item.x]+57]
-set y2 [expr [canvas.item.y]+19]
+item=findVariable('N')
+x1=item.x()-15
+y1=item.y()-73
+x2=item.x()+57
+y2=item.y()+19
 # weirdly, this command is required to get the selection to work below
-recentreCanvas
-canvas.mouseDown \$x1 \$y1
-canvas.mouseUp  \$x2 \$y2
-assert {[canvas.selection.numItems]==3} {}
-puts [canvas.selection.numWires]
-assert {[canvas.selection.numWires]==2} {}
-cut
-assert {[model.numItems]==23} {}
-assert {[model.numWires]==23} {}
+canvas.recentre()
+
+canvas.mouseDown(x1, y1)
+canvas.mouseUp(x2, y2)
+assert canvas.selection.numItems()==3
+assert canvas.selection.numWires()==2
+minsky.cut()
+assert model.numItems()==23
+assert model.numWires()==23
 # For ticket 1098. Paste items at mouse position
-paste 450 106
+minsky.paste(450, 106)
 
-event generate .wiring.canvas <Button-1>
-
-assert {[model.numItems]==26} {}
-assert {[model.numWires]==25} {}
+assert model.numItems()==26
+assert model.numWires()==25
 
 # find a wire with internal control points
-for {set i 0} {\$i<[model.wires.size]} {incr i} {
-  model.wires.@elem [set i]
-  if {[llength [minsky.model.wires(\$i).coords]]>4} {
-    set wire minsky.model.wires(\$i)
+wire=None
+for i in range(len(model.wires)):
+  if len(model.wires[i].coords())>4:
+    wire=model.wires[i]
     break
-  }
-}
+assert wire is not None
 
-\$wire.straighten
-assert "[llength [[set wire].coords]]==4" {llength wire.coords==4}
+wire.straighten()
+assert len(wire.coords())==4
 
 # some code that prints the values used in the next wiring op
-for {set item 0} {\$item<[model.items.size]} {incr item} {
-  minsky.model.items.@elem \$item
-  if {[minsky.model.items(\$item).classType]=="Operation:divide"} {
-    set x0 [minsky.model.items(\$item).portX 0]
-    set y0 [minsky.model.items(\$item).portY 0]
-  }
-  if {[minsky.model.items(\$item).classType]=="Variable:flow" && [minsky.model.items(\$item).name]=="emprate"} {
-    set x1 [minsky.model.items(\$item).portX 1]
-    set y1 [minsky.model.items(\$item).portY 1]
-  }
-}
-
-
+for i in range(len(model.items)):
+  item=model.items[i]
+  if item.classType()=="Operation:divide":
+    x0=item.portX(0)
+    y0=item.portY(0)
+  if item.classType()=="Variable:flow" and item.name()=="emprate":
+    x1=item.portX(1)
+    y1=item.portY(1)
 
 # add another wire
-canvas.mouseDown \$x0 \$y0
-canvas.mouseUp \$x1 \$y1
-assert {[model.numWires]==26} {}
+canvas.mouseDown(x0, y0)
+canvas.mouseUp(x1, y1)
+assert model.numWires()==26
 
-tcl_exit
-}
 EOF
 
-cp $here/test/assert.tcl .
-$here/gui-tk/minsky cut-paste.tcl
+python3 cut-paste.py
 if test $? -ne 0; then fail; fi
 
 pass
