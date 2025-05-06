@@ -7,9 +7,9 @@ cd /tmp/$$
 
 for i in $here/examples/*.mky; do
     if [ $i = "$here/examples/EndogenousMoney.mky" ]; then continue; fi 
-    "$here/gui-tk/minsky" "$here/test/rewriteMky.tcl" "$i"  tmp;
-    "$here/gui-tk/minsky" "$here/test/rewriteMky.tcl" tmp  tmp1;
-    "$here/gui-tk/minsky" "$here/test/rewriteMky.tcl" tmp1  tmp2;
+    python3 "$here/test/rewriteMky.py" "$i"  tmp;
+    python3 "$here/test/rewriteMky.py" tmp  tmp1;
+    python3 "$here/test/rewriteMky.py" tmp1  tmp2;
     if test $? -ne 0; then EXIT=1; break; fi
     # check second rewrite doesn't mutate
     
