@@ -1,43 +1,20 @@
 #! /bin/sh
 
 here=`pwd`
-if test $? -ne 0; then exit 2; fi
-tmp=/tmp/$$
-mkdir $tmp
-if test $? -ne 0; then exit 2; fi
-cd $tmp
-if test $? -ne 0; then exit 2; fi
+. $here/test/common-test.sh
 
-fail()
-{
-    echo "FAILED" 1>&2
-    cd $here
-    chmod -R u+w $tmp
-    rm -rf $tmp
-    exit 1
-}
-
-pass()
-{
-    echo "PASSED" 1>&2
-    cd $here
-    chmod -R u+w $tmp
-    rm -rf $tmp
-    exit 0
-}
-
-trap "fail" 1 2 3 15
-
-cat >input.tcl <<EOF
-minsky.load $here/test/testEq.mky
+cat >input.py <<EOF
+import sys
+sys.path.insert(0,'$here')
+from pyminsky import minsky, findObject
+minsky.load('$here/test/testEq.mky')
 # DataOp not currently supported, so delete it
-minsky.findObject DataOp
-minsky.canvas.deleteItem
-minsky.matlab testEq.m
-tcl_exit
+findObject('DataOp')
+minsky.canvas.deleteItem()
+minsky.matlab('testEq.m')
 EOF
 
-$here/gui-tk/minsky input.tcl
+python3 input.py
 if test $? -ne 0; then fail; fi
 
 # testEq has something of everything, but is not an executable model
