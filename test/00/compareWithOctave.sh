@@ -59,11 +59,7 @@ for i in examples/*.mky; do
             if [ $i = "examples/indexing.mky" -a $implicit  ]; then continue; fi
             if [ $i = "examples/statistics.mky" -a $implicit  ]; then continue; fi
             if [ $i = "examples/plotWidget.mky" ]; then continue; fi
-            cat >extraOpts.tcl <<EOF
-minsky.implicit $implicit
-minsky.order $order
-EOF
-            $here/gui-tk/minsky $here/test/compareWithOctave.tcl $i
+            python3 $here/test/compareWithOctave.py -o $order -i $implicit $i
             if test $? -ne 0; then echo $i; fail; fi
             octave --no-window-system --silent $here/test/compareWithOctave.m $i
             if test $? -ne 0; then echo "$i failed"; fail; fi
