@@ -32,7 +32,7 @@ pass()
 
 trap "fail" 1 2 3 15
 
-cp -r $here/test/testEq.mky $here/gui-tk/icons/bank.svg $here/examples/1Free.mky .
+cp -r $here/test/testEq.mky $here/gui-js/apps/minsky-web/src/assets/images/icons/bank.svg $here/examples/1Free.mky .
 if [ -x $here/test/unittests ]; then
     $here/test/unittests
     if [ $? -ne 0 ]; then fail; fi
