@@ -20,14 +20,14 @@ assert offsx0!=offsx
 assert offsy0!=offsy
 
 # offsets hard coded in VariableInstanceList
-minsky.canvas.getItemAt(50, 50)
+minsky.canvas.getItemAt(60, 60)
 assert minsky.canvas.item.name()=="Y"
 
 instanceList.gotoInstance(1)
 assert minsky.model.x()!=offsx0
 assert minsky.model.y()!=offsy0
 
-minsky.canvas.getItemAt(50, 50)
+minsky.canvas.getItemAt(60, 60)
 assert minsky.canvas.item.name()=="Y"
 
 offsx=minsky.model.x()
