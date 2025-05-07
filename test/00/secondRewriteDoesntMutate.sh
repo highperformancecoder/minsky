@@ -1,9 +1,11 @@
-export LD_LIBRARY_PATH=$HOME/usr/lib:/usr/local/lib:$LD_LIBRARY_PATH
-EXIT=0
 
 here=`pwd`
 mkdir /tmp/$$
 cd /tmp/$$
+
+export LD_LIBRARY_PATH=$HOME/usr/lib:/usr/local/lib:$LD_LIBRARY_PATH
+export PYTHONPATH=$here:$PYTHONPATH
+EXIT=0
 
 for i in $here/examples/*.mky; do
     if [ $i = "$here/examples/EndogenousMoney.mky" ]; then continue; fi 
