@@ -28,8 +28,6 @@ pass()
 
 trap "fail" 1 2 3 15
 cat >input.py <<EOF
-import sys
-sys.path.append('$here')
 from pyminsky import minsky
 
 minsky.canvas.addVariable('gen','parameter')

@@ -31,8 +31,6 @@ pass()
 trap "fail" 1 2 3 15
 
 cat >input.py <<EOF
-import sys
-sys.path.insert(0, '$here')
 from pyminsky import minsky, findObject
 
 # Step 1: Function to access value by ID

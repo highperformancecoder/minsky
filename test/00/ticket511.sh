@@ -5,8 +5,6 @@ here=`pwd`
 
 # checks this bit of code does not throw
 cat >input.py <<EOF
-import sys
-sys.path.insert(0,'$here')
 from pyminsky import minsky
 minsky.load('$here/test/ticket511.mky')
 minsky.step()

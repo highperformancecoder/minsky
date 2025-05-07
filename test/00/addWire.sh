@@ -5,8 +5,6 @@ here=`pwd`
 
 #check addWire business rules
 cat >input.py <<EOF
-import sys
-sys.path.insert(0, '$here')
 from pyminsky import minsky
 
 minsky.canvas.addOperation('exp')

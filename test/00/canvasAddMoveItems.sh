@@ -5,8 +5,6 @@ here=`pwd`
 
 # needs to be a jest test!
 cat >input.py <<EOF
-import sys
-sys.path.insert(0, '$here')
 from pyminsky import minsky
 
 # Clear the canvas to start with a clean slate

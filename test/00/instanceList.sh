@@ -4,8 +4,6 @@ here=`pwd`
 . $here/test/common-test.sh
 
 cat >input.py <<EOF
-import sys
-sys.path.insert(0,'$here')
 from pyminsky import minsky, findObject, findVariable
 
 minsky.load('$here/examples/GoodwinLinear02.mky')

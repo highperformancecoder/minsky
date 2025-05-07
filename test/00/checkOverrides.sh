@@ -4,9 +4,8 @@ here=`pwd`
 . $here/test/common-test.sh
 
 cat >checkOverrides.py <<EOF
-import sys
-sys.path.append('$here')
 from pyminsky import minsky
+import sys
 
 minsky.load(sys.argv[1])
 minsky.doPushHistory(False)

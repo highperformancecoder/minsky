@@ -30,8 +30,6 @@ trap "fail" 1 2 3 15
 
 # check description/tooltip functionality
 cat >input.py <<EOF
-import sys
-sys.path.insert(0,'$here')
 from pyminsky import minsky
 minsky.canvas.addVariable('foo','flow')
 minsky.canvas.itemFocus.tooltip('foobar')
@@ -46,8 +44,6 @@ if test $? -ne 0; then fail; fi
 
 # check that it reloads
 cat >reload.py <<EOF
-import sys
-sys.path.insert(0,'$here')
 from pyminsky import minsky
 minsky.load('saved.mky')
 assert len(minsky.model.items)==1

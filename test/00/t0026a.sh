@@ -4,8 +4,6 @@ here=`pwd`
 . $here/test/common-test.sh
 
 cat >cut-paste.py <<EOF
-import sys
-sys.path.insert(0,'$here')
 from pyminsky import minsky, findObject, findVariable
 model=minsky.model
 canvas=minsky.canvas

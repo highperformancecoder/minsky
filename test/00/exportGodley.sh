@@ -29,8 +29,6 @@ pass()
 trap "fail" 1 2 3 15
 
 cat >input.py <<EOF
-import sys
-sys.path.append('$here')
 from pyminsky import minsky
 minsky.load('$here/examples/1Free.mky')
 for i in range(len(minsky.model.items)):
