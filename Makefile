@@ -155,7 +155,6 @@ ifeq ($(CPLUSPLUS),g++)
 PRECOMPILED_HEADERS=model/minsky.gch
 endif
 
-GUI_TK_OBJS=tclmain.o minskyTCL.o
 RESTSERVICE_OBJS=minskyRS.o RESTMinsky.o
 
 ifeq ($(OS),Darwin)
@@ -164,10 +163,8 @@ LIBS+=-Wl,-framework -Wl,Security -Wl,-headerpad_max_install_names
 MODEL_OBJS+=getContext.o
 endif
 
-ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS) $(RESTSERVICE_OBJS) RESTService.o addon.o typescriptAPI.o pyminsky.o
+ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(RESTSERVICE_OBJS) RESTService.o addon.o typescriptAPI.o pyminsky.o
 
-
-ifneq ($(GUI_TK),1)
 
 EXES=RESTService/minsky-RESTService$(EXE)
 ifeq ($(HAVE_NODE),1)
@@ -175,15 +172,6 @@ EXES+=gui-js/build/minskyRESTService.node
 endif
 ifndef MXE
 EXES+=RESTService/typescriptAPI
-ifndef GUI_TK
-ifeq ($(OS), Linux)
-EXES+=gui-tk/minsky$(EXE)
-endif
-endif
-endif
-
-else
-EXES=gui-tk/minsky$(EXE)
 endif
 
 
@@ -214,7 +202,7 @@ ifeq ($(DEBUG), 1)
 FLAGS+=-Wp,-D_GLIBCXX_ASSERTIONS
 endif
 
-VPATH= schema model engine gui-tk RESTService RavelCAPI/civita RavelCAPI $(ECOLAB_HOME)/include 
+VPATH= schema model engine RESTService RavelCAPI/civita RavelCAPI $(ECOLAB_HOME)/include 
 
 .h.xcd:
 # xml_pack/unpack need to -typeName option, as well as including privates
@@ -355,11 +343,6 @@ endif
 
 #chmod command is to counteract AEGIS removing execute privelege from scripts
 all: $(EXES) $(TESTS) minsky.xsd 
-# only perform link checking if online
-# linkchecker not currently working! :(
-#ifndef TRAVIS
-#	if ping -c 1 www.google.com; then linkchecker -f linkcheckerrc gui-tk/library/help/minsky.html; fi
-#endif
 	-$(CHMOD) a+x *.tcl *.sh *.pl
 
 
@@ -393,24 +376,14 @@ endif
 WINDRES=$(MXE_PREFIX)-windres
 endif
 
-MinskyLogo.o: MinskyLogo.rc gui-tk/icons/MinskyLogo.ico
+MinskyLogo.o: MinskyLogo.rc icons/MinskyLogo.ico
 	$(WINDRES) -O coff -i $< -o $@
 
-RavelLogo.o: RavelLogo.rc gui-tk/icons/RavelLogo.ico
+RavelLogo.o: RavelLogo.rc icons/RavelLogo.ico
 	$(WINDRES) -O coff -i $< -o $@
 
 getContext.o: getContext.cc
 	g++ -ObjC++ $(FLAGS) -I/opt/local/include -Iinclude -c $< -o $@
-
-gui-tk/minsky$(EXE): $(GUI_TK_OBJS)  $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS)
-	$(LINK) $(FLAGS) $^ $(MODLINK) -L/opt/local/lib/db48 $(LIBS) $(GUI_LIBS) -o $@
-	-find . \( -name "*.cc" -o -name "*.h" \) -print |etags -
-ifdef MXE
-# make a local copy the TCL libraries
-	rm -rf gui-tk/library/{tcl,tk}
-	cp -r $(TCL_LIB) gui-tk/library/tcl
-	cp -r $(TK_LIB) gui-tk/library/tk
-endif
 
 RESTService/minsky-RESTService$(EXE): RESTService.o  $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS)
 	$(LINK) $(FLAGS) $^ -L/opt/local/lib/db48 $(LIBS) -o $@
@@ -486,7 +459,6 @@ clean:
 	-$(BASIC_CLEAN) minsky.xsd
 	-rm -f $(EXES)
 	-cd test && $(MAKE)  clean
-	-cd gui-tk &&  $(BASIC_CLEAN)
 	-cd model && $(BASIC_CLEAN)
 	-cd engine && $(BASIC_CLEAN)
 	-cd schema && $(BASIC_CLEAN)
@@ -515,19 +487,11 @@ ifneq ($(GUI_TK),1)
 	cp RESTService/minsky-RESTService $(PREFIX)/bin
 	cp RESTService/minsky-httpd $(PREFIX)/bin
 	cp gui-js/node-addons/*.node $(PREFIX)/lib/minsky/resources/node-addons
-ifndef GUI_TK
 ifeq ($(OS), "Linux")
 ifndef MXE
-	cp gui-tk/minsky$(EXE) $(PREFIX)/bin
-	cp -r gui-tk/*.tcl gui-tk/accountingRules gui-tk/icons gui-tk/library $(PREFIX)/lib/minsky
 	cp -r pyminsky.so $(PREFIX)/lib64
 endif
 endif
-endif
-else
-	mkdir -p $(PREFIX)/bin $(PREFIX)/lib/minsky
-	cp gui-tk/minsky$(EXE) $(PREFIX)/bin
-	cp -r gui-tk/*.tcl gui-tk/accountingRules gui-tk/icons gui-tk/library $(PREFIX)/lib/minsky
 endif
 
 
@@ -538,7 +502,6 @@ sure: all tests
 
 # produce doxygen annotated web pages
 doxydoc: $(wildcard *.h) $(wildcard *.cc) \
-	$(wildcard GUI/*.h) $(wildcard GUI/*.cc) \
 	$(wildcard engine/*.h) $(wildcard engine/*.cc) \
 	$(wildcard schema/*.h) $(wildcard schema/*.cc) Doxyfile
 	 doxygen
