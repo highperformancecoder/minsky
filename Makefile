@@ -26,7 +26,7 @@ ifdef MXE
 MAKEOVERRIDES+=MXE_PREFIX=x86_64-w64-mingw32.shared
 endif
 
-MAKEOVERRIDE+=DEBUG=$(DEBUG)
+MAKEOVERRIDES+=DEBUG=$(DEBUG)
 
 ifneq ($(MAKECMDGOALS),clean)
 # make sure EcoLab is built first, even before starting to include Makefiles
