@@ -21,7 +21,6 @@
 #include "variableType.h"
 #include "tensorInterface.h"
 #include "tensorVal.h"
-#include "ecolab.h"
 #include "classdesc_access.h"
 #include "str.h"
 #include "CSVDialog.h"

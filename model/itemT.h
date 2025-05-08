@@ -42,8 +42,6 @@ namespace minsky
       r->group.reset();
       return r;
     }
-    void TCL_obj(classdesc::TCL_obj_t& t, const std::string& d) override 
-    {::TCL_obj(t,d,*dynamic_cast<T*>(this));}
     void RESTProcess(classdesc::RESTProcess_t& rp,const std::string& d) override
     {::RESTProcess(rp,d,dynamic_cast<T&>(*this));}
     void RESTProcess(classdesc::RESTProcess_t& rp,const std::string& d) const override

@@ -20,7 +20,6 @@
 #define PLOTWIDGET_H
 #include <cairo_base.h>
 #include "renderNativeWindow.h"
-#include <TCL_obj_base.h>
 #include "classdesc_access.h"
 #include "latexMarkup.h"
 #include "plot.h"
@@ -81,7 +80,9 @@ namespace minsky
   public:
     using Item::x;
     using Item::y;
-    using ecolab::CairoSurface::surface;
+    using RenderNativeWindow::surface;
+    using RenderNativeWindow::requestRedraw;
+    using RenderNativeWindow::renderToSVG;
 
     /// number of bounds (xmin/xmax, ymin/ymax, y1min/y1max) ports
     static constexpr unsigned nBoundsPorts=6;

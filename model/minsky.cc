@@ -24,7 +24,6 @@
 #include "mdlReader.h"
 #include "variableInstanceList.h"
 
-#include "TCL_obj_stl.h"
 #include <cairo_base.h>
 
 #include "schema3.h"
@@ -598,12 +597,12 @@ namespace minsky
                      v=':'+v; //NOLINT
                    else if (scope!=godley.group.lock())
                      continue; // variable is inaccessible
-                   if (r.contains(v) || gi->table._assetClass(i)!=target_ac) 
+                   if (r.contains(v) || gi->table.assetClass(i)!=target_ac) 
                      {
                        r.erase(v); // column already duplicated, or in current, nothing to match
                        duplicatedColumns.insert(v);
                      }
-                   else if (!duplicatedColumns.contains(v) && gi->table._assetClass(i)==target_ac &&
+                   else if (!duplicatedColumns.contains(v) && gi->table.assetClass(i)==target_ac &&
                             // insert unmatched asset columns from this table only for equity (feature #174)
                             // otherwise matches are between separate tables
                             ((ac!=GodleyAssetClass::equity && gi!=&godley) || (ac==GodleyAssetClass::equity && gi==&godley) ))
@@ -771,14 +770,14 @@ namespace minsky
                    if (col==size_t(srcCol)) continue; // skip over source column
                    else if (srcGodley.valueId(trimWS(srcTable.cell(0,col)))==colName)
                      {
-                       switch (srcGodley.table._assetClass(srcCol))
+                       switch (srcGodley.table.assetClass(srcCol))
                          {
                          case GodleyAssetClass::asset:
-                           if (srcTable._assetClass(col)!=GodleyAssetClass::equity)
+                           if (srcTable.assetClass(col)!=GodleyAssetClass::equity)
                              throw error("asset column %s matches a non-liability column",colName.c_str());
                            break;
                          case GodleyAssetClass::equity:
-                           if (srcTable._assetClass(col)!=GodleyAssetClass::asset)
+                           if (srcTable.assetClass(col)!=GodleyAssetClass::asset)
                              throw error("equity column %s matches a non-asset column",colName.c_str());
                            break;
                          default:
@@ -792,14 +791,14 @@ namespace minsky
                  if (gi->valueId(trimWS(gi->table.cell(0,col)))==colName) // we have a match
                    {
                      // checks asset class rules
-                     switch (srcGodley.table._assetClass(srcCol))
+                     switch (srcGodley.table.assetClass(srcCol))
                        {
                        case GodleyAssetClass::asset:
-                         if (gi->table._assetClass(col)!=GodleyAssetClass::liability)
+                         if (gi->table.assetClass(col)!=GodleyAssetClass::liability)
                            throw error("asset column %s matches a non-liability column",colName.c_str());
                          break;
                        case GodleyAssetClass::liability:
-                         if (gi->table._assetClass(col)!=GodleyAssetClass::asset)
+                         if (gi->table.assetClass(col)!=GodleyAssetClass::asset)
                            throw error("liability column %s matches a non-asset column",colName.c_str());
                          break;
                        default:
@@ -843,7 +842,7 @@ namespace minsky
         return Super::operator*()->table.getData();
       }
       GodleyAssetClass::AssetClass assetClass(size_t col) const
-      {return Super::operator*()->table._assetClass(col);}
+      {return Super::operator*()->table.assetClass(col);}
       bool signConventionReversed(int col) const
       {return Super::operator*()->table.signConventionReversed(col);}
       bool initialConditionRow(int row) const
@@ -1553,9 +1552,9 @@ namespace minsky
                          if (auto p=(*i)->plotWidgetCast())
                            {
                              if (!p->title.empty())
-                               p->renderToSVG(prefix+"-"+p->title+".svg");
+                               p->RenderNativeWindow::renderToSVG(prefix+"-"+p->title+".svg");
                              else
-                               p->renderToSVG(prefix+"-"+str(plotNum++)+".svg");
+                               p->RenderNativeWindow::renderToSVG(prefix+"-"+str(plotNum++)+".svg");
                            }
                          return false;
                        });

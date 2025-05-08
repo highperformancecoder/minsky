@@ -19,11 +19,6 @@
 #ifndef OPERATIONBASE_H
 #define OPERATIONBASE_H
 
-#include <ecolab.h>
-#include <xml_pack_base.h>
-#include <xml_unpack_base.h>
-
-// override EcoLab's default CLASSDESC_ACCESS macro
 #include "classdesc_access.h"
 
 #include "item.h"
@@ -135,13 +130,6 @@ inline std::ostream& operator<<(std::ostream& x, const std::vector<int>& y)
     x<<(i==0?"":" ")<<y[i];
   return x;
 }
-
-
-inline void pack(classdesc::pack_t&,const classdesc::string&,classdesc::ref<ecolab::urand>&) {}
-inline void unpack(classdesc::pack_t&,const classdesc::string&,classdesc::ref<ecolab::urand>&) {}
-inline void xml_pack(classdesc::xml_pack_t&,const classdesc::string&,classdesc::ref<ecolab::urand>&) {}
-inline void xml_unpack(classdesc::xml_unpack_t&,const classdesc::string&,classdesc::ref<ecolab::urand>&) {}
-
 
 
 #include "operationBase.cd"

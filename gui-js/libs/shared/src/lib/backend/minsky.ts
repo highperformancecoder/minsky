@@ -45,7 +45,6 @@ export class Item extends CppClass {
     this.bb=new BoundingBox(this.$prefix()+'.bb');
   }
   async RESTProcess(a1: classdesc__RESTProcess_t,a2: string): Promise<void> {return this.$callMethod('RESTProcess',a1,a2);}
-  async TCL_obj(a1: classdesc__TCL_obj_t,a2: string): Promise<void> {return this.$callMethod('TCL_obj',a1,a2);}
   async adjustBookmark(): Promise<void> {return this.$callMethod('adjustBookmark');}
   async bookmark(...args: boolean[]): Promise<boolean> {return this.$callMethod('bookmark',...args);}
   async bookmarkId(): Promise<string> {return this.$callMethod('bookmarkId');}
@@ -181,9 +180,8 @@ export class RenderNativeWindow extends EventInterface {
   async renderToSVG(a1: string): Promise<void> {return this.$callMethod('renderToSVG',a1);}
   async reportDrawTime(a1: number): Promise<void> {return this.$callMethod('reportDrawTime',a1);}
   async requestRedraw(): Promise<void> {return this.$callMethod('requestRedraw');}
-  async resolutionScaleFactor(...args: number[]): Promise<number> {return this.$callMethod('resolutionScaleFactor',...args);}
+  async resolutionScaleFactor(...args: any[]): Promise<number> {return this.$callMethod('resolutionScaleFactor',...args);}
   async scaleFactor(): Promise<number> {return this.$callMethod('scaleFactor');}
-  async vectorRender(a1: number,a2: minsky__dummy): Promise<object> {return this.$callMethod('vectorRender',a1,a2);}
 }
 
 export class VariableBase extends Item {
@@ -196,7 +194,6 @@ export class VariableBase extends Item {
     this.bb=new BoundingBox(this.$prefix()+'.bb');
   }
   async RESTProcess(a1: classdesc__RESTProcess_t,a2: string): Promise<void> {return this.$callMethod('RESTProcess',a1,a2);}
-  async TCL_obj(a1: classdesc__TCL_obj_t,a2: string): Promise<void> {return this.$callMethod('TCL_obj',a1,a2);}
   async accessibleVars(): Promise<string[]> {return this.$callMethod('accessibleVars');}
   async adjustBookmark(): Promise<void> {return this.$callMethod('adjustBookmark');}
   async adjustSliderBounds(): Promise<void> {return this.$callMethod('adjustSliderBounds');}
@@ -394,12 +391,11 @@ export class CSVDialog extends CppClass {
   async reportDrawTime(a1: number): Promise<void> {return this.$callMethod('reportDrawTime',a1);}
   async reportFromFile(a1: string,a2: string): Promise<void> {return this.$callMethod('reportFromFile',a1,a2);}
   async requestRedraw(): Promise<void> {return this.$callMethod('requestRedraw');}
-  async resolutionScaleFactor(...args: number[]): Promise<number> {return this.$callMethod('resolutionScaleFactor',...args);}
+  async resolutionScaleFactor(...args: any[]): Promise<number> {return this.$callMethod('resolutionScaleFactor',...args);}
   async rowOver(a1: number): Promise<number> {return this.$callMethod('rowOver',a1);}
   async scaleFactor(): Promise<number> {return this.$callMethod('scaleFactor');}
   async tableWidth(): Promise<number> {return this.$callMethod('tableWidth');}
   async url(...args: string[]): Promise<string> {return this.$callMethod('url',...args);}
-  async vectorRender(a1: number,a2: minsky__dummy): Promise<object> {return this.$callMethod('vectorRender',a1,a2);}
   async xoffs(...args: number[]): Promise<number> {return this.$callMethod('xoffs',...args);}
   async zoom(a1: number,a2: number,a3: number): Promise<void> {return this.$callMethod('zoom',a1,a2,a3);}
   async zoomFactor(): Promise<number> {return this.$callMethod('zoomFactor');}
@@ -495,7 +491,7 @@ export class Canvas extends RenderNativeWindow {
   async renderToSVG(a1: string): Promise<void> {return this.$callMethod('renderToSVG',a1);}
   async reportDrawTime(a1: number): Promise<void> {return this.$callMethod('reportDrawTime',a1);}
   async requestRedraw(): Promise<void> {return this.$callMethod('requestRedraw');}
-  async resolutionScaleFactor(...args: number[]): Promise<number> {return this.$callMethod('resolutionScaleFactor',...args);}
+  async resolutionScaleFactor(...args: any[]): Promise<number> {return this.$callMethod('resolutionScaleFactor',...args);}
   async rotateItem(a1: number,a2: number): Promise<void> {return this.$callMethod('rotateItem',a1,a2);}
   async rotatingItem(...args: boolean[]): Promise<boolean> {return this.$callMethod('rotatingItem',...args);}
   async scaleFactor(): Promise<number> {return this.$callMethod('scaleFactor');}
@@ -510,7 +506,6 @@ export class Canvas extends RenderNativeWindow {
   async termY(...args: number[]): Promise<number> {return this.$callMethod('termY',...args);}
   async ungroupItem(): Promise<void> {return this.$callMethod('ungroupItem');}
   async unlockRavelsInSelection(): Promise<void> {return this.$callMethod('unlockRavelsInSelection');}
-  async vectorRender(a1: number,a2: minsky__dummy): Promise<object> {return this.$callMethod('vectorRender',a1,a2);}
   async zoom(a1: number,a2: number,a3: number): Promise<void> {return this.$callMethod('zoom',a1,a2,a3);}
   async zoomFactor(): Promise<number> {return this.$callMethod('zoomFactor');}
   async zoomToDisplay(): Promise<void> {return this.$callMethod('zoomToDisplay');}
@@ -654,9 +649,8 @@ export class EquationDisplay extends RenderNativeWindow {
   async renderToSVG(a1: string): Promise<void> {return this.$callMethod('renderToSVG',a1);}
   async reportDrawTime(a1: number): Promise<void> {return this.$callMethod('reportDrawTime',a1);}
   async requestRedraw(): Promise<void> {return this.$callMethod('requestRedraw');}
-  async resolutionScaleFactor(...args: number[]): Promise<number> {return this.$callMethod('resolutionScaleFactor',...args);}
+  async resolutionScaleFactor(...args: any[]): Promise<number> {return this.$callMethod('resolutionScaleFactor',...args);}
   async scaleFactor(): Promise<number> {return this.$callMethod('scaleFactor');}
-  async vectorRender(a1: number,a2: minsky__dummy): Promise<object> {return this.$callMethod('vectorRender',a1,a2);}
   async width(): Promise<number> {return this.$callMethod('width');}
   async zoom(a1: number,a2: number,a3: number): Promise<void> {return this.$callMethod('zoom',a1,a2,a3);}
   async zoomFactor(): Promise<number> {return this.$callMethod('zoomFactor');}
@@ -703,9 +697,8 @@ export class FontDisplay extends CppClass {
   async renderToSVG(a1: string): Promise<void> {return this.$callMethod('renderToSVG',a1);}
   async reportDrawTime(a1: number): Promise<void> {return this.$callMethod('reportDrawTime',a1);}
   async requestRedraw(): Promise<void> {return this.$callMethod('requestRedraw');}
-  async resolutionScaleFactor(...args: number[]): Promise<number> {return this.$callMethod('resolutionScaleFactor',...args);}
+  async resolutionScaleFactor(...args: any[]): Promise<number> {return this.$callMethod('resolutionScaleFactor',...args);}
   async scaleFactor(): Promise<number> {return this.$callMethod('scaleFactor');}
-  async vectorRender(a1: number,a2: minsky__dummy): Promise<object> {return this.$callMethod('vectorRender',a1,a2);}
   async zoom(a1: number,a2: number,a3: number): Promise<void> {return this.$callMethod('zoom',a1,a2,a3);}
   async zoomFactor(): Promise<number> {return this.$callMethod('zoomFactor');}
 }
@@ -771,8 +764,7 @@ export class GodleyTable extends CppClass {
   constructor(prefix: string){
     super(prefix);
   }
-  async _assetClass(...args: any[]): Promise<Sequence<string>> {return this.$callMethod('_assetClass',...args);}
-  async assetClass(a1: object): Promise<string> {return this.$callMethod('assetClass',a1);}
+  async assetClass(...args: any[]): Promise<Sequence<string>> {return this.$callMethod('assetClass',...args);}
   async balanceEquity(a1: number): Promise<void> {return this.$callMethod('balanceEquity',a1);}
   async cell(a1: number,a2: number): Promise<string> {return this.$callMethod('cell',a1,a2);}
   async cellInTable(a1: number,a2: number): Promise<boolean> {return this.$callMethod('cellInTable',a1,a2);}
@@ -968,7 +960,7 @@ export class GodleyTableWindow extends CppClass {
   async reportDrawTime(a1: number): Promise<void> {return this.$callMethod('reportDrawTime',a1);}
   async requestRedraw(): Promise<void> {return this.$callMethod('requestRedraw');}
   async requestRedrawCanvas(): Promise<void> {return this.$callMethod('requestRedrawCanvas');}
-  async resolutionScaleFactor(...args: number[]): Promise<number> {return this.$callMethod('resolutionScaleFactor',...args);}
+  async resolutionScaleFactor(...args: any[]): Promise<number> {return this.$callMethod('resolutionScaleFactor',...args);}
   async rowHeight(...args: number[]): Promise<number> {return this.$callMethod('rowHeight',...args);}
   async rowYZoomed(a1: number): Promise<number> {return this.$callMethod('rowYZoomed',a1);}
   async scaleFactor(): Promise<number> {return this.$callMethod('scaleFactor');}
@@ -985,7 +977,6 @@ export class GodleyTableWindow extends CppClass {
   async topTableOffset(...args: number[]): Promise<number> {return this.$callMethod('topTableOffset',...args);}
   async undo(a1: number): Promise<void> {return this.$callMethod('undo',a1);}
   async update(): Promise<void> {return this.$callMethod('update');}
-  async vectorRender(a1: number,a2: minsky__dummy): Promise<object> {return this.$callMethod('vectorRender',a1,a2);}
   async width(): Promise<number> {return this.$callMethod('width');}
   async zoom(a1: number,a2: number,a3: number): Promise<void> {return this.$callMethod('zoom',a1,a2,a3);}
   async zoomFactor(): Promise<number> {return this.$callMethod('zoomFactor');}
@@ -1017,7 +1008,6 @@ export class Group extends Item {
     this.wires=new Sequence<Wire>(this.$prefix()+'.wires',Wire);
   }
   async RESTProcess(a1: classdesc__RESTProcess_t,a2: string): Promise<void> {return this.$callMethod('RESTProcess',a1,a2);}
-  async TCL_obj(a1: classdesc__TCL_obj_t,a2: string): Promise<void> {return this.$callMethod('TCL_obj',a1,a2);}
   async accessibleVars(): Promise<string[]> {return this.$callMethod('accessibleVars');}
   async addBookmark(a1: string): Promise<void> {return this.$callMethod('addBookmark',a1);}
   async addBookmarkXY(a1: number,a2: number,a3: string): Promise<void> {return this.$callMethod('addBookmarkXY',a1,a2,a3);}
@@ -1495,10 +1485,9 @@ export class PhillipsDiagram extends RenderNativeWindow {
   async renderToSVG(a1: string): Promise<void> {return this.$callMethod('renderToSVG',a1);}
   async reportDrawTime(a1: number): Promise<void> {return this.$callMethod('reportDrawTime',a1);}
   async requestRedraw(): Promise<void> {return this.$callMethod('requestRedraw');}
-  async resolutionScaleFactor(...args: number[]): Promise<number> {return this.$callMethod('resolutionScaleFactor',...args);}
+  async resolutionScaleFactor(...args: any[]): Promise<number> {return this.$callMethod('resolutionScaleFactor',...args);}
   async scaleFactor(): Promise<number> {return this.$callMethod('scaleFactor');}
   async startRotatingItem(a1: number,a2: number): Promise<void> {return this.$callMethod('startRotatingItem',a1,a2);}
-  async vectorRender(a1: number,a2: minsky__dummy): Promise<object> {return this.$callMethod('vectorRender',a1,a2);}
   async zoom(a1: number,a2: number,a3: number): Promise<void> {return this.$callMethod('zoom',a1,a2,a3);}
   async zoomFactor(): Promise<number> {return this.$callMethod('zoomFactor');}
 }
@@ -1595,7 +1584,6 @@ export class PlotWidget extends Item {
   async AssignSide(a1: number,a2: string): Promise<void> {return this.$callMethod('AssignSide',a1,a2);}
   async Image(...args: any[]): Promise<string> {return this.$callMethod('Image',...args);}
   async LabelPen(a1: number,a2: ecolab__cairo__Surface): Promise<void> {return this.$callMethod('LabelPen',a1,a2);}
-  async add(a1: number,a2: number,a3: number): Promise<void> {return this.$callMethod('add',a1,a2,a3);}
   async addConstantCurves(): Promise<void> {return this.$callMethod('addConstantCurves');}
   async addPlotPt(a1: number): Promise<void> {return this.$callMethod('addPlotPt',a1);}
   async addPorts(): Promise<void> {return this.$callMethod('addPorts');}
@@ -1605,7 +1593,6 @@ export class PlotWidget extends Item {
   async autoscale(...args: boolean[]): Promise<boolean> {return this.$callMethod('autoscale',...args);}
   async availableMarkers(): Promise<string[]> {return this.$callMethod('availableMarkers');}
   async barWidth(...args: any[]): Promise<number> {return this.$callMethod('barWidth',...args);}
-  async cairoSurface(): Promise<minsky__dummy> {return this.$callMethod('cairoSurface');}
   async clear(): Promise<void> {return this.$callMethod('clear');}
   async clearPenAttributes(): Promise<void> {return this.$callMethod('clearPenAttributes');}
   async clickType(a1: number,a2: number): Promise<string> {return this.$callMethod('clickType',a1,a2);}
@@ -1627,11 +1614,9 @@ export class PlotWidget extends Item {
   async grid(...args: boolean[]): Promise<boolean> {return this.$callMethod('grid',...args);}
   async hasScrollBars(): Promise<boolean> {return this.$callMethod('hasScrollBars');}
   async height(): Promise<number> {return this.$callMethod('height');}
-  async image(a1: object): Promise<string> {return this.$callMethod('image',a1);}
   async init(): Promise<void> {return this.$callMethod('init');}
   async keyPress(a1: minsky__EventInterface__KeyPressArgs): Promise<boolean> {return this.$callMethod('keyPress',a1);}
   async labelPen(a1: number,a2: string): Promise<void> {return this.$callMethod('labelPen',a1,a2);}
-  async labelheight(): Promise<number> {return this.$callMethod('labelheight');}
   async leadingMarker(...args: boolean[]): Promise<boolean> {return this.$callMethod('leadingMarker',...args);}
   async legend(...args: boolean[]): Promise<boolean> {return this.$callMethod('legend',...args);}
   async legendFontSz(...args: number[]): Promise<number> {return this.$callMethod('legendFontSz',...args);}
@@ -1661,9 +1646,7 @@ export class PlotWidget extends Item {
   async offy(...args: number[]): Promise<number> {return this.$callMethod('offy',...args);}
   async onMouseLeave(): Promise<void> {return this.$callMethod('onMouseLeave');}
   async onMouseOver(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onMouseOver',a1,a2);}
-  async pack(a1: classdesc__pack_t): Promise<void> {return this.$callMethod('pack',a1);}
   async percent(...args: boolean[]): Promise<boolean> {return this.$callMethod('percent',...args);}
-  async plot(a1: object): Promise<void> {return this.$callMethod('plot',a1);}
   async plotType(...args: string[]): Promise<string> {return this.$callMethod('plotType',...args);}
   async plotWidgetCast(): Promise<PlotWidget> {return this.$callMethod('plotWidgetCast');}
   async position(): Promise<number[]> {return this.$callMethod('position');}
@@ -1679,16 +1662,14 @@ export class PlotWidget extends Item {
   async reportDrawTime(a1: number): Promise<void> {return this.$callMethod('reportDrawTime',a1);}
   async requestRedraw(): Promise<void> {return this.$callMethod('requestRedraw');}
   async resize(a1: LassoBox): Promise<void> {return this.$callMethod('resize',a1);}
-  async resolutionScaleFactor(...args: number[]): Promise<number> {return this.$callMethod('resolutionScaleFactor',...args);}
+  async resolutionScaleFactor(...args: any[]): Promise<number> {return this.$callMethod('resolutionScaleFactor',...args);}
   async scaleFactor(): Promise<number> {return this.$callMethod('scaleFactor');}
   async scalePlot(): Promise<void> {return this.$callMethod('scalePlot');}
   async setMinMax(): Promise<void> {return this.$callMethod('setMinMax');}
   async subgrid(...args: boolean[]): Promise<boolean> {return this.$callMethod('subgrid',...args);}
   async symbolEvery(...args: number[]): Promise<number> {return this.$callMethod('symbolEvery',...args);}
   async title(...args: string[]): Promise<string> {return this.$callMethod('title',...args);}
-  async unpack(a1: classdesc__pack_t): Promise<void> {return this.$callMethod('unpack',a1);}
   async updateIcon(a1: number): Promise<void> {return this.$callMethod('updateIcon',a1);}
-  async vectorRender(a1: number,a2: minsky__dummy): Promise<object> {return this.$callMethod('vectorRender',a1,a2);}
   async width(): Promise<number> {return this.$callMethod('width');}
   async xlabel(...args: any[]): Promise<string> {return this.$callMethod('xlabel',...args);}
   async xmax(...args: number[]): Promise<number> {return this.$callMethod('xmax',...args);}
@@ -1902,9 +1883,8 @@ export class RavelPopup extends CppClass {
   async renderToSVG(a1: string): Promise<void> {return this.$callMethod('renderToSVG',a1);}
   async reportDrawTime(a1: number): Promise<void> {return this.$callMethod('reportDrawTime',a1);}
   async requestRedraw(): Promise<void> {return this.$callMethod('requestRedraw');}
-  async resolutionScaleFactor(...args: number[]): Promise<number> {return this.$callMethod('resolutionScaleFactor',...args);}
+  async resolutionScaleFactor(...args: any[]): Promise<number> {return this.$callMethod('resolutionScaleFactor',...args);}
   async scaleFactor(): Promise<number> {return this.$callMethod('scaleFactor');}
-  async vectorRender(a1: number,a2: minsky__dummy): Promise<object> {return this.$callMethod('vectorRender',a1,a2);}
   async zoom(a1: number,a2: number,a3: number): Promise<void> {return this.$callMethod('zoom',a1,a2,a3);}
   async zoomFactor(): Promise<number> {return this.$callMethod('zoomFactor');}
 }
@@ -1942,7 +1922,6 @@ export class Selection extends CppClass {
     this.wires=new Sequence<Wire>(this.$prefix()+'.wires',Wire);
   }
   async RESTProcess(a1: classdesc__RESTProcess_t,a2: string): Promise<void> {return this.$callMethod('RESTProcess',a1,a2);}
-  async TCL_obj(a1: classdesc__TCL_obj_t,a2: string): Promise<void> {return this.$callMethod('TCL_obj',a1,a2);}
   async accessibleVars(): Promise<string[]> {return this.$callMethod('accessibleVars');}
   async addBookmark(a1: string): Promise<void> {return this.$callMethod('addBookmark',a1);}
   async addBookmarkXY(a1: number,a2: number,a3: string): Promise<void> {return this.$callMethod('addBookmarkXY',a1,a2,a3);}
@@ -2232,7 +2211,7 @@ export class VariablePane extends CppClass {
   async renderToSVG(a1: string): Promise<void> {return this.$callMethod('renderToSVG',a1);}
   async reportDrawTime(a1: number): Promise<void> {return this.$callMethod('reportDrawTime',a1);}
   async requestRedraw(): Promise<void> {return this.$callMethod('requestRedraw');}
-  async resolutionScaleFactor(...args: number[]): Promise<number> {return this.$callMethod('resolutionScaleFactor',...args);}
+  async resolutionScaleFactor(...args: any[]): Promise<number> {return this.$callMethod('resolutionScaleFactor',...args);}
   async rowY(a1: number): Promise<number> {return this.$callMethod('rowY',a1);}
   async scaleFactor(): Promise<number> {return this.$callMethod('scaleFactor');}
   async select(a1: string): Promise<void> {return this.$callMethod('select',a1);}
@@ -2240,7 +2219,6 @@ export class VariablePane extends CppClass {
   async typeName(a1: number): Promise<string> {return this.$callMethod('typeName',a1);}
   async update(): Promise<void> {return this.$callMethod('update');}
   async updateWithHeight(a1: number): Promise<void> {return this.$callMethod('updateWithHeight',a1);}
-  async vectorRender(a1: number,a2: minsky__dummy): Promise<object> {return this.$callMethod('vectorRender',a1,a2);}
   async zoom(a1: number,a2: number,a3: number): Promise<void> {return this.$callMethod('zoom',a1,a2,a3);}
   async zoomFactor(): Promise<number> {return this.$callMethod('zoomFactor');}
 }

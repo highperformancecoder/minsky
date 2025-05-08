@@ -110,7 +110,7 @@ void GodleyTable::moveCol(int col, int n)
 {
   if (n==0 || col<0 || col>=int(cols()) || col+n<0 || col+n>=int(cols())) 
     return;
-  auto targetAssetClass=_assetClass(col+n);
+  auto targetAssetClass=assetClass(col+n);
   for (size_t row=0; row<rows(); ++row)
     {
       string cellToMove;
@@ -119,12 +119,12 @@ void GodleyTable::moveCol(int col, int n)
         cellToMove.swap(data[row][col+i]);
       cellToMove.swap(data[row][col]);
     }
-  auto ac=_assetClass(col);
+  auto ac=assetClass(col);
   for (int i=n; abs(i)>0; i=i>0? i-1:i+1)
     swap(ac, m_assetClass[col+i]);
   swap(ac, m_assetClass[col]);
     
-  _assetClass(col+n, targetAssetClass);
+  assetClass(col+n, targetAssetClass);
   // insert extra empty column if an asset class gets emptied out of this
   orderAssetClasses();
   // save text in currently highlighted column heading.  For tickets 1058/1094/1122/1127.
@@ -133,7 +133,7 @@ void GodleyTable::moveCol(int col, int n)
 
 void GodleyTable::balanceEquity(int col)
 {
-  if (_assetClass(col)!=equity) return;
+  if (assetClass(col)!=equity) return;
   for (unsigned r=1; r<rows(); ++r)
     {
       cell(r,col)="";
@@ -153,7 +153,7 @@ vector<string> GodleyTable::getColumnVariables() const
       if (!var.empty())
         {
           // disable duplicate column test on equity columns (feature #174)
-          if (_assetClass(c)!=AssetClass::equity && !uvars.insert(var).second)
+          if (assetClass(c)!=AssetClass::equity && !uvars.insert(var).second)
             throw error("Duplicate column label detected");
           vars.push_back(var);
         }
@@ -176,13 +176,13 @@ vector<string> GodleyTable::getVariables() const
   return vars;
 }
 
-GodleyTable::AssetClass GodleyTable::_assetClass(size_t col) const 
+GodleyTable::AssetClass GodleyTable::assetClass(size_t col) const 
 {
   if (col==0) return noAssetClass;
   return col<m_assetClass.size()? m_assetClass[col]: noAssetClass;
 }
 
-GodleyTable::AssetClass GodleyTable::_assetClass
+GodleyTable::AssetClass GodleyTable::assetClass
 (size_t col, GodleyTable::AssetClass cls) 
 {
   if (col==0) return noAssetClass; // don't set column 0 asset class
@@ -190,24 +190,12 @@ GodleyTable::AssetClass GodleyTable::_assetClass
     m_assetClass.resize(cols(), noAssetClass);
   assert(cols()>col);
   m_assetClass[col]=cls;
-  return _assetClass(col);
+  return assetClass(col);
 }
 
 bool GodleyTable::singleEquity() const {
   assert(cols()>=3);
   return m_assetClass[cols()-2]!=GodleyAssetClass::equity;
-}
-
-string GodleyTable::assetClass(TCL_args args)
-{
-  const int col=args;
-  if (args.count) 
-    {
-      _assetClass
-        (col, AssetClass(classdesc::enumKey<AssetClass>((char*)args)));
-      markEdited();  
-    }
-  return classdesc::enumKey<AssetClass>(_assetClass(col));
 }
 
 map<string,double> GodleyTable::rowSumAsMap(int row) const
@@ -325,10 +313,10 @@ void GodleyTable::orderAssetClasses()
   const unsigned numRows=rows()>1? rows(): 1;
   map<AssetClass,Data> tmpCols;
   for (unsigned c=1; c<cols(); ++c)
-    if (_assetClass(c)==noAssetClass)
+    if (assetClass(c)==noAssetClass)
       tmpCols[asset].push_back(getColumn(c));
     else
-      tmpCols[_assetClass(c)].push_back(getColumn(c));
+      tmpCols[assetClass(c)].push_back(getColumn(c));
 
   // add empty column if asset class not present, and count number of cols
   unsigned numCols=1;
@@ -352,7 +340,7 @@ void GodleyTable::orderAssetClasses()
       {
         for (unsigned row=0; row<rows(); ++row)
           cell(row,col)=colData[row];
-        _assetClass(col,AssetClass(ac));
+        assetClass(col,AssetClass(ac));
         col++;
       }
 }

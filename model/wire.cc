@@ -38,10 +38,6 @@ using ecolab::cairo::CairoSave;
 
 namespace minsky
 {
-  WireAccessor::WireAccessor(): ecolab::TCLAccessor<Wire, std::vector<float>>
-  ("coords", (Getter)&Wire::coords, (Setter)&Wire::coords)  {}
-
-
   vector<float> Wire::coords() const
   {
     vector<float> c;

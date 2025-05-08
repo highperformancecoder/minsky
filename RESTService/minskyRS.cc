@@ -17,6 +17,7 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "variableInstanceList.h"
 #include "minsky.h"
 #include "cairoItems.h"
 #include "RESTProcess_base.h"

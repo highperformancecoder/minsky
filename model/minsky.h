@@ -56,10 +56,6 @@
 #include <deque>
 #include <cstdio>
 
-#include <ecolab.h>
-#include <xml_pack_base.h>
-#include <xml_unpack_base.h>
-
 namespace minsky
 {
   using namespace std;
@@ -120,15 +116,7 @@ namespace minsky
 
   enum ItemType {wire, op, var, group, godley, plot};
 
-  struct Minsky_multipleEquities: public ecolab::TCLAccessor<Minsky,bool>
-  {
-    Minsky_multipleEquities(const std::string& name, ecolab::TCLAccessor<Minsky,bool>::Getter g,
-                            ecolab::TCLAccessor<Minsky,bool>::Setter s):
-      ecolab::TCLAccessor<Minsky,bool>(name,g,s) {}  
-  };
-
-  
-  class Minsky: public Exclude<MinskyExclude>, public RungeKutta, public Minsky_multipleEquities
+  class Minsky: public Exclude<MinskyExclude>, public RungeKutta
   {
     CLASSDESC_ACCESS(Minsky);
 
@@ -239,7 +227,6 @@ namespace minsky
     
     // reset m_edited as the GodleyIcon constructor calls markEdited
     Minsky():
-      ECOLAB_ACESSOR_INIT(Minsky, multipleEquities),
       equationDisplay(*this) {
       lastRedraw=boost::posix_time::microsec_clock::local_time();
       model->iHeight(std::numeric_limits<float>::max());

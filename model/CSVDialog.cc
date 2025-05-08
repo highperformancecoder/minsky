@@ -26,6 +26,7 @@
 
 #include "CSVDialog.rcd"
 #include "minsky_epilogue.h"
+
 #include "zStream.h"
 #include "dimension.h"
 #include <cstdlib>

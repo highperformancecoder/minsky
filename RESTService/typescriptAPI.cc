@@ -81,10 +81,6 @@ namespace classdesc_access
   struct access_typescriptAPI<classdesc::Exclude<T>>:
     public classdesc::NullDescriptor<classdesc::typescriptAPI_t> {};
 
-  template <class T, class V, int N>
-  struct access_typescriptAPI<ecolab::TCLAccessor<T,V,N>>:
-    public classdesc::NullDescriptor<classdesc::typescriptAPI_t> {};
-
   template <>
   struct access_typescriptAPI<classdesc::PolyPackBase>:
     public classdesc::NullDescriptor<classdesc::typescriptAPI_t> {};

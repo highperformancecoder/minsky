@@ -32,6 +32,7 @@
 #include "latexMarkup.h"
 #include <arrays.h>
 #include <pango.h>
+#include "ravelWrap.xcd"
 #include "minsky_epilogue.h"
 
 #include <boost/locale.hpp>

@@ -10,6 +10,7 @@ TK_LIB=$(dir $(shell find $(TCL_PREFIX) -name tk.tcl -path "*/tk$(TCL_VERSION)*"
 
 # root directory for ecolab include files and libraries
 ECOLAB_HOME=$(shell pwd)/ecolab
+LD_LIBRARY_PATH:=$(ECOLAB_HOME)/lib:$(LD_LIBRARY_PATH)
 
 ARCH=$(shell arch)
 
@@ -62,7 +63,7 @@ LINK=$(CPLUSPLUS)
 endif
 endif
 
-MAKEOVERRIDES+=FPIC=1 CLASSDESC=$(shell pwd)/ecolab/bin/classdesc EXTRA_FLAGS="-I$(shell pwd)/ecolab/include -DCIVITA_ALLOCATOR=civita::LibCAllocator" CPLUSPLUS="$(CPLUSPLUS)" GCOV=$(GCOV)
+MAKEOVERRIDES+=FPIC=1 CLASSDESC=$(shell pwd)/ecolab/classdesc/classdesc EXTRA_FLAGS="-I$(shell pwd)/ecolab/include -DCIVITA_ALLOCATOR=civita::LibCAllocator" CPLUSPLUS="$(CPLUSPLUS)" GCOV=$(GCOV)
 ifneq ($(MAKECMDGOALS),clean)
 build_ravelcapi:=$(shell cd RavelCAPI; if  $(MAKE) $(JOBS) $(MAKEOVERRIDES)  >build.log 2>&1; then echo "ravelcapi built"; fi) 
 $(warning $(build_ravelcapi))
@@ -145,7 +146,7 @@ PREFIX=/usr/local
 # directory
 MODLINK=$(LIBMODS:%=$(ECOLAB_HOME)/lib/%)
 MODEL_OBJS=autoLayout.o cairoItems.o canvas.o CSVDialog.o dataOp.o equationDisplay.o godleyIcon.o godleyTable.o godleyTableWindow.o grid.o group.o item.o intOp.o lasso.o lock.o minsky.o operation.o operationRS.o operationRS1.o  operationRS2.o phillipsDiagram.o plotWidget.o port.o pubTab.o ravelWrap.o renderNativeWindow.o selection.o sheet.o SVGItem.o switchIcon.o userFunction.o userFunction_units.o variableInstanceList.o variable.o variablePane.o windowInformation.o wire.o 
-ENGINE_OBJS=coverage.o clipboard.o derivative.o equationDisplayRender.o equations.o evalGodley.o evalOp.o flowCoef.o \
+ENGINE_OBJS=clipboard.o derivative.o equationDisplayRender.o equations.o evalGodley.o evalOp.o flowCoef.o \
 	godleyExport.o latexMarkup.o valueId.o variableValue.o node_latex.o node_matlab.o CSVParser.o \
 	minskyTensorOps.o mdlReader.o saver.o rungeKutta.o
 SCHEMA_OBJS=schema3.o schema2.o schema1.o schema0.o schemaHelper.o variableType.o \
@@ -163,7 +164,7 @@ LIBS+=-Wl,-framework -Wl,Security -Wl,-headerpad_max_install_names
 MODEL_OBJS+=getContext.o
 endif
 
-ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(RESTSERVICE_OBJS) RESTService.o addon.o typescriptAPI.o pyminsky.o
+ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(RESTSERVICE_OBJS) RESTService.o addon.o typescriptAPI.o pyminsky.o createLinkGroupIcons.o
 
 
 EXES=RESTService/minsky-RESTService$(EXE)
@@ -202,12 +203,16 @@ ifeq ($(DEBUG), 1)
 FLAGS+=-Wp,-D_GLIBCXX_ASSERTIONS
 endif
 
-VPATH= schema model engine RESTService RavelCAPI/civita RavelCAPI $(ECOLAB_HOME)/include 
+VPATH= schema model engine RESTService RavelCAPI/civita RavelCAPI $(ECOLAB_HOME)/include $(ECOLAB_HOME)/graphcode $(ECOLAB_HOME)/classdesc
+
+.h.cd:
+	$(CLASSDESC) -typeName -nodef -I $(CDINCLUDE) \
+	-I $(ECOLAB_HOME)/include -i $< pack unpack >$@
 
 .h.xcd:
 # xml_pack/unpack need to -typeName option, as well as including privates
 	$(CLASSDESC) -typeName -nodef -respect_private -I $(CDINCLUDE) \
-	-I $(ECOLAB_HOME)/include -I $(CERTIFY_HOME)/certify -I RESTService -i $< \
+	-I $(ECOLAB_HOME)/include -I RESTService -i $< \
 	xml_pack xml_unpack xsd_generate json_pack json_unpack >$@
 
 .h.rcd:
@@ -399,23 +404,11 @@ createLinkGroupIcons: createLinkGroupIcons.o
 
 ifndef MXE
 gui-js/libs/shared/src/lib/backend/minsky.ts: RESTService/typescriptAPI
-	RESTService/typescriptAPI > $@
+	env LD_LIBRARY_PATH=$(ECOLAB_HOME)/lib:$(LD_LIBRARY_PATH) RESTService/typescriptAPI > $@
 endif
 
 # N-API node embedded RESTService
 gui-js/build/minskyRESTService.node: addon.o  $(NODE_API) $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) RavelCAPI/libravelCAPI.a RavelCAPI/civita/libcivita.a
-	mkdir -p gui-js/build
-ifdef MXE
-	$(LINK) -shared -o $@ $^ $(LIBS)
-	mkdir -p gui-js/dynamic_libraries
-	cp $(DLLS) gui-js/dynamic_libraries
-else
-ifeq ($(OS),Darwin)
-	c++ -bundle -undefined dynamic_lookup -Wl,-no_pie -Wl,-search_paths_first -mmacosx-version-min=$(MACOSX_MIN_VERSION) -arch $(ARCH) -stdlib=libc++  -o $@  $^ $(LIBS)
-else
-	$(LINK) $(FLAGS) -shared -pthread -rdynamic -m64  -Wl,-soname=minskyRESTService.node -o $@ -Wl,--start-group $^ -Wl,--end-group $(LIBS)
-endif
-endif
 
 libminsky.a: $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS)
 	ar r $@ $^
@@ -520,13 +513,6 @@ install-manual: doc/Ravel/labels.pl
 
 # run this after every full release
 install-release: install-doxydoc install-manual upload-schema
-
-# run the regression suite checking for the TCL code coverage
-tcl-cov:
-	rm -f minsky.cov minsky.cov.{pag,dir} coverage.o
-	-env MINSKY_COV=`pwd`/minsky.cov $(MAKE) AEGIS=1 sure
-	cd test; $(MAKE) tcl-cov
-	sh test/run-tcl-cov.sh
 
 dist:
 	sh makeDist.sh $(NODE_HEADER)

@@ -23,12 +23,6 @@
 #include "variableValue.h"
 #include "constMap.h"
 
-namespace ecolab
-{
-  // for TCL_obj processing
-  template <> struct is_map<minsky::ConstMap<std::string, minsky::VariableValue> >: public is_map_map {};
-}
-
 namespace minsky
 {
   class Group;
