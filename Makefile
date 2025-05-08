@@ -205,20 +205,23 @@ endif
 
 VPATH= schema model engine RESTService RavelCAPI/civita RavelCAPI $(ECOLAB_HOME)/include $(ECOLAB_HOME)/graphcode $(ECOLAB_HOME)/classdesc
 
+# Classdesc rules
+CDINC=-I $(CDINCLUDE) -I $(ECOLAB_HOME)/include -I RESTService
 .h.cd:
-	$(CLASSDESC) -typeName -nodef -I $(CDINCLUDE) \
-	-I $(ECOLAB_HOME)/include -i $< pack unpack >$@
+	$(CLASSDESC) -typeName -nodef $(CDINC) -i $< pack unpack >$@
 
 .h.xcd:
 # xml_pack/unpack need to -typeName option, as well as including privates
-	$(CLASSDESC) -typeName -nodef -respect_private -I $(CDINCLUDE) \
-	-I $(ECOLAB_HOME)/include -I RESTService -i $< \
+	$(CLASSDESC) -typeName -nodef -respect_private $(CDINC) -i $< \
 	xml_pack xml_unpack xsd_generate json_pack json_unpack >$@
 
 .h.rcd:
 	$(CLASSDESC) -typeName -nodef -use_mbr_pointers -onbase -overload -respect_private \
-	-I $(CDINCLUDE) -I $(ECOLAB_HOME)/include -I RESTService -i $< \
-	RESTProcess >$@
+	 $(CDINC)  -i $< RESTProcess >$@
+
+.h.tcd:
+	$(CLASSDESC) -typeName -nodef -use_mbr_pointers -onbase -overload -respect_private \
+	$(CDINC)  -i $< typescriptAPI >$@
 
 .h.gch:
 	$(CPLUSPLUS) -c $(FLAGS) $(CXXFLAGS) $(OPT) -o $@ $<
@@ -227,10 +230,6 @@ VPATH= schema model engine RESTService RavelCAPI/civita RavelCAPI $(ECOLAB_HOME)
 	$(CPLUSPLUS) $(FLAGS)  $(CXXFLAGS) -MM -MG $< >$@
 	sed -i -e 's/.*\.o:/'$(*D)'\/'$(*F)'.gch:/' $@
 
-.h.tcd:
-	$(CLASSDESC) -typeName -nodef -use_mbr_pointers -onbase -overload -respect_private \
-	-I $(CDINCLUDE) -I $(ECOLAB_HOME)/include -I RESTService -i $< \
-	typescriptAPI >$@
 
 # assorted performance profiling stuff using gperftools, or Russell's custom
 # timer calipers
@@ -404,7 +403,7 @@ createLinkGroupIcons: createLinkGroupIcons.o
 
 ifndef MXE
 gui-js/libs/shared/src/lib/backend/minsky.ts: RESTService/typescriptAPI
-	env LD_LIBRARY_PATH=$(ECOLAB_HOME)/lib:$(LD_LIBRARY_PATH) RESTService/typescriptAPI > $@
+	RESTService/typescriptAPI > $@
 endif
 
 # N-API node embedded RESTService
