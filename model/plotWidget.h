@@ -62,6 +62,7 @@ namespace minsky
 
     bool xIsSecsSinceEpoch=false;
     bool redraw(int, int, int, int) override;
+    using Plot::redraw;
 
     // shadow labels, so we can interpret as LaTeX code rather than Pango markup
     std::string m_xlabel, m_ylabel, m_y1label;
