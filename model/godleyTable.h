@@ -22,8 +22,6 @@
 #include <set>
 #include <vector>
 
-#include <ecolab.h>
-
 #include "variable.h"
 #include "assetClass.h"
 
@@ -75,9 +73,9 @@ namespace minsky
     }    
 
     /// class of each column (used in DE compliant mode)
-    const vector<AssetClass>& _assetClass() const {return m_assetClass;}
-    AssetClass _assetClass(std::size_t col) const;
-    AssetClass _assetClass(std::size_t col, AssetClass cls);
+    const vector<AssetClass>& assetClass() const {return m_assetClass;}
+    AssetClass assetClass(std::size_t col) const;
+    AssetClass assetClass(std::size_t col, AssetClass cls);
     
     /// Check whether more than one equity column is present
     /// irrespective of single or multiple equity column mode.
@@ -94,16 +92,8 @@ namespace minsky
     bool signConventionReversed(int col) const
     {
       return doubleEntryCompliant && 
-        (_assetClass(col)==liability || _assetClass(col)==equity);
+        (assetClass(col)==liability || assetClass(col)==equity);
     }
-    /**
-       TCL accessor method 
-       @param col - column number
-       @param [opt] assetClass (symbolic name).
-       @return current asset class value for column \a col
-       sets if assetClass present, otherwise gets
-    */
-    string assetClass(ecolab::TCL_args args); 
   
     /// returns true if \a row is an "Initial Conditions" row
     bool initialConditionRow(unsigned row) const;

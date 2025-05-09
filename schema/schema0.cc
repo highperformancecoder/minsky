@@ -17,6 +17,7 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "schema0.h"
+#include "plot.xcd"
 #include "minsky_epilogue.h"
 #include <fstream>
 using namespace ecolab;

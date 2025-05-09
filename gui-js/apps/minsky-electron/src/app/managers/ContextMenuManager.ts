@@ -1334,7 +1334,7 @@ export class ContextMenuManager {
       submenu: flowMenu,
     }));
 
-    if ((await godley.table._assetClass())[c]==="equity")
+    if ((await godley.table.assetClass())[c]==="equity")
       menu.append(new MenuItem({
         label: 'Balance equity',
         click: ()=>{

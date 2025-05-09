@@ -10,6 +10,7 @@ TK_LIB=$(dir $(shell find $(TCL_PREFIX) -name tk.tcl -path "*/tk$(TCL_VERSION)*"
 
 # root directory for ecolab include files and libraries
 ECOLAB_HOME=$(shell pwd)/ecolab
+export LD_LIBRARY_PATH:=$(ECOLAB_HOME)/lib:$(LD_LIBRARY_PATH)
 
 ARCH=$(shell arch)
 
@@ -25,7 +26,7 @@ ifdef MXE
 MAKEOVERRIDES+=MXE_PREFIX=x86_64-w64-mingw32.shared
 endif
 
-MAKEOVERRIDE+=DEBUG=$(DEBUG)
+MAKEOVERRIDES+=DEBUG=$(DEBUG)
 
 ifneq ($(MAKECMDGOALS),clean)
 # make sure EcoLab is built first, even before starting to include Makefiles
@@ -62,7 +63,7 @@ LINK=$(CPLUSPLUS)
 endif
 endif
 
-MAKEOVERRIDES+=FPIC=1 CLASSDESC=$(shell pwd)/ecolab/bin/classdesc EXTRA_FLAGS="-I$(shell pwd)/ecolab/include -DCIVITA_ALLOCATOR=civita::LibCAllocator" CPLUSPLUS="$(CPLUSPLUS)" GCOV=$(GCOV)
+MAKEOVERRIDES+=FPIC=1 CLASSDESC=$(shell pwd)/ecolab/classdesc/classdesc EXTRA_FLAGS="-I$(shell pwd)/ecolab/include -DCIVITA_ALLOCATOR=civita::LibCAllocator" CPLUSPLUS="$(CPLUSPLUS)" GCOV=$(GCOV)
 ifneq ($(MAKECMDGOALS),clean)
 build_ravelcapi:=$(shell cd RavelCAPI; if  $(MAKE) $(JOBS) $(MAKEOVERRIDES)  >build.log 2>&1; then echo "ravelcapi built"; fi) 
 $(warning $(build_ravelcapi))
@@ -145,7 +146,7 @@ PREFIX=/usr/local
 # directory
 MODLINK=$(LIBMODS:%=$(ECOLAB_HOME)/lib/%)
 MODEL_OBJS=autoLayout.o cairoItems.o canvas.o CSVDialog.o dataOp.o equationDisplay.o godleyIcon.o godleyTable.o godleyTableWindow.o grid.o group.o item.o intOp.o lasso.o lock.o minsky.o operation.o operationRS.o operationRS1.o  operationRS2.o phillipsDiagram.o plotWidget.o port.o pubTab.o ravelWrap.o renderNativeWindow.o selection.o sheet.o SVGItem.o switchIcon.o userFunction.o userFunction_units.o variableInstanceList.o variable.o variablePane.o windowInformation.o wire.o 
-ENGINE_OBJS=coverage.o clipboard.o derivative.o equationDisplayRender.o equations.o evalGodley.o evalOp.o flowCoef.o \
+ENGINE_OBJS=clipboard.o derivative.o equationDisplayRender.o equations.o evalGodley.o evalOp.o flowCoef.o \
 	godleyExport.o latexMarkup.o valueId.o variableValue.o node_latex.o node_matlab.o CSVParser.o \
 	minskyTensorOps.o mdlReader.o saver.o rungeKutta.o
 SCHEMA_OBJS=schema3.o schema2.o schema1.o schema0.o schemaHelper.o variableType.o \
@@ -155,7 +156,6 @@ ifeq ($(CPLUSPLUS),g++)
 PRECOMPILED_HEADERS=model/minsky.gch
 endif
 
-GUI_TK_OBJS=tclmain.o minskyTCL.o
 RESTSERVICE_OBJS=minskyRS.o RESTMinsky.o
 
 ifeq ($(OS),Darwin)
@@ -164,10 +164,8 @@ LIBS+=-Wl,-framework -Wl,Security -Wl,-headerpad_max_install_names
 MODEL_OBJS+=getContext.o
 endif
 
-ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(GUI_TK_OBJS) $(RESTSERVICE_OBJS) RESTService.o addon.o typescriptAPI.o pyminsky.o
+ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(RESTSERVICE_OBJS) RESTService.o addon.o typescriptAPI.o pyminsky.o createLinkGroupIcons.o
 
-
-ifneq ($(GUI_TK),1)
 
 EXES=RESTService/minsky-RESTService$(EXE)
 ifeq ($(HAVE_NODE),1)
@@ -175,15 +173,6 @@ EXES+=gui-js/build/minskyRESTService.node
 endif
 ifndef MXE
 EXES+=RESTService/typescriptAPI
-ifndef GUI_TK
-ifeq ($(OS), Linux)
-EXES+=gui-tk/minsky$(EXE)
-endif
-endif
-endif
-
-else
-EXES=gui-tk/minsky$(EXE)
 endif
 
 
@@ -214,18 +203,25 @@ ifeq ($(DEBUG), 1)
 FLAGS+=-Wp,-D_GLIBCXX_ASSERTIONS
 endif
 
-VPATH= schema model engine gui-tk RESTService RavelCAPI/civita RavelCAPI $(ECOLAB_HOME)/include 
+VPATH= schema model engine RESTService RavelCAPI/civita RavelCAPI $(ECOLAB_HOME)/include $(ECOLAB_HOME)/graphcode $(ECOLAB_HOME)/classdesc
+
+# Classdesc rules
+CDINC=-I $(CDINCLUDE) -I $(ECOLAB_HOME)/include -I RESTService
+.h.cd:
+	$(CLASSDESC) -typeName -nodef $(CDINC) -i $< pack unpack >$@
 
 .h.xcd:
 # xml_pack/unpack need to -typeName option, as well as including privates
-	$(CLASSDESC) -typeName -nodef -respect_private -I $(CDINCLUDE) \
-	-I $(ECOLAB_HOME)/include -I $(CERTIFY_HOME)/certify -I RESTService -i $< \
+	$(CLASSDESC) -typeName -nodef -respect_private $(CDINC) -i $< \
 	xml_pack xml_unpack xsd_generate json_pack json_unpack >$@
 
 .h.rcd:
 	$(CLASSDESC) -typeName -nodef -use_mbr_pointers -onbase -overload -respect_private \
-	-I $(CDINCLUDE) -I $(ECOLAB_HOME)/include -I RESTService -i $< \
-	RESTProcess >$@
+	 $(CDINC)  -i $< RESTProcess >$@
+
+.h.tcd:
+	$(CLASSDESC) -typeName -nodef -use_mbr_pointers -onbase -overload -respect_private \
+	$(CDINC)  -i $< typescriptAPI >$@
 
 .h.gch:
 	$(CPLUSPLUS) -c $(FLAGS) $(CXXFLAGS) $(OPT) -o $@ $<
@@ -234,10 +230,6 @@ VPATH= schema model engine gui-tk RESTService RavelCAPI/civita RavelCAPI $(ECOLA
 	$(CPLUSPLUS) $(FLAGS)  $(CXXFLAGS) -MM -MG $< >$@
 	sed -i -e 's/.*\.o:/'$(*D)'\/'$(*F)'.gch:/' $@
 
-.h.tcd:
-	$(CLASSDESC) -typeName -nodef -use_mbr_pointers -onbase -overload -respect_private \
-	-I $(CDINCLUDE) -I $(ECOLAB_HOME)/include -I RESTService -i $< \
-	typescriptAPI >$@
 
 # assorted performance profiling stuff using gperftools, or Russell's custom
 # timer calipers
@@ -355,11 +347,6 @@ endif
 
 #chmod command is to counteract AEGIS removing execute privelege from scripts
 all: $(EXES) $(TESTS) minsky.xsd 
-# only perform link checking if online
-# linkchecker not currently working! :(
-#ifndef TRAVIS
-#	if ping -c 1 www.google.com; then linkchecker -f linkcheckerrc gui-tk/library/help/minsky.html; fi
-#endif
 	-$(CHMOD) a+x *.tcl *.sh *.pl
 
 
@@ -393,24 +380,14 @@ endif
 WINDRES=$(MXE_PREFIX)-windres
 endif
 
-MinskyLogo.o: MinskyLogo.rc gui-tk/icons/MinskyLogo.ico
+MinskyLogo.o: MinskyLogo.rc icons/MinskyLogo.ico
 	$(WINDRES) -O coff -i $< -o $@
 
-RavelLogo.o: RavelLogo.rc gui-tk/icons/RavelLogo.ico
+RavelLogo.o: RavelLogo.rc icons/RavelLogo.ico
 	$(WINDRES) -O coff -i $< -o $@
 
 getContext.o: getContext.cc
 	g++ -ObjC++ $(FLAGS) -I/opt/local/include -Iinclude -c $< -o $@
-
-gui-tk/minsky$(EXE): $(GUI_TK_OBJS)  $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS)
-	$(LINK) $(FLAGS) $^ $(MODLINK) -L/opt/local/lib/db48 $(LIBS) $(GUI_LIBS) -o $@
-	-find . \( -name "*.cc" -o -name "*.h" \) -print |etags -
-ifdef MXE
-# make a local copy the TCL libraries
-	rm -rf gui-tk/library/{tcl,tk}
-	cp -r $(TCL_LIB) gui-tk/library/tcl
-	cp -r $(TK_LIB) gui-tk/library/tk
-endif
 
 RESTService/minsky-RESTService$(EXE): RESTService.o  $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS)
 	$(LINK) $(FLAGS) $^ -L/opt/local/lib/db48 $(LIBS) -o $@
@@ -443,7 +420,7 @@ else
 	$(LINK) $(FLAGS) -shared -pthread -rdynamic -m64  -Wl,-soname=minskyRESTService.node -o $@ -Wl,--start-group $^ -Wl,--end-group $(LIBS)
 endif
 endif
-
+ 
 libminsky.a: $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS)
 	ar r $@ $^
 
@@ -486,7 +463,6 @@ clean:
 	-$(BASIC_CLEAN) minsky.xsd
 	-rm -f $(EXES)
 	-cd test && $(MAKE)  clean
-	-cd gui-tk &&  $(BASIC_CLEAN)
 	-cd model && $(BASIC_CLEAN)
 	-cd engine && $(BASIC_CLEAN)
 	-cd schema && $(BASIC_CLEAN)
@@ -515,19 +491,11 @@ ifneq ($(GUI_TK),1)
 	cp RESTService/minsky-RESTService $(PREFIX)/bin
 	cp RESTService/minsky-httpd $(PREFIX)/bin
 	cp gui-js/node-addons/*.node $(PREFIX)/lib/minsky/resources/node-addons
-ifndef GUI_TK
 ifeq ($(OS), "Linux")
 ifndef MXE
-	cp gui-tk/minsky$(EXE) $(PREFIX)/bin
-	cp -r gui-tk/*.tcl gui-tk/accountingRules gui-tk/icons gui-tk/library $(PREFIX)/lib/minsky
 	cp -r pyminsky.so $(PREFIX)/lib64
 endif
 endif
-endif
-else
-	mkdir -p $(PREFIX)/bin $(PREFIX)/lib/minsky
-	cp gui-tk/minsky$(EXE) $(PREFIX)/bin
-	cp -r gui-tk/*.tcl gui-tk/accountingRules gui-tk/icons gui-tk/library $(PREFIX)/lib/minsky
 endif
 
 
@@ -538,7 +506,6 @@ sure: all tests
 
 # produce doxygen annotated web pages
 doxydoc: $(wildcard *.h) $(wildcard *.cc) \
-	$(wildcard GUI/*.h) $(wildcard GUI/*.cc) \
 	$(wildcard engine/*.h) $(wildcard engine/*.cc) \
 	$(wildcard schema/*.h) $(wildcard schema/*.cc) Doxyfile
 	 doxygen
@@ -557,13 +524,6 @@ install-manual: doc/Ravel/labels.pl
 
 # run this after every full release
 install-release: install-doxydoc install-manual upload-schema
-
-# run the regression suite checking for the TCL code coverage
-tcl-cov:
-	rm -f minsky.cov minsky.cov.{pag,dir} coverage.o
-	-env MINSKY_COV=`pwd`/minsky.cov $(MAKE) AEGIS=1 sure
-	cd test; $(MAKE) tcl-cov
-	sh test/run-tcl-cov.sh
 
 dist:
 	sh makeDist.sh $(NODE_HEADER)

@@ -22,7 +22,6 @@
 #ifndef EXPR_H
 #define EXPR_H
 #include "equations.h"
-#include <ecolab_epilogue.h>
 namespace MathDAG
 {
   // some nice syntactic sugar for representing expressions

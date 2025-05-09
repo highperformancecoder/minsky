@@ -19,10 +19,6 @@
 #ifndef EVALOP_H
 #define EVALOP_H
 
-#include <ecolab.h>
-#include <xml_pack_base.h>
-#include <xml_unpack_base.h>
-
 #include "variableValue.h"
 #include "operation.h"
 #include "group.h"

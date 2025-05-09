@@ -27,6 +27,8 @@
 #include "progress.h"
 
 #include "item.rcd"
+#include "noteBase.rcd"
+#include "port.rcd"
 #include "minsky_epilogue.h"
 
 namespace minsky

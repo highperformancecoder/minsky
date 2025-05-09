@@ -28,12 +28,10 @@
 #include <set>              // for set
 #include <string>           // for string, basic_string, operator+, operator==
 #include <vector>           // for vector
-#include "TCL_obj_stl.h"    // for TCL_objp
 #include "arrays.h"         // for array
 #include "bookmark.h"       // for Bookmark
 #include "cairo.h"          // for cairo_t
 #include "classdesc.h"      // for Exclude, NullDescriptor
-#include "ecolab.h"         // for unpack_t
 #include "error.h"          // for error
 #include "item.h"           // for ItemPtr, Item, ItemPortVector, ItemT, Items
 #include "operationType.h"  // for operator<<

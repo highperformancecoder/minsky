@@ -26,7 +26,6 @@
 #include "str.h"
 #include "flowCoef.h"
 
-#include <ecolab.h>
 #include <arrays.h>
 
 namespace minsky

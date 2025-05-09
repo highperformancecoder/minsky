@@ -20,23 +20,11 @@
 #ifndef MINSKY_EPILOGUE_H
 #define MINSKY_EPILOGUE_H
 
+#include "cairoSurfaceImage.h"
 #if defined(CLASSDESC_RESTPROCESS_BASE_H)
 
 namespace classdesc
 {
-#ifdef CAIRO_H
-  template <>
-  struct tn<cairo_t>
-  {
-    static string name() {return "cairo_t";}
-  };
-  template <>
-  struct tn<cairo_surface_t>
-  {
-    static string name() {return "cairo_surface_t";}
-  };
-#endif
-  
   // needed for MXE
   template <>
   struct tn<typename std::vector<unsigned long long>::const_iterator>
@@ -86,27 +74,13 @@ namespace classdesc_access
   };
 #endif
   
-  template <> struct access_json_pack<cd::TCL_obj_t>:
-    public cd::NullDescriptor<cd::json_pack_t> {};
-  template <> struct access_json_unpack<cd::TCL_obj_t>:
-    public cd::NullDescriptor<cd::json_unpack_t> {};
-
-#ifdef CAIRO_H
-  template <> struct access_json_pack<ecolab::cairo::Surface>:
-    public cd::NullDescriptor<cd::json_pack_t> {};
-  template <> struct access_json_unpack<ecolab::cairo::Surface>:
-    public cd::NullDescriptor<cd::json_unpack_t> {};
-  template <> struct access_RESTProcess<ecolab::cairo::Surface>:
-    public cd::NullDescriptor<cd::RESTProcess_t> {};
-#endif
-  
-//#ifdef CIVITA_XVECTOR_H
-//  template <>
-//  struct access_RESTProcess<minsky::XVector>: public classdesc::NullDescriptor<cd::RESTProcess_t> {};
-//  template <>
-//  struct access_json_pack<minsky::XVector>: public classdesc::NullDescriptor<cd::json_pack_t> {};
-//  template <>
-//  struct access_json_unpack<minsky::XVector>: public classdesc::NullDescriptor<cd::json_unpack_t> {};
+//#ifdef CAIRO_H
+//  template <> struct access_json_pack<ecolab::cairo::Surface>:
+//    public cd::NullDescriptor<cd::json_pack_t> {};
+//  template <> struct access_json_unpack<ecolab::cairo::Surface>:
+//    public cd::NullDescriptor<cd::json_unpack_t> {};
+//  template <> struct access_RESTProcess<ecolab::cairo::Surface>:
+//    public cd::NullDescriptor<cd::RESTProcess_t> {};
 //#endif
   
 #ifdef BOOST_GEOMETRY_GEOMETRIES_POINT_XY_HPP
@@ -136,47 +110,6 @@ namespace classdesc_access
 #endif
 #ifdef CIVITA_HYPERCUBE_H
 #include "hypercube.cd"
-#endif
-
-#ifdef CLASSDESC_JSON_PACK_BASE_H
-namespace classdesc_access
-{
-
-#ifdef ACCESSOR_H
-  template <class T, class G, class S>
-  struct access_json_pack<ecolab::Accessor<T,G,S>>
-  {
-    template <class U>
-    void operator()(cd::json_pack_t& j, const cd::string& d, U& a)
-    {
-      j<<a();
-    }
-  };
-
-  template <class T, class G, class S>
-  struct access_json_unpack<ecolab::Accessor<T,G,S>>
-  {
-    template <class U>
-    void operator()(cd::json_unpack_t& j, const cd::string& d, U& a)
-    {
-      T x;
-      j>>x;
-      a(x);
-    }
-  };
-
-  template <class T, class V, int N>
-  struct access_json_pack<ecolab::TCLAccessor<T,V,N>>: public cd::NullDescriptor<cd::json_pack_t> {};
-  template <class T, class V, int N>
-  struct access_json_unpack<ecolab::TCLAccessor<T,V,N>>: public cd::NullDescriptor<cd::json_unpack_t> {};
-#endif
-  
-  template <>
-  struct access_json_pack<ecolab::TCL_args>: public cd::NullDescriptor<cd::json_pack_t> {};
-  template <>
-  struct access_json_unpack<ecolab::TCL_args>: public cd::NullDescriptor<cd::json_unpack_t> {};
-
-}
 #endif
 
 namespace classdesc

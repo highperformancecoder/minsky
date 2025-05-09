@@ -26,9 +26,6 @@
 
 namespace minsky
 {
-  IntOpAccessor::IntOpAccessor(): ecolab::TCLAccessor<IntOp, std::string>
-    ("description",(Getter)&IntOp::description,(Setter)&IntOp::description) {}
-  
   Units IntOp::units(bool check) const {
     Units r=m_ports[1]->units(check);
     if (!cminsky().timeUnit.empty())

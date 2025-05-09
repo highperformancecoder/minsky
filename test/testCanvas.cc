@@ -19,6 +19,7 @@
 #include "cairoItems.h"
 #include "canvas.h"
 #include "minsky_epilogue.h"
+#undef True
 #include <UnitTest++/UnitTest++.h>
 using namespace minsky;
 using namespace std;

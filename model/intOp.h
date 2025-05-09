@@ -25,11 +25,8 @@
 namespace minsky
 {
   class IntOp;
-  struct IntOpAccessor: public ecolab::TCLAccessor<minsky::IntOp, std::string>
-  {IntOpAccessor();};
   
-  class IntOp: public ItemT<IntOp, Operation<minsky::OperationType::integrate>>,
-               public IntOpAccessor
+  class IntOp: public ItemT<IntOp, Operation<minsky::OperationType::integrate>>
   {
     typedef ItemT<IntOp, Operation<minsky::OperationType::integrate>> Super;
     // integrals have named integration variables

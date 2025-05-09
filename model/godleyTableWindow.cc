@@ -174,7 +174,7 @@ namespace minsky
         // omit stock columns less than scrollColStart
         if (col>0 && col<scrollColStart) continue;
         // vertical lines & asset type tag
-        if (assetClass!=m_godleyIcon.table._assetClass(col))
+        if (assetClass!=m_godleyIcon.table.assetClass(col))
           {
             if (assetClass!=GodleyAssetClass::noAssetClass)
               {
@@ -187,7 +187,7 @@ namespace minsky
               }
             lastAssetBoundary=x;
           
-            assetClass=m_godleyIcon.table._assetClass(col);
+            assetClass=m_godleyIcon.table.assetClass(col);
             cairo_move_to(cairo,x+3,topTableOffset);
             cairo_rel_line_to(cairo,0,tableHeight);
           }
@@ -845,7 +845,7 @@ namespace minsky
   std::set<string> GodleyTableEditor::matchingTableColumnsByCol(int col)
   {
     if (col<0||col>=static_cast<int>(godleyIcon().table.cols())) return {};
-    return minsky().matchingTableColumns(godleyIcon(), godleyIcon().table._assetClass(col));
+    return minsky().matchingTableColumns(godleyIcon(), godleyIcon().table.assetClass(col));
   }
 
   void GodleyTableEditor::addStockVar(double x)
@@ -932,9 +932,9 @@ namespace {
       if (c<colWidgets.size() && visibleCol < colLeftMargin.size())
         {
           auto moveVar=m_godleyIcon.table.cell(0,c);		
-          auto oldAssetClass=m_godleyIcon.table._assetClass(c);
-          auto targetAssetClassPlus=m_godleyIcon.table._assetClass(c+1);
-          auto targetAssetClassMinus=m_godleyIcon.table._assetClass(c-1);
+          auto oldAssetClass=m_godleyIcon.table.assetClass(c);
+          auto targetAssetClassPlus=m_godleyIcon.table.assetClass(c+1);
+          auto targetAssetClassMinus=m_godleyIcon.table.assetClass(c-1);
           if (colWidgets[c].button(x-colLeftMargin[visibleCol])==3 && oldAssetClass!=GodleyAssetClass::equity) {
             if (targetAssetClassPlus!=oldAssetClass && !moveVar.empty() && targetAssetClassPlus!=GodleyAssetClass::equity && targetAssetClassPlus!=GodleyAssetClass::noAssetClass)
               tmpStr=constructMessage(targetAssetClassPlus,oldAssetClass,moveVar);
@@ -966,8 +966,8 @@ namespace {
         // clickType triggers pango error which causes this condition to be skipped and thus column gets moved to Equity, which should not be the case   	
         if (c>0 && selectedCol>0 && c!=selectedCol) {
           auto swapVar=m_godleyIcon.table.cell(0,selectedCol);
-          auto oldAssetClass=m_godleyIcon.table._assetClass(selectedCol);
-          auto targetAssetClass=m_godleyIcon.table._assetClass(c);
+          auto oldAssetClass=m_godleyIcon.table.assetClass(selectedCol);
+          auto targetAssetClass=m_godleyIcon.table.assetClass(c);
           if (!swapVar.empty() && !(colLeftMargin[c+1]-x < pulldownHot)) { // ImportVar dropdown button should not trigger this condition. For ticket 1162
             if (targetAssetClass!=oldAssetClass && targetAssetClass!=GodleyAssetClass::equity && targetAssetClass!=GodleyAssetClass::noAssetClass)
               tmpStr=constructMessage(targetAssetClass,oldAssetClass,swapVar);

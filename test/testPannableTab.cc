@@ -18,6 +18,7 @@
 */
 #include "pannableTab.h"
 #include "minsky_epilogue.h"
+#undef True
 #include <UnitTest++/UnitTest++.h>
 
 namespace minsky

@@ -30,6 +30,8 @@
 #include "canvas.xcd"
 #include "eventInterface.rcd"
 #include "nobble.h"
+#include "port.xcd"
+#include "renderNativeWindow.xcd"
 #include "minsky_epilogue.h"
 using namespace std;
 using namespace ecolab::cairo;

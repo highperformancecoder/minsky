@@ -18,8 +18,6 @@
 */
 #ifndef INTRUSIVEMAP_H
 #define INTRUSIVEMAP_H
-#include <TCL_obj_base.h>
-#include <TCL_obj_stl.h>
 #include <set>
 #include <stdlib.h>
 
@@ -183,26 +181,6 @@ namespace minsky
 #pragma omit unpack minsky::IntrusiveMap
 #endif
 
-namespace ecolab
-{
-  // note: this definition needs to exist before TCL_obj_stl.h is
-  // included FOR THE FIRST TIME, otherwise it is ignored.
-  template <class K, class T>
-  inline void keys_of(const minsky::IntrusiveMap<K,T>& o)
-  { 
-    tclreturn r;
-    for (const typename minsky::IntrusiveMap<K,T>::value_type&  i: o)
-      r<<i.id();
-  }
-  // ensures IntrusiveMap is treated as map, not a set
-  template <class Key, class Val>
-  struct is_map<minsky::IntrusiveWrap<Key,Val> >: public true_type
-  {
-    static string keys() {return ".#keys";}
-    static string type() {return ".@is_map";}
-  };
-}
-
 namespace classdesc
 {
   template <class K, class T> 
@@ -210,14 +188,6 @@ namespace classdesc
     public std::true_type {};
 }
 
-namespace ecolab
-{
-  template <class K, class T> 
-  struct is_map<minsky::IntrusiveMap<K,T>>: public is_map_map {};
-}
-
-
-#include <TCL_obj_stl.h>
 #include <pack_base.h>
 #include <pack_stl.h>
 
