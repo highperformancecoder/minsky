@@ -5,32 +5,7 @@ if [ x$MINSKY_TEST_DATABASE_PARAMS=x ]; then
 fi
 
 here=`pwd`
-if test $? -ne 0; then exit 2; fi
-tmp=/tmp/$$
-mkdir $tmp
-if test $? -ne 0; then exit 2; fi
-cd $tmp
-if test $? -ne 0; then exit 2; fi
-
-fail()
-{
-    echo "FAILED" 1>&2
-    cd $here
-    chmod -R u+w $tmp
-    rm -rf $tmp
-    exit 1
-}
-
-pass()
-{
-    echo "PASSED" 1>&2
-    cd $here
-    chmod -R u+w $tmp
-    rm -rf $tmp
-    exit 0
-}
-
-trap "fail" 1 2 3 15
+. test/common-test.sh
 
 cp -r $here/test/testEq.mky $here/gui-js/apps/minsky-web/src/assets/images/icons/bank.svg $here/examples/1Free.mky .
 if [ -x $here/test/unittests ]; then
