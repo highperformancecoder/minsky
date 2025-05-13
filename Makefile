@@ -407,7 +407,7 @@ gui-js/libs/shared/src/lib/backend/minsky.ts: RESTService/typescriptAPI
 endif
 
 # N-API node embedded RESTService
-gui-js/build/minskyRESTService.node: addon.o  $(NODE_API) $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) RavelCAPI/libravelCAPI.a RavelCAPI/civita/libcivita.a
+gui-js/build/minskyRESTService.node: addon.o  $(NODE_API) $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) RavelCAPI/libravelCAPI.a RavelCAPI/civita/libcivita.a 
 	mkdir -p gui-js/build
 ifdef MXE
 	$(LINK) -shared -o $@ $^ $(LIBS)
@@ -417,19 +417,19 @@ else
 ifeq ($(OS),Darwin)
 	c++ -bundle -undefined dynamic_lookup -Wl,-no_pie -Wl,-search_paths_first -mmacosx-version-min=$(MACOSX_MIN_VERSION) -arch $(ARCH) -stdlib=libc++  -o $@  $^ $(LIBS)
 else
-	$(LINK) $(FLAGS) -shared -pthread -rdynamic -m64  -Wl,-soname=minskyRESTService.node -o $@ -Wl,--start-group $^ -Wl,--end-group $(LIBS)
+	$(LINK) $(FLAGS) -shared -pthread -rdynamic -m64  -Wl,-soname=minskyRESTService.node -o $@ -Wl,--start-group $^ -Wl,--end-group -Wl,-rpath=$(ECOLAB_HOME)/lib $(LIBS)
 endif
 endif
  
 libminsky.a: $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS)
 	ar r $@ $^
 
-$(PYMINSKY): pyminsky.o $(PYTHONCAPI) libminsky.a
+$(PYMINSKY): pyminsky.o $(PYTHONCAPI) libminsky.a ecolab/lib/libecolab.a
 ifeq ($(OS),Darwin)
 	c++ -bundle -undefined dynamic_lookup -Wl,-no_pie -Wl,-search_paths_first -mmacosx-version-min=$(MACOSX_MIN_VERSION) -arch $(ARCH) -stdlib=libc++  -o $@  $^ $(LIBS)
 	cp pyminsky.so gui-js/build/
 else
-	$(LINK) -shared -o $@ $^ libminsky.a $(LIBS)
+	$(LINK) -shared -o $@ $^ libminsky.a -Wl,-rpath=$(ECOLAB_HOME)/lib  $(LIBS)
 endif
 
 # used to find undefined symbols in pyminsky.so
