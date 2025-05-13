@@ -315,15 +315,14 @@ namespace minsky
     /// load from a file
     void load(const std::string& filename);
 
-    /*static*/ void exportSchema(const std::string& filename, int schemaLevel=1);
+    static void exportSchema(const std::string& filename, int schemaLevel=1);
 
     /// indicate operation item has error, if visible, otherwise contining group
     void displayErrorItem(const Item& op) const;
 
-    /// return the AEGIS assigned version number
     static const std::string minskyVersion;
-    /*static*/ std::string ecolabVersion() const {return VERSION;}
-    /*static*/ std::string ravelVersion() const {
+    static std::string ecolabVersion() {return VERSION;}
+    static std::string ravelVersion() {
       if (ravel::Ravel::available())
         {
           int d=ravel::Ravel::daysUntilExpired();
@@ -451,7 +450,7 @@ namespace minsky
     virtual MemCheckResult checkMemAllocation(size_t bytes) const {return OK;}
 
     /// returns amount of memory installed on system
-    /*static*/ std::size_t physicalMem() const;
+    static std::size_t physicalMem();
     
     vector<string> listFonts() const {
       vector<string> r;
@@ -469,17 +468,17 @@ namespace minsky
     }
 
     /// @{ the default used by Pango
-    /*static*/ std::string defaultFont();
-    /*static*/ std::string defaultFont(const std::string& x);
+    static std::string defaultFont();
+    static std::string defaultFont(const std::string& x);
     /// @}
 
     /// @{ an extra scaling factor of Pango fonts
-    /*static*/ double fontScale();
-    /*static*/ double fontScale(double);
+    static double fontScale();
+    static double fontScale(double);
     /// @}
     
-    /*static*/ int numOpArgs(OperationType::Type o);
-    OperationType::Group classifyOp(OperationType::Type o) const {return OperationType::classify(o);}
+    static int numOpArgs(OperationType::Type o);
+    static OperationType::Group classifyOp(OperationType::Type o) {return OperationType::classify(o);}
 
     void latex(const std::string& filename, bool wrapLaTeXLines);
 
@@ -493,14 +492,14 @@ namespace minsky
     string latex2pango(const std::string& x) {return latexToPango(x.c_str());}
 
     /// list of available operations
-    /*static*/ std::vector<std::string> availableOperations();
+    static std::vector<std::string> availableOperations();
     using AvailableOperationsMapping=classdesc::StringKeyMap<std::vector<OperationType::Type>>;
-    /*static*/ Minsky::AvailableOperationsMapping availableOperationsMapping() const;
+    static Minsky::AvailableOperationsMapping availableOperationsMapping();
     
     /// list of available variable types
-    /*static*/ std::vector<std::string> variableTypes();
+    static std::vector<std::string> variableTypes();
     /// return list of available asset classes
-    /*static*/ std::vector<std::string> assetClasses();
+    static std::vector<std::string> assetClasses();
 
     void autoLayout(); ///< auto layout current open group and recentre
     void randomLayout(); ///< randomly layout current open group and recentre

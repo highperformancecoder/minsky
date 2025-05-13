@@ -1609,7 +1609,7 @@ namespace minsky
   vector<string> Minsky::assetClasses()
   {return enumVals<GodleyTable::AssetClass>();}
 
-  Minsky::AvailableOperationsMapping Minsky::availableOperationsMapping() const
+  Minsky::AvailableOperationsMapping Minsky::availableOperationsMapping()
   {
     AvailableOperationsMapping r;
     for (OperationType::Type op{}; op != OperationType::numOps; op=OperationType::Type(int(op)+1))
@@ -1709,7 +1709,7 @@ namespace minsky
                        });
   }
 
-  size_t Minsky::physicalMem() const
+  size_t Minsky::physicalMem()
   {
 #if defined(__linux__)
     struct sysinfo s;

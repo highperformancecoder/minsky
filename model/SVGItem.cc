@@ -81,7 +81,7 @@ namespace minsky
     if (svg)
       {
         GError* err=nullptr;
-        RsvgRectangle rect{0,0,m_width,m_height};
+        const RsvgRectangle rect{0,0,m_width,m_height};
         rsvg_handle_render_document(svg,cairo,&rect,&err);
       }
   }
