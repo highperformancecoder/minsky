@@ -37,6 +37,8 @@ ifneq ($(build_ecolab),ecolab built)
 $(error Making ecolab failed: check ecolab/build.log)
 endif
 include $(ECOLAB_HOME)/include/Makefile
+# link statically to ecolab (needed until all bugs in EcoLab 6 ironed out)
+LIBS:=$(subst -lecolab,$(ECOLAB_HOME)/lib/libecolab.a,$(LIBS)) 
 endif
 
 ifeq ($(OS),Darwin)
