@@ -792,12 +792,6 @@ namespace minsky
                     onError(ShortLine(key,sliceLabelTokens),row);
                   }
 
-                if (!dataCols) // if no data, then count number of rows with this key
-                  {
-                    tmpData[key]+=1;
-                    continue;
-                  }
-                
                 col=0;
                 for (auto field=tok.begin(); field!=tok.end(); ++col,++field)
                   if ((spec.dataCols.empty() && col>=spec.nColAxes()) || spec.dataCols.contains(col) || col>=spec.maxColumn) 

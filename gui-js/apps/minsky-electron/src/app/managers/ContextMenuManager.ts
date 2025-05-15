@@ -631,9 +631,9 @@ export class ContextMenuManager {
             },
           },
           {
-            label: 'Portale Network Graphics',
+            label: 'Portable Network Graphics',
             click: async () => {
-              CommandsManager.exportItemAsImageDialog(plot, 'png', 'Portale Network Graphics');
+              CommandsManager.exportItemAsImageDialog(plot, 'png', 'Portable Network Graphics');
             },
           },
         ],
