@@ -245,7 +245,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
 
       await this.getCSVDialogSpec();
       this.updateForm();
-      this.load(1);
+      this.load(2);
       this.selectRowAndCol(this.dialogState.spec.dataRowOffset, this.dialogState.spec.dataColOffset);
     })();
   }
@@ -315,7 +315,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
       this.dialogState.url = filePaths[0];
     }
 
-    await this.load(1);
+    await this.load(2);
   }
 
   async load(selectTab) {
@@ -388,8 +388,8 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
     await this.getCSVDialogSpec();
 
     let header = this.dialogState.spec.headerRow;
-    this.csvCols = new Array(this.parsedLines[header]?.length);
-    this.selected = new Array(this.parsedLines[header]?.length).fill(false);
+    this.csvCols = new Array(this.dialogState.spec.numCols);
+    this.selected = new Array(this.dialogState.spec.numCols).fill(false);
     this.selectableDimensionNames = this.parsedLines[header] ? this.parsedLines[header].map(header => this.getSelectableNameDimensions(header)) : [];
     this.updateColumnTypes();
   }
