@@ -135,7 +135,7 @@
       <span>
         <label for="horizontal-dimension"
                title="Name of the collection of data columns.">Horizontal Dimension</label>
-        <div class="wedge-container">
+        <div class="wedge-container hd-wedge-container">
           <input
             id="horizontal-dimension"
             type="text"
@@ -198,7 +198,7 @@
         <tr>
           <th>Name</th>
           <td *ngFor="let col of csvCols; let i = index"
-              class="col-type-container wedge-container" [class.selected]="selected[i]"
+              class="col-type-container wedge-container column-wedge-container" [class.selected]="selected[i]"
               (mousedown)="typeMouseDown($event,i)"
               (mousemove)="typeMouseMove($event,i)"
               (mouseup)="typeMouseUp($event,'name',i)"
