@@ -1174,6 +1174,7 @@ export class ContextMenuManager {
           label: 'Reimport CSV',
           click: () => {
             v.reloadCSV();
+            minsky.requestReset();
           },
         })
       );

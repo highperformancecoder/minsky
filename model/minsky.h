@@ -527,6 +527,9 @@ namespace minsky
 
     /// add/replace a definition for a flow variable given by \a valueId
     void setDefinition(const std::string& valueId, const std::string& definition);
+
+    /// reload all CSV parameters from latest values in files.
+    void reloadAllCSVParameters();
   };
 
   /// global minsky object

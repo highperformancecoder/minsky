@@ -1400,6 +1400,7 @@ export class Minsky extends CppClass {
   async ravelExpired(): Promise<boolean> {return this.$callMethod('ravelExpired');}
   async ravelVersion(): Promise<string> {return this.$callMethod('ravelVersion');}
   async redrawAllGodleyTables(): Promise<void> {return this.$callMethod('redrawAllGodleyTables');}
+  async reloadAllCSVParameters(): Promise<void> {return this.$callMethod('reloadAllCSVParameters');}
   async renameDimension(a1: string,a2: string): Promise<void> {return this.$callMethod('renameDimension',a1,a2);}
   async renderAllPlotsAsSVG(a1: string): Promise<void> {return this.$callMethod('renderAllPlotsAsSVG',a1);}
   async renderCanvasToEMF(a1: string): Promise<void> {return this.$callMethod('renderCanvasToEMF',a1);}

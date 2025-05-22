@@ -1698,6 +1698,19 @@ namespace minsky
         }
   }
 
+  void Minsky::reloadAllCSVParameters()
+  {
+    model->recursiveDo(&GroupItems::items,
+                         [&](Items&, Items::iterator i) {
+                           if (auto v=(*i)->variableCast())
+                             {
+                               v->reloadCSV();
+                               requestReset();
+                             }
+                           return false;
+                         });
+  }
+
   
   void Minsky::redrawAllGodleyTables()
   {
