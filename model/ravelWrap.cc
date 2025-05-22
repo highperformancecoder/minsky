@@ -505,7 +505,7 @@ namespace minsky
         }
 
     // if no variable value attached, create one
-    VariableValue v(VariableType::flow);
+    VariableValue v(VariableType::flow); v.hypercube(hypercube());
     const TensorsFromPort tp(make_shared<EvalCommon>());
     tp.ev->update(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());
     v=*tensorOpFactory.create(itemPtrFromThis(), tp);
