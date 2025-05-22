@@ -222,6 +222,8 @@ namespace minsky
     /// import CSV files, using \a spec
     void importFromCSV(const std::vector<std::string>& filenames,
                        const DataSpecSchema& spec) const;
+    /// reload CSV file if previously imported
+    void reloadCSV();
 
     /// clean up popup window structures on window close
     void destroyFrame() override;
@@ -246,6 +248,7 @@ namespace minsky
     bool enableSlider() const;
     bool enableSlider(bool) const;
     /// @}
+
   };
 
   template <minsky::VariableType::Type T>

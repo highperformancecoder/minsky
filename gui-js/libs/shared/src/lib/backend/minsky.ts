@@ -274,6 +274,7 @@ export class VariableBase extends Item {
   async ports(a1: number): Promise<object> {return this.$callMethod('ports',a1);}
   async portsSize(): Promise<number> {return this.$callMethod('portsSize');}
   async rawName(): Promise<string> {return this.$callMethod('rawName');}
+  async reloadCSV(): Promise<void> {return this.$callMethod('reloadCSV');}
   async resetMiniPlot(): Promise<void> {return this.$callMethod('resetMiniPlot');}
   async resize(a1: LassoBox): Promise<void> {return this.$callMethod('resize',a1);}
   async resizeHandleCoords(): Promise<object> {return this.$callMethod('resizeHandleCoords');}

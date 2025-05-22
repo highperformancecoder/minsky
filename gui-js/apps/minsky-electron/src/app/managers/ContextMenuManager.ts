@@ -1169,6 +1169,14 @@ export class ContextMenuManager {
           },
         })
       );
+      menuItems.push(
+        new MenuItem({
+          label: 'Reimport CSV',
+          click: () => {
+            v.reloadCSV();
+          },
+        })
+      );
     }
 
     menuItems.push(

@@ -474,6 +474,15 @@ void VariableBase::importFromCSV(const vector<string>& filenames, const DataSpec
   }
 }
 
+// TODO - save multifile selections?
+void VariableBase::reloadCSV()
+{
+  if (auto v=vValue()) 
+    if (!v->csvDialog.url.empty())
+      loadValueFromCSVFile(*v, {v->csvDialog.url}, v->csvDialog.spec);
+}
+
+
 void VariableBase::destroyFrame()
 {
   if (auto vv=vValue())
