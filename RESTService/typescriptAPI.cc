@@ -303,7 +303,6 @@ int main()
   cout << "class classdesc__json_pack_t {}\n";
   cout << "class classdesc__pack_t {}\n";
   cout << "class classdesc__RESTProcess_t {}\n";
-  cout << "class classdesc__TCL_obj_t {}\n";
   cout << "class ecolab__cairo__Surface {}\n";
   cout<<endl;
   
