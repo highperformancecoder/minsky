@@ -13,6 +13,7 @@ ECOLAB_HOME=$(shell pwd)/ecolab
 export LD_LIBRARY_PATH:=$(ECOLAB_HOME)/lib:$(LD_LIBRARY_PATH)
 
 ARCH=$(shell arch)
+HAVE_CLANG=$(shell if which clang++>/dev/null; then echo 1; fi)
 
 ifeq ($(shell uname),Darwin)
 MAKEOVERRIDES+=MAC_OSX_TK=1 TK=
@@ -27,6 +28,9 @@ MAKEOVERRIDES+=MXE_PREFIX=x86_64-w64-mingw32.shared
 endif
 
 MAKEOVERRIDES+=DEBUG=$(DEBUG)
+ifeq ($(HAVE_CLANG),1)
+MAKEOVERRIDES+=CLANG=1
+endif
 
 ifneq ($(MAKECMDGOALS),clean)
 # make sure EcoLab is built first, even before starting to include Makefiles
@@ -54,7 +58,6 @@ ifdef GCC
 CPLUSPLUS=g++
 else
 # default to clang if present
-HAVE_CLANG=$(shell if which clang++>/dev/null; then echo 1; fi)
 ifeq ($(HAVE_CLANG),1)
 CPLUSPLUS=clang++
 $(warning clang selected)
