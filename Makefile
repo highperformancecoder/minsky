@@ -29,7 +29,7 @@ endif
 
 MAKEOVERRIDES+=DEBUG=$(DEBUG)
 ifeq ($(HAVE_CLANG),1)
-MAKEOVERRIDES+=CLANG=1
+MAKEOVERRIDES+=CPLUSPLUS="clang++ -std=c++20"
 endif
 
 ifneq ($(MAKECMDGOALS),clean)
