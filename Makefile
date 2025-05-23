@@ -260,7 +260,6 @@ LIBS+=-shared-libasan
 endif
 
 ifdef MXE
-BOOST_EXT=-mt-x64
 EXE=.exe
 DL=dll
 FLAGS+=-DMXE
@@ -283,16 +282,6 @@ else
 EXE=
 DL=so
 PYMINSKY=pyminsky.so
-BOOST_EXT=
-# try to autonomously figure out which boost extension we should be using
-  ifeq ($(shell if $(CPLUSPLUS) test/testmain.cc $(LIBS) -lboost_system>&/dev/null; then echo 1; else echo 0; fi),0)
-    ifeq ($(shell if $(CPLUSPLUS) test/testmain.cc $(LIBS) -lboost_system-mt>&/dev/null; then echo 1; else echo 0; fi),1)
-      BOOST_EXT=-mt
-    else
-      $(warning cannot figure out boost extension) 
-    endif
-  endif
- $(warning Boost extension=$(BOOST_EXT))
 endif
 
 ifeq ($(OS),CYGWIN)
@@ -431,7 +420,9 @@ ifeq ($(OS),Darwin)
 	c++ -bundle -undefined dynamic_lookup -Wl,-no_pie -Wl,-search_paths_first -mmacosx-version-min=$(MACOSX_MIN_VERSION) -arch $(ARCH) -stdlib=libc++  -o $@  $^ $(LIBS)
 	cp pyminsky.so gui-js/build/
 else
+  ifndef MXE
 	$(LINK) -shared -o $@ $^ libminsky.a -Wl,-rpath=$(ECOLAB_HOME)/lib  $(LIBS)
+  endif
 endif
 
 # used to find undefined symbols in pyminsky.so
