@@ -17,8 +17,8 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#ifndef LOCK_H
-#define LOCK_H
+#ifndef MINSKY_LOCK_H
+#define MINSKY_LOCK_H
 
 #include "item.h"
 #include "ravelState.h"
