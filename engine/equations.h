@@ -27,7 +27,7 @@
 #include "evalOp.h"
 #include "godleyIcon.h"
 #include "switchIcon.h"
-#include "lock.h"
+#include "model/lock.h" // to avoid clash with python header file of same name
 
 #include "operation.h"
 #include <cairo_base.h>
@@ -51,7 +51,6 @@ namespace MathDAG
   using namespace std;
   using classdesc::shared_ptr;
   using namespace minsky;
-  using minsky::Lock; // why?
   class SystemOfEquations;
 
   struct Node;
