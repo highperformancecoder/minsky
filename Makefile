@@ -42,6 +42,7 @@ build_ecolab:=$(shell cd ecolab; if $(MAKE) $(MAKEOVERRIDES) $(JOBS) only-libs >
 
 $(warning $(build_ecolab))
 ifneq ($(build_ecolab),ecolab built)
+$(shell cat ecolab/build.log)
 $(error Making ecolab failed: check ecolab/build.log)
 endif
 include $(ECOLAB_HOME)/include/Makefile
