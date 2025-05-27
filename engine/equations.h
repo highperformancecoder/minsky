@@ -51,6 +51,7 @@ namespace MathDAG
   using namespace std;
   using classdesc::shared_ptr;
   using namespace minsky;
+  using minsky::Lock; // why?
   class SystemOfEquations;
 
   struct Node;
