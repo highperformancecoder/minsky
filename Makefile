@@ -14,6 +14,7 @@ export LD_LIBRARY_PATH:=$(ECOLAB_HOME)/lib:$(LD_LIBRARY_PATH)
 
 ARCH=$(shell arch)
 HAVE_CLANG=$(shell if which clang++>/dev/null; then echo 1; fi)
+SHELL=bash
 
 ifeq ($(shell uname),Darwin)
 MAKEOVERRIDES+=MAC_OSX_TK=1 TK=
