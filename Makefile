@@ -52,7 +52,7 @@ LIBS:=$(subst -lecolab,$(ECOLAB_HOME)/lib/libecolab.a,$(LIBS))
 endif
 
 ifndef OBS
-RPATH=-Wl,-rpath=$(ECOLAB_HOME)/lib $(LIBS)
+RPATH=-Wl,-rpath=$(ECOLAB_HOME)/lib
 endif
 
 ifeq ($(OS),Darwin)
@@ -421,7 +421,7 @@ else
 ifeq ($(OS),Darwin)
 	c++ -bundle -undefined dynamic_lookup -Wl,-no_pie -Wl,-search_paths_first -mmacosx-version-min=$(MACOSX_MIN_VERSION) -arch $(ARCH) -stdlib=libc++  -o $@  $^ $(LIBS)
 else
-	$(LINK) $(FLAGS) -shared -pthread -rdynamic -m64  -Wl,-soname=minskyRESTService.node -o $@ -Wl,--start-group $^ -Wl,--end-group $(RPATH)
+	$(LINK) $(FLAGS) -shared -pthread -rdynamic -m64  -Wl,-soname=minskyRESTService.node -o $@ -Wl,--start-group $^ -Wl,--end-group $(RPATH) $(LIBS)
 endif
 endif
  
@@ -434,7 +434,7 @@ ifeq ($(OS),Darwin)
 	cp pyminsky.so gui-js/build/
 else
   ifndef MXE
-	$(LINK) -shared -o $@ $^ libminsky.a $(RPATH)
+	$(LINK) -shared -o $@ $^ libminsky.a $(RPATH) $(LIBS)
   endif
 endif
 
