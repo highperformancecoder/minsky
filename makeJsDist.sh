@@ -16,6 +16,6 @@ rm $name/app/resources/build/*.node
 popd
 popd
 cp au.com.hpcoders.{Minsky.{desktop,appdata.xml},{Minsky,Ravelation}-mime.xml} gui-js/dist/executables/$name/
-cp gui-tk/icons/MinskyLogo.svg gui-js/dist/executables/$name/au.com.hpcoders.Minsky.svg
+cp icons/MinskyLogo.svg gui-js/dist/executables/$name/au.com.hpcoders.Minsky.svg
 pushd gui-js/dist/executables/
 tar zcvf /tmp/$name.tar.gz $name
