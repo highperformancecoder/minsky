@@ -13,7 +13,8 @@ VPATH= .. ../schema ../model ../engine ../RESTService ../RavelCAPI/civita ../Rav
 
 UNITTESTOBJS=main.o testCSVParser.o testCanvas.o testDerivative.o testExpressionWalker.o testGrid.o testLatexToPango.o testLockGroup.o testMdl.o testMinsky.o testModel.o testPannableTab.o testPhillips.o testPlotWidget.o testPubTab.o testSaver.o testStr.o testTensorOps.o testUnits.o testUserFunction.o testVariable.o testVariablePane.o testXVector.o ticket-1461.o
 
-GTESTOBJS=testCSVParserGtest.o
+#GTESTOBJS=testCSVParserGtest.o
+GTESTOBJS=testCSVParserGemini.o
 
 MINSKYOBJS=localMinsky.o ../libminsky.a
 FLAGS:=-I.. -I../RESTService -I../RavelCAPI/civita -I../RavelCAPI $(FLAGS)
