@@ -13,6 +13,8 @@ VPATH= .. ../schema ../model ../engine ../RESTService ../RavelCAPI/civita ../Rav
 
 UNITTESTOBJS=main.o testCSVParser.o testCanvas.o testDerivative.o testExpressionWalker.o testGrid.o testLatexToPango.o testLockGroup.o testMdl.o testMinsky.o testModel.o testPannableTab.o testPhillips.o testPlotWidget.o testPubTab.o testSaver.o testStr.o testTensorOps.o testUnits.o testUserFunction.o testVariable.o testVariablePane.o testXVector.o ticket-1461.o
 
+GTESTOBJS=testCSVParserGtest.o
+
 MINSKYOBJS=localMinsky.o ../libminsky.a
 FLAGS:=-I.. -I../RESTService -I../RavelCAPI/civita -I../RavelCAPI $(FLAGS)
 FLAGS+=-std=c++20  -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -DUSE_UNROLLED -DCLASSDESC_ARITIES=0xf \
@@ -42,10 +44,13 @@ ifdef ASAN
 FLAGS+=-fsanitize=address -fno-omit-frame-pointer
 endif
 
-all: unittests $(EXES)
+all: unittests gtestUnittests $(EXES)
 
 unittests: $(UNITTESTOBJS) $(MINSKYOBJS)
-	$(CPLUSPLUS) $(FLAGS)  -o $@ $(UNITTESTOBJS) $(MINSKYOBJS) $(LIBS)
+	$(CPLUSPLUS) $(FLAGS)  -o $@ $^ $(LIBS)
+
+gtestUnittests: gtestUnittests.o $(GTESTOBJS) $(MINSKYOBJS)
+	$(CPLUSPLUS) $(FLAGS)  -o $@ $^ $(LIBS) -lgtest
 
 # todo - remove dependency on all MINSKYOBJS
 testDatabase: main.o testDatabase.o $(MINSKYOBJS)
