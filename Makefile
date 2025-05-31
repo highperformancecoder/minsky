@@ -39,7 +39,8 @@ endif
 
 ifneq ($(MAKECMDGOALS),clean)
 # make sure EcoLab is built first, even before starting to include Makefiles
-build_ecolab:=$(shell cd ecolab; if $(MAKE) $(MAKEOVERRIDES) $(JOBS) only-libs >build.log 2>&1; then echo "ecolab built"; fi)
+# disable AEGIS build here, as EcoLab 6 is still a little raw
+build_ecolab:=$(shell cd ecolab; if $(MAKE) $(MAKEOVERRIDES) AEGIS= $(JOBS) only-libs >build.log 2>&1; then echo "ecolab built"; fi)
 
 $(warning $(build_ecolab))
 ifneq ($(build_ecolab),ecolab built)

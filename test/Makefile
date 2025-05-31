@@ -79,7 +79,7 @@ endif
 BASIC_CLEAN=rm -rf *.o *~ "\#*\#" core *.d *.cd *.xcd *.gcda *.gcno
 
 clean:
-	-$(BASIC_CLEAN) unittests $(EXES)
+	-$(BASIC_CLEAN) unittests gtestUnittests $(EXES)
 	cd 00; $(BASIC_CLEAN)
 	cd exampleLogs; $(BASIC_CLEAN)
 	cd oldSchema; $(BASIC_CLEAN)
