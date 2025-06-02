@@ -29,6 +29,7 @@
 #include <ctype.h>
 #include "godleyIcon.rcd"
 #include "itemT.rcd"
+#include "godleyTableWindow.xcd"
 #include "minsky_epilogue.h"
 #include <boost/locale.hpp>
 using namespace boost::locale::conv;

@@ -13,15 +13,16 @@ Minsky is an open source program with prebuilt binaries available for:
 - [Windows](https://sourceforge.net/projects/minsky/files/Windows%20Binaries/)
 - [Mac OS X](https://sourceforge.net/projects/minsky/files/Mac%20Binaries/)
 - [various Linux distributions](https://build.opensuse.org/package/show/home:hpcoder1/minsky)
+- [Running Minsky under Wine](wine_install.md)
 
 ## Using Minsky in "batch mode" from Python
-A little known secret is that Minsky can be used in a headless batch mode, a capability it has had from the beginning in the form of TCL scripting. Since March 2024, Python scripting has been available in Linux builds, and is coming soon to Windows and Mac builds (version 3.12). TCL scripting is deprecated and will soon be removed from the codebase.
+A little known secret is that Minsky can be used in a headless batch mode, a capability it has had from the beginning in the form of TCL scripting. Since March 2024, Python scripting has been available in Linux builds, and is now available in Windows and Mac builds (from version 3.12). TCL scripting is deprecated and will soon be removed from the codebase.
 
 [Introduction to scripting Minsky in Python](python-minsky.md)
 
 ## Compiling Minsky from source code
 
-Official releases are available from [SourceForge](https://sourceforge.net/projects/minsky/files/Sources/). You may also obtain later releases from this Github project, as release are tagged within git.
+Official releases are available from [SourceForge](https://sourceforge.net/projects/minsky/files/Sources/). You may also obtain later releases from this Github project, as releases are tagged within git.
 
 To compile Minsky, you will need a suitable posix compliant system, [with a number of prerequisites installed](Compiling.md).
 
@@ -44,7 +45,7 @@ You can also run it by running `npm start` from the gui-js directory. At the tim
 Notes on using the [REST Service](RESTService.md).
 
 ## JS frontend debugging notes
-
+- You can interactively query the state of the backend by using the "Terminal" button on the Minsky application.
 - `console.log` works on minsky-electron code
 - for minsky-web code, use `electronService.log`, which takes a single string argument. Best trick is to use typescript template literal types, which allows embedding variable values simply within a string, eg
 ~~~
@@ -65,7 +66,7 @@ For those using emacs (comme moi-meme), I have configured the project so that ty
 ## Debugging with gdb
 
 - You can debug an `npm start` session by using `ps -ef|grep main.js` to find the minsky process, then use the pid to attach to in gdb.
-- Alternatively, you can create an executable with `npm run export:package:linux` and open it with `gdb gui-js/dist/executables/linux-unpacked/minsky`.
+- Alternatively, you can create an executable with `make` in the top level directory, or `npm run export:package:linux` in `gui-js` and open it with `gdb gui-js/dist/executables/linux-unpacked/minsky`.
 - For unit tests, cd to the directory containing `jest.config.js` (eg gui-js/libs/shared), then run (eg)
 ~~~~
    gdb `which node`
@@ -75,7 +76,7 @@ Regular jest CLI arguments can be provided. You will need to install the jest pa
 
 ## Profiling
 
-Unfortunately gperftools do not work with the JS frontend. Indeed, most of the time minsky will crash under profiling. For now, profiling requires the use of the old Tk version of minsky.
+Unfortunately gperftools do not work with the JS frontend. Indeed, most of the time minsky will crash under profiling. For now, profiling requires the use of a python batch script (see above).
 
 However, if you build the C++ source (actually only addon.cc necessary) with the TIMERS=1 make flag, this enables profiling of the backend commands, which is printed as a summary table on application exit.
 

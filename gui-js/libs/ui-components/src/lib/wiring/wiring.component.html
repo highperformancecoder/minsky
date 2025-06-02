@@ -3,9 +3,20 @@
     <ng-container *ngIf="cmService.currentTab === wiringTab">
       <button class="tab toolButton" classType="Operation:csvImport" (click)="cmService.importData()">
         <img
-          src="assets/images/icons/data.png"
+          src="assets/images/icons/data.svg"
           alt="Import Data"
           title="Import Data"
+          width="20"
+          height="20"
+          />
+      </button>
+      <button class="tab toolButton" classType="Operation:csvImport" (click)="electronService.minsky.reloadAllCSVParameters()">
+        <img
+          src="assets/images/icons/data-update.svg"
+          alt="Reload All Data"
+          title="Reload All Data"
+          width="20"
+          height="20"
           />
       </button>
       <button class="tab toolButton"  classType="Ravel" (click)="addRavel()">

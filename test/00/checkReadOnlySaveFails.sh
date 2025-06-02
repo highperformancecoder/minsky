@@ -5,8 +5,6 @@ here=`pwd`
 
 # test that save file throws an error if it can't
 cat >input.py <<EOF
-import sys
-sys.path.append('$here')
 from pyminsky import minsky
 
 minsky.save('writeable.mky')

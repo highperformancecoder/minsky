@@ -26,7 +26,6 @@
 #include "assetClass.h"
 #include "godleyTable.h"
 #include "renderNativeWindow.h"
-#include <accessor.h>
 #include <memory>
 #include <vector>
 

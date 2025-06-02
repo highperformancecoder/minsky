@@ -20,6 +20,7 @@
 #include "godleyTableWindow.h"
 #include "matrix.h"
 #include "minsky_epilogue.h"
+#undef True
 #include <UnitTest++/UnitTest++.h>
 #include <gsl/gsl_integration.h>
 using namespace minsky;
@@ -731,22 +732,22 @@ SUITE(Minsky)
       initGodleys();
 
       godley1.resize(4,4);
-      godley1.cell(0,1)=":hello"; godley1._assetClass(1, GodleyAssetClass::asset);
-      godley1.cell(0,2)=":bar"; godley1._assetClass(2, GodleyAssetClass::liability);
-      godley1.cell(0,3)=":foo"; godley1._assetClass(3, GodleyAssetClass::equity);
+      godley1.cell(0,1)=":hello"; godley1.assetClass(1, GodleyAssetClass::asset);
+      godley1.cell(0,2)=":bar"; godley1.assetClass(2, GodleyAssetClass::liability);
+      godley1.cell(0,3)=":foo"; godley1.assetClass(3, GodleyAssetClass::equity);
 
       // should still be no problem
       initGodleys();
 
       godley2.resize(4,4);
-      godley2.cell(0,1)=":hello2"; godley2._assetClass(1, GodleyAssetClass::asset);
-      godley2.cell(0,2)=":bar2"; godley2._assetClass(2, GodleyAssetClass::liability);
-      godley2.cell(0,3)=":foo2"; godley2._assetClass(3, GodleyAssetClass::equity);
+      godley2.cell(0,1)=":hello2"; godley2.assetClass(1, GodleyAssetClass::asset);
+      godley2.cell(0,2)=":bar2"; godley2.assetClass(2, GodleyAssetClass::liability);
+      godley2.cell(0,3)=":foo2"; godley2.assetClass(3, GodleyAssetClass::equity);
 
       godley3.resize(4,4);
-      godley3.cell(0,1)=":hello3"; godley3._assetClass(1, GodleyAssetClass::asset);
-      godley3.cell(0,2)=":bar3"; godley3._assetClass(2, GodleyAssetClass::liability);
-      godley3.cell(0,3)=":foo3"; godley3._assetClass(3, GodleyAssetClass::equity);
+      godley3.cell(0,1)=":hello3"; godley3.assetClass(1, GodleyAssetClass::asset);
+      godley3.cell(0,2)=":bar3"; godley3.assetClass(2, GodleyAssetClass::liability);
+      godley3.cell(0,3)=":foo3"; godley3.assetClass(3, GodleyAssetClass::equity);
 
       // should be no problem - all columns are different
       initGodleys();
@@ -764,16 +765,16 @@ SUITE(Minsky)
       CHECK_THROW(initGodleys(), ecolab::error);
 
       // should now be a compatible asset/liability pair
-      godley3._assetClass(1, GodleyAssetClass::liability);
+      godley3.assetClass(1, GodleyAssetClass::liability);
       initGodleys();
   
 
       // add in another asset/liability pair
-      godley1.cell(0,3)=":bar3"; godley1._assetClass(3, GodleyAssetClass::asset);
+      godley1.cell(0,3)=":bar3"; godley1.assetClass(3, GodleyAssetClass::asset);
       initGodleys();
 
       // now conflict that pair
-      godley2.cell(0,3)=":bar3";godley2._assetClass(3, GodleyAssetClass::asset);
+      godley2.cell(0,3)=":bar3";godley2.assetClass(3, GodleyAssetClass::asset);
       CHECK_THROW(initGodleys(), ecolab::error);
       godley2.cell(0,3)=":bar2";
   
@@ -802,13 +803,13 @@ SUITE(Minsky)
       godley1.resize(6,4);
       godley2.resize(3,5);
 
-      godley1._assetClass(1,GodleyAssetClass::asset);  
-      godley1._assetClass(2,GodleyAssetClass::liability);  
-      godley1._assetClass(3,GodleyAssetClass::equity);  
-      godley2._assetClass(1,GodleyAssetClass::asset);  
-      godley2._assetClass(2,GodleyAssetClass::liability);
-      godley2._assetClass(3,GodleyAssetClass::liability);
-      godley2._assetClass(4,GodleyAssetClass::equity);
+      godley1.assetClass(1,GodleyAssetClass::asset);  
+      godley1.assetClass(2,GodleyAssetClass::liability);  
+      godley1.assetClass(3,GodleyAssetClass::equity);  
+      godley2.assetClass(1,GodleyAssetClass::asset);  
+      godley2.assetClass(2,GodleyAssetClass::liability);
+      godley2.assetClass(3,GodleyAssetClass::liability);
+      godley2.assetClass(4,GodleyAssetClass::equity);
 
       godley1.cell(0,1)="a1";  
       godley1.cell(0,2)="l1";
@@ -889,8 +890,8 @@ SUITE(Minsky)
       godley1.resize(3,2);
       godley2.resize(3,2);
 
-      godley1._assetClass(1,GodleyAssetClass::asset);  
-      godley2._assetClass(1,GodleyAssetClass::liability);  
+      godley1.assetClass(1,GodleyAssetClass::asset);  
+      godley2.assetClass(1,GodleyAssetClass::liability);  
 
       godley1.cell(0,1)="a";  
       godley1.cell(2,0)="xx";
@@ -926,8 +927,8 @@ SUITE(Minsky)
       godley1.resize(4,3);
       godley2.resize(2,2);
 
-      godley1._assetClass(1,GodleyAssetClass::asset);  
-      godley2._assetClass(1,GodleyAssetClass::liability);
+      godley1.assetClass(1,GodleyAssetClass::asset);  
+      godley2.assetClass(1,GodleyAssetClass::liability);
 
       godley1.cell(0,1)="a1";  
       godley1.cell(2,0)="row1";
@@ -978,8 +979,8 @@ SUITE(Minsky)
       godley1.cell(1,2)="2b";
       godley1.cell(2,1)="a1";
       godley1.cell(2,2)="2b1";
-      godley1._assetClass(1,GodleyAssetClass::asset);
-      godley1._assetClass(2,GodleyAssetClass::asset);
+      godley1.assetClass(1,GodleyAssetClass::asset);
+      godley1.assetClass(2,GodleyAssetClass::asset);
       godley1.moveRow(1,1);
       CHECK_EQUAL("a",godley1.cell(2,1));
       CHECK_EQUAL("2b",godley1.cell(2,2));

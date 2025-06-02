@@ -24,6 +24,7 @@
 #include "lasso.h"
 #include "variableValue.h"
 #include "minsky_epilogue.h"
+#undef True
 #include <UnitTest++/UnitTest++.h>
 #include <boost/filesystem.hpp>
 #include <numeric>

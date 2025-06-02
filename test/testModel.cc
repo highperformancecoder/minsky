@@ -24,6 +24,7 @@
 #include "godleyTableWindow.h"
 #include "minsky_epilogue.h"
 
+#undef True
 #include <UnitTest++/UnitTest++.h>
 using namespace minsky;
 using namespace std;
@@ -1062,8 +1063,8 @@ SUITE(GodleyIcon)
       table.cell(0,1)="stock1";
       table.cell(0,2)="stock2";
       table.doubleEntryCompliant=true;
-      table._assetClass(1,GodleyAssetClass::asset);
-      table._assetClass(2,GodleyAssetClass::liability);
+      table.assetClass(1,GodleyAssetClass::asset);
+      table.assetClass(2,GodleyAssetClass::liability);
 
       // for initial conditions below
       model->addItem(VariablePtr(VariableType::parameter,"x"));
@@ -1151,9 +1152,9 @@ SUITE(GodleyTableWindow)
       for (size_t r=0; r<4; ++r)
         for (size_t c=0; c<4; ++c)
           table.cell(r,c)="c"+str(r)+str(c);
-      table._assetClass(1,GodleyAssetClass::asset);
-      table._assetClass(2,GodleyAssetClass::liability);
-      table._assetClass(3,GodleyAssetClass::equity);
+      table.assetClass(1,GodleyAssetClass::asset);
+      table.assetClass(2,GodleyAssetClass::liability);
+      table.assetClass(3,GodleyAssetClass::equity);
     }
   };
 

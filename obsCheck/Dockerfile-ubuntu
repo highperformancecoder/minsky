@@ -5,9 +5,8 @@ ARG version
 ADD . /root
 RUN cat /etc/os-release
 RUN apt-get update -qq -y
-RUN apt-get install -y wget gnupg2
-RUN wget http://download.opensuse.org/repositories/home:hpcoder1/xUbuntu_${version}/Release.key
-RUN apt-key add - < Release.key
+RUN apt-get install -y gnupg2 curl
+RUN curl -fsSL https://download.opensuse.org/repositories/home:hpcoder1/xUbuntu_25.04/Release.key | gpg --dearmor | tee /etc/apt/trusted.gpg.d/home_hpcoder1.gpg > /dev/null
 RUN echo "deb http://download.opensuse.org/repositories/home:/hpcoder1/xUbuntu_${version}/ /" >/etc/apt/sources.list.d/hpcoders.list
 RUN apt-get update -qq -y
 RUN apt-get install -y --allow-unauthenticated $project

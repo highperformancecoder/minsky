@@ -51,20 +51,6 @@ using namespace ecolab;
 using namespace minsky;
 using namespace ecolab::cairo;
 
-namespace minsky
-{
- namespace VarAccessors
-  {
-    NameAccessor::NameAccessor(): ecolab::TCLAccessor<VariableBase,std::string,0>
-        ("name",(Getter)&VariableBase::name,(Setter)&VariableBase::name) {}
-    InitAccessor::InitAccessor(): ecolab::TCLAccessor<VariableBase,std::string,1>
-        ("init",(Getter)&VariableBase::init,(Setter)&VariableBase::init) {}
-    ValueAccessor::ValueAccessor(): ecolab::TCLAccessor<VariableBase,double>
-      ("value",(Getter)&VariableBase::value,(Setter)&VariableBase::value) {}
- }
-}
-
-
 void VariableBase::addPorts()
 {
 #ifndef NDEBUG
@@ -487,6 +473,15 @@ void VariableBase::importFromCSV(const vector<string>& filenames, const DataSpec
       throw_error("Axes of imported data should all have distinct names");
   }
 }
+
+// TODO - save multifile selections?
+void VariableBase::reloadCSV()
+{
+  if (auto v=vValue()) 
+    if (!v->csvDialog.url.empty())
+      loadValueFromCSVFile(*v, {v->csvDialog.url}, v->csvDialog.spec);
+}
+
 
 void VariableBase::destroyFrame()
 {

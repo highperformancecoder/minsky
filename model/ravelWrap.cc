@@ -218,7 +218,7 @@ namespace minsky
         if (redistribute) wrappedRavel.redistributeHandles();
       }
 #ifndef NDEBUG
-    if (static_cast<ravel::Ravel&>(wrappedRavel) && state.empty())
+    if (static_cast<ravelCAPI::Ravel&>(wrappedRavel) && state.empty())
       {
         auto d=hc.dims();
         assert(d.size()==wrappedRavel.rank());
@@ -505,7 +505,7 @@ namespace minsky
         }
 
     // if no variable value attached, create one
-    VariableValue v(VariableType::flow);
+    VariableValue v(VariableType::flow); v.hypercube(hypercube());
     const TensorsFromPort tp(make_shared<EvalCommon>());
     tp.ev->update(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());
     v=*tensorOpFactory.create(itemPtrFromThis(), tp);

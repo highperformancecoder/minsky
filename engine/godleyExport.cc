@@ -69,7 +69,7 @@ namespace minsky
         s<<"Asset Class";
         for (unsigned i=1; i<g.cols(); ++i)
           s<<","<<enum_keysData<GodleyAssetClass::AssetClass>::
-            keysData[g._assetClass(i)].name;
+            keysData[g.assetClass(i)].name;
         s<<"\n";
       }
     for (unsigned r=1; r<g.rows(); ++r)
@@ -107,10 +107,10 @@ namespace minsky
         };
           
         for (unsigned i=1; i<g.cols(); ++i)
-          if (g._assetClass(i)!=asset)
+          if (g.assetClass(i)!=asset)
             {
               outputAC();
-              asset=g._assetClass(i);
+              asset=g.assetClass(i);
               repeat=1;
             }
           else

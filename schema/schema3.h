@@ -157,7 +157,7 @@ namespace schema3
       axis(o.axis), arg(o.arg) {}
     Item(int id, const minsky::GodleyIcon& g, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(g),ports),
-      data(g.table.getData()), assetClasses(g.table._assetClass()),
+      data(g.table.getData()), assetClasses(g.table.assetClass()),
       editorMode(g.editorMode()), buttonDisplay(g.buttonDisplay()),
       variableDisplay(g.variableDisplay()), currency(g.currency)
     {name=g.table.title;}

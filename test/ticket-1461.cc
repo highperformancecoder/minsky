@@ -19,6 +19,7 @@
 
 #include "minsky.h"
 #include "minsky_epilogue.h"
+#undef True
 #include <UnitTest++/UnitTest++.h>
 using namespace minsky;
 

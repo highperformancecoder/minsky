@@ -19,10 +19,6 @@
 #ifndef OPERATION_H
 #define OPERATION_H
 
-#include <ecolab.h>
-#include <xml_pack_base.h>
-#include <xml_unpack_base.h>
-
 // override EcoLab's default CLASSDESC_ACCESS macro
 #include "classdesc_access.h"
 
@@ -98,17 +94,13 @@ namespace minsky
   };
 
   /// base class for operations that have names
-  class NamedOp: public ecolab::TCLAccessor<NamedOp,std::string>
+  class NamedOp
   {
   protected:
     std::string m_description;
     virtual void updateBB()=0;
     CLASSDESC_ACCESS(NamedOp);
   public:
-    NamedOp(): ecolab::TCLAccessor<NamedOp,std::string>
-      ("description",(ecolab::TCLAccessor<NamedOp,std::string>::Getter)&NamedOp::description,
-       (ecolab::TCLAccessor<NamedOp,std::string>::Setter)&NamedOp::description)
-    {}
     /// @{ name of the associated data operation
     virtual std::string description() const;  
     virtual std::string description(const std::string&);    

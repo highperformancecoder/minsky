@@ -5,8 +5,6 @@ here=`pwd`
 # double entry bookkeeping tests
 
 cat >input.py <<EOF
-import sys
-sys.path.insert(0, '$here')
 from pyminsky import minsky
 
 minsky.canvas.addGodley()
@@ -25,9 +23,9 @@ item.setCell(2, 1, 'a')
 item.setCell(2, 2, 'b')
 item.setCell(2, 3, 'a')
 
-item.table._assetClass(1, 'asset')
-item.table._assetClass(2, 'liability')
-item.table._assetClass(3, 'liability')
+item.table.assetClass(1, 'asset')
+item.table.assetClass(2, 'liability')
+item.table.assetClass(3, 'liability')
 assert minsky.canvas.item.table.rowSum(1)=='0'
 assert minsky.canvas.item.table.rowSum(2)=="-b"
 assert minsky.canvas.item.table.getVariables()()==['a', 'b']

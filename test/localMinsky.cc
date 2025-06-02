@@ -48,4 +48,3 @@ namespace minsky
   LocalMinsky::~LocalMinsky() {l_minsky.pop_back();}
 
 }
-namespace ecolab {Tk_Window mainWin=0;}

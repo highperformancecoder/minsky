@@ -5,8 +5,6 @@ here=`pwd`
 # basic godley table tests
 
 cat >input.py <<EOF
-import sys
-sys.path.insert(0, '$here')
 from pyminsky import minsky
 
 minsky.canvas.addGodley()

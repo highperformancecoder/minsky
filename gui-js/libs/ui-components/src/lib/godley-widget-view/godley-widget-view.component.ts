@@ -310,7 +310,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
     const columnVariables = [];
     let lastClass;
     for(let i = 0; i < columnVariableNames.length; i++) {
-      const assetClass = <any>await this.godleyIcon.table._assetClass(i + 1);
+      const assetClass = <any>await this.godleyIcon.table.assetClass(i + 1);
       const newVar = {
         assetClass: assetClass,
         name: columnVariableNames[i]

@@ -83,10 +83,6 @@ namespace classdesc_access
   struct access_typescriptAPI<classdesc::Exclude<T>>:
     public classdesc::NullDescriptor<classdesc::typescriptAPI_t> {};
 
-  template <class T, class V, int N>
-  struct access_typescriptAPI<ecolab::TCLAccessor<T,V,N>>:
-    public classdesc::NullDescriptor<classdesc::typescriptAPI_t> {};
-
   template <>
   struct access_typescriptAPI<classdesc::PolyPackBase>:
     public classdesc::NullDescriptor<classdesc::typescriptAPI_t> {};
@@ -311,9 +307,7 @@ int main()
   cout << "class classdesc__json_pack_t {}\n";
   cout << "class classdesc__pack_t {}\n";
   cout << "class classdesc__RESTProcess_t {}\n";
-  cout << "class classdesc__TCL_obj_t {}\n";
   cout << "class ecolab__cairo__Surface {}\n";
-  cout << "class std__lock_guard {}\n";
   cout<<endl;
   
   // these need to be declared in a specific order

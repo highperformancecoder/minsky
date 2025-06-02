@@ -33,7 +33,7 @@ namespace minsky
   {
     
     CLASSDESC_ACCESS(Sheet);
-    ravel::Ravel inputRavel; ///< ravel for controlling input
+    ravelCAPI::Ravel inputRavel; ///< ravel for controlling input
     /// value used for populating sheet. Potentially a tensor expression representing ravel manipulation
     civita::TensorPtr value;
     /// size of ravel in screen coordinates

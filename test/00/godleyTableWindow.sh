@@ -1,80 +1,45 @@
 #! /bin/sh
 
 here=`pwd`
-if test $? -ne 0; then exit 2; fi
-tmp=/tmp/$$
-mkdir $tmp
-if test $? -ne 0; then exit 2; fi
-cd $tmp
-if test $? -ne 0; then exit 2; fi
+. $here/test/common-test.sh
 
-fail()
-{
-    echo "FAILED" 1>&2
-    cd $here
-    chmod -R u+w $tmp
-    rm -rf $tmp
-    exit 1
-}
+cat >input.py <<EOF
+from pyminsky import minsky, findObject
+minsky.defaultFont('Sans')
 
-pass()
-{
-    echo "PASSED" 1>&2
-    cd $here
-    chmod -R u+w $tmp
-    rm -rf $tmp
-    exit 0
-}
-
-# test disabled, as it is no longer relevant in Minsky 3.x
-# TODO: to be refactored for 3.x, or removed entirely
-pass
-
-trap "fail" 1 2 3 15
-cat >input.tcl <<EOF
-source $here/test/assert.tcl
-minsky.defaultFont Sans
-
-proc afterMinskyStarted {} {
-  minsky.load $here/examples/1Free.mky
-  minsky.multipleEquities 1
-  minsky.displayStyle sign
-  minsky.displayValues 1
-  findObject GodleyIcon
-  set id [minsky.openGodley]
-  openGodley \$id
-  \$id.popup.enableButtons
-  \$id.popup.renderToSVG 1FreeBase.svg
-  \$id.popup.selectedCol 1
-  \$id.popup.selectedRow 2
-  \$id.popup.insertIdx 0
-  \$id.popup.selectIdx 3
-  \$id.popup.hoverRow 2
-  \$id.popup.hoverCol 2
-  \$id.popup.mouseMoveB1 [expr [lindex [\$id.popup.colLeftMargin] 2]+10] [expr 4*[\$id.popup.rowHeight]+[\$id.popup.topTableOffset]]
-  minsky.displayStyle DRCR
-  \$id.popup.renderToSVG 1Free11Selected.svg
-  \$id.popup.selectedCol 0
-  \$id.popup.renderToSVG 1FreeSelectedRow.svg
-  \$id.popup.selectedCol 1
-  \$id.popup.selectedRow 0
-  \$id.popup.mouseMoveB1 [expr [lindex [\$id.popup.colLeftMargin] 2]+10] [expr 3*[\$id.popup.rowHeight]+[\$id.popup.topTableOffset]]
-  \$id.popup.renderToSVG 1FreeSelectedCol.svg
+minsky.load('$here/examples/1Free.mky')
+minsky.multipleEquities(True)
+minsky.displayStyle('sign')
+minsky.displayValues(True)
+item=findObject('GodleyIcon')
+gw=item.popup
+gw.enableButtons()
+gw.renderToSVG('1FreeBase.svg')
+gw.selectedCol(1)
+gw.selectedRow(2)
+gw.insertIdx(0)
+gw.selectIdx(3)
+gw.hoverRow(2)
+gw.hoverCol(2)
+gw.mouseMoveB1(gw.colLeftMargin()[2]+10, 4*gw.rowHeight()+gw.topTableOffset())
+minsky.displayStyle('DRCR')
+gw.renderToSVG('1Free11Selected.svg')
+gw.selectedCol(0)
+gw.renderToSVG('1FreeSelectedRow.svg')
+gw.selectedCol(1)
+gw.selectedRow(0)
+gw.mouseMoveB1(gw.colLeftMargin[2]+10, 3*gw.rowHeight()+gw.topTableOffset())
+gw.renderToSVG('1FreeSelectedCol.svg')
   
-
-  minsky.load $here/examples/LoanableFunds.mky
-  findObject GodleyIcon
-  set id [minsky.openGodley]
-  minsky.displayStyle DRCR
-  minsky.displayValues 0
-  \$id.popup.enableButtons
-  \$id.popup.renderToSVG LoanableFundsBase.svg
-
-  tcl_exit
-}
+minsky.load('$here/examples/LoanableFunds.mky')
+item=findObject('GodleyIcon')
+minsky.displayStyle('DRCR')
+minsky.displayValues(0)
+item.popup.enableButtons()
+item.popup.renderToSVG('LoanableFundsBase.svg')
 EOF
 
-$here/gui-tk/minsky input.tcl
+python3 input.py
 if [ $? -ne 0 ]; then fail; fi
 
 for i in *.svg; do

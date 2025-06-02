@@ -57,10 +57,6 @@
 #include <deque>
 #include <cstdio>
 
-#include <ecolab.h>
-#include <xml_pack_base.h>
-#include <xml_unpack_base.h>
-
 namespace minsky
 {
   using namespace std;
@@ -121,32 +117,7 @@ namespace minsky
 
   enum ItemType {wire, op, var, group, godley, plot};
 
-  struct Minsky_multipleEquities: public ecolab::TCLAccessor<Minsky,bool>
-  {
-    Minsky_multipleEquities(const std::string& name, ecolab::TCLAccessor<Minsky,bool>::Getter g,
-                            ecolab::TCLAccessor<Minsky,bool>::Setter s):
-      ecolab::TCLAccessor<Minsky,bool>(name,g,s) {}  
-  };
-
-  // a wrapper around ravel::Database that converts the spec format
-  class DatabaseIngestor
-  {
-    ravel::Database db;
-    CLASSDESC_ACCESS(DatabaseIngestor);
-  public:
-    void connect(const std::string& dbType, const std::string& connect, const std::string& table)
-    {db.connect(dbType,connect,table);}
-    void close() {db.close();}
-
-    void createTable(const string& filename, const DataSpec& spec)
-    {db.createTable(filename,spec);}
-    void loadDatabase(const vector<string>& filenames, const DataSpec& spec)
-    {db.loadDatabase(filenames,spec);}
-    void deduplicate(ravel::DuplicateKeyAction::Type action, const DataSpec& spec)
-    {db.deduplicate(action,spec);}
-  };
-  
-  class Minsky: public Exclude<MinskyExclude>, public RungeKutta, public Minsky_multipleEquities
+  class Minsky: public Exclude<MinskyExclude>, public RungeKutta
   {
     CLASSDESC_ACCESS(Minsky);
 
@@ -257,7 +228,6 @@ namespace minsky
     
     // reset m_edited as the GodleyIcon constructor calls markEdited
     Minsky():
-      ECOLAB_ACESSOR_INIT(Minsky, multipleEquities),
       equationDisplay(*this) {
       lastRedraw=boost::posix_time::microsec_clock::local_time();
       model->iHeight(std::numeric_limits<float>::max());
@@ -272,7 +242,7 @@ namespace minsky
 
     GroupPtr model{new Group};
     Canvas canvas{model};
-    DatabaseIngestor databaseIngestor;
+    //DatabaseIngestor databaseIngestor;
 
     void clearAllMaps(bool clearHistory);
     void clearAllMaps() {clearAllMaps(true);}
@@ -347,25 +317,24 @@ namespace minsky
     /// load from a file
     void load(const std::string& filename);
 
-    /*static*/ void exportSchema(const std::string& filename, int schemaLevel=1);
+    static void exportSchema(const std::string& filename, int schemaLevel=1);
 
     /// indicate operation item has error, if visible, otherwise contining group
     void displayErrorItem(const Item& op) const;
 
-    /// return the AEGIS assigned version number
     static const std::string minskyVersion;
-    /*static*/ std::string ecolabVersion() const {return VERSION;}
-    /*static*/ std::string ravelVersion() const {
-      if (ravel::Ravel::available())
+    static std::string ecolabVersion() {return VERSION;}
+    static std::string ravelVersion() {
+      if (ravelCAPI::Ravel::available())
         {
-          int d=ravel::Ravel::daysUntilExpired();
-          return ravel::Ravel::version() + ": "+((d>=0)?("Expires in "+std::to_string(d)+" day"+(d!=1?"s":"")): "Expired");
+          int d=ravelCAPI::Ravel::daysUntilExpired();
+          return ravelCAPI::Ravel::version() + ": "+((d>=0)?("Expires in "+std::to_string(d)+" day"+(d!=1?"s":"")): "Expired");
         }
       else return "unavailable";
     }
-    static bool ravelAvailable() {return  ravel::Ravel::available();}
-    static bool ravelExpired() {return  ravel::Ravel::available() && ravel::Ravel::daysUntilExpired()<0;}
-    static int daysUntilRavelExpires() {return  ravel::Ravel::daysUntilExpired();}
+    static bool ravelAvailable() {return  ravelCAPI::Ravel::available();}
+    static bool ravelExpired() {return  ravelCAPI::Ravel::available() && ravelCAPI::Ravel::daysUntilExpired()<0;}
+    static int daysUntilRavelExpires() {return  ravelCAPI::Ravel::daysUntilExpired();}
     
     std::string fileVersion; ///< Minsky version file was saved under
     
@@ -483,7 +452,7 @@ namespace minsky
     virtual MemCheckResult checkMemAllocation(size_t bytes) const {return OK;}
 
     /// returns amount of memory installed on system
-    /*static*/ std::size_t physicalMem() const;
+    static std::size_t physicalMem();
     
     vector<string> listFonts() const {
       vector<string> r;
@@ -501,17 +470,17 @@ namespace minsky
     }
 
     /// @{ the default used by Pango
-    /*static*/ std::string defaultFont();
-    /*static*/ std::string defaultFont(const std::string& x);
+    static std::string defaultFont();
+    static std::string defaultFont(const std::string& x);
     /// @}
 
     /// @{ an extra scaling factor of Pango fonts
-    /*static*/ double fontScale();
-    /*static*/ double fontScale(double);
+    static double fontScale();
+    static double fontScale(double);
     /// @}
     
-    /*static*/ int numOpArgs(OperationType::Type o);
-    OperationType::Group classifyOp(OperationType::Type o) const {return OperationType::classify(o);}
+    static int numOpArgs(OperationType::Type o);
+    static OperationType::Group classifyOp(OperationType::Type o) {return OperationType::classify(o);}
 
     void latex(const std::string& filename, bool wrapLaTeXLines);
 
@@ -525,14 +494,14 @@ namespace minsky
     string latex2pango(const std::string& x) {return latexToPango(x.c_str());}
 
     /// list of available operations
-    /*static*/ std::vector<std::string> availableOperations();
+    static std::vector<std::string> availableOperations();
     using AvailableOperationsMapping=classdesc::StringKeyMap<std::vector<OperationType::Type>>;
-    /*static*/ Minsky::AvailableOperationsMapping availableOperationsMapping() const;
+    static Minsky::AvailableOperationsMapping availableOperationsMapping();
     
     /// list of available variable types
-    /*static*/ std::vector<std::string> variableTypes();
+    static std::vector<std::string> variableTypes();
     /// return list of available asset classes
-    /*static*/ std::vector<std::string> assetClasses();
+    static std::vector<std::string> assetClasses();
 
     void autoLayout(); ///< auto layout current open group and recentre
     void randomLayout(); ///< randomly layout current open group and recentre
@@ -560,6 +529,9 @@ namespace minsky
 
     /// add/replace a definition for a flow variable given by \a valueId
     void setDefinition(const std::string& valueId, const std::string& definition);
+
+    /// reload all CSV parameters from latest values in files.
+    void reloadAllCSVParameters();
   };
 
   /// global minsky object

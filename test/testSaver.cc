@@ -21,6 +21,7 @@
 #include "schema3.h"
 #include "CSVTools.xcd"
 #include "minsky_epilogue.h"
+#undef True
 #include <UnitTest++/UnitTest++.h>
 #include <boost/filesystem.hpp>
 using namespace std;

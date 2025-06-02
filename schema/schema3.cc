@@ -518,7 +518,7 @@ namespace schema3
         if (y.ravelState)
           {
             x1->lockedState=y.ravelState->toRavelRavelState();
-            x1->tooltip(ravel::Ravel::description(x1->lockedState));
+            x1->tooltip(ravelCAPI::Ravel::description(x1->lockedState));
           }
       }
     if (auto* x1=dynamic_cast<minsky::VariableBase*>(&x))

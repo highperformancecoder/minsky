@@ -66,7 +66,14 @@ namespace minsky
         g_error_free(err);
         throw runtime_error(msg);
       }
+#ifdef MXE // MXE doesn't currently have a Rust compiler, so librsvg can be no later than 2.40.21
+    RsvgDimensionData dims;
+    rsvg_handle_get_dimensions(svg, &dims);
+    m_width=dims.width;
+    m_height=dims.height;
+#else
     rsvg_handle_get_intrinsic_size_in_pixels(svg, &m_width, &m_height);
+#endif
   }
   
 
@@ -79,11 +86,15 @@ namespace minsky
   void SVGRenderer::render(cairo_t* cairo) const
   {
     if (svg)
+#ifdef MXE
+      rsvg_handle_render_cairo(svg,cairo);
+#else
       {
         GError* err=nullptr;
-        RsvgRectangle rect{0,0,m_width,m_height};
+        const RsvgRectangle rect{0,0,m_width,m_height};
         rsvg_handle_render_document(svg,cairo,&rect,&err);
       }
+#endif
   }
 
 }

@@ -23,7 +23,6 @@
 #include "str.h"
 #include "CSVParser.h"
 
-#include <ecolab.h>
 #include <arrays.h>
 
 #include <vector>
@@ -37,7 +36,6 @@
 #include <polyPackBase.h>
 #include "variableType.h"
 #include "itemT.h"
-#include <accessor.h>
 #include <cairo/cairo.h>
 
 namespace ecolab {
@@ -60,14 +58,6 @@ namespace minsky
     ~IncrDecrCounter() {--ctr;}
   };
 
-  namespace VarAccessors
-  {
-    // constructors defined below once member functions available
-    struct NameAccessor: ecolab::TCLAccessor<minsky::VariableBase,std::string,0> {NameAccessor();};
-    struct InitAccessor: ecolab::TCLAccessor<minsky::VariableBase,std::string,1> {InitAccessor();};
-    struct ValueAccessor: ecolab::TCLAccessor<minsky::VariableBase,double> {ValueAccessor();};
-  }
-
   /// caches need copy operations to be nobbled, because they hold a reference to the derived variable
   class VariableCaches
   {
@@ -87,9 +77,6 @@ namespace minsky
   class VariableBase: virtual public classdesc::PolyPackBase,
                       public BottomRightResizerItem,
                       public VariableType,
-                      public VarAccessors::NameAccessor,
-                      public VarAccessors::InitAccessor,
-                      public VarAccessors::ValueAccessor,
                       public VariableCaches
   {
   public:
@@ -235,6 +222,8 @@ namespace minsky
     /// import CSV files, using \a spec
     void importFromCSV(const std::vector<std::string>& filenames,
                        const DataSpecSchema& spec) const;
+    /// reload CSV file if previously imported
+    void reloadCSV();
 
     /// clean up popup window structures on window close
     void destroyFrame() override;
@@ -259,6 +248,7 @@ namespace minsky
     bool enableSlider() const;
     bool enableSlider(bool) const;
     /// @}
+
   };
 
   template <minsky::VariableType::Type T>
@@ -307,8 +297,6 @@ namespace minsky
     double value(const double& x) override {init(str(x)); return x;}
     VarConstant* clone() const override {auto r=new VarConstant(*this); r->group.reset(); return r;}
     std::string classType() const override {return "VarConstant";}
-    void TCL_obj(classdesc::TCL_obj_t& t, const classdesc::string& d) override 
-    {::TCL_obj(t,d,*this);}
   };
 
   class VariablePtr: 

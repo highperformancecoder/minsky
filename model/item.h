@@ -27,8 +27,6 @@
 #include "str.h"
 #include "polyRESTProcessBase.h"
 
-#include <accessor.h>
-#include <TCL_obj_base.h>
 #include <json_pack_base.h>
 
 #include <cairo.h>
@@ -145,7 +143,7 @@ namespace minsky
     void rotate(const Point& mouse, const Point& orig);
   };
 
-  class Item: public NoteBase, public ecolab::TCLAccessor<Item,double>,
+  class Item: public NoteBase,
               public classdesc::PolyRESTProcessBase,
               public classdesc::Exclude<ItemExclude>
   {
@@ -168,8 +166,7 @@ namespace minsky
     
 
   public:
-
-    Item(): TCLAccessor<Item,double>("rotation",(Getter)&Item::rotation,(Setter)&Item::rotation) {}
+    Item()=default;
     float m_x=0, m_y=0; ///< position in canvas, or within group
     float m_sf=1; ///< scale factor of item on canvas, or within group
     mutable bool onResizeHandles=false; ///< set to true to indicate mouse is ovcaler resize handles
@@ -326,9 +323,6 @@ namespace minsky
     /// returns the variable if point (x,y) is within a
     /// visible variable icon, null otherwise.
     virtual std::shared_ptr<Item> select(float x, float y) const {return {};}
-    /// runs the TCL_obj descriptor suitable for this type
-    virtual void TCL_obj(classdesc::TCL_obj_t& t, const std::string& d)
-    {::TCL_obj(t,d,*this);}
     /// runs the RESTProcess descriptor suitable for this type
     void RESTProcess(classdesc::RESTProcess_t& rp,const std::string& d) override
     {::RESTProcess(rp,d,*this);}
@@ -398,17 +392,6 @@ namespace classdesc_access
     public classdesc::NullDescriptor<classdesc::pack_t> {};
   template <> struct access_unpack<minsky::Item>: 
     public classdesc::NullDescriptor<classdesc::unpack_t> {};
-
-  // this implements polymorphic TCL_obj drilldown
-  template <>
-  struct access_TCL_obj<minsky::ItemPtr>
-  {
-    template <class U>
-    void operator()(cd::TCL_obj_t& t, const cd::string& d, U& a)
-    {
-      if (a) a->TCL_obj(t,d);
-    }
-  };
 }
 #include "item.cd"
 #include "item.xcd"

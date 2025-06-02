@@ -8,8 +8,6 @@ cat >input.py <<EOF
 def contained(A, B):
   return A.right()>=B.right() and A.left()<=B.left() and A.bottom()>=B.bottom() and A.top()<=B.top()
 
-import sys
-sys.path.insert(0, '$here')
 from pyminsky import minsky, findObject
 
 minsky.load('testGroup.mky')

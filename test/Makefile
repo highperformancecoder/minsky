@@ -6,10 +6,15 @@ ECOLAB_HOME=../ecolab
 ifneq ($(MAKECMDGOALS),clean)
 include $(ECOLAB_HOME)/include/Makefile
 endif
+# link statically to ecolab (needed until all bugs in EcoLab 6 ironed out)
+LIBS:=$(subst -lecolab,$(ECOLAB_HOME)/lib/libecolab.a,$(LIBS)) 
 
 VPATH= .. ../schema ../model ../engine ../RESTService ../RavelCAPI/civita ../RavelCAPI $(ECOLAB_HOME)/include
 
 UNITTESTOBJS=main.o testCSVParser.o testCanvas.o testDerivative.o testExpressionWalker.o testGrid.o testLatexToPango.o testLockGroup.o testMdl.o testMinsky.o testModel.o testPannableTab.o testPhillips.o testPlotWidget.o testPubTab.o testSaver.o testStr.o testTensorOps.o testUnits.o testUserFunction.o testVariable.o testVariablePane.o testXVector.o ticket-1461.o
+
+#GTESTOBJS=testCSVParserGtest.o
+GTESTOBJS=testCSVParserGemini.o
 
 MINSKYOBJS=localMinsky.o ../libminsky.a
 FLAGS:=-I.. -I../RESTService -I../RavelCAPI/civita -I../RavelCAPI $(FLAGS)
@@ -40,10 +45,13 @@ ifdef ASAN
 FLAGS+=-fsanitize=address -fno-omit-frame-pointer
 endif
 
-all: unittests $(EXES)
+all: unittests gtestUnittests $(EXES)
 
 unittests: $(UNITTESTOBJS) $(MINSKYOBJS)
-	$(CPLUSPLUS) $(FLAGS)  -o $@ $(UNITTESTOBJS) $(MINSKYOBJS) $(LIBS)
+	$(CPLUSPLUS) $(FLAGS)  -o $@ $^ $(LIBS)
+
+gtestUnittests: gtestUnittests.o $(GTESTOBJS) $(MINSKYOBJS)
+	$(CPLUSPLUS) $(FLAGS)  -o $@ $^ $(LIBS) -lgtest
 
 # todo - remove dependency on all MINSKYOBJS
 testDatabase: main.o testDatabase.o $(MINSKYOBJS)
@@ -71,7 +79,7 @@ endif
 BASIC_CLEAN=rm -rf *.o *~ "\#*\#" core *.d *.cd *.xcd *.gcda *.gcno
 
 clean:
-	-$(BASIC_CLEAN) unittests $(EXES)
+	-$(BASIC_CLEAN) unittests gtestUnittests $(EXES)
 	cd 00; $(BASIC_CLEAN)
 	cd exampleLogs; $(BASIC_CLEAN)
 	cd oldSchema; $(BASIC_CLEAN)

@@ -631,9 +631,9 @@ export class ContextMenuManager {
             },
           },
           {
-            label: 'Portale Network Graphics',
+            label: 'Portable Network Graphics',
             click: async () => {
-              CommandsManager.exportItemAsImageDialog(plot, 'png', 'Portale Network Graphics');
+              CommandsManager.exportItemAsImageDialog(plot, 'png', 'Portable Network Graphics');
             },
           },
         ],
@@ -1169,6 +1169,15 @@ export class ContextMenuManager {
           },
         })
       );
+      menuItems.push(
+        new MenuItem({
+          label: 'Reimport CSV',
+          click: () => {
+            v.reloadCSV();
+            minsky.requestReset();
+          },
+        })
+      );
     }
 
     menuItems.push(
@@ -1334,7 +1343,7 @@ export class ContextMenuManager {
       submenu: flowMenu,
     }));
 
-    if ((await godley.table._assetClass())[c]==="equity")
+    if ((await godley.table.assetClass())[c]==="equity")
       menu.append(new MenuItem({
         label: 'Balance equity',
         click: ()=>{

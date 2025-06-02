@@ -11,7 +11,7 @@ import {
   Zoomable,
 } from '@minsky/shared';
 import { MessageBoxSyncOptions } from 'electron/renderer';
-import {OpenDialogOptions} from 'electron';
+import { OpenDialogOptions } from 'electron';
 import { Subject, takeUntil } from 'rxjs';
 import { NgIf, NgFor, NgStyle } from '@angular/common';
 import { MatOptionModule } from '@angular/material/core';
@@ -106,8 +106,8 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   mouseDown = -1;       ///< record of column of previous mouseDown
   dialogState: any;
   uniqueValues = [];
-  files: string[]=[];
-                             
+  files: string[] = [];
+
 
   existingDimensionNames: string[] = [];
   selectableDimensionNames: string[][] = [];
@@ -245,7 +245,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
 
       await this.getCSVDialogSpec();
       this.updateForm();
-      this.load(1);
+      this.load(2);
       this.selectRowAndCol(this.dialogState.spec.dataRowOffset, this.dialogState.spec.dataColOffset);
     })();
   }
@@ -299,23 +299,23 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
         { extensions: ['csv'], name: 'CSV' },
         { extensions: ['*'], name: 'All Files' },
       ],
-      properties: ['openFile','multiSelections'], 
+      properties: ['openFile', 'multiSelections'],
     };
     if (defaultPath) options['defaultPath'] = defaultPath;
     const filePaths = await this.electronService.openFileDialog(options);
 
     if (!filePaths) return;
-    if (typeof filePaths=='string') {
-      this.files=[filePaths];
+    if (typeof filePaths == 'string') {
+      this.files = [filePaths];
       this.url.setValue(filePaths);
       this.dialogState.url = filePaths;
     } else {
-      this.files=filePaths;
+      this.files = filePaths;
       this.url.setValue(filePaths[0]);
       this.dialogState.url = filePaths[0];
     }
 
-    await this.load(1);
+    await this.load(2);
   }
 
   async load(selectTab) {
@@ -326,7 +326,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
     if (this.url.value.includes('://')) {
       const savePath = await this.electronService.downloadCSV({ windowUid: this.itemId, url: this.url.value });
       this.url.setValue(savePath);
-      this.files=[savePath];
+      this.files = [savePath];
     }
 
     const fileUrlOnServer = await this.variableValuesSubCommand.csvDialog.url();
@@ -388,26 +388,26 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
     await this.getCSVDialogSpec();
 
     let header = this.dialogState.spec.headerRow;
-    this.csvCols = new Array(this.parsedLines[header]?.length);
-    this.selected = new Array(this.parsedLines[header]?.length).fill(false);
+    this.csvCols = new Array(this.dialogState.spec.numCols);
+    this.selected = new Array(this.dialogState.spec.numCols).fill(false);
     this.selectableDimensionNames = this.parsedLines[header] ? this.parsedLines[header].map(header => this.getSelectableNameDimensions(header)) : [];
     this.updateColumnTypes();
   }
 
   hypercubeSize() {
     let r = 1;
-    let dataDims=0;
+    let dataDims = 0;
     for (let i in this.uniqueValues)
       switch (this.colType[i]) {
-      case ColType.axis:
-        r *= this.uniqueValues[i];
-        break;
-      case ColType.data:
-        dataDims++;
-        break;
+        case ColType.axis:
+          r *= this.uniqueValues[i];
+          break;
+        case ColType.data:
+          dataDims++;
+          break;
       }
-    if (dataDims>0)
-      return r*dataDims;
+    if (dataDims > 0)
+      return r * dataDims;
     return r;
   }
 
@@ -531,6 +531,8 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
 
     this.dialogState.spec.dimensionCols = [];
     this.dialogState.spec.dataCols = [];
+    if (this.dialogState.spec.dataColOffset < this.colType.length)
+      this.dialogState.spec.dataColOffset = this.colType.length;
     for (let i = 0; i < this.colType.length; ++i)
       switch (this.colType[i]) {
         case ColType.axis:

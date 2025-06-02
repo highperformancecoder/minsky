@@ -24,6 +24,7 @@
 #include "selection.h"
 #include "minsky.h"
 #include "minsky_epilogue.h"
+#undef True
 #include <UnitTest++/UnitTest++.h>
 #include <exception>
 using namespace minsky;

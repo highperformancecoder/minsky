@@ -18,6 +18,7 @@
 */
 
 #include "cairoItems.h"
+#undef True
 #include <UnitTest++/UnitTest++.h>
 #include "variableValue.h"
 #include "group.h"

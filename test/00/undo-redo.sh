@@ -5,8 +5,6 @@ here=`pwd`
 # test of undo/redo
 
 cat >input.py <<EOF
-import sys
-sys.path.insert(0, '$here')
 from pyminsky import minsky, findObject
 
 minsky.load('$here/examples/1Free.mky')

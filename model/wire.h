@@ -24,8 +24,6 @@
 
 #include <error.h>
 #include <arrays.h>
-#include <TCL_obj_base.h>
-#include <accessor.h>
 #include "classdesc_access.h"
 #include <cairo.h>
 
@@ -38,9 +36,7 @@ namespace minsky
   struct Units;
   using ecolab::error;
   
-  struct WireAccessor: public ecolab::TCLAccessor<Wire, std::vector<float>> {WireAccessor();};
-  
-  class Wire: public NoteBase, public WireAccessor
+  class Wire: public NoteBase
   {
     CLASSDESC_ACCESS(Wire);
     friend struct SchemaHelper;

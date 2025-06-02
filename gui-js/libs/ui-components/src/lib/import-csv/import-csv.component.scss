@@ -209,15 +209,19 @@ td {
   filter: brightness(80%)
 }
 
-.hd-wedge-container.wedge-container {
+.hd-wedge-container {
+  position: relative;
   z-index: 10000;
 }
 
-.wedge-container {
+.column-wedge-container{
   position: relative;
   overflow-y: visible;
 
   z-index: 1000;
+}
+
+.wedge-container {
 
   .wedge-icon {
     position: absolute;
