@@ -10,6 +10,7 @@ class minsky__EventInterface__KeyPressArgs {}
 class minsky__GodleyIcon__MoveCellArgs {}
 class minsky__RenderNativeWindow__RenderFrameArgs {}
 class minsky__VariableType__TypeT {}
+class CAPIRenderer  {}
 class civita__ITensor__Args {}
 class classdesc__json_pack_t {}
 class classdesc__pack_t {}
@@ -1757,6 +1758,7 @@ export class PubTab extends RenderNativeWindow {
 
 export class Ravel extends Item {
   axisDimensions: Map<string,civita__Dimension>;
+  db: ravelCAPI__Database;
   lockGroup: RavelLockGroup;
   popup: RavelPopup;
   svgRenderer: SVGRenderer;
@@ -1766,6 +1768,7 @@ export class Ravel extends Item {
     else
       super(prefix.$prefix())
     this.axisDimensions=new Map<string,civita__Dimension>(this.$prefix()+'.axisDimensions',civita__Dimension);
+    this.db=new ravelCAPI__Database(this.$prefix()+'.db');
     this.lockGroup=new RavelLockGroup(this.$prefix()+'.lockGroup');
     this.popup=new RavelPopup(this.$prefix()+'.popup');
     this.svgRenderer=new SVGRenderer(this.$prefix()+'.svgRenderer');
@@ -1793,6 +1796,7 @@ export class Ravel extends Item {
   async handleSortableByValue(): Promise<boolean> {return this.$callMethod('handleSortableByValue');}
   async hypercube(): Promise<object> {return this.$callMethod('hypercube');}
   async inItem(a1: number,a2: number): Promise<boolean> {return this.$callMethod('inItem',a1,a2);}
+  async initRavelFromDb(): Promise<void> {return this.$callMethod('initRavelFromDb');}
   async joinLockGroup(a1: number): Promise<void> {return this.$callMethod('joinLockGroup',a1);}
   async leaveLockGroup(): Promise<void> {return this.$callMethod('leaveLockGroup');}
   async lockGroupColours(): Promise<number[]> {return this.$callMethod('lockGroupColours');}
@@ -2486,6 +2490,77 @@ export class minsky__Canvas__ZoomCrop extends CppClass {
   async top(...args: number[]): Promise<number> {return this.$callMethod('top',...args);}
   async width(...args: number[]): Promise<number> {return this.$callMethod('width',...args);}
   async zoom(...args: number[]): Promise<number> {return this.$callMethod('zoom',...args);}
+}
+
+export class ravelCAPI__Database extends CppClass {
+  constructor(prefix: string){
+    super(prefix);
+  }
+  async close(): Promise<void> {return this.$callMethod('close');}
+  async columnNames(): Promise<string[]> {return this.$callMethod('columnNames');}
+  async connect(a1: string,a2: string,a3: string): Promise<void> {return this.$callMethod('connect',a1,a2,a3);}
+  async createTable(a1: string,a2: ravel__DataSpec): Promise<void> {return this.$callMethod('createTable',a1,a2);}
+  async deduplicate(a1: string,a2: ravel__DataSpec): Promise<void> {return this.$callMethod('deduplicate',a1,a2);}
+  async fullHypercube(a1: ravelCAPI__Ravel): Promise<void> {return this.$callMethod('fullHypercube',a1);}
+  async hyperSlice(a1: ravelCAPI__Ravel): Promise<object> {return this.$callMethod('hyperSlice',a1);}
+  async loadDatabase(a1: string[],a2: ravel__DataSpec): Promise<void> {return this.$callMethod('loadDatabase',a1,a2);}
+  async setAxisNames(a1: Container<string>,a2: string): Promise<void> {return this.$callMethod('setAxisNames',a1,a2);}
+}
+
+export class ravelCAPI__Ravel extends CppClass {
+  constructor(prefix: string){
+    super(prefix);
+  }
+  async addHandle(a1: string,a2: string[]): Promise<void> {return this.$callMethod('addHandle',a1,a2);}
+  async adjustSlicer(a1: number): Promise<void> {return this.$callMethod('adjustSlicer',a1);}
+  async allSliceLabels(a1: number,a2: string): Promise<string[]> {return this.$callMethod('allSliceLabels',a1,a2);}
+  async applyCustomPermutation(a1: number,a2: number[]): Promise<void> {return this.$callMethod('applyCustomPermutation',a1,a2);}
+  async available(): Promise<boolean> {return this.$callMethod('available');}
+  async clear(): Promise<void> {return this.$callMethod('clear');}
+  async currentPermutation(a1: number): Promise<number[]> {return this.$callMethod('currentPermutation',a1);}
+  async daysUntilExpired(): Promise<number> {return this.$callMethod('daysUntilExpired');}
+  async description(...args: any[]): Promise<string> {return this.$callMethod('description',...args);}
+  async displayFilterCaliper(a1: number,a2: boolean): Promise<void> {return this.$callMethod('displayFilterCaliper',a1,a2);}
+  async explain(a1: number,a2: number): Promise<string> {return this.$callMethod('explain',a1,a2);}
+  async fromXML(a1: string): Promise<void> {return this.$callMethod('fromXML',a1);}
+  async getCaliperPositions(a1: number): Promise<object> {return this.$callMethod('getCaliperPositions',a1);}
+  async getHandleState(a1: number): Promise<object> {return this.$callMethod('getHandleState',a1);}
+  async getRavelState(): Promise<object> {return this.$callMethod('getRavelState');}
+  async handleDescription(a1: number): Promise<string> {return this.$callMethod('handleDescription',a1);}
+  async handleSetReduction(a1: number,a2: string): Promise<void> {return this.$callMethod('handleSetReduction',a1,a2);}
+  async hyperSlice(a1: civita__ITensor): Promise<object> {return this.$callMethod('hyperSlice',a1);}
+  async lastError(): Promise<string> {return this.$callMethod('lastError');}
+  async nextReduction(a1: string): Promise<void> {return this.$callMethod('nextReduction',a1);}
+  async numAllSliceLabels(a1: number): Promise<number> {return this.$callMethod('numAllSliceLabels',a1);}
+  async numHandles(): Promise<number> {return this.$callMethod('numHandles');}
+  async numSliceLabels(a1: number): Promise<number> {return this.$callMethod('numSliceLabels',a1);}
+  async onMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('onMouseDown',a1,a2);}
+  async onMouseLeave(): Promise<void> {return this.$callMethod('onMouseLeave');}
+  async onMouseMotion(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onMouseMotion',a1,a2);}
+  async onMouseOver(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onMouseOver',a1,a2);}
+  async onMouseUp(a1: number,a2: number): Promise<void> {return this.$callMethod('onMouseUp',a1,a2);}
+  async orderLabels(a1: number,a2: string): Promise<void> {return this.$callMethod('orderLabels',a1,a2);}
+  async outputHandleIds(): Promise<number[]> {return this.$callMethod('outputHandleIds');}
+  async populateFromHypercube(a1: civita__Hypercube): Promise<void> {return this.$callMethod('populateFromHypercube',a1);}
+  async radius(): Promise<number> {return this.$callMethod('radius');}
+  async rank(): Promise<number> {return this.$callMethod('rank');}
+  async redistributeHandles(): Promise<void> {return this.$callMethod('redistributeHandles');}
+  async render(a1: CAPIRenderer): Promise<void> {return this.$callMethod('render',a1);}
+  async rescale(a1: number): Promise<void> {return this.$callMethod('rescale',a1);}
+  async resetExplain(): Promise<void> {return this.$callMethod('resetExplain');}
+  async selectedHandle(): Promise<number> {return this.$callMethod('selectedHandle');}
+  async setCaliperPositions(a1: number,a2: number,a3: number): Promise<void> {return this.$callMethod('setCaliperPositions',a1,a2,a3);}
+  async setCalipers(a1: number,a2: string,a3: string): Promise<void> {return this.$callMethod('setCalipers',a1,a2,a3);}
+  async setExplain(a1: string,a2: number,a3: number): Promise<void> {return this.$callMethod('setExplain',a1,a2,a3);}
+  async setHandleDescription(a1: number,a2: string): Promise<void> {return this.$callMethod('setHandleDescription',a1,a2);}
+  async setHandleState(a1: number,a2: ravel__HandleState): Promise<void> {return this.$callMethod('setHandleState',a1,a2);}
+  async setOutputHandleIds(a1: number[]): Promise<void> {return this.$callMethod('setOutputHandleIds',a1);}
+  async setRavelState(a1: ravel__RavelState): Promise<void> {return this.$callMethod('setRavelState',a1);}
+  async setSlicer(a1: number,a2: string): Promise<void> {return this.$callMethod('setSlicer',a1,a2);}
+  async sliceLabels(a1: number): Promise<string[]> {return this.$callMethod('sliceLabels',a1);}
+  async sortByValue(a1: civita__ITensor,a2: string): Promise<void> {return this.$callMethod('sortByValue',a1,a2);}
+  async toXML(): Promise<string> {return this.$callMethod('toXML');}
+  async version(): Promise<string> {return this.$callMethod('version');}
 }
 
 export class ravel__DataSpec extends CppClass {

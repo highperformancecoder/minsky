@@ -83,6 +83,8 @@ namespace minsky
     static SVGRenderer svgRenderer; ///< SVG icon to display when not in editor mode
     RavelPopup popup; ///< popup Ravel control window
     bool flipped=false;
+    ravelCAPI::Database db; ///< backing database
+
     Ravel();
     // copy operations needed for clone, but not really used for now
     // define them as empty operations to prevent double frees if accidentally used
@@ -135,6 +137,9 @@ namespace minsky
     /// collapse all handles (applying nextReduction op where appropriate)
     /// @param collapse if true, uncollapse if false
     void collapseAllHandles(bool collapse=true);
+
+    /// if connected to a database, initialise the ravel state from it
+    void initRavelFromDb();
     
     /// enable/disable calipers on currently selected handle
     bool displayFilterCaliper() const;

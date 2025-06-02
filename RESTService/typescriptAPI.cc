@@ -7,8 +7,11 @@
 #include "bookmark.h"
 #include "bookmark.tcd"
 #include "cairoSurfaceImage.tcd"
+#include "cairoRenderer.tcd"
 #include "callableFunction.tcd"
 #include "canvas.tcd"
+#define CLASSDESC_typescriptAPI___CAPIRenderer
+#include "capiRenderer.tcd"
 #include "CSVDialog.tcd"
 #include "CSVParser.tcd"
 #include "CSVTools.tcd"
@@ -260,6 +263,8 @@ int main()
   api.addClass<ravel::DataSpec>();
   api.addClass<ravel::HandleState>();
   api.addClass<ravel::RavelState>();
+  api.addClass<ravelCAPI::Database>();
+  api.addClass<ravelCAPI::Ravel>();
   api.addClass<Units>();
   api.addClass<VariablePaneCell>();
   api.addClass<VariableValue>();
@@ -303,6 +308,7 @@ int main()
   cout << "class minsky__GodleyIcon__MoveCellArgs {}\n";
   cout << "class minsky__RenderNativeWindow__RenderFrameArgs {}\n";
   cout << "class minsky__VariableType__TypeT {}\n";
+  cout << "class CAPIRenderer  {}\n";
   cout << "class civita__ITensor__Args {}\n";
   cout << "class classdesc__json_pack_t {}\n";
   cout << "class classdesc__pack_t {}\n";

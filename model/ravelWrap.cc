@@ -276,6 +276,12 @@ namespace minsky
     minsky().requestReset();
   }
 
+  void Ravel::initRavelFromDb()
+  {
+    if (db && m_ports[1]->wires().empty())
+      db.fullHypercube(wrappedRavel);
+  }
+
   
   bool Ravel::displayFilterCaliper() const
   {
