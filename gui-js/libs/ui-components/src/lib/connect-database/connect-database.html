@@ -1,0 +1,17 @@
+<div class="container" [formGroup]="connectDatabaseForm">
+  <div class="row">
+    <select (change)="setDbType($event)">
+      <option value="sqlite3" selected>SQLite</option>
+      <option value="postgresql">PostgresQL</option>
+      <option value="mysql4">MySQL/MariaDB</option>
+      <option value="odbc4">ODBC</option>
+      <option value="odbc4">ODBC</option>
+      <option value="oracle">Oracle</option>
+      <option value="db2">DB2</option>
+      <option value="firebird">Firebird</option>
+    </select>
+    <button [hidden]="dbType!=='sqlite3'">Select File</button>
+  </div>
+  <input [hidden]="dbType==='sqlite3'" type="text" placeholder="Connection string"/>
+  <button mat-raised-button (click)="connect()">Connect</button>
+</div>

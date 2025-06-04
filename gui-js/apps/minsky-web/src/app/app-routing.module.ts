@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import {
+  ConnectDatabaseComponent,
   CliInputComponent,
   EditDescriptionComponent,
   EditGodleyCurrencyComponent,
@@ -49,6 +50,10 @@ const routes: Routes = [
   {
     path: 'headless/menu',
     loadChildren: () => import('@minsky/menu').then((m) => m.MenuModule),
+  },
+  {
+    path: 'headless/connect-database',
+    component: ConnectDatabaseComponent,
   },
   {
     path: 'headless/rename-all-instances',

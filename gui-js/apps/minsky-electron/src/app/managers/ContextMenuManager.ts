@@ -901,6 +901,17 @@ export class ContextMenuManager {
         click: () => {ravel.toggleEditorMode();}
       }),
       new MenuItem({
+        label: 'Connect to database',
+        click: () => {
+          WindowManager.createPopupWindowWithRouting({
+            title: 'Connect to database',
+            url: '#/headless/connect-database',
+            height: 100,
+            width: 250,
+          })
+        },
+      }),
+      new MenuItem({
         label: 'Export as CSV',
         submenu: this.exportAsCSVSubmenu(ravel),
       }),

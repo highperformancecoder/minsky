@@ -2497,13 +2497,13 @@ export class ravelCAPI__Database extends CppClass {
     super(prefix);
   }
   async close(): Promise<void> {return this.$callMethod('close');}
-  async columnNames(): Promise<string[]> {return this.$callMethod('columnNames');}
   async connect(a1: string,a2: string,a3: string): Promise<void> {return this.$callMethod('connect',a1,a2,a3);}
   async createTable(a1: string,a2: ravel__DataSpec): Promise<void> {return this.$callMethod('createTable',a1,a2);}
   async deduplicate(a1: string,a2: ravel__DataSpec): Promise<void> {return this.$callMethod('deduplicate',a1,a2);}
   async fullHypercube(a1: ravelCAPI__Ravel): Promise<void> {return this.$callMethod('fullHypercube',a1);}
   async hyperSlice(a1: ravelCAPI__Ravel): Promise<object> {return this.$callMethod('hyperSlice',a1);}
   async loadDatabase(a1: string[],a2: ravel__DataSpec): Promise<void> {return this.$callMethod('loadDatabase',a1,a2);}
+  async numericalColumnNames(): Promise<string[]> {return this.$callMethod('numericalColumnNames');}
   async setAxisNames(a1: Container<string>,a2: string): Promise<void> {return this.$callMethod('setAxisNames',a1,a2);}
 }
 
