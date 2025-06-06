@@ -40,6 +40,18 @@ export class ConnectDatabaseComponent implements OnInit {
     const target = event.target as HTMLSelectElement;
     this.dbType=target.value;
   }
+
+  async selectFile() {
+    let options: OpenDialogOptions = {
+      filters: [
+        { extensions: ['sqlite'], name: 'CSV' },
+        { extensions: ['*'], name: 'All Files' },
+      ],
+      properties: ['openFile'],
+    };
+    //if (defaultPath) options['defaultPath'] = defaultPath;
+    this.filePath = await this.electronService.openFileDialog(options);
+  }
   
   async connect() {
     this.closeWindow();
