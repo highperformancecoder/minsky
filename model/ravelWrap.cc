@@ -218,7 +218,7 @@ namespace minsky
         if (redistribute) wrappedRavel.redistributeHandles();
       }
 #ifndef NDEBUG
-    if (static_cast<ravel::Ravel&>(wrappedRavel) && state.empty())
+    if (wrappedRavel && state.empty())
       {
         auto d=hc.dims();
         assert(d.size()==wrappedRavel.rank());
