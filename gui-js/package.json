@@ -119,7 +119,7 @@
   },
   "private": true,
   "devDependencies": {
-    "@angular-devkit/build-angular": "^19.0.0",
+    "@angular-devkit/build-angular": "^20.0.1",
     "@angular/material": "^19.0.0",
     "@ngx-translate/core": "^15.0.0",
     "@ngx-translate/http-loader": "^8.0.0",
