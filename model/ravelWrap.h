@@ -52,7 +52,7 @@ namespace minsky
     bool keyPress(const EventInterface::KeyPressArgs&) override;
   };
   
-  class Ravel: public ItemT<Ravel, Operation<OperationType::ravel>>, public classdesc::Exclude<ravel::Ravel>
+  class Ravel: public ItemT<Ravel, Operation<OperationType::ravel>>//, public classdesc::Exclude<ravelCAPI::Ravel>
   {
   public:
 
@@ -77,7 +77,7 @@ namespace minsky
 
     std::vector<std::string> allSliceLabelsImpl(int axis, ravel::HandleSort::Order) const;
 
-    ravel::Ravel wrappedRavel;
+    ravelCAPI::Ravel wrappedRavel;
     ravel::Op::ReductionOp m_nextReduction=ravel::Op::sum;
   public:
     static SVGRenderer svgRenderer; ///< SVG icon to display when not in editor mode

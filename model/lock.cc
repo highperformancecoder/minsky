@@ -72,7 +72,7 @@ namespace minsky
           // need to a full reset at this point, not delayed
           minsky::minsky().reset();
           lockedState=r->getState();
-          tooltip(ravel::Ravel::description(lockedState));
+          tooltip(ravelCAPI::description(lockedState));
         }
       else
         throw_error("Locks can only be applied to Ravels");

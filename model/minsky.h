@@ -323,16 +323,16 @@ namespace minsky
     static const std::string minskyVersion;
     static std::string ecolabVersion() {return VERSION;}
     static std::string ravelVersion() {
-      if (ravel::Ravel::available())
+      if (ravelCAPI::Ravel::available())
         {
-          int d=ravel::Ravel::daysUntilExpired();
-          return ravel::Ravel::version() + ": "+((d>=0)?("Expires in "+std::to_string(d)+" day"+(d!=1?"s":"")): "Expired");
+          int d=ravelCAPI::Ravel::daysUntilExpired();
+          return ravelCAPI::Ravel::version() + ": "+((d>=0)?("Expires in "+std::to_string(d)+" day"+(d!=1?"s":"")): "Expired");
         }
       else return "unavailable";
     }
-    static bool ravelAvailable() {return  ravel::Ravel::available();}
-    static bool ravelExpired() {return  ravel::Ravel::available() && ravel::Ravel::daysUntilExpired()<0;}
-    static int daysUntilRavelExpires() {return  ravel::Ravel::daysUntilExpired();}
+    static bool ravelAvailable() {return  ravelCAPI::available();}
+    static bool ravelExpired() {return  ravelCAPI::available() && ravelCAPI::daysUntilExpired()<0;}
+    static int daysUntilRavelExpires() {return  ravelCAPI::daysUntilExpired();}
     
     std::string fileVersion; ///< Minsky version file was saved under
     
