@@ -1,4 +1,4 @@
-<div class="container" [formGroup]="connectDatabaseForm">
+<div class="container">
   <div class="row">
     <select (change)="setDbType($event)">
       <option value="sqlite3" selected>SQLite</option>
@@ -12,6 +12,14 @@
     </select>
     <button [hidden]="dbType!=='sqlite3'" (click)="selectFile()">Select File</button>
   </div>
-  <input [hidden]="dbType==='sqlite3'" type="text" placeholder="Connection string"/>
-  <button mat-raised-button (click)="connect()">Connect</button>
+  <input [hidden]="dbType==='sqlite3'" type="text"
+         placeholder="Connection string"/>
+  <select (change)="setTable($event)">
+    <option disabled>--Select Table--</option>
+    <option *ngFor="let t of tables" [value]="t">{{t}}</option>
+  </select>
+  <div class="row">
+    <button mat-raised-button class="btn cancel-btn" (click)="closeWindow()">Cancel</button>
+    <button mat-raised-button class="btn submit ok-btn" (click)="connect()">Connect</button>
+  </div>
 </div>

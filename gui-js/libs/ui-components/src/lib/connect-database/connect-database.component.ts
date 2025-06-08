@@ -1,9 +1,12 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
-import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { ChangeDetectorRef, Component, OnInit, SimpleChanges } from '@angular/core';
+import { FormsModule, } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
-import { events, Item, Wire } from '@minsky/shared';
+import { Ravel} from '@minsky/shared';
 import { MatButtonModule } from '@angular/material/button';
+import { OpenDialogOptions } from 'electron';
+import { CommonModule } from '@angular/common'; // Often useful for ngIf, ngFor
+import JSON5 from 'json5';
 
 @Component({
     selector: 'connect-database',
@@ -12,27 +15,26 @@ import { MatButtonModule } from '@angular/material/button';
     standalone: true,
     imports: [
         FormsModule,
-        ReactiveFormsModule,
+        CommonModule,
         MatButtonModule,
     ],
 })
 export class ConnectDatabaseComponent implements OnInit {
-
-  connectDatabaseForm: FormGroup;
   dbType="sqlite3";
+  connection: string;
+  table="";
+  tables=[];
+  ravel: Ravel;
   constructor(
     private route: ActivatedRoute,
     private electronService: ElectronService,
     private cdRef: ChangeDetectorRef
-  ) {}
+  ) {
+    this.ravel=new Ravel(this.electronService.minsky.canvas.item);
+  }
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
-    });
-
-    this.connectDatabaseForm = new FormGroup({
-      dbType: new FormControl(),
-      connectionString: new FormControl(),
     });
   }
 
@@ -41,6 +43,22 @@ export class ConnectDatabaseComponent implements OnInit {
     this.dbType=target.value;
   }
 
+  // get list of tables
+  async getTables() {
+    this.ravel.db.connect(this.dbType,this.connection,"");
+    this.tables=await this.ravel.db.tableNames();
+  }
+  
+  setTable(event) {
+    const target = event.target as HTMLSelectElement;
+    this.table=target.value;    
+  }
+
+  setConnection(event) {
+    const target = event.target as HTMLSelectElement;
+    this.connection=target.value;    
+  }
+  
   async selectFile() {
     let options: OpenDialogOptions = {
       filters: [
@@ -50,10 +68,16 @@ export class ConnectDatabaseComponent implements OnInit {
       properties: ['openFile'],
     };
     //if (defaultPath) options['defaultPath'] = defaultPath;
-    this.filePath = await this.electronService.openFileDialog(options);
+    let filePath = await this.electronService.openFileDialog(options);
+    if (typeof filePath==='string')
+      this.connection=`db=${filePath}`;
+    else
+      this.connection=`db=${filePath[0]}`;
+    await this.getTables();
   }
-  
-  async connect() {
+
+  connect() {
+    this.ravel.db.connect(this.dbType,this.connection,this.table);
     this.closeWindow();
   }
 

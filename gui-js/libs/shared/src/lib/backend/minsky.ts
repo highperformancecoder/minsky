@@ -2425,7 +2425,7 @@ export class civita__TensorVal extends CppClass {
     super(prefix);
   }
   async allocVal(): Promise<void> {return this.$callMethod('allocVal');}
-  async assign(...args: any[]): Promise<void> {return this.$callMethod('assign',...args);}
+  async assign(a1: Map<number,number>): Promise<void> {return this.$callMethod('assign',a1);}
   async at(a1: number): Promise<number> {return this.$callMethod('at',a1);}
   async atHCIndex(a1: number): Promise<number> {return this.$callMethod('atHCIndex',a1);}
   async begin(): Promise<number> {return this.$callMethod('begin');}
@@ -2505,6 +2505,7 @@ export class ravelCAPI__Database extends CppClass {
   async loadDatabase(a1: string[],a2: ravel__DataSpec): Promise<void> {return this.$callMethod('loadDatabase',a1,a2);}
   async numericalColumnNames(): Promise<string[]> {return this.$callMethod('numericalColumnNames');}
   async setAxisNames(a1: Container<string>,a2: string): Promise<void> {return this.$callMethod('setAxisNames',a1,a2);}
+  async tableNames(): Promise<string[]> {return this.$callMethod('tableNames');}
 }
 
 export class ravelCAPI__Ravel extends CppClass {

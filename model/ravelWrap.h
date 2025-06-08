@@ -52,7 +52,7 @@ namespace minsky
     bool keyPress(const EventInterface::KeyPressArgs&) override;
   };
   
-  class Ravel: public ItemT<Ravel, Operation<OperationType::ravel>>, public classdesc::Exclude<ravelCAPI::Ravel>
+  class Ravel: public ItemT<Ravel, Operation<OperationType::ravel>>//, public classdesc::Exclude<ravelCAPI::Ravel>
   {
   public:
 
