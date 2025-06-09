@@ -78,6 +78,8 @@ export class ConnectDatabaseComponent implements OnInit {
 
   connect() {
     this.ravel.db.connect(this.dbType,this.connection,this.table);
+    this.ravel.initRavelFromDb();
+    this.electronService.minsky.canvas.requestRedraw();
     this.closeWindow();
   }
 
