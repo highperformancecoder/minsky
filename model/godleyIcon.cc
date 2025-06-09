@@ -610,8 +610,11 @@ namespace minsky
   void GodleyIcon::onMouseDown(float x, float y)
   {if (m_editorMode) editor.mouseDown(toEditorX(x),toEditorY(y));}
   
-  void GodleyIcon::onMouseUp(float x, float y)
-  {if (m_editorMode) editor.mouseUp(toEditorX(x),toEditorY(y));}
+  bool GodleyIcon::onMouseUp(float x, float y)
+  {
+    if (m_editorMode) editor.mouseUp(toEditorX(x),toEditorY(y));
+    return m_editorMode;
+  }
   
   bool GodleyIcon::onMouseMotion(float x, float y)
   {

@@ -93,7 +93,7 @@ export class Item extends CppClass {
   async onMouseLeave(): Promise<void> {return this.$callMethod('onMouseLeave');}
   async onMouseMotion(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onMouseMotion',a1,a2);}
   async onMouseOver(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onMouseOver',a1,a2);}
-  async onMouseUp(a1: number,a2: number): Promise<void> {return this.$callMethod('onMouseUp',a1,a2);}
+  async onMouseUp(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onMouseUp',a1,a2);}
   async onResizeHandle(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onResizeHandle',a1,a2);}
   async onResizeHandles(...args: boolean[]): Promise<boolean> {return this.$callMethod('onResizeHandles',...args);}
   async portX(a1: number): Promise<number> {return this.$callMethod('portX',a1);}
@@ -266,7 +266,7 @@ export class VariableBase extends Item {
   async onMouseLeave(): Promise<void> {return this.$callMethod('onMouseLeave');}
   async onMouseMotion(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onMouseMotion',a1,a2);}
   async onMouseOver(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onMouseOver',a1,a2);}
-  async onMouseUp(a1: number,a2: number): Promise<void> {return this.$callMethod('onMouseUp',a1,a2);}
+  async onMouseUp(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onMouseUp',a1,a2);}
   async onResizeHandle(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onResizeHandle',a1,a2);}
   async onResizeHandles(...args: boolean[]): Promise<boolean> {return this.$callMethod('onResizeHandles',...args);}
   async portX(a1: number): Promise<number> {return this.$callMethod('portX',a1);}
@@ -741,7 +741,7 @@ export class GodleyIcon extends Item {
   async onMouseLeave(): Promise<void> {return this.$callMethod('onMouseLeave');}
   async onMouseMotion(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onMouseMotion',a1,a2);}
   async onMouseOver(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onMouseOver',a1,a2);}
-  async onMouseUp(a1: number,a2: number): Promise<void> {return this.$callMethod('onMouseUp',a1,a2);}
+  async onMouseUp(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onMouseUp',a1,a2);}
   async removeControlledItems(a1: GroupItems): Promise<void> {return this.$callMethod('removeControlledItems',a1);}
   async resize(a1: LassoBox): Promise<void> {return this.$callMethod('resize',a1);}
   async rowSum(a1: number): Promise<string> {return this.$callMethod('rowSum',a1);}
@@ -1109,7 +1109,7 @@ export class Group extends Item {
   async onMouseLeave(): Promise<void> {return this.$callMethod('onMouseLeave');}
   async onMouseMotion(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onMouseMotion',a1,a2);}
   async onMouseOver(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onMouseOver',a1,a2);}
-  async onMouseUp(a1: number,a2: number): Promise<void> {return this.$callMethod('onMouseUp',a1,a2);}
+  async onMouseUp(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onMouseUp',a1,a2);}
   async onResizeHandle(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onResizeHandle',a1,a2);}
   async onResizeHandles(...args: boolean[]): Promise<boolean> {return this.$callMethod('onResizeHandles',...args);}
   async portX(a1: number): Promise<number> {return this.$callMethod('portX',a1);}
@@ -1779,6 +1779,7 @@ export class Ravel extends Item {
   async applyState(a1: ravel__RavelState): Promise<void> {return this.$callMethod('applyState',a1);}
   async broadcastStateToLockGroup(): Promise<void> {return this.$callMethod('broadcastStateToLockGroup');}
   async collapseAllHandles(a1: boolean): Promise<void> {return this.$callMethod('collapseAllHandles',a1);}
+  async createChain(a1: civita__ITensor): Promise<object[]> {return this.$callMethod('createChain',a1);}
   async description(): Promise<string> {return this.$callMethod('description');}
   async dimension(a1: number): Promise<object> {return this.$callMethod('dimension',a1);}
   async dimensionType(...args: any[]): Promise<string> {return this.$callMethod('dimensionType',...args);}
@@ -1809,7 +1810,7 @@ export class Ravel extends Item {
   async onMouseLeave(): Promise<void> {return this.$callMethod('onMouseLeave');}
   async onMouseMotion(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onMouseMotion',a1,a2);}
   async onMouseOver(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onMouseOver',a1,a2);}
-  async onMouseUp(a1: number,a2: number): Promise<void> {return this.$callMethod('onMouseUp',a1,a2);}
+  async onMouseUp(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onMouseUp',a1,a2);}
   async pickSliceLabels(a1: number,a2: string[]): Promise<void> {return this.$callMethod('pickSliceLabels',a1,a2);}
   async pickedSliceLabels(...args: any[]): Promise<string[]> {return this.$callMethod('pickedSliceLabels',...args);}
   async populateHypercube(a1: civita__Hypercube): Promise<void> {return this.$callMethod('populateHypercube',a1);}
@@ -2031,7 +2032,7 @@ export class Selection extends CppClass {
   async onMouseLeave(): Promise<void> {return this.$callMethod('onMouseLeave');}
   async onMouseMotion(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onMouseMotion',a1,a2);}
   async onMouseOver(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onMouseOver',a1,a2);}
-  async onMouseUp(a1: number,a2: number): Promise<void> {return this.$callMethod('onMouseUp',a1,a2);}
+  async onMouseUp(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onMouseUp',a1,a2);}
   async onResizeHandle(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onResizeHandle',a1,a2);}
   async onResizeHandles(...args: boolean[]): Promise<boolean> {return this.$callMethod('onResizeHandles',...args);}
   async portX(a1: number): Promise<number> {return this.$callMethod('portX',a1);}

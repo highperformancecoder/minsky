@@ -1501,13 +1501,14 @@ namespace minsky
     
     CLASSDESC_ACCESS(Ravel);
   public:
-    RavelTensor(const Ravel& ravel): ravel(ravel) {}
+    RavelTensor(const Ravel& ravel): ravel(ravel) {
+      if (ravel.db) chain=const_cast<Ravel&>(ravel).createChain(nullptr);
+    }
 
     void setArgument(const TensorPtr& a,const Args&) override {
-      // not sure how to avoid this const cast here
       arg=a;
-      const_cast<Ravel&>(ravel).populateHypercube(a->hypercube());
-      chain=ravel::createRavelChain(ravel.getState(), a);
+      // not sure how to avoid this const cast here
+      chain=const_cast<Ravel&>(ravel).createChain(a);
     }
 
     double operator[](size_t i) const override {

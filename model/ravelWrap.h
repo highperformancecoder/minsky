@@ -110,7 +110,7 @@ namespace minsky
     void resize(const LassoBox&) override;
     bool inItem(float x, float y) const override;
     void onMouseDown(float x, float y) override;
-    void onMouseUp(float x, float y) override;
+    bool onMouseUp(float x, float y) override;
     bool onMouseMotion(float x, float y) override;
     bool onMouseOver(float x, float y) override;
     void onMouseLeave() override {wrappedRavel.onMouseLeave();}
@@ -140,6 +140,11 @@ namespace minsky
 
     /// if connected to a database, initialise the ravel state from it
     void initRavelFromDb();
+
+    /// make a tensor expression corresponding to the state of this
+    /// Ravel, applied to \a arg. If \a arg is nullptr, then the
+    /// returned expression is extracted from the database.
+    std::vector<civita::TensorPtr> createChain(const TensorPtr& arg);
     
     /// enable/disable calipers on currently selected handle
     bool displayFilterCaliper() const;

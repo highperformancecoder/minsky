@@ -906,7 +906,7 @@ export class ContextMenuManager {
           WindowManager.createPopupWindowWithRouting({
             title: 'Connect to database',
             url: '#/headless/connect-database',
-            height: 100,
+            height: 120,
             width: 250,
           })
         },

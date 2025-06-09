@@ -18,7 +18,7 @@
     <option disabled selected>--Select Table--</option>
     <option *ngFor="let t of tables" [value]="t">{{t}}</option>
   </select>
-  <div class="row">
+  <div class="row form-buttons">
     <button mat-raised-button class="btn cancel-btn" (click)="closeWindow()">Cancel</button>
     <button mat-raised-button class="btn submit ok-btn" (click)="connect()">Connect</button>
   </div>
