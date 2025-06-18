@@ -150,7 +150,7 @@ namespace minsky
 
   protected:
     // these need to be protected, not private to allow the setting of these in constructors.
-    double m_width=10, m_height=10;
+    double m_width=20, m_height=20;
     ItemPortVector m_ports;
     
     mutable struct MemoisedRotator: public Rotate

@@ -87,8 +87,7 @@ namespace minsky
       const ecolab::cairo::CairoSave cs(cairo);
       cairo_translate(cairo,-0.5*w,-0.5*h);
       SVGRenderer* icon=locked()? &lockedIcon: &unlockedIcon;
-      cairo_scale(cairo, w/icon->width(), h/icon->height());
-      icon->render(cairo);
+      icon->render(cairo,w,h);
     }
     
     if (mouseFocus)

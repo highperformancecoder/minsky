@@ -71,8 +71,6 @@ namespace minsky
     rsvg_handle_get_dimensions(svg, &dims);
     m_width=dims.width;
     m_height=dims.height;
-#else
-    rsvg_handle_get_intrinsic_size_in_pixels(svg, &m_width, &m_height);
 #endif
   }
   
@@ -83,15 +81,16 @@ namespace minsky
       g_object_unref(svg);
   }
 
-  void SVGRenderer::render(cairo_t* cairo) const
+  void SVGRenderer::render(cairo_t* cairo, double width, double height) const
   {
     if (svg)
-#ifdef MXE
+#ifdef MXE // MXE doesn't currently have a Rust compiler, so librsvg can be no later than 2.40.21
+      cairo_scale(cairo,width/m_width, height/m_height);
       rsvg_handle_render_cairo(svg,cairo);
 #else
       {
         GError* err=nullptr;
-        const RsvgRectangle rect{0,0,m_width,m_height};
+        const RsvgRectangle rect{0,0,width,height};
         rsvg_handle_render_document(svg,cairo,&rect,&err);
       }
 #endif

@@ -1894,10 +1894,8 @@ export class SVGRenderer extends CppClass {
   constructor(prefix: string){
     super(prefix);
   }
-  async height(): Promise<number> {return this.$callMethod('height');}
-  async render(a1: minsky__dummy): Promise<void> {return this.$callMethod('render',a1);}
+  async render(a1: minsky__dummy,a2: number,a3: number): Promise<void> {return this.$callMethod('render',a1,a2,a3);}
   async setResource(a1: string): Promise<void> {return this.$callMethod('setResource',a1);}
-  async width(): Promise<number> {return this.$callMethod('width');}
 }
 
 export class Selection extends CppClass {
