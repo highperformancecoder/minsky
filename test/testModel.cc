@@ -499,6 +499,7 @@ SUITE(Canvas)
       auto cc=model->addItem(new Variable<VariableType::flow>("cc"));
       cc->moveTo(500,300);
       auto cv=dynamic_cast<VariableBase*>(cc.get());
+      cv->iWidth(10);
       cv->value(1000);
       cv->sliderMin(0);
       cv->sliderMax(2000);
