@@ -986,10 +986,9 @@ namespace minsky
             }
           else
             {
-              cairo_scale(cairo,width/svgRenderer.width(),height/svgRenderer.height());
-              cairo_rectangle(cairo,0, 0,svgRenderer.width(), svgRenderer.height());
+              cairo_rectangle(cairo,0, 0,width, height);
               cairo_clip(cairo);
-              svgRenderer.render(cairo);
+              svgRenderer.render(cairo,width, height);
             }
         }
     }

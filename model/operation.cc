@@ -1200,9 +1200,8 @@ namespace minsky
   template <> void Operation<OperationType::histogram>::iconDraw(cairo_t* cairo) const
   {
     const double sf = scaleFactor(); 	     
-    cairo_translate(cairo,-sf*iWidth(), -sf*iHeight());
-    cairo_scale(cairo,2*sf*iWidth()/cminsky().histogramResource.width(),2*sf*iHeight()/cminsky().histogramResource.height());
-    cminsky().histogramResource.render(cairo);
+    cairo_translate(cairo,-0.5*iWidth(),-0.5*iHeight());
+    cminsky().histogramResource.render(cairo,iWidth(),iHeight());
   }
 
   

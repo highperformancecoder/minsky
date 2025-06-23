@@ -11,6 +11,7 @@ minsky.setGodleyIconResource('$here/gui-js/apps/minsky-electron/src/assets/godle
 minsky.setGroupIconResource('$here/gui-js/apps/minsky-electron/src/assets/group.svg')
 minsky.setRavelIconResource('$here/gui-js/apps/minsky-electron/src/assets/ravel-logo.svg')
 minsky.setLockIconResource('$here/gui-js/apps/minsky-electron/src/assets/locked.svg','$here/gui-js/apps/minsky-electron/src/assets/unlocked.svg')
+minsky.histogramResource.setResource('$here/gui-js/apps/minsky-electron/src/assets/histogram.svg')
 
 minsky.load('$here/test/allItems.mky')
 minsky.multipleEquities(1)

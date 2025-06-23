@@ -480,8 +480,7 @@ namespace minsky
       {
         const CairoSave cs(cairo);
         cairo_translate(cairo,left+leftMargin(),top);
-        cairo_scale(cairo, (w-leftMargin())/svgRenderer.width(), (h-bottomMargin())/svgRenderer.height());
-        svgRenderer.render(cairo);
+        svgRenderer.render(cairo, w-leftMargin(), h-bottomMargin());
         titley=top+0.1*(h-bottomMargin());
       }
     

@@ -130,8 +130,7 @@ namespace minsky
       else
         {
           cairo_translate(cairo,-r,-r);
-          cairo_scale(cairo,2*r/svgRenderer.width(), 2*r/svgRenderer.height());
-          svgRenderer.render(cairo);
+          svgRenderer.render(cairo,2*r,2*r);
         }
     }        
     if (selected) drawSelected(cairo);
@@ -219,7 +218,7 @@ namespace minsky
         if (redistribute) wrappedRavel.redistributeHandles();
       }
 #ifndef NDEBUG
-    if (static_cast<ravelCAPI::Ravel&>(wrappedRavel) && state.empty())
+    if (wrappedRavel && state.empty())
       {
         auto d=hc.dims();
         assert(d.size()==wrappedRavel.rank());
