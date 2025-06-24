@@ -2516,6 +2516,7 @@ export class ravelCAPI__Ravel extends CppClass {
   async allSliceLabels(a1: number,a2: string): Promise<string[]> {return this.$callMethod('allSliceLabels',a1,a2);}
   async applyCustomPermutation(a1: number,a2: number[]): Promise<void> {return this.$callMethod('applyCustomPermutation',a1,a2);}
   async available(): Promise<boolean> {return this.$callMethod('available');}
+  async cancel(a1: boolean): Promise<void> {return this.$callMethod('cancel',a1);}
   async clear(): Promise<void> {return this.$callMethod('clear');}
   async currentPermutation(a1: number): Promise<number[]> {return this.$callMethod('currentPermutation',a1);}
   async daysUntilExpired(): Promise<number> {return this.$callMethod('daysUntilExpired');}
