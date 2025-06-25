@@ -113,8 +113,9 @@ namespace schema3
     Optional<minsky::DataSpecSchema> csvDataSpec; //CSV import data
     Optional<std::map<double,double>> dataOpData;
     Optional<std::string> expression; // userfunction
-    Optional<std::string> filename;
+    Optional<std::string> filename; 
     Optional<schema2::RavelState> ravelState;
+    Optional<ravelCAPI::DatabaseConnection> dbConnection;
     Optional<int> lockGroup;
     Optional<std::set<std::string>> lockGroupHandles;
     Optional<minsky::Dimensions> dimensions;

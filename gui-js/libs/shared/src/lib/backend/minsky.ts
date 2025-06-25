@@ -2424,7 +2424,7 @@ export class civita__TensorVal extends CppClass {
     super(prefix);
   }
   async allocVal(): Promise<void> {return this.$callMethod('allocVal');}
-  async assign(a1: Map<number,number>): Promise<void> {return this.$callMethod('assign',a1);}
+  async assign(...args: any[]): Promise<void> {return this.$callMethod('assign',...args);}
   async at(a1: number): Promise<number> {return this.$callMethod('at',a1);}
   async atHCIndex(a1: number): Promise<number> {return this.$callMethod('atHCIndex',a1);}
   async begin(): Promise<number> {return this.$callMethod('begin');}
@@ -2497,6 +2497,7 @@ export class ravelCAPI__Database extends CppClass {
   }
   async close(): Promise<void> {return this.$callMethod('close');}
   async connect(a1: string,a2: string,a3: string): Promise<void> {return this.$callMethod('connect',a1,a2,a3);}
+  async connection(): Promise<object> {return this.$callMethod('connection');}
   async createTable(a1: string,a2: ravel__DataSpec): Promise<void> {return this.$callMethod('createTable',a1,a2);}
   async deduplicate(a1: string,a2: ravel__DataSpec): Promise<void> {return this.$callMethod('deduplicate',a1,a2);}
   async fullHypercube(a1: ravelCAPI__Ravel): Promise<void> {return this.$callMethod('fullHypercube',a1);}

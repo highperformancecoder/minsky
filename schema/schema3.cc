@@ -19,6 +19,7 @@
 #include "dataOp.h"
 #include "schema3.h"
 #include "CSVTools.xcd"
+#include "dynamicRavelCAPI.xcd"
 #include "sheet.h"
 #include "userFunction.h"
 #include "minsky_epilogue.h"
@@ -193,6 +194,9 @@ namespace schema3
                   items.back().editorMode=r->editorMode();
                 }
               if (r->flipped) items.back().rotation=180;
+              auto dbConnection=r->db.connection();
+              if (!dbConnection.dbType.empty())
+                items.back().dbConnection=dbConnection;
             }
           if (auto* l=dynamic_cast<const minsky::Lock*>(i))
             if (l->locked())
@@ -500,6 +504,11 @@ namespace schema3
     
     if (auto* x1=dynamic_cast<minsky::Ravel*>(&x))
       {
+        if (y.dbConnection)
+          {
+            x1->db.connect(y.dbConnection->dbType,y.dbConnection->connection,y.dbConnection->table);
+            x1->initRavelFromDb();
+          }
         if (y.ravelState)
           {
             x1->applyState(y.ravelState->toRavelRavelState());
