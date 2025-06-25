@@ -78,6 +78,9 @@ namespace minsky
     std::vector<std::string> allSliceLabelsImpl(int axis, ravel::HandleSort::Order) const;
 
     ravelCAPI::Ravel wrappedRavel;
+    /// serialised copy of previous state for caching purposes
+    classdesc::pack_t lastState;
+    civita::TensorPtr cachedDbResult; ///< cache of database query result
     ravel::Op::ReductionOp m_nextReduction=ravel::Op::sum;
   public:
     static SVGRenderer svgRenderer; ///< SVG icon to display when not in editor mode

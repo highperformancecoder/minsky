@@ -292,7 +292,13 @@ namespace minsky
         populateHypercube(arg->hypercube());
         return ravel::createRavelChain(getState(), arg);
       }
-    return {db.hyperSlice(wrappedRavel)};
+    pack_t buf; buf<<getState();
+    if (buf.cmp(lastState)!=0)
+      {
+        lastState.swap(buf);
+        cachedDbResult=db.hyperSlice(wrappedRavel);
+      }
+    return {cachedDbResult};
   }
   
   bool Ravel::displayFilterCaliper() const
