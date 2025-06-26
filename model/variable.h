@@ -225,9 +225,6 @@ namespace minsky
     /// reload CSV file if previously imported
     void reloadCSV();
 
-    /// clean up popup window structures on window close
-    void destroyFrame() override;
-
     bool miniPlotEnabled() const {return bool(miniPlot);}
     bool miniPlotEnabled(bool);
     void resetMiniPlot();

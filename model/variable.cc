@@ -482,13 +482,6 @@ void VariableBase::reloadCSV()
       loadValueFromCSVFile(*v, {v->csvDialog.url}, v->csvDialog.spec);
 }
 
-
-void VariableBase::destroyFrame()
-{
-  if (auto vv=vValue())
-    vv->csvDialog.destroyFrame();
-}
-
 void VariableBase::insertControlled(Selection& selection)
 {
   selection.ensureItemInserted(controller.lock());
