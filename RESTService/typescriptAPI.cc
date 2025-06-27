@@ -19,6 +19,7 @@
 #include "dataSpecSchema.tcd"
 #include "dataOp.h"
 #include "dataOp.tcd"
+#include "databaseIngestor.tcd"
 #include "dimension.tcd"
 #include "dynamicRavelCAPI.tcd"
 #include "engNotation.tcd"

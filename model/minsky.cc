@@ -35,6 +35,9 @@
 #include "minskyVersion.h"
 
 #include "CSVTools.xcd"
+#include "databaseIngestor.cd"
+#include "databaseIngestor.rcd"
+#include "databaseIngestor.xcd"
 #include "dynamicRavelCAPI.rcd"
 #include "dynamicRavelCAPI.xcd"
 #include "fontDisplay.rcd"

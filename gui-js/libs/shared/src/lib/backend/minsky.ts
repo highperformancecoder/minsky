@@ -564,6 +564,28 @@ export class DataSpecSchema extends CppClass {
   async separator(...args: number[]): Promise<number> {return this.$callMethod('separator',...args);}
 }
 
+export class DatabaseIngestor extends CppClass {
+  db: ravelCAPI__Database;
+  spec: DataSpec;
+  constructor(prefix: string){
+    super(prefix);
+    this.db=new ravelCAPI__Database(this.$prefix()+'.db');
+    this.spec=new DataSpec(this.$prefix()+'.spec');
+  }
+  async classifyColumns(): Promise<void> {return this.$callMethod('classifyColumns');}
+  async correctedUniqueValues(): Promise<number[]> {return this.$callMethod('correctedUniqueValues');}
+  async guessSpecAndLoadFile(): Promise<void> {return this.$callMethod('guessSpecAndLoadFile');}
+  async importFromCSV(a1: string[]): Promise<void> {return this.$callMethod('importFromCSV',a1);}
+  async loadFile(): Promise<void> {return this.$callMethod('loadFile');}
+  async loadFileFromName(a1: string): Promise<void> {return this.$callMethod('loadFileFromName',a1);}
+  async numInitialLines(...args: number[]): Promise<number> {return this.$callMethod('numInitialLines',...args);}
+  async parseLines(a1: number): Promise<string[][]> {return this.$callMethod('parseLines',a1);}
+  async populateHeader(a1: number): Promise<void> {return this.$callMethod('populateHeader',a1);}
+  async populateHeaders(): Promise<void> {return this.$callMethod('populateHeaders');}
+  async reportFromFile(a1: string,a2: string): Promise<void> {return this.$callMethod('reportFromFile',a1,a2);}
+  async url(...args: string[]): Promise<string> {return this.$callMethod('url',...args);}
+}
+
 export class EngNotation extends CppClass {
   constructor(prefix: string){
     super(prefix);
@@ -1229,6 +1251,7 @@ export class Lock extends Item {
 export class Minsky extends CppClass {
   canvas: Canvas;
   conversions: civita__Conversions;
+  databaseIngestor: DatabaseIngestor;
   dimensions: Map<string,civita__Dimension>;
   equationDisplay: EquationDisplay;
   evalGodley: EvalGodley;
@@ -1250,6 +1273,7 @@ export class Minsky extends CppClass {
     super(prefix);
     this.canvas=new Canvas(this.$prefix()+'.canvas');
     this.conversions=new civita__Conversions(this.$prefix()+'.conversions');
+    this.databaseIngestor=new DatabaseIngestor(this.$prefix()+'.databaseIngestor');
     this.dimensions=new Map<string,civita__Dimension>(this.$prefix()+'.dimensions',civita__Dimension);
     this.equationDisplay=new EquationDisplay(this.$prefix()+'.equationDisplay');
     this.evalGodley=new EvalGodley(this.$prefix()+'.evalGodley');

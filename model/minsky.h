@@ -26,6 +26,7 @@
 #include "cairoItems.h"
 #include "canvas.h"
 #include "clipboard.h"
+#include "databaseIngestor.h"
 #include "dimension.h"
 #include "dynamicRavelCAPI.h"
 #include "evalOp.h"
@@ -143,7 +144,8 @@ namespace minsky
     FontDisplay fontSampler;
     PhillipsDiagram phillipsDiagram;
     std::vector<PubTab> publicationTabs;
-
+    DatabaseIngestor databaseIngestor;
+    
     void addNewPublicationTab(const std::string& name) {publicationTabs.emplace_back(name);}
     void addCanvasItemToPublicationTab(size_t i) {
       if (canvas.item && i<publicationTabs.size())
