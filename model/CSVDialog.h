@@ -63,6 +63,8 @@ namespace minsky
     /// could slightly underestimate the value, and is never less than
     /// 1, even for empty columns
     std::vector<size_t> correctedUniqueValues();
+    /// import names CSV files using spec above
+    virtual void importFromCSV(const std::vector<std::string>& filenames)=0;
   };
 
   bool isNumerical(const std::string& s);

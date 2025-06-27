@@ -17,6 +17,7 @@ import {
   ImportStockPayload,
   GodleyIcon,
   DownloadCSVPayload,
+  VariableBase,
 } from '@minsky/shared';
 import { BrowserWindow, dialog, ipcMain } from 'electron';
 import { BookmarkManager } from '../managers/BookmarkManager';
@@ -215,8 +216,8 @@ ipcMain.handle(events.NEW_SYSTEM, async () => {
 ipcMain.handle(
   events.IMPORT_CSV,
   async (event) => {
-    const itemInfo = await CommandsManager.getFocusItemInfo();
-    CommandsManager.importCSV(itemInfo, true);
+    let v=new VariableBase(minsky.canvas.itemFocus);
+    CommandsManager.importCSV(minsky.variableValues.elem(await v.valueId()), true);
     return;
   }
 );

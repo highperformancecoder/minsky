@@ -1,6 +1,7 @@
 import {
   CanvasItem,
   ClassType,
+  CSVDialog,
   events,
   Functions,
   HandleDimensionPayload,
@@ -912,11 +913,13 @@ export class CommandsManager {
     this.setLogSimulationCheckmark(true);
   }
 
-  static async importCSV(itemInfo: CanvasItem, isInvokedUsingToolbar = false) {
+  static async importCSV(csvDialog: CSVDialog, isInvokedUsingToolbar = false) {
+    const itemInfo: CanvasItem={classType: ClassType.Variable, id: csvDialog.$prefix(), displayContents: false};
     if (!WindowManager.focusIfWindowIsPresent(itemInfo.id)) {
+      
       const window = await this.initializePopupWindow({
         itemInfo,
-        url: `#/headless/import-csv?systemWindowId=0&itemId=${itemInfo.id}&isInvokedUsingToolbar=${isInvokedUsingToolbar}`,
+        url: `#/headless/import-csv?systemWindowId=0&csvDialog=${csvDialog.$prefix()}&isInvokedUsingToolbar=${isInvokedUsingToolbar}`,
         height: 600,
         width: 1300,
         minWidth: 650,
@@ -942,7 +945,7 @@ export class CommandsManager {
       
       window.loadURL(
         WindowManager.getWindowUrl(
-          `#/headless/import-csv?systemWindowId=${systemWindowId}&itemId=${itemInfo.id}&isInvokedUsingToolbar=${isInvokedUsingToolbar}&examplesPath=${join(dirname(app.getAppPath()),'examples','data')}`
+          `#/headless/import-csv?systemWindowId=${systemWindowId}&csvDialog=${csvDialog.$prefix()}&isInvokedUsingToolbar=${isInvokedUsingToolbar}&examplesPath=${join(dirname(app.getAppPath()),'examples','data')}`
         )
       );
     }

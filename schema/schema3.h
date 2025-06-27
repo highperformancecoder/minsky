@@ -148,9 +148,9 @@ namespace schema3
       if (auto vv=v.vValue())
         {
           units=vv->units.str();
-          if (!vv->csvDialog.url.empty())
-            csvDataSpec=vv->csvDialog.spec.toSchema();
-          url=vv->csvDialog.url;
+          if (!vv->url.empty())
+            csvDataSpec=vv->spec.toSchema();
+          url=vv->url;
         }
     }
     Item(int id, const minsky::OperationBase& o, const std::vector<int>& ports):

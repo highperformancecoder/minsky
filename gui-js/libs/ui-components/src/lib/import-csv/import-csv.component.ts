@@ -3,6 +3,7 @@ import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModu
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
 import {
+  CSVDialog,
   dateTimeFormats,
   events,
   importCSVvariableName,
@@ -17,6 +18,7 @@ import { NgIf, NgFor, NgStyle } from '@angular/common';
 import { MatOptionModule } from '@angular/material/core';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
+import JSON5 from 'json5';
 
 enum ColType {
   axis = "axis",
@@ -92,12 +94,10 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
 
   fileLoaded = false;
 
-  itemId: string;
   systemWindowId: number;
   isInvokedUsingToolbar: boolean;
   examplesPath: string;
-  valueId: string;
-  variableValuesSubCommand: VariableValue;
+  csvDialog: CSVDialog;
   timeFormatStrings = dateTimeFormats;
   parsedLines: string[][] = [];
   csvCols: any[];
@@ -187,7 +187,8 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   ) {
     super();
     this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      this.itemId = params.itemId;
+      electronService.log(JSON5.stringify(params));
+      this.csvDialog = new CSVDialog(params.csvDialog);
       this.systemWindowId = params.systemWindowId;
       this.isInvokedUsingToolbar = params.isInvokedUsingToolbar;
       this.examplesPath = params.examplesPath;
@@ -239,10 +240,6 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
 
   ngAfterViewInit() {
     (async () => {
-      this.valueId = await this.getValueId();
-      this.variableValuesSubCommand = this.electronService.minsky.variableValues.elem(this.valueId);
-
-
       await this.getCSVDialogSpec();
       this.updateForm();
       this.load(2);
@@ -289,9 +286,9 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
     });
   }
 
-  async getValueId() {
-    return new VariableBase(this.electronService.minsky.namedItems.elem(this.itemId)).valueId();
-  }
+//  async getValueId() {
+//    return new VariableBase(this.electronService.minsky.namedItems.elem(this.itemId)).valueId();
+//  }
 
   async selectFile(defaultPath: string = '') {
     let options: OpenDialogOptions = {
@@ -324,20 +321,20 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
     this.setParameterNameFromUrl();
 
     if (this.url.value.includes('://')) {
-      const savePath = await this.electronService.downloadCSV({ windowUid: this.itemId, url: this.url.value });
+      const savePath = await this.electronService.downloadCSV({ windowUid: this.csvDialog.$prefix(), url: this.url.value });
       this.url.setValue(savePath);
       this.files = [savePath];
     }
 
-    const fileUrlOnServer = await this.variableValuesSubCommand.csvDialog.url();
+    const fileUrlOnServer = await this.csvDialog.url();
 
     if (this.url.value !== fileUrlOnServer) {
-      await this.variableValuesSubCommand.csvDialog.url(this.url.value);
-      await this.variableValuesSubCommand.csvDialog.guessSpecAndLoadFile();
+      await this.csvDialog.url(this.url.value);
+      await this.csvDialog.guessSpecAndLoadFile();
       await this.getCSVDialogSpec();
       this.updateForm();
     } else {
-      await this.variableValuesSubCommand.csvDialog.loadFile();
+      await this.csvDialog.loadFile();
     }
 
     await this.parseLines();
@@ -359,9 +356,9 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   }
 
   async getCSVDialogSpec() {
-    this.variableValuesSubCommand.csvDialog.spec.toSchema();
-    this.dialogState = await this.variableValuesSubCommand.csvDialog.$properties() as Record<string, unknown>;
-    this.uniqueValues = await this.variableValuesSubCommand.csvDialog.correctedUniqueValues();
+    this.csvDialog.spec.toSchema();
+    this.dialogState = await this.csvDialog.$properties() as Record<string, unknown>;
+    this.uniqueValues = await this.csvDialog.correctedUniqueValues();
   }
 
   updateColumnTypes() {
@@ -384,7 +381,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   }
 
   async parseLines() {
-    this.parsedLines = await this.variableValuesSubCommand.csvDialog.parseLines(this.dialogState.spec.maxColumn) as string[][];
+    this.parsedLines = await this.csvDialog.parseLines(this.dialogState.spec.maxColumn) as string[][];
     await this.getCSVDialogSpec();
 
     let header = this.dialogState.spec.headerRow;
@@ -413,7 +410,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
 
   onSeparatorChange() {
     this.updateSpecFromForm();
-    this.variableValuesSubCommand.csvDialog.spec.$properties(this.dialogState.spec);
+    this.csvDialog.spec.$properties(this.dialogState.spec);
     this.parseLines();
   }
 
@@ -553,9 +550,8 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
 
     if (this.dialogState.spec.dataCols.length === 0)
       this.dialogState.spec.counter = true;
-    let v = new VariableBase(this.electronService.minsky.canvas.item);
     // returns an error message on error
-    const res = await v.importFromCSV(this.files, this.dialogState.spec) as unknown as string;
+    const res = await this.csvDialog.importFromCSV(this.files) as unknown as string;
 
     if (typeof res === 'string') {
       const positiveResponseText = 'Yes';
@@ -575,20 +571,16 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
       return;
     }
 
-    const currentItemId = await v.id();
-    const currentItemName = await v.name();
-
-    if (
-      this.isInvokedUsingToolbar &&
-      currentItemId === this.itemId &&
-      currentItemName === importCSVvariableName &&
-      this.parameterName.value
-    ) {
-      await this.electronService.minsky.canvas.renameItem(this.parameterName.value);
-      v.tooltip(this.shortDescription.value);
-      v.detailedText(this.detailedDescription.value);
+    if (this.isInvokedUsingToolbar && this.parameterName.value) {
+      // rename variable if newly added variable is still focussed
+      let v=new VariableBase(this.electronService.minsky.canvas.itemFocus);
+      let vv=new VariableValue(this.csvDialog.$prefix());
+      if (await v?.valueId()===await vv?.valueId()) {
+        v.tooltip(this.shortDescription.value);
+        v.detailedText(this.detailedDescription.value);
+        v.name(this.parameterName.value);
+      }
     }
-
     this.closeWindow();
   }
 
@@ -605,19 +597,19 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
     });
     if (!filePath) return;
 
-    await this.variableValuesSubCommand.csvDialog.reportFromFile(this.url.value, filePath);
+    await this.csvDialog.reportFromFile(this.url.value, filePath);
     return;
   }
 
   async contextMenu(row: number, col: number) {
     // update C++ spec with current state
     this.updateSpecFromForm();
-    await this.variableValuesSubCommand.csvDialog.spec.$properties(this.dialogState.spec);
+    await this.csvDialog.spec.$properties(this.dialogState.spec);
     this.electronService.send(events.CONTEXT_MENU, {
       x: row,
       y: col,
       type: 'csv-import',
-      command: this.variableValuesSubCommand.$prefix(),
+      command: this.csvDialog.$prefix(),
     });
   }
 

@@ -353,6 +353,7 @@ export class CSVDialog extends CppClass {
   async classifyColumns(): Promise<void> {return this.$callMethod('classifyColumns');}
   async correctedUniqueValues(): Promise<number[]> {return this.$callMethod('correctedUniqueValues');}
   async guessSpecAndLoadFile(): Promise<void> {return this.$callMethod('guessSpecAndLoadFile');}
+  async importFromCSV(a1: string[]): Promise<void> {return this.$callMethod('importFromCSV',a1);}
   async loadFile(): Promise<void> {return this.$callMethod('loadFile');}
   async loadFileFromName(a1: string): Promise<void> {return this.$callMethod('loadFileFromName',a1);}
   async numInitialLines(...args: number[]): Promise<number> {return this.$callMethod('numInitialLines',...args);}
@@ -2201,14 +2202,14 @@ export class VariablePaneCell extends CppClass {
 }
 
 export class VariableValue extends CppClass {
-  csvDialog: CSVDialog;
   rhs: civita__ITensor;
+  spec: DataSpec;
   tensorInit: civita__TensorVal;
   units: Units;
   constructor(prefix: string){
     super(prefix);
-    this.csvDialog=new CSVDialog(this.$prefix()+'.csvDialog');
     this.rhs=new civita__ITensor(this.$prefix()+'.rhs');
+    this.spec=new DataSpec(this.$prefix()+'.spec');
     this.tensorInit=new civita__TensorVal(this.$prefix()+'.tensorInit');
     this.units=new Units(this.$prefix()+'.units');
   }
@@ -2219,15 +2220,19 @@ export class VariableValue extends CppClass {
   async begin(): Promise<number> {return this.$callMethod('begin');}
   async cancel(a1: boolean): Promise<void> {return this.$callMethod('cancel',a1);}
   async checkCancel(): Promise<void> {return this.$callMethod('checkCancel');}
+  async classifyColumns(): Promise<void> {return this.$callMethod('classifyColumns');}
+  async correctedUniqueValues(): Promise<number[]> {return this.$callMethod('correctedUniqueValues');}
   async data(): Promise<number[]> {return this.$callMethod('data');}
   async detailedText(...args: string[]): Promise<string> {return this.$callMethod('detailedText',...args);}
   async enableSlider(...args: boolean[]): Promise<boolean> {return this.$callMethod('enableSlider',...args);}
   async end(): Promise<number> {return this.$callMethod('end');}
   async exportAsCSV(a1: string,a2: string,a3: boolean): Promise<void> {return this.$callMethod('exportAsCSV',a1,a2,a3);}
   async godleyOverridden(...args: boolean[]): Promise<boolean> {return this.$callMethod('godleyOverridden',...args);}
+  async guessSpecAndLoadFile(): Promise<void> {return this.$callMethod('guessSpecAndLoadFile');}
   async hypercube(...args: any[]): Promise<civita__Hypercube> {return this.$callMethod('hypercube',...args);}
   async idx(): Promise<number> {return this.$callMethod('idx');}
   async idxInRange(): Promise<boolean> {return this.$callMethod('idxInRange');}
+  async importFromCSV(a1: string[]): Promise<void> {return this.$callMethod('importFromCSV',a1);}
   async imposeDimensions(a1: Container<Pair<string,civita__Dimension>>): Promise<void> {return this.$callMethod('imposeDimensions',a1);}
   async incrSlider(a1: number): Promise<void> {return this.$callMethod('incrSlider',a1);}
   async index(...args: any[]): Promise<civita__Index> {return this.$callMethod('index',...args);}
@@ -2235,9 +2240,16 @@ export class VariableValue extends CppClass {
   async isFlowVar(): Promise<boolean> {return this.$callMethod('isFlowVar');}
   async isZero(): Promise<boolean> {return this.$callMethod('isZero');}
   async lhs(): Promise<boolean> {return this.$callMethod('lhs');}
+  async loadFile(): Promise<void> {return this.$callMethod('loadFile');}
+  async loadFileFromName(a1: string): Promise<void> {return this.$callMethod('loadFileFromName',a1);}
   async maxSliderSteps(): Promise<number> {return this.$callMethod('maxSliderSteps');}
   async name(...args: string[]): Promise<string> {return this.$callMethod('name',...args);}
+  async numInitialLines(...args: number[]): Promise<number> {return this.$callMethod('numInitialLines',...args);}
+  async parseLines(a1: number): Promise<string[][]> {return this.$callMethod('parseLines',a1);}
+  async populateHeader(a1: number): Promise<void> {return this.$callMethod('populateHeader',a1);}
+  async populateHeaders(): Promise<void> {return this.$callMethod('populateHeaders');}
   async rank(): Promise<number> {return this.$callMethod('rank');}
+  async reportFromFile(a1: string,a2: string): Promise<void> {return this.$callMethod('reportFromFile',a1,a2);}
   async reset_idx(): Promise<void> {return this.$callMethod('reset_idx');}
   async setArgument(a1: civita__ITensor,a2: civita__ITensor__Args): Promise<void> {return this.$callMethod('setArgument',a1,a2);}
   async setArguments(...args: any[]): Promise<void> {return this.$callMethod('setArguments',...args);}
@@ -2256,6 +2268,7 @@ export class VariableValue extends CppClass {
   async type(): Promise<string> {return this.$callMethod('type');}
   async typeName(a1: number): Promise<string> {return this.$callMethod('typeName',a1);}
   async unitsCached(...args: boolean[]): Promise<boolean> {return this.$callMethod('unitsCached',...args);}
+  async url(...args: string[]): Promise<string> {return this.$callMethod('url',...args);}
   async value(): Promise<number> {return this.$callMethod('value');}
   async valueAt(a1: number): Promise<number> {return this.$callMethod('valueAt',a1);}
   async valueId(): Promise<string> {return this.$callMethod('valueId');}

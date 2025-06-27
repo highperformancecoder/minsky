@@ -41,7 +41,7 @@ namespace minsky
   typedef std::shared_ptr<Group> GroupPtr;
   using namespace civita;
 
-  struct VariableValueData: public civita::ITensorVal, public Slider
+  struct VariableValueData: public civita::ITensorVal, public Slider, public CSVDialog
   {
     using ITensorVal::operator=;
     
@@ -61,10 +61,6 @@ namespace minsky
     bool godleyOverridden=false;
     std::string name; // name of this variable
     classdesc::Exclude<std::weak_ptr<Group>> m_scope;
-
-    /// for importing CSV files
-    CSVDialog csvDialog;
-    
   };
   
   class VariableValue: public VariableType, public VariableValueData
@@ -176,6 +172,8 @@ namespace minsky
     VariableValue& allocValue();
 
     std::string valueId() const {return valueIdFromScope(m_scope.lock(),canonicalName(name));}
+
+    void importFromCSV(const std::vector<std::string>&) override;
 
     /// export this to a CSV file. If \a comment is non-empty, it is written as the first line of the file. If tabular is false, there is one data point per line, if true, the the longest dimension is written as a series on the line.
     void exportAsCSV(const std::string& filename, const std::string& comment="", bool tabular=false) const;

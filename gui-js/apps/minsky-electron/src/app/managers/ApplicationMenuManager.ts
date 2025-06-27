@@ -3,6 +3,7 @@ import {
   importCSVvariableName,
   InstallCase,
   minsky,
+  VariableBase,
 } from '@minsky/shared';
 import {
   dialog,
@@ -206,7 +207,8 @@ export class ApplicationMenuManager {
           label: 'Import Data',
           async click() {
             minsky.canvas.addVariable(importCSVvariableName, 'parameter');
-            CommandsManager.importCSV(await CommandsManager.getFocusItemInfo(), true);
+            let v=new VariableBase(minsky.canvas.itemFocus);
+           CommandsManager.importCSV(minsky.variableValues.elem(await v.valueId()), true);
           }
         },
         {

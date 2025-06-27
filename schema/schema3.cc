@@ -827,9 +827,9 @@ namespace schema3
             if (auto val=v->vValue())
               {
                 if (i.second.csvDataSpec)
-                  val->csvDialog.spec=*i.second.csvDataSpec;
+                  val->spec=*i.second.csvDataSpec;
                 if (i.second.url)
-                  val->csvDialog.url=*i.second.url;
+                  val->url=*i.second.url;
                 if (i.second.tensorData)
                   {
                     auto buf=minsky::decode(*i.second.tensorData);

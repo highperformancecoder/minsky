@@ -1175,8 +1175,8 @@ export class ContextMenuManager {
       menuItems.push(
         new MenuItem({
           label: 'Import CSV',
-          click: () => {
-            CommandsManager.importCSV(itemInfo);
+          click: async () => {
+            CommandsManager.importCSV(minsky.variableValues.elem(await v.valueId()));
           },
         })
       );
@@ -1381,51 +1381,51 @@ export class ContextMenuManager {
       new MenuItem({
         label: 'Set as header row',
         click: ()=>{
-          value.csvDialog.spec.headerRow(row);
+          value.spec.headerRow(row);
           refresh();
         },
       }),
       new MenuItem({
         label: 'Auto-classify columns as axis/data',
         click: async ()=>{
-          value.csvDialog.classifyColumns();
+          value.classifyColumns();
           refresh();
         },
       }),
       new MenuItem({
         label: 'Populate column labels',
         click: async ()=>{
-          value.csvDialog.populateHeaders();
+          value.populateHeaders();
           refresh();
         },
       }),
       new MenuItem({
         label: 'Populate current column label',
         click: ()=>{
-          value.csvDialog.populateHeader(col);
+          value.populateHeader(col);
           refresh();
         },
       }),
       new MenuItem({
         label: 'Set start of data row, and column',
         click: ()=>{
-          value.csvDialog.spec.setDataArea(row,col);
+          value.spec.setDataArea(row,col);
           refresh();
         },
       }),
       new MenuItem({
         label: 'Set start of data row',
         click: async ()=>{
-          let c=await value.csvDialog.spec.nColAxes();
-          value.csvDialog.spec.setDataArea(row,c);
+          let c=await value.spec.nColAxes();
+          value.spec.setDataArea(row,c);
           refresh();
         },
       }),
       new MenuItem({
         label: 'Set start of data column',
         click: async ()=>{
-          let r=await value.csvDialog.spec.nRowAxes();
-          value.csvDialog.spec.setDataArea(r,col);
+          let r=await value.spec.nRowAxes();
+          value.spec.setDataArea(r,col);
           refresh();
         },
       }),

@@ -197,7 +197,12 @@ SUITE(CSVParser)
 //         
 //    }      
 
-  TEST_FIXTURE(CSVDialog,classifyColumns)
+  struct TestCSVDialog: CSVDialog
+  {
+    void importFromCSV(const std::vector<std::string>&) override {}
+  };
+  
+  TEST_FIXTURE(TestCSVDialog,classifyColumns)
     {
       string input="10,2022/10/2,hello,\n"
         "'5,150,000','2023/1/3','foo bar',\n"

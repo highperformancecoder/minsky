@@ -252,6 +252,7 @@ int main()
   api.addClass<civita::Index>();
   api.addClass<civita::ITensor>();
   api.addClass<civita::XVector>();
+  api.addClass<CSVDialog>();
   api.addClass<DataSpecSchema>();
   api.addClass<ecolab::Plot::LineStyle>();
   api.addClass<EngNotation>();
