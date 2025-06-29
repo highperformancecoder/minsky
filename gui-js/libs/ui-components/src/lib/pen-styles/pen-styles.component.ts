@@ -2,7 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ElectronService } from '@minsky/core';
 import { PlotWidget } from '@minsky/shared';
-import { ColorPickerModule } from 'ngx-color-picker';
+import { ColorPickerComponent, ColorPickerDirective } from 'ngx-color-picker';
 import { LatexDirective } from '../directives/latex.directive';
 import { NgFor, NgIf } from '@angular/common';
 
@@ -31,7 +31,8 @@ interface Palette {
         NgFor,
         NgIf,
         LatexDirective,
-        ColorPickerModule,
+        ColorPickerComponent,
+        ColorPickerDirective
     ],
 })
 export class PenStylesComponent implements OnInit {
