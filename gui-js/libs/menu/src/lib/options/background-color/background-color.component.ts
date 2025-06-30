@@ -11,15 +11,8 @@ import { ColorPickerComponent, ColorPickerDirective } from 'ngx-color-picker';
     standalone: true,
     imports: [
         FormsModule,
-@Component({
-  standalone: true,
-  imports: [
-    ColorPickerDirective,
-    // …
-  ],
-  …
-})
-export class BackgroundColorComponent { … }
+        ColorPickerComponent,
+        ColorPickerDirective,
         ReactiveFormsModule,
         MatButtonModule,
     ],
