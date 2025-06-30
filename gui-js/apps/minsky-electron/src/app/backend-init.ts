@@ -16,13 +16,12 @@ if (!Utility.isDevelopmentMode()) { //clobber logging in production
 }
 
 export const initialWorkingDirectory=process.cwd();
-const addonDir = Utility.isPackaged()
 // this starts looking inside app.asar/build, so we need to recurse
 // out of that to find the addons, given we can't add them to the ASAR
 // for some reason.
-      ? '../../build/'
-      : '';
+const addonDir = '../../../../../build/';
 /** REST Service addon */
+
 export var restService = null;
 try {
   if (Functions.isWindows())

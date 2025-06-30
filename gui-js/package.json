@@ -80,7 +80,6 @@
     ]
   },
   "scripts": {
-    "ng": "nx",
     "postinstall": "node ./decorate-angular-cli.js && exitzero electron-builder install-app-deps",
     "nx": "nx",
     "start": "npm-run-all -p web electron",
@@ -93,9 +92,9 @@
     "export:package:linux": "npm run build:web && npm run build:electron && nx run minsky-electron:make --platform linux --arch x64 --publishPolicy never",
     "export:package:mac": "npm run build:web && npm run build:electron && nx run minsky-electron:make --platform mac",
     "doc": "npx compodoc -p tsconfig.compodoc.json -n \"Minsky\"",
-    "test": "ng test",
+    "test": "nx test",
     "lint": "nx workspace-lint && ng lint",
-    "e2e": "ng e2e",
+    "e2e": "nx e2e",
     "affected:apps": "nx affected:apps",
     "affected:libs": "nx affected:libs",
     "affected:build": "nx affected:build",
