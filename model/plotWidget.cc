@@ -501,6 +501,8 @@ namespace minsky
           if (auto v=cminsky().variableValues[valueId(group.lock(), ':'+m)])
             {
               auto eps=1e-4*(maxx-minx);
+              // skip marker if outside plot bounds
+              if (v->value()<miny||v->value()>maxy) continue;
               double x[]{minx+eps,miny-eps};
               double y[]{v->value(),v->value()};
               setPen(pen,x,y,2);
@@ -510,10 +512,12 @@ namespace minsky
         for (auto& m: verticalMarkers)
           if (auto v=cminsky().variableValues[valueId(group.lock(), ':'+m)])
             {
-              auto eps=1e-4*(maxy-miny);
               auto value=v->value();
               if (xIsSecsSinceEpoch && (v->units.empty() || v->units==Units("year")))
                 value=yearToPTime(value);
+              // skip marker if outside plot bounds
+              if (value<minx||value>maxx) continue;
+              auto eps=1e-4*(maxy-miny);
               double x[]{value,value};
               double y[]{miny+eps,maxy-eps};
               setPen(pen,x,y,2);
@@ -731,6 +735,7 @@ namespace minsky
         for (auto& m: horizontalMarkers)
           if (auto v=cminsky().variableValues[valueId(group.lock(), ':'+m)])
             {
+              if (v->value()<miny||v->value()>maxy) continue;
               auto eps=1e-4*(maxx-minx);
               addPt(pen,minx+eps,v->value());
               addPt(pen,maxx-eps,v->value());
@@ -743,10 +748,11 @@ namespace minsky
         for (auto& m: verticalMarkers)
           if (auto v=cminsky().variableValues[valueId(group.lock(), ':'+m)])
             {
-              auto eps=1e-4*(maxy-miny);
               auto value=v->value();
               if (xIsSecsSinceEpoch && (v->units.empty() || v->units==Units("year")))
                 value=yearToPTime(value);
+              if (value<minx||value>maxx) continue;
+              auto eps=1e-4*(maxy-miny);
               addPt(pen,value,miny+eps);
               addPt(pen,value,maxy-eps);
               assignSide(pen,marker);
