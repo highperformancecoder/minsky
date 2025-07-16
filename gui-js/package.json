@@ -1,6 +1,6 @@
 {
   "name": "ravel",
-  "version":"3.18.0",
+  "version":"3.19.0-beta.1",
   "author": "High Performance Coders",
   "description": "Graphical dynamical systems simulator oriented towards economics",
   "repository": {
@@ -152,6 +152,7 @@
     "material-design-icons": "^3.0.1",
     "ngx-color-picker": "^20.0.0",
     "nx-electron": "^21.0.0",
+    "@nx/js": "21.2.1",
     "wait-on": "^8.0.3"
   },
   "dependencies": {
@@ -164,7 +165,6 @@
     "@angular/platform-browser-dynamic": "^20.0.0",
     "@angular/router": "^20.0.0",
     "@nrwl/workspace": "^19.8.4",
-    "@nx/js": "21.2.1",
     "bindings": "^1.5.0",
     "call-bind-apply-helpers": "^1.0.2",
     "decompress": "^4.2.1",
