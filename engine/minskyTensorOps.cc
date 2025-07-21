@@ -1106,6 +1106,12 @@ namespace minsky
     void setArguments(const TensorPtr& y, const TensorPtr& x,
                       const ITensor::Args& args) override
     {
+      if (!y)
+        {
+          m_index.clear();
+          hypercube({});
+          return;
+        }
       m_index=y->index();
       hypercube(y->hypercube());
 

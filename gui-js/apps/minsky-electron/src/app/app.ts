@@ -253,7 +253,8 @@ export default class App {
     App.application.on('window-all-closed', App.onWindowAllClosed); // Quit when all windows are closed.
     App.application.on('ready', App.onReady); // App is ready to load data
     App.application.on('activate', App.onActivate); // App is activated
-
+    // handle MacOS file open events
+    app.on('open-file', (event, path)=>{minsky.load(path);});
     process.on('uncaughtException', (err) => {
       log.error(
         Functions.red(
