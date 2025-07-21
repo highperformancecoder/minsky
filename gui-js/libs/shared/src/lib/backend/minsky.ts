@@ -574,6 +574,7 @@ export class DatabaseIngestor extends CppClass {
   }
   async classifyColumns(): Promise<void> {return this.$callMethod('classifyColumns');}
   async correctedUniqueValues(): Promise<number[]> {return this.$callMethod('correctedUniqueValues');}
+  async createTable(a1: string): Promise<void> {return this.$callMethod('createTable',a1);}
   async guessSpecAndLoadFile(): Promise<void> {return this.$callMethod('guessSpecAndLoadFile');}
   async importFromCSV(a1: string[]): Promise<void> {return this.$callMethod('importFromCSV',a1);}
   async loadFile(): Promise<void> {return this.$callMethod('loadFile');}
