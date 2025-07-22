@@ -913,13 +913,14 @@ export class CommandsManager {
     this.setLogSimulationCheckmark(true);
   }
 
-  static async importCSV(csvDialog: CSVDialog, isInvokedUsingToolbar = false) {
+  /// @param dropTable whether to create a new table if loading to a database
+  static async importCSV(csvDialog: CSVDialog, isInvokedUsingToolbar = false, dropTable=false) {
     const itemInfo: CanvasItem={classType: ClassType.Variable, id: csvDialog.$prefix(), displayContents: false};
     if (!WindowManager.focusIfWindowIsPresent(itemInfo.id)) {
       
       const window = await this.initializePopupWindow({
         itemInfo,
-        url: `#/headless/import-csv?systemWindowId=0&csvDialog=${csvDialog.$prefix()}&isInvokedUsingToolbar=${isInvokedUsingToolbar}`,
+        url: `#/headless/import-csv?systemWindowId=0&csvDialog=${csvDialog.$prefix()}&isInvokedUsingToolbar=${isInvokedUsingToolbar}&dropTable=${dropTable}`,
         height: 600,
         width: 1300,
         minWidth: 650,
@@ -945,7 +946,7 @@ export class CommandsManager {
       
       window.loadURL(
         WindowManager.getWindowUrl(
-          `#/headless/import-csv?systemWindowId=${systemWindowId}&csvDialog=${csvDialog.$prefix()}&isInvokedUsingToolbar=${isInvokedUsingToolbar}&examplesPath=${join(dirname(app.getAppPath()),'examples','data')}`
+          `#/headless/import-csv?systemWindowId=${systemWindowId}&csvDialog=${csvDialog.$prefix()}&isInvokedUsingToolbar=${isInvokedUsingToolbar}&dropTable=${dropTable}&examplesPath=${join(dirname(app.getAppPath()),'examples','data')}`
         )
       );
     }

@@ -205,11 +205,28 @@ export class ApplicationMenuManager {
         },
         {
           label: 'Import Data',
-          async click() {
-            minsky.canvas.addVariable(importCSVvariableName, 'parameter');
-            let v=new VariableBase(minsky.canvas.itemFocus);
-           CommandsManager.importCSV(minsky.variableValues.elem(await v.valueId()), true);
-          }
+          submenu: [
+            {
+              label: 'to parameter',
+              async click() {
+                minsky.canvas.addVariable(importCSVvariableName, 'parameter');
+                let v=new VariableBase(minsky.canvas.itemFocus);
+                CommandsManager.importCSV(minsky.variableValues.elem(await v.valueId()), true);
+              }
+            },
+            {
+              label: 'to database',
+              async click() {
+                WindowManager.createPopupWindowWithRouting({
+                  width: 420,
+                  height: 500,
+                  title: '',
+                  url: `#/headless/new-database`,
+                  modal: true,
+                });
+              }
+            },
+          ]
         },
         {
           label: 'Insert File as Group',

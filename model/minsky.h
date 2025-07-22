@@ -244,7 +244,6 @@ namespace minsky
 
     GroupPtr model{new Group};
     Canvas canvas{model};
-    //DatabaseIngestor databaseIngestor;
 
     void clearAllMaps(bool clearHistory);
     void clearAllMaps() {clearAllMaps(true);}

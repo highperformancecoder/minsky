@@ -222,6 +222,14 @@ ipcMain.handle(
   }
 );
 
+ipcMain.handle(
+  events.IMPORT_CSV_TO_DB,
+  async (event, {dropTable}) => {
+    CommandsManager.importCSV(minsky.databaseIngestor, false, dropTable);
+    return;
+  }
+);
+
 ipcMain.on(events.CONTEXT_MENU, async (event, { x, y, type, command}) => {
   await ContextMenuManager.initContextMenu(event, x, y, type, command);
 });

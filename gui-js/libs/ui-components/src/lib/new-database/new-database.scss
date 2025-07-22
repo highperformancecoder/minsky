@@ -1,0 +1,13 @@
+@import '../../../../shared/src/lib/theme/common-style.scss';
+
+.row {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

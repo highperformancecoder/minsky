@@ -49,5 +49,5 @@ spec.dimensions([
 ])
 spec.dontFail(True)
 
-#minsky.databaseIngestor.db.createTable(filenames[0])
-#minsky.databaseIngestor.importFromCSV(filenames)
+minsky.databaseIngestor.db.createTable(filenames[0])
+minsky.databaseIngestor.importFromCSV(filenames)

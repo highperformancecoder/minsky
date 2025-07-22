@@ -96,6 +96,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
 
   systemWindowId: number;
   isInvokedUsingToolbar: boolean;
+  newTable: boolean;
   examplesPath: string;
   csvDialog: CSVDialog;
   timeFormatStrings = dateTimeFormats;
@@ -133,6 +134,9 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   }
   public get counter(): AbstractControl {
     return this.form.get('counter');
+  }
+  public get dropTable(): AbstractControl {
+    return this.form.get('dropTable');
   }
   public get separator(): AbstractControl {
     return this.form.get('separator');
@@ -190,7 +194,8 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
       electronService.log(JSON5.stringify(params));
       this.csvDialog = new CSVDialog(params.csvDialog);
       this.systemWindowId = params.systemWindowId;
-      this.isInvokedUsingToolbar = params.isInvokedUsingToolbar;
+      this.isInvokedUsingToolbar = params.isInvokedUsingToolbar==="true";
+      this.newTable = params.dropTable==="true";
       this.examplesPath = params.examplesPath;
     });
 
@@ -200,6 +205,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
       detailedDescription: new FormControl(''),
       dontFail: new FormControl(false),
       counter: new FormControl(false),
+      dropTable: new FormControl(false),
       decSeparator: new FormControl('.'),
       duplicateKeyAction: new FormControl('throwException'),
       escape: new FormControl(''),
@@ -269,6 +275,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
 
   updateForm() {
     this.url.setValue(this.dialogState.url);
+    if (!this.files && this.dialogState.url) this.files=[this.dialogState.url];
 
     this.dontFail.setValue(this.dialogState.spec.dontFail);
     this.counter.setValue(this.dialogState.spec.counter);
@@ -328,15 +335,13 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
 
     const fileUrlOnServer = await this.csvDialog.url();
 
-    if (this.url.value !== fileUrlOnServer) {
+    if (!this.url.value || this.url.value !== fileUrlOnServer) {
       await this.csvDialog.url(this.url.value);
       await this.csvDialog.guessSpecAndLoadFile();
       await this.getCSVDialogSpec();
       this.updateForm();
-    } else {
-      await this.csvDialog.loadFile();
     }
-
+    await this.csvDialog.loadFile();
     await this.parseLines();
 
     for (const tab of this.tabs) {
@@ -550,6 +555,9 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
 
     if (this.dialogState.spec.dataCols.length === 0)
       this.dialogState.spec.counter = true;
+    if (!this.files || !this.files[0]) this.files=[this.url.value];
+    if (this.files && (this.dropTable.value || this.newTable))
+      this.electronService.minsky.databaseIngestor.createTable(this.files[0]);
     // returns an error message on error
     const res = await this.csvDialog.importFromCSV(this.files) as unknown as string;
 

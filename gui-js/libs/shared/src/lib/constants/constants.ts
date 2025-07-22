@@ -39,6 +39,7 @@ export const events = {
   GODLEY_VIEW_IMPORT_STOCK: 'godley-view-import-stock',
   HELP_FOR: 'help-for',
   IMPORT_CSV: 'import-csv',
+  IMPORT_CSV_TO_DB: 'import-csv-to-db',
   INIT_MENU_FOR_GODLEY_VIEW: 'init-menu-for-godley-view',
   KEY_PRESS: 'key-press',
   LOG: 'log',

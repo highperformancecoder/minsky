@@ -14,6 +14,7 @@ import {
   FindAllInstancesComponent,
   GodleyWidgetViewComponent,
   ImportCsvComponent,
+  NewDatabaseComponent,
   NewPubTabComponent,
   PageNotFoundComponent,
   SummaryComponent,
@@ -102,6 +103,10 @@ const routes: Routes = [
   {
     path: 'headless/pick-slices',
     component: PickSlicesComponent,
+  },
+  {
+    path: 'headless/new-database',
+    component: NewDatabaseComponent,
   },
   {
     path: 'headless/lock-handles',
