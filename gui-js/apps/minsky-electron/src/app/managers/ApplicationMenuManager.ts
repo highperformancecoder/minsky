@@ -218,8 +218,8 @@ export class ApplicationMenuManager {
               label: 'to database',
               async click() {
                 WindowManager.createPopupWindowWithRouting({
-                  width: 420,
-                  height: 500,
+                  width: 250,
+                  height: 150,
                   title: '',
                   url: `#/headless/new-database`,
                   modal: true,

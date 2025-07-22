@@ -6,26 +6,21 @@ import { events} from '@minsky/shared';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
-import { NgIf, NgFor} from '@angular/common';
 import { OpenDialogOptions, SaveDialogOptions } from 'electron';
 import { CommonModule } from '@angular/common'; // Often useful for ngIf, ngFor
 import JSON5 from 'json5';
-import { ComboBoxComponent } from '../combo-box/combo-box.component';
 
 @Component({
-    selector: 'connect-database',
+    selector: 'new-database',
     templateUrl: './new-database.html',
     styleUrls: ['./new-database.scss'],
     standalone: true,
     imports: [
       FormsModule,
-      ComboBoxComponent,
       CommonModule,
       MatAutocompleteModule,
       MatButtonModule,
       MatOptionModule,
-      NgIf,
-      NgFor,
     ],
 })
 export class NewDatabaseComponent implements OnInit {
@@ -68,7 +63,7 @@ export class NewDatabaseComponent implements OnInit {
 
   setTableInput(event) {
     let input=document.getElementById("table") as HTMLInputElement;
-    input.value=event?.option?.value;
+    this.table=input.value=event?.option?.value;
   }
   
   async selectFile() {
@@ -101,7 +96,7 @@ export class NewDatabaseComponent implements OnInit {
   connect() {
     this.electronService.minsky.databaseIngestor.db.connect(this.dbType,this.connection,this.table);
     // TODO - set dropTable according to whether an existing table is selected, or a new given
-    let dropTable=!(this.table in this.tables);
+    let dropTable=!this.tables.includes(this.tables);
     this.electronService.invoke(events.IMPORT_CSV_TO_DB, {dropTable});
     this.closeWindow();
   }
