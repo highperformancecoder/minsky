@@ -293,18 +293,16 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
     });
   }
 
-//  async getValueId() {
-//    return new VariableBase(this.electronService.minsky.namedItems.elem(this.itemId)).valueId();
-//  }
-
   async selectFile(defaultPath: string = '') {
     let options: OpenDialogOptions = {
+      defaultPath: ':data',
       filters: [
         { extensions: ['csv'], name: 'CSV' },
         { extensions: ['*'], name: 'All Files' },
       ],
       properties: ['openFile', 'multiSelections'],
     };
+    // support examples directory
     if (defaultPath) options['defaultPath'] = defaultPath;
     const filePaths = await this.electronService.openFileDialog(options);
 
@@ -598,7 +596,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
       .split('.csv')[0];
 
     const filePath = await this.electronService.saveFileDialog({
-      defaultPath: `${filePathWithoutExt}-error-report.csv`,
+      defaultPath: `:data/${filePathWithoutExt}-error-report.csv`,
       title: 'Save report',
       properties: ['showOverwriteConfirmation', 'createDirectory'],
       filters: [{ extensions: ['csv'], name: 'CSV' }],

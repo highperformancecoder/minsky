@@ -69,7 +69,7 @@ ipcMain.handle(events.CLOSE_WINDOW, (event) => {
 });
 
 ipcMain.handle(events.OPEN_FILE_DIALOG, async (event, options) => {
-  const fileDialog = await dialog.showOpenDialog(options);
+  const fileDialog = await WindowManager.showOpenDialog(options);
 
   if (fileDialog.canceled || !fileDialog.filePaths) return "";
   if (options?.properties?.includes('multiSelections'))
@@ -78,7 +78,7 @@ ipcMain.handle(events.OPEN_FILE_DIALOG, async (event, options) => {
 });
 
 ipcMain.handle(events.SAVE_FILE_DIALOG, async (event, options) => {
-  const fileDialog = await dialog.showSaveDialog(options);
+  const fileDialog = await WindowManager.showSaveDialog(options);
   if (fileDialog.canceled) return "";
   return fileDialog.filePath;
 });

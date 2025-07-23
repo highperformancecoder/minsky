@@ -118,9 +118,9 @@ export class CommandsManager {
     extension: string,
     name: string
   ): Promise<void> {
-    const exportImage = await dialog.showSaveDialog({
+    const exportImage = await WindowManager.showSaveDialog({
       title: 'Export item as...',
-      defaultPath: `export.${extension}`,
+      defaultPath: `:models/export.${extension}`,
       properties: ['showOverwriteConfirmation', 'createDirectory'],
       filters: [
         {name, extensions: [extension]},
@@ -171,9 +171,9 @@ export class CommandsManager {
   }
 
   static async exportItemAsCSV(item: any, tabular=false): Promise<void> {
-    const exportItemDialog = await dialog.showSaveDialog({
+    const exportItemDialog = await WindowManager.showSaveDialog({
       title: 'Export item as csv',
-      defaultPath: 'item.csv',
+      defaultPath: ':models/item.csv',
       properties: ['showOverwriteConfirmation', 'createDirectory'],
       filters: [
         { extensions: ['csv'], name: 'CSV' },
@@ -325,8 +325,8 @@ export class CommandsManager {
   }
 
   static async saveSelectionAsFile(): Promise<void> {
-    const saveDialog = await dialog.showSaveDialog({
-      defaultPath: 'selection.mky',
+    const saveDialog = await WindowManager.showSaveDialog({
+      defaultPath: ':models/selection.mky',
     });
 
     const { canceled, filePath } = saveDialog;
@@ -368,7 +368,7 @@ export class CommandsManager {
   }
 
   static async getFilePathUsingSaveDialog(): Promise<string> {
-    const saveDialog = await dialog.showSaveDialog({});
+    const saveDialog = await WindowManager.showSaveDialog({defaultPath:':models'});
 
     const { canceled, filePath} = saveDialog;
 
@@ -382,9 +382,9 @@ export class CommandsManager {
   static async getFilePathFromExportCanvasDialog(
     type: string, label: string
   ): Promise<string> {
-    const exportCanvasDialog = await dialog.showSaveDialog({
+    const exportCanvasDialog = await WindowManager.showSaveDialog({
       title: 'Export canvas',
-      defaultPath: `canvas.${type}`,
+      defaultPath: `:models/canvas.${type}`,
       properties: ['showOverwriteConfirmation', 'createDirectory'],
       filters: [
         {name: label, extensions: [type]},
@@ -488,7 +488,7 @@ export class CommandsManager {
   static async saveGroupAsFile(): Promise<void> {
     const defaultExtension = await minsky.model.defaultExtension();
 
-    const saveDialog = await dialog.showSaveDialog({
+    const saveDialog = await WindowManager.showSaveDialog({
       filters: [
         {
           name: defaultExtension,
@@ -496,7 +496,7 @@ export class CommandsManager {
         },
         { name: 'All', extensions: ['*'] },
       ],
-      defaultPath: `group${defaultExtension}`,
+      defaultPath: `:models/group${defaultExtension}`,
       properties: ['showOverwriteConfirmation'],
     });
 
@@ -513,7 +513,7 @@ export class CommandsManager {
     ext: string,
     command: (x: string)=>void = null
   ): Promise<void> {
-    const saveDialog = await dialog.showSaveDialog({
+    const saveDialog = await WindowManager.showSaveDialog({
       filters: [
         {
           name: '.' + ext,
@@ -521,7 +521,7 @@ export class CommandsManager {
         },
         { name: 'All', extensions: ['*'] },
       ],
-      defaultPath: `godley.${ext}`,
+      defaultPath: `:models/godley.${ext}`,
       properties: ['showOverwriteConfirmation'],
     });
 
@@ -894,9 +894,9 @@ export class CommandsManager {
       return;
     }
 
-    const logSimulation = await dialog.showSaveDialog({
+    const logSimulation = await WindowManager.showSaveDialog({
       title: 'Save As',
-      defaultPath: 'log_simulation.csv',
+      defaultPath: ':models/log_simulation.csv',
       properties: ['showOverwriteConfirmation', 'createDirectory'],
       filters: [{ extensions: ['csv'], name: 'CSV' }],
     });
@@ -989,7 +989,7 @@ export class CommandsManager {
               ],
               defaultPath:
                 this.currentMinskyModelFilePath ||
-                `model${defaultExtension}`,
+                `:models/model${defaultExtension}`,
               properties: ['showOverwriteConfirmation'],
     }
   }
@@ -1003,7 +1003,7 @@ export class CommandsManager {
   }
     
   static async saveAs() {
-    const saveDialog = await dialog.showSaveDialog(await CommandsManager.defaultSaveOptions());
+    const saveDialog = await WindowManager.showSaveDialog(await CommandsManager.defaultSaveOptions());
     
     const { canceled, filePath: filePath } = saveDialog;
     

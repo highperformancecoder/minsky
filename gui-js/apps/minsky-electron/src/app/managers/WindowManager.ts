@@ -11,10 +11,11 @@ import {
   Utility,
 } from '@minsky/shared';
 import { StoreManager } from './StoreManager';
-import { BrowserWindow, dialog, Menu, screen } from 'electron';
+import { BrowserWindow, dialog, Menu, OpenDialogOptions, OpenDialogReturnValue, SaveDialogOptions,
+         SaveDialogReturnValue, screen } from 'electron';
 import log from 'electron-log';
 import os from 'os';
-import { join } from 'path';
+import { join, dirname } from 'path';
 import { format } from 'url';
 
 //const logWindows = debug('minsky:electron_windows');
@@ -131,6 +132,66 @@ export class WindowManager {
     return initialURL;
   }
 
+  /// If options contains defaultPath that has starts with ':model/'
+  /// or ':data/', then the last directory visited with that type is
+  /// substituted.
+  /// returns the directory key for the StoreManager.
+  static processDefaultDirectory(options: OpenDialogOptions|SaveDialogOptions) {
+    let splitDefaultPath=/([^\/]*)\/?(.*)/.exec(options.defaultPath);
+    let defaultType=splitDefaultPath[0];
+    let defaultDirectoryKey="";
+    
+    switch (defaultType) {
+    case ':models':
+      defaultDirectoryKey='defaultModelDirectory';
+      break;
+    case ':data':
+      defaultDirectoryKey='defaultDataDirectory';
+      break;
+    }
+
+    if (defaultDirectoryKey)  {
+      let defaultDirectory=StoreManager.store.get(defaultDirectoryKey) as string;
+      if (defaultDirectory)
+        options['defaultPath']=defaultDirectory;
+    }
+    return defaultDirectoryKey;
+  }
+  
+  /// wrappers around the standard electron dialogs that saves the directory opened as a defaultPath
+  /// if options.defaultPath is set to either models or data.
+  static async showOpenDialog(...args: any[])
+  {
+    let options=args[args.length-1] as OpenDialogOptions;
+    let defaultDirectoryKey=this.processDefaultDirectory(options);
+
+    if (args.length>1)
+      var res=await dialog.showOpenDialog(args[0],options);
+    else
+      var res=await dialog.showOpenDialog(options);
+    if (!res.canceled && defaultDirectoryKey) {
+      StoreManager.store.set(defaultDirectoryKey,dirname(res.filePaths[0]));
+    }
+    return res;
+  }
+  
+  /// wrappers around the standard electron dialogs that saves the directory opened as a defaultPath
+  /// if options.defaultPath is set to either models or data.
+  static async showSaveDialog(...args: any[])
+  {
+    let options=args[args.length-1] as SaveDialogOptions;
+    let defaultDirectoryKey=this.processDefaultDirectory(options);
+
+    if (args.length>1) 
+      var res=await dialog.showSaveDialog(args[0], options);
+    else
+      var res=await dialog.showSaveDialog(options);
+    if (!res.canceled && defaultDirectoryKey) {
+      StoreManager.store.set(defaultDirectoryKey,dirname(res.filePath));
+    }
+    return res;
+  }
+  
   /// if window already exists attached to \a url, then raise it
   /// @return window if it exists, null otherwise
   static raiseWindow(url: string): BrowserWindow {

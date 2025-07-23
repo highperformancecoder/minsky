@@ -61,6 +61,7 @@ export class ConnectDatabaseComponent implements OnInit {
   
   async selectFile() {
     let options: OpenDialogOptions = {
+      defaultPath: ':models',
       filters: [
         { extensions: ['sqlite'], name: 'CSV' },
         { extensions: ['*'], name: 'All Files' },

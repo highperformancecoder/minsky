@@ -143,8 +143,9 @@ export class ApplicationMenuManager {
           enabled: true,
           async click() {
             try {
-              const _dialog = await dialog.showOpenDialog({
+              const _dialog = await WindowManager.showOpenDialog({
                 properties: ['openFile'],
+                defaultPath: ':models',
                 filters: [
                   { name: 'Minsky/Ravel', extensions: ['rvl','mky'] },
                   { name: '*.xml', extensions: ['xml'] },
@@ -233,7 +234,8 @@ export class ApplicationMenuManager {
           label: 'Insert File as Group',
           async click() {
             try {
-              const insertGroupDialog = await dialog.showOpenDialog({
+              const insertGroupDialog = await WindowManager.showOpenDialog({
+                defaultPaths: ':models',
                 properties: ['openFile'],
               });
 
@@ -572,9 +574,9 @@ export class ApplicationMenuManager {
   }
 
   private static async exportPlot(extension: string, command: (file:string)=>void) {
-    const exportPlotDialog = await dialog.showSaveDialog({
+    const exportPlotDialog = await WindowManager.showSaveDialog({
       title: `Export plot as ${extension}`,
-      defaultPath: 'plot',
+      defaultPath: ':models/plot',
       properties: ['showOverwriteConfirmation', 'createDirectory'],
       filters: [{ extensions: [extension], name: extension.toUpperCase() }],
     });

@@ -69,6 +69,7 @@ export class NewDatabaseComponent implements OnInit {
   async selectFile() {
     let options: OpenDialogOptions = {
       title: 'Select existing database',
+      defaultPath: ':models',
       filters: [
         { extensions: ['sqlite'], name: 'SQLite' },
         { extensions: ['*'], name: 'All Files' },
@@ -94,6 +95,10 @@ export class NewDatabaseComponent implements OnInit {
   }
 
   connect() {
+    if (!this.connection || !this.table) {
+      this.electronService.showMessageBoxSync({message: "Connection string or table not present"});
+      return;
+    }      
     this.electronService.minsky.databaseIngestor.db.connect(this.dbType,this.connection,this.table);
     // TODO - set dropTable according to whether an existing table is selected, or a new given
     let dropTable=!this.tables.includes(this.tables);
