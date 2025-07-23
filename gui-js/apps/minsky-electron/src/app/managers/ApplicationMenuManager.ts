@@ -216,6 +216,7 @@ export class ApplicationMenuManager {
             },
             {
               label: 'to database',
+              enabled: await minsky.databaseIngestor.db.ravelPro(),
               async click() {
                 WindowManager.createPopupWindowWithRouting({
                   width: 250,

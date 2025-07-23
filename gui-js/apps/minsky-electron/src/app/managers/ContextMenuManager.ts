@@ -902,6 +902,7 @@ export class ContextMenuManager {
       }),
       new MenuItem({
         label: 'Connect to database',
+        enabled: await ravel.db.ravelPro(),
         click: () => {
           WindowManager.createPopupWindowWithRouting({
             title: 'Connect to database',

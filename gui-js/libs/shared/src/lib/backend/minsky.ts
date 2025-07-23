@@ -2507,6 +2507,7 @@ export class ravelCAPI__Database extends CppClass {
   async loadDatabase(a1: string[],a2: ravel__DataSpec): Promise<void> {return this.$callMethod('loadDatabase',a1,a2);}
   async loadDatabaseCallback(a1: minsky__dummy): Promise<void> {return this.$callMethod('loadDatabaseCallback',a1);}
   async numericalColumnNames(): Promise<string[]> {return this.$callMethod('numericalColumnNames');}
+  async ravelPro(): Promise<boolean> {return this.$callMethod('ravelPro');}
   async setAxisNames(a1: Container<string>,a2: string): Promise<void> {return this.$callMethod('setAxisNames',a1,a2);}
   async tableNames(): Promise<string[]> {return this.$callMethod('tableNames');}
 }
