@@ -1,0 +1,19 @@
+<div class="container">
+  <label for="horizontalDimName">Horizontal dimension</label>
+  <input type="text" id="horizontalDimName"
+         [ngModel]="horizontalDimName"/>
+  <div class="selectors">
+    <ng-container *ngFor="let d of dataCols">
+      <div class="dim-selector">
+        <label [for]="d">{{d}}</label>
+        <input type="checkbox" [id]="d" [name]="d"
+               (change)="clickDim($event)"/>
+      </div>
+    </ng-container>
+    </div>
+  <div class="row form-buttons">
+    <button mat-raised-button class="btn cancel-btn" (click)="closeWindow()">Cancel</button>
+    <button mat-raised-button class="btn submit ok-btn"
+    (click)="setHorizontalNames()">Set Numerical Axes</button>
+  </div>
+</div>

@@ -913,6 +913,18 @@ export class ContextMenuManager {
         },
       }),
       new MenuItem({
+        label: 'Set numerical axes',
+        enabled: await ravel.db.ravelPro(),
+        click: () => {
+          WindowManager.createPopupWindowWithRouting({
+            title: 'Set numerical axes',
+            url: '#/headless/ravel-select-horizontal-dim',
+            height: 180,
+            width: 400,
+          })
+        },
+      }),
+      new MenuItem({
         label: 'Export as CSV',
         submenu: this.exportAsCSVSubmenu(ravel),
       }),
