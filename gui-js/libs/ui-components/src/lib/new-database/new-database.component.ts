@@ -23,21 +23,16 @@ import JSON5 from 'json5';
       MatOptionModule,
     ],
 })
-export class NewDatabaseComponent implements OnInit {
-  dbType="sqlite3";
+export class NewDatabaseComponent {
+  dbType: string="sqlite3";
   connection: string;
-  table="";
-  tables=[];
+  table: string="";
+  tables: string[]=[];
   constructor(
     private route: ActivatedRoute,
     private electronService: ElectronService,
     private cdRef: ChangeDetectorRef
   ) {
-  }
-
-  ngOnInit(): void {
-    this.route.queryParams.subscribe((params) => {
-    });
   }
 
   setDbType(event: Event) {
@@ -62,8 +57,7 @@ export class NewDatabaseComponent implements OnInit {
   }
 
   setTableInput(event) {
-    let input=document.getElementById("table") as HTMLInputElement;
-    this.table=input.value=event?.option?.value;
+    this.table=event?.option?.value;
   }
   
   async selectFile() {
@@ -86,12 +80,8 @@ export class NewDatabaseComponent implements OnInit {
       if (filePath)
         this.connection=`db=${filePath}`;
     }
-    if (this.connection) {
-      let connectionInput=document.getElementById("connection") as HTMLInputElement;
-      connectionInput.hidden=false;
-      connectionInput.value=this.connection;
-      this.getTables();
-    }
+    if (this.connection) 
+      await this.getTables();
   }
 
   connect() {
@@ -100,8 +90,7 @@ export class NewDatabaseComponent implements OnInit {
       return;
     }      
     this.electronService.minsky.databaseIngestor.db.connect(this.dbType,this.connection,this.table);
-    // TODO - set dropTable according to whether an existing table is selected, or a new given
-    let dropTable=!this.tables.includes(this.tables);
+    let dropTable=!this.tables.includes(this.table);
     this.electronService.invoke(events.IMPORT_CSV_TO_DB, {dropTable});
     this.closeWindow();
   }
