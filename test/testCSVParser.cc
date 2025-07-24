@@ -131,6 +131,51 @@ SUITE(CSVParser)
   
   // disable temporarily until this is fixed.
   TEST_FIXTURE(DataSpec,reportFromCSV)
+
+  TEST_FIXTURE(DataSpec, reportFromCSVFileWithValidData)
+    {
+      string input="col1,col2\n";
+      input += "1,2\n";
+      input += "3,4\n";
+      string output="";
+      istringstream is(input);
+      ostringstream os(output);
+      
+      separator=',';
+      setDataArea(1,0);
+      numCols=2;
+      headerRow=0;
+      dimensionNames={"col1","col2"};
+      dimensionCols={0};
+      
+      reportFromCSVFile(is,os,*this,100);
+      string result = os.str();
+      CHECK(result.find("Error") == std::string::npos);
+    }
+
+  TEST_FIXTURE(DataSpec, reportFromCSVFileWithMixedErrors)
+    {
+      string input="col1,col2\n";
+      input += "1,valid\n";
+      input += "invalid,2\n";
+      input += "3,4\n";
+      string output="";
+      istringstream is(input);
+      ostringstream os(output);
+      
+      separator=',';
+      setDataArea(1,0);
+      numCols=2;
+      headerRow=0;
+      dimensionNames={"col1","col2"};
+      dimensionCols={};
+      dataCols={0,1};
+      
+      reportFromCSVFile(is,os,*this,100);
+      string result = os.str();
+      CHECK(result.length() > 0);
+    }
+
     {
       string input="A comment\n"
         ";;foobar\n"
@@ -203,6 +248,46 @@ SUITE(CSVParser)
   };
   
   TEST_FIXTURE(TestCSVDialog,classifyColumns)
+
+  TEST_FIXTURE(TestCSVDialog, classifyColumnsEdgeCases)
+    {
+      string input="mixed,empty,numbers\n";
+      input += "text,,123\n";
+      input += "123,,456\n";
+      input += ",value,789\n";
+      
+      url=boost::filesystem::unique_path().string();
+      {
+        ofstream of(url);
+        of<<input;
+      }
+      
+      spec.separator=',';
+      spec.setDataArea(1,3);
+      loadFile();
+      classifyColumns();
+      CHECK_EQUAL(3,spec.numCols);
+    }
+
+  TEST_FIXTURE(TestCSVDialog, loadFileWithEncodingVariations)
+    {
+      string input="test,data\n";
+      input += "café,123\n";
+      input += "naïve,456\n";
+      
+      url=boost::filesystem::unique_path().string();
+      {
+        ofstream of(url);
+        of<<input;
+      }
+      
+      spec.separator=',';
+      spec.setDataArea(1,2);
+      loadFile();
+      classifyColumns();
+      CHECK_EQUAL(2,spec.numCols);
+    }
+
     {
       string input="10,2022/10/2,hello,\n"
         "'5,150,000','2023/1/3','foo bar',\n"
@@ -471,6 +556,75 @@ SUITE(CSVParser)
 #endif
 
   TEST_FIXTURE(DataSpec, duplicateActions)
+
+  TEST_FIXTURE(DataSpec, duplicateActionsWithZeroValues)
+    {
+      string input="key,value\n";
+      input += "A,0\n";
+      input += "A,5\n";
+      input += "B,0\n";
+      input += "B,0\n";
+      
+      separator=';';
+      setDataArea(1,0);
+      numCols=2;
+      headerRow=0;
+      dimensionNames={"key","value"};
+      dimensionCols={0};
+      
+      VariableValue v(VariableType::parameter);
+      
+      {
+        istringstream is(input);
+        duplicateKeyAction=product;
+        loadValueFromCSVFile(v,is,*this);
+        CHECK_EQUAL(0, v.tensorInit[0]);
+        CHECK_EQUAL(0, v.tensorInit[1]);
+      }
+      
+      {
+        istringstream is(input);
+        duplicateKeyAction=sum;
+        loadValueFromCSVFile(v,is,*this);
+        CHECK_EQUAL(5, v.tensorInit[0]);
+        CHECK_EQUAL(0, v.tensorInit[1]);
+      }
+    }
+
+  TEST_FIXTURE(DataSpec, duplicateActionsWithNegativeValues)
+    {
+      string input="key,value\n";
+      input += "A,-10\n";
+      input += "A,5\n";
+      input += "B,-3\n";
+      input += "B,-7\n";
+      
+      separator=';';
+      setDataArea(1,0);
+      numCols=2;
+      headerRow=0;
+      dimensionNames={"key","value"};
+      dimensionCols={0};
+      
+      VariableValue v(VariableType::parameter);
+      
+      {
+        istringstream is(input);
+        duplicateKeyAction=min;
+        loadValueFromCSVFile(v,is,*this);
+        CHECK_EQUAL(-10, v.tensorInit[0]);
+        CHECK_EQUAL(-7, v.tensorInit[1]);
+      }
+      
+      {
+        istringstream is(input);
+        duplicateKeyAction=max;
+        loadValueFromCSVFile(v,is,*this);
+        CHECK_EQUAL(5, v.tensorInit[0]);
+        CHECK_EQUAL(-3, v.tensorInit[1]);
+      }
+    }
+
     {
       string input="A comment\n"
         ";;foobar\n" // horizontal dim name
@@ -531,6 +685,34 @@ SUITE(CSVParser)
     }
 
   TEST_FIXTURE(DataSpec, toggleDimensions)
+
+  TEST_FIXTURE(DataSpec, toggleDimensionsMultiple)
+    {
+      toggleDimension(1);
+      toggleDimension(3);
+      toggleDimension(5);
+      CHECK_EQUAL(3, dimensionCols.size());
+      CHECK(dimensionCols.count(1));
+      CHECK(dimensionCols.count(3));
+      CHECK(dimensionCols.count(5));
+      
+      toggleDimension(1);
+      toggleDimension(3);
+      CHECK_EQUAL(1, dimensionCols.size());
+      CHECK(dimensionCols.count(5));
+    }
+
+  TEST_FIXTURE(DataSpec, setDataAreaBoundaryConditions)
+    {
+      setDataArea(0,0);
+      CHECK_EQUAL(0, nRowAxes());
+      CHECK_EQUAL(0, nColAxes());
+      
+      setDataArea(100,200);
+      CHECK_EQUAL(100, nRowAxes());
+      CHECK_EQUAL(200, nColAxes());
+    }
+
     {
       toggleDimension(2);
       CHECK_EQUAL(1,dimensionCols.count(2));
@@ -579,6 +761,33 @@ SUITE(CSVParser)
   }
   
   TEST(escapeDoubledQuotes)
+
+  TEST(escapeDoubledQuotesComplexCases)
+    {
+      CHECK_EQUAL("'a&'&'b'",testEscapeDoubledQuotes("'a'''b'"));
+      CHECK_EQUAL("'&'start&'",testEscapeDoubledQuotes("'''start''"));
+      CHECK_EQUAL("'end&'&'",testEscapeDoubledQuotes("'end'''"));
+      CHECK_EQUAL("'&'&'&'",testEscapeDoubledQuotes("'''''"));
+      CHECK_EQUAL("'a,b&'c'",testEscapeDoubledQuotes("'a,b''c'"));
+      CHECK_EQUAL("&'&'",testEscapeDoubledQuotes("'''"));
+    }
+
+  TEST(escapeDoubledQuotesWithBackslashEscape)
+    {
+      DataSpec spec;
+      spec.quote='"';
+      spec.separator=',';
+      spec.escape='\\';
+      
+      string test1 = ""hello""world"";
+      escapeDoubledQuotes(test1, spec);
+      CHECK_EQUAL(""hello\\"world\\"", test1);
+      
+      string test2 = """""";
+      escapeDoubledQuotes(test2, spec);
+      CHECK_EQUAL("\\"\\"", test2);
+    }
+
     {
       CHECK_EQUAL("foo",testEscapeDoubledQuotes("foo"));
       CHECK_EQUAL("'foo'",testEscapeDoubledQuotes("'foo'"));
@@ -593,6 +802,158 @@ SUITE(CSVParser)
       CHECK_EQUAL("'fo&'o','b&'ar'",testEscapeDoubledQuotes("'fo''o','b''ar'"));
     }
   
+  TEST_FIXTURE(DataSpec, emptyFileHandling)
+    {
+      string input="";
+      istringstream is(input);
+      CHECK_THROW(guessFromStream(is), std::exception);
+    }
+
+  TEST_FIXTURE(DataSpec, singleColumnData)
+    {
+      string input="value\n1\n2\n3\n";
+      istringstream is(input);
+      guessFromStream(is);
+      CHECK_EQUAL(1, nRowAxes());
+      CHECK_EQUAL(0, nColAxes());
+      CHECK_EQUAL(0, headerRow);
+    }
+
+  TEST_FIXTURE(DataSpec, onlyHeaderRow)
+    {
+      string input="col1,col2,col3\n";
+      istringstream is(input);
+      guessFromStream(is);
+      CHECK_EQUAL(',', separator);
+      CHECK_EQUAL(1, nRowAxes());
+      CHECK_EQUAL(2, nColAxes());
+    }
+
+  TEST(isNumericalExtendedCases)
+    {
+      CHECK(isNumerical("0"));
+      CHECK(isNumerical("0.0"));
+      CHECK(isNumerical(".5"));
+      CHECK(isNumerical("-.5"));
+      CHECK(isNumerical("+.5"));
+      CHECK(isNumerical("1.23e-45"));
+      CHECK(isNumerical("1.23E+45"));
+      CHECK(isNumerical("INFINITY"));
+      CHECK(isNumerical("-INFINITY"));
+      CHECK(isNumerical("+INFINITY"));
+      CHECK(!isNumerical("1.2.3"));
+      CHECK(!isNumerical("1e"));
+      CHECK(!isNumerical("e5"));
+      CHECK(!isNumerical("abc123"));
+      CHECK(!isNumerical("123abc"));
+      CHECK(!isNumerical("++1"));
+      CHECK(!isNumerical("--1"));
+    }
+
+  TEST_FIXTURE(DataSpec, trailingSeparators)
+    {
+      string input="col1,col2,col3,\n";
+      input += "val1,val2,val3,\n";
+      input += "val4,val5,val6,\n";
+      istringstream is(input);
+      guessFromStream(is);
+      CHECK_EQUAL(',', separator);
+    }
+
+  TEST_FIXTURE(DataSpec, leadingSeparators)
+    {
+      string input=",col1,col2,col3\n";
+      input += ",val1,val2,val3\n";
+      input += ",val4,val5,val6\n";
+      istringstream is(input);
+      guessFromStream(is);
+      CHECK_EQUAL(',', separator);
+    }
+
+  TEST_FIXTURE(DataSpec, multipleSeparatorsInRow)
+    {
+      string input="col1,,col3\n";
+      input += "val1,,val3\n";
+      istringstream is(input);
+      guessFromStream(is);
+      CHECK_EQUAL(',', separator);
+    }
+
+  TEST_FIXTURE(DataSpec, largeDimensionality)
+    {
+      string input;
+      for(int i = 0; i < 50; ++i) {
+        if(i > 0) input += ",";
+        input += "col" + to_string(i);
+      }
+      input += "\n";
+      for(int row = 0; row < 5; ++row) {
+        for(int i = 0; i < 50; ++i) {
+          if(i > 0) input += ",";
+          input += to_string(row * 50 + i);
+        }
+        input += "\n";
+      }
+      istringstream is(input);
+      guessFromStream(is);
+      CHECK_EQUAL(',', separator);
+    }
+
+  TEST_FIXTURE(DataSpec, manyRows)
+    {
+      string input="col1,col2\n";
+      for(int i = 0; i < 100; ++i) {
+        input += to_string(i) + "," + to_string(i*2) + "\n";
+      }
+      istringstream is(input);
+      separator=',';
+      setDataArea(1,0);
+      numCols=2;
+      headerRow=0;
+      dimensionNames={"col1","col2"};
+      dimensionCols={0};
+      
+      VariableValue v(VariableType::parameter);
+      loadValueFromCSVFile(v,is,*this);
+      CHECK_EQUAL(2, v.rank());
+    }
+
+  TEST_FIXTURE(DataSpec, unbalancedQuotes)
+    {
+      string input="col1,col2\n";
+      input += ""unclosed,normal\n";
+      input += "normal,"also unclosed\n";
+      istringstream is(input);
+      separator=',';
+      quote='"';
+      setDataArea(1,0);
+      numCols=2;
+      headerRow=0;
+      dimensionNames={"col1","col2"};
+      dimensionCols={0};
+      
+      VariableValue v(VariableType::parameter);
+      CHECK_THROW(loadValueFromCSVFile(v,is,*this), std::exception);
+    }
+
+  TEST_FIXTURE(DataSpec, inconsistentColumnCounts)
+    {
+      string input="col1,col2,col3\n";
+      input += "val1,val2\n";
+      input += "val3,val4,val5,val6\n";
+      istringstream is(input);
+      separator=',';
+      setDataArea(1,0);
+      numCols=3;
+      headerRow=0;
+      dimensionNames={"col1","col2","col3"};
+      dimensionCols={0};
+      
+      VariableValue v(VariableType::parameter);
+      loadValueFromCSVFile(v,is,*this);
+      CHECK_EQUAL(2, v.rank());
+    }
+
   TEST(isNumerical)
     {
       CHECK(isNumerical(""));
