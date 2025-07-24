@@ -46,8 +46,6 @@ using ravel::getWholeLine;
 #include <boost/token_functions.hpp>
 #include <boost/pool/pool.hpp>
 
-//typedef boost::tokenizer<Parser> Tokenizer;
-
 namespace
 {
   /// An any with cached hash

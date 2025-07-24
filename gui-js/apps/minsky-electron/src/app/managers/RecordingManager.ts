@@ -24,7 +24,7 @@ export class RecordingManager {
     this.stopRecording();
 
     const replayRecordingDialog = await WindowManager.showOpenDialog({
-      defaultPath: 'models',
+      defaultPath: ':models',
       filters: [
         { extensions: ['json'], name: 'JSON' },
         { extensions: ['*'], name: 'All Files' },
@@ -48,7 +48,7 @@ export class RecordingManager {
     const index = dialog.showMessageBoxSync(options);
 
     if (options.buttons[index] === positiveResponseText) {
-      const saveDialog = await WindowManager.showSaveDialog({defaultPath: 'models'});
+      const saveDialog = await WindowManager.showSaveDialog({defaultPath: ':models'});
 
       const { canceled, filePath } = saveDialog;
 

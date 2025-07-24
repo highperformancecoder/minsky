@@ -1,5 +1,6 @@
 import { defaultBackgroundColor } from '@minsky/shared';
 import Store from 'electron-store';
+import {homedir} from 'node:os';
 
 interface MinskyPreferences {
   godleyTableShowValues: boolean;
@@ -26,8 +27,8 @@ class StoreManager {
     defaults: {
       recentFiles: [],
       backgroundColor: defaultBackgroundColor,
-      defaultModelDirectory: "",
-      defaultDataDirectory: "",
+      defaultModelDirectory: homedir(),
+      defaultDataDirectory: homedir(),
       preferences: {
         godleyTableShowValues: false,
         godleyTableOutputStyle: 'sign',

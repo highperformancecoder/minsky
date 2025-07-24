@@ -191,7 +191,6 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
   ) {
     super();
     this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      electronService.log(JSON5.stringify(params));
       this.csvDialog = new CSVDialog(params.csvDialog);
       this.systemWindowId = params.systemWindowId;
       this.isInvokedUsingToolbar = params.isInvokedUsingToolbar==="true";
