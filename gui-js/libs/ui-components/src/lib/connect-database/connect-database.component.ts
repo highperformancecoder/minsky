@@ -20,10 +20,10 @@ import JSON5 from 'json5';
     ],
 })
 export class ConnectDatabaseComponent implements OnInit {
-  dbType="sqlite3";
+  dbType: string="sqlite3";
   connection: string;
-  table="";
-  tables=[];
+  table: string="";
+  tables: string[]=[];
   ravel: Ravel;
   constructor(
     private route: ActivatedRoute,
@@ -38,7 +38,7 @@ export class ConnectDatabaseComponent implements OnInit {
     });
   }
 
-  setDbType(event) {
+  setDbType(event: Event) {
     const target = event.target as HTMLSelectElement;
     this.dbType=target.value;
   }
@@ -49,12 +49,12 @@ export class ConnectDatabaseComponent implements OnInit {
     this.tables=await this.ravel.db.tableNames();
   }
   
-  setTable(event) {
+  setTable(event: Event) {
     const target = event.target as HTMLSelectElement;
     this.table=target.value;    
   }
 
-  setConnection(event) {
+  setConnection(event: Event) {
     const target = event.target as HTMLSelectElement;
     this.connection=target.value;    
   }

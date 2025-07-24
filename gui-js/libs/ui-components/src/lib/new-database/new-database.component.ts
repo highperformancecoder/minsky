@@ -40,12 +40,12 @@ export class NewDatabaseComponent implements OnInit {
     });
   }
 
-  setDbType(event) {
+  setDbType(event: Event) {
     const target = event.target as HTMLSelectElement;
     this.dbType=target.value;
   }
 
-  setConnection(event) {
+  setConnection(event: Event) {
     const target = event.target as HTMLSelectElement;
     this.connection=target.value;    
   }
@@ -56,7 +56,7 @@ export class NewDatabaseComponent implements OnInit {
     this.tables=await this.electronService.minsky.databaseIngestor.db.tableNames();
   }
   
-  setTable(event) {
+  setTable(event: Event) {
     const target = event.target as HTMLSelectElement;
     this.table=target.value;    
   }

@@ -41,7 +41,7 @@ export class RavelSelectHorizontalDimComponent implements OnInit  {
     this.dataCols=await this.ravel.db.numericalColumnNames();
   }
   
-  clickDim(event) {
+  clickDim(event: Event) {
     const target = event.target as HTMLInputElement;
     if (target.checked)
       this.horizontalDimCols.add(target.name);
