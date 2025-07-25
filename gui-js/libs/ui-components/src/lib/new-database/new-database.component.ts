@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectorRef, Component, SimpleChanges } from '@angular/core';
 import { FormsModule, } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
@@ -8,7 +8,6 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { OpenDialogOptions, SaveDialogOptions } from 'electron';
 import { CommonModule } from '@angular/common'; // Often useful for ngIf, ngFor
-import JSON5 from 'json5';
 
 @Component({
     selector: 'new-database',
@@ -23,11 +22,11 @@ import JSON5 from 'json5';
       MatOptionModule,
     ],
 })
-export class NewDatabaseComponent implements OnInit {
-  dbType="sqlite3";
+export class NewDatabaseComponent {
+  dbType: string="sqlite3";
   connection: string;
-  table="";
-  tables=[];
+  table: string="";
+  tables: string[]=[];
   constructor(
     private route: ActivatedRoute,
     private electronService: ElectronService,
@@ -35,17 +34,12 @@ export class NewDatabaseComponent implements OnInit {
   ) {
   }
 
-  ngOnInit(): void {
-    this.route.queryParams.subscribe((params) => {
-    });
-  }
-
-  setDbType(event) {
+  setDbType(event: Event) {
     const target = event.target as HTMLSelectElement;
     this.dbType=target.value;
   }
 
-  setConnection(event) {
+  setConnection(event: Event) {
     const target = event.target as HTMLSelectElement;
     this.connection=target.value;    
   }
@@ -56,14 +50,13 @@ export class NewDatabaseComponent implements OnInit {
     this.tables=await this.electronService.minsky.databaseIngestor.db.tableNames();
   }
   
-  setTable(event) {
+  setTable(event: Event) {
     const target = event.target as HTMLSelectElement;
     this.table=target.value;    
   }
 
   setTableInput(event) {
-    let input=document.getElementById("table") as HTMLInputElement;
-    this.table=input.value=event?.option?.value;
+    this.table=event?.option?.value;
   }
   
   async selectFile() {
@@ -86,12 +79,8 @@ export class NewDatabaseComponent implements OnInit {
       if (filePath)
         this.connection=`db=${filePath}`;
     }
-    if (this.connection) {
-      let connectionInput=document.getElementById("connection") as HTMLInputElement;
-      connectionInput.hidden=false;
-      connectionInput.value=this.connection;
-      this.getTables();
-    }
+    if (this.connection) 
+      await this.getTables();
   }
 
   connect() {
@@ -100,8 +89,7 @@ export class NewDatabaseComponent implements OnInit {
       return;
     }      
     this.electronService.minsky.databaseIngestor.db.connect(this.dbType,this.connection,this.table);
-    // TODO - set dropTable according to whether an existing table is selected, or a new given
-    let dropTable=!this.tables.includes(this.tables);
+    let dropTable=!this.tables.includes(this.table);
     this.electronService.invoke(events.IMPORT_CSV_TO_DB, {dropTable});
     this.closeWindow();
   }

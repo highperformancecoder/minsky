@@ -913,7 +913,12 @@ export class CommandsManager {
     this.setLogSimulationCheckmark(true);
   }
 
-  /// @param dropTable whether to create a new table if loading to a database
+  /**
+   * Opens CSV import dialog
+   * @param csvDialog - CSV dialog configuration object
+   * @param isInvokedUsingToolbar - Whether invoked from toolbar (affects cleanup)
+   * @param dropTable - Whether to drop existing table (for database imports)
+   */
   static async importCSV(csvDialog: CSVDialog, isInvokedUsingToolbar = false, dropTable=false) {
     const itemInfo: CanvasItem={classType: ClassType.Variable, id: csvDialog.$prefix(), displayContents: false};
     if (!WindowManager.focusIfWindowIsPresent(itemInfo.id)) {

@@ -222,7 +222,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
       }),
     });
 
-    this.electronService.on(events.CSV_IMPORT_REFRESH, async e => {
+    this.electronService.on(events.REFRESH_CSV_IMPORT, async e => {
       await this.getCSVDialogSpec();
       this.updateColumnTypes();
       this.updateForm();

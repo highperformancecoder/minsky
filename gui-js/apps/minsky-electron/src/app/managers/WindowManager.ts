@@ -138,7 +138,7 @@ export class WindowManager {
   /// returns the directory key for the StoreManager.
   static processDefaultDirectory(options: OpenDialogOptions|SaveDialogOptions) {
     let splitDefaultPath=/([^\/]*)\/?(.*)/.exec(options.defaultPath);
-    let defaultType=splitDefaultPath[0];
+    let defaultType=splitDefaultPath[1];
     let defaultDirectoryKey="";
     
     switch (defaultType) {
@@ -153,7 +153,7 @@ export class WindowManager {
     if (defaultDirectoryKey)  {
       let defaultDirectory=StoreManager.store.get(defaultDirectoryKey) as string;
       if (defaultDirectory)
-        options['defaultPath']=defaultDirectory;
+        options['defaultPath']=defaultDirectory+'/'+splitDefaultPath[2];
     }
     return defaultDirectoryKey;
   }
@@ -165,10 +165,11 @@ export class WindowManager {
     let options=args[args.length-1] as OpenDialogOptions;
     let defaultDirectoryKey=this.processDefaultDirectory(options);
 
+    let res: Electron.OpenDialogReturnValue;
     if (args.length>1)
-      var res=await dialog.showOpenDialog(args[0],options);
+      res=await dialog.showOpenDialog(args[0],options);
     else
-      var res=await dialog.showOpenDialog(options);
+      res=await dialog.showOpenDialog(options);
     if (!res.canceled && defaultDirectoryKey) {
       StoreManager.store.set(defaultDirectoryKey,dirname(res.filePaths[0]));
     }
@@ -182,10 +183,11 @@ export class WindowManager {
     let options=args[args.length-1] as SaveDialogOptions;
     let defaultDirectoryKey=this.processDefaultDirectory(options);
 
+    let res: Electron.SaveDialogReturnValue;
     if (args.length>1) 
-      var res=await dialog.showSaveDialog(args[0], options);
+      res=await dialog.showSaveDialog(args[0], options);
     else
-      var res=await dialog.showSaveDialog(options);
+      res=await dialog.showSaveDialog(options);
     if (!res.canceled && defaultDirectoryKey) {
       StoreManager.store.set(defaultDirectoryKey,dirname(res.filePath));
     }

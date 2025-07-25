@@ -5,21 +5,30 @@
       <option value="postgresql">PostgresQL</option>
       <option value="mysql4">MySQL/MariaDB</option>
       <option value="odbc4">ODBC</option>
-      <option value="odbc4">ODBC</option>
       <option value="oracle">Oracle</option>
       <option value="db2">DB2</option>
       <option value="firebird">Firebird</option>
     </select>
     <button [hidden]="dbType!=='sqlite3'" (click)="selectFile()">Select File</button>
   </div>
-  <input id="connection" [hidden]="dbType==='sqlite3'" type="text"
-         placeholder="Connection string"/>
+  <input id="connection" type="text"
+         placeholder="Connection string"
+         [hidden]="dbType==='sqlite3' && !connection"
+         [(ngModel)]="connection"
+         />
   <input id="table" type="text" placeholder="table" (change)="setTable($event)"
            [matAutocomplete]="autocompleteFormat"/>
+  <!--mat-autocomplete
+    id="table-list"
+    [panelWidth]="'14rem'"
+    #autocompleteFormat="matAutocomplete"
+    (optionSelected)="setTableInput($event)"
+    -->
   <mat-autocomplete
     id="table-list"
     [panelWidth]="'14rem'"
     #autocompleteFormat="matAutocomplete"
+    [(ngModel)]="table"
     (optionSelected)="setTableInput($event)"
     >
     <mat-option *ngFor="let table of tables" [value]="table">{{table}}</mat-option>

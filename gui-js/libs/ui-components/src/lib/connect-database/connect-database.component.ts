@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectorRef, Component, SimpleChanges } from '@angular/core';
 import { FormsModule, } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
@@ -6,7 +6,6 @@ import { Ravel} from '@minsky/shared';
 import { MatButtonModule } from '@angular/material/button';
 import { OpenDialogOptions } from 'electron';
 import { CommonModule } from '@angular/common'; // Often useful for ngIf, ngFor
-import JSON5 from 'json5';
 
 @Component({
     selector: 'connect-database',
@@ -19,11 +18,11 @@ import JSON5 from 'json5';
         MatButtonModule,
     ],
 })
-export class ConnectDatabaseComponent implements OnInit {
-  dbType="sqlite3";
+export class ConnectDatabaseComponent {
+  dbType: string="sqlite3";
   connection: string;
-  table="";
-  tables=[];
+  table: string="";
+  tables: string[]=[];
   ravel: Ravel;
   constructor(
     private route: ActivatedRoute,
@@ -33,12 +32,7 @@ export class ConnectDatabaseComponent implements OnInit {
     this.ravel=new Ravel(this.electronService.minsky.canvas.item);
   }
 
-  ngOnInit(): void {
-    this.route.queryParams.subscribe((params) => {
-    });
-  }
-
-  setDbType(event) {
+  setDbType(event: Event) {
     const target = event.target as HTMLSelectElement;
     this.dbType=target.value;
   }
@@ -49,12 +43,12 @@ export class ConnectDatabaseComponent implements OnInit {
     this.tables=await this.ravel.db.tableNames();
   }
   
-  setTable(event) {
+  setTable(event: Event) {
     const target = event.target as HTMLSelectElement;
     this.table=target.value;    
   }
 
-  setConnection(event) {
+  setConnection(event: Event) {
     const target = event.target as HTMLSelectElement;
     this.connection=target.value;    
   }
