@@ -552,6 +552,8 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
 
     if (this.dialogState.spec.dataCols.length === 0)
       this.dialogState.spec.counter = true;
+    this.csvDialog.spec.$properties(this.dialogState.spec);
+    
     if (!this.files || !this.files[0]) this.files=[this.url.value];
     if (this.files && (this.dropTable.value || this.newTable))
       this.electronService.minsky.databaseIngestor.createTable(this.files[0]);
