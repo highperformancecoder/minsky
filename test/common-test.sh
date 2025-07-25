@@ -27,5 +27,5 @@ pass()
 trap "fail" 1 2 3 15
 
 # add here to PYTHONPATH to find local build of pyminsky
-export PYTHONPATH=$here:$PYTHONPATH
+export PYTHONPATH="$here:$PYTHONPATH"
 export LD_LIBRARY_PATH=$here/ecolab/lib:$LD_LIBRARY_PATH

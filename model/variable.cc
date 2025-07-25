@@ -464,13 +464,8 @@ void VariableBase::exportAsCSV(const std::string& filename, bool tabular) const
 void VariableBase::importFromCSV(const vector<string>& filenames, const DataSpecSchema& spec) const
 {
   if (auto v=vValue()) {
-    v->csvDialog.spec=spec;
-    if (!filenames.empty())
-      v->csvDialog.url=filenames[0];
-    loadValueFromCSVFile(*v, filenames, v->csvDialog.spec);
-    minsky().populateMissingDimensionsFromVariable(*v);
-    if (!v->hypercube().dimsAreDistinct())
-      throw_error("Axes of imported data should all have distinct names");
+    v->spec=spec;
+    v->importFromCSV(filenames);
   }
 }
 
@@ -478,15 +473,8 @@ void VariableBase::importFromCSV(const vector<string>& filenames, const DataSpec
 void VariableBase::reloadCSV()
 {
   if (auto v=vValue()) 
-    if (!v->csvDialog.url.empty())
-      loadValueFromCSVFile(*v, {v->csvDialog.url}, v->csvDialog.spec);
-}
-
-
-void VariableBase::destroyFrame()
-{
-  if (auto vv=vValue())
-    vv->csvDialog.destroyFrame();
+    if (!v->url.empty())
+      loadValueFromCSVFile(*v, {v->url}, v->spec);
 }
 
 void VariableBase::insertControlled(Selection& selection)

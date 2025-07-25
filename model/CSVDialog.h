@@ -32,24 +32,16 @@
 
 namespace minsky
 {
-  class CSVDialog: public RenderNativeWindow
+  class CSVDialog
   {
     std::vector<std::string> initialLines; ///< initial lines of file
-    double rowHeight=0;
-    double m_tableWidth;
     CLASSDESC_ACCESS(DataSpec);
-    bool redraw(int, int, int width, int height) override;
     
   public:
     static const unsigned numInitialLines=100;
-    double xoffs=80;
-    double colWidth=50;
-    bool flashNameRow=false;
     DataSpec spec;
     /// filename, or web url
     std::string url;
-    /// width of table (in pixels)
-    double tableWidth() const {return m_tableWidth;}
 
     /// loads an initial sequence of lines from \a url. If fname
     /// contains "://", is is treated as a URL, and downloaded from
@@ -60,11 +52,6 @@ namespace minsky
     /// common implementation of loading the initial sequence of lines
     void loadFileFromName(const std::string& fname);
     void reportFromFile(const std::string& input, const std::string& output) const;
-    void requestRedraw() {if (surface.get()) surface->requestRedraw();}
-    /// return column mouse is over
-    std::size_t columnOver(double x) const;
-    /// return row mouse is over
-    std::size_t rowOver(double y) const;
     std::vector<std::vector<std::string> > parseLines(size_t maxColumn=std::numeric_limits<size_t>::max());
     /// populate all column names from the headers row
     void populateHeaders();
@@ -76,6 +63,8 @@ namespace minsky
     /// could slightly underestimate the value, and is never less than
     /// 1, even for empty columns
     std::vector<size_t> correctedUniqueValues();
+    /// import names CSV files using spec above
+    virtual void importFromCSV(const std::vector<std::string>& filenames)=0;
   };
 
   bool isNumerical(const std::string& s);

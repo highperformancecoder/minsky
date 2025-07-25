@@ -20,6 +20,7 @@
 #include "minsky.h"
 #include "CSVParser.h"
 
+#include "CSVTools.rcd"
 #include "CSVParser.rcd"
 #include "dataSpecSchema.rcd"
 #include "dimension.rcd"
@@ -36,155 +37,14 @@
 
 using namespace minsky;
 using namespace std;
+using ravel::Parser;
+using ravel::SpaceSeparatorParser;
+using ravel::getWholeLine;
 
 #include <boost/type_traits.hpp>
 #include <boost/tokenizer.hpp>
 #include <boost/token_functions.hpp>
 #include <boost/pool/pool.hpp>
-
-namespace escapedListSeparator
-{
-  // pinched from boost::escape_list_separator, and modified to not throw
-  template <class Char,
-            class Traits = BOOST_DEDUCED_TYPENAME std::basic_string<Char>::traits_type >
-  class EscapedListSeparator {
-
-  private:
-    typedef std::basic_string<Char,Traits> string_type;
-    struct char_eq {
-      Char e_;
-      char_eq(Char e):e_(e) { }
-      bool operator()(Char c) {
-        return Traits::eq(e_,c);
-      }
-    };
-    string_type  escape_;
-    string_type  c_;
-    string_type  quote_;
-    bool last_;
-
-    bool is_escape(Char e) {
-      const char_eq f(e);
-      return std::find_if(escape_.begin(),escape_.end(),f)!=escape_.end();
-    }
-    bool is_c(Char e) {
-      const char_eq f(e);
-      return std::find_if(c_.begin(),c_.end(),f)!=c_.end();
-    }
-    bool is_quote(Char e) {
-      const char_eq f(e);
-      return std::find_if(quote_.begin(),quote_.end(),f)!=quote_.end();
-    }
-    template <typename iterator, typename Token>
-    void do_escape(iterator& next,iterator end,Token& tok) {
-      if (++next >= end)
-        // don't throw, but pass on verbatim
-        tok+=escape_.front();
-      if (Traits::eq(*next,'n')) {
-        tok+='\n';
-        return;
-      }
-      if (is_quote(*next)) {
-        tok+=*next;
-        return;
-      }
-      if (is_c(*next)) {
-        tok+=*next;
-        return;
-      }
-      if (is_escape(*next)) {
-        tok+=*next;
-        return;
-      }
-      // don't throw, but pass on verbatim
-      tok+=escape_.front()+*next;
-    }
-
-  public:
-
-    explicit EscapedListSeparator(Char  e = '\\',
-                                  Char c = ',',Char  q = '\"')
-      : escape_(1,e), c_(1,c), quote_(1,q), last_(false) { }
-
-    EscapedListSeparator(string_type e, string_type c, string_type q)
-      : escape_(e), c_(c), quote_(q), last_(false) { }
-
-    void reset() {last_=false;}
-
-    template <typename InputIterator, typename Token>
-    bool operator()(InputIterator& next,InputIterator end,Token& tok) {
-      bool bInQuote = false;
-      tok = Token();
-
-      if (next >= end) {
-        next=end; // reset next in case it has adavanced beyond
-        if (last_) {
-          last_ = false;
-          return true;
-        }
-        return false;
-      }
-      last_ = false;
-      while (next < end) {
-        if (is_escape(*next)) {
-          do_escape(next,end,tok);
-        }
-        else if (is_c(*next)) {
-          if (!bInQuote) {
-            // If we are not in quote, then we are done
-            ++next;
-            // The last character was a c, that means there is
-            // 1 more blank field
-            last_ = true;
-            return true;
-          }
-          tok+=*next;
-        }
-        else if (is_quote(*next)) {
-          bInQuote=!bInQuote;
-        }
-        else {
-          tok += *next;
-        }
-        ++next;
-      }
-      return true;
-    }
-  };
-}
-using Parser=escapedListSeparator::EscapedListSeparator<char>;
-
-typedef boost::tokenizer<Parser> Tokenizer;
-
-struct SpaceSeparatorParser
-{
-  char escape, quote;
-  SpaceSeparatorParser(char escape='\\', char sep=' ', char quote='"'):
-    escape(escape), quote(quote) {}
-  template <class I>
-  bool operator()(I& next, I end, std::string& tok)
-  {
-    tok.clear();
-    bool quoted=false;
-    while (next!=end)
-      {
-        if (*next==escape)
-          tok+=*(++next);
-        else if (*next==quote)
-          quoted=!quoted;
-        else if (!quoted && isspace(*next))
-          {
-            while (isspace(*next)) ++next;
-            return true;
-          }
-        else
-          tok+=*next;
-        ++next;
-      }
-    return !tok.empty();
-  }
-  void reset() {}
-};
 
 namespace
 {
@@ -383,6 +243,7 @@ void DataSpec::setDataArea(size_t row, size_t col)
     dataCols.erase(i);
   for (unsigned i=m_nColAxes; i<numCols && i<maxColumn; ++i)
     dataCols.insert(i);
+  toSchema();
 }
 
 
@@ -573,49 +434,6 @@ void DataSpec::populateFromRavelMetadata(const std::string& metadata, const stri
 
 namespace minsky
 {
-  // handle DOS files with '\r' '\n' line terminators
-  void chomp(string& buf)
-  {
-    if (!buf.empty() && buf.back()=='\r')
-      buf.erase(buf.size()-1);
-  }
-  
-  // gets a line, accounting for quoted newlines
-  bool getWholeLine(istream& input, string& line, const DataSpec& spec)
-  {
-    line.clear();
-    bool r=getline(input,line).good();
-    chomp(line);
-    while (r)
-      {
-        int quoteCount=0;
-        for (auto i: line)
-          if (i==spec.quote)
-            ++quoteCount;
-        if (quoteCount%2==0) break; // data line correctly terminated
-        string buf;
-        r=getline(input,buf).good(); // read next line and append
-        chomp(buf);
-        line+=buf;
-      }
-    escapeDoubledQuotes(line,spec);
-    return r || !line.empty();
-  }
-
-  void escapeDoubledQuotes(std::string& line,const DataSpec& spec)
-  {
-    // replace doubled quotes with escape quote
-    for (size_t i=1; i<line.size(); ++i)
-      if (line[i]==spec.quote && line[i-1]==spec.quote &&
-          ((i==1 && (i==line.size()-1|| line[i+1]!=spec.quote)) ||                                       // deal with leading ""
-           (i>1 &&
-            ((line[i-2]!=spec.quote && line[i-2]!=spec.escape &&
-              (line[i-2]!=spec.separator || i==line.size()-1|| line[i+1]!=spec.quote))  // deal with ,''
-             ||            // deal with "" middle or end
-             (line[i-2]==spec.quote && (i==2 || line[i-3]==spec.separator || line[i-3]==spec.escape)))))) // deal with leading """
-        line[i-1]=spec.escape;
-  }
-
   /// handle reporting errors in loadValueFromCSVFileT when loading files
   struct OnError
   {

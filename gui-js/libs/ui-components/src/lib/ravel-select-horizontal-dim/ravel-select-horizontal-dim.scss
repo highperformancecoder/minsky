@@ -1,0 +1,23 @@
+@import '../../../../shared/src/lib/theme/common-style.scss';
+
+:host {
+  display: block; /* Important for host to take up space */
+  height: 100%; /* Allows the component to fill its parent */
+}
+
+.selectors {
+    height: 100vh; //calc(100vh + 100px);
+    overflow-y: auto;
+}
+
+.dim-selector {
+    display: flex;
+    flex-direction: row;
+    justify-content: end;
+    width: 100%;
+}
+
+.form-buttons {
+    margin-top: 0px;
+    margin-bottom: 10px;
+}

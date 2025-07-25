@@ -85,6 +85,16 @@ namespace minsky
     static VariableValuePtr s_one(make_shared<SpecialConst>("constant:one","1"));
     return s_one;
   }
+
+  void VariableValue::importFromCSV(const std::vector<std::string>& filenames)
+  {
+    if (!filenames.empty())
+      url=filenames[0];
+    loadValueFromCSVFile(*this, filenames, spec);
+    minsky().populateMissingDimensionsFromVariable(*this);
+    if (!hypercube().dimsAreDistinct())
+      throw runtime_error("Axes of imported data should all have distinct names");
+  }
   
   bool VariableValue::idxInRange() const
   {return m_type==undefined || idx()+size()<=

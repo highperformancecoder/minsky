@@ -34,6 +34,12 @@
 
 #include "minskyVersion.h"
 
+#include "CSVTools.xcd"
+#include "databaseIngestor.cd"
+#include "databaseIngestor.rcd"
+#include "databaseIngestor.xcd"
+#include "dynamicRavelCAPI.rcd"
+#include "dynamicRavelCAPI.xcd"
 #include "fontDisplay.rcd"
 #include "minsky.rcd"
 #include "minsky.xcd"
@@ -203,6 +209,7 @@ namespace minsky
 
   VariablePtr Minsky::definingVar(const string& valueId) const 
   {
+    if (!model) return {};
     return dynamic_pointer_cast<VariableBase>
       (model->findAny(&Group::items, [&](const ItemPtr& x) {
         auto v=x->variableCast();
@@ -1828,3 +1835,4 @@ CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Minsky);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(classdesc::Signature);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(classdesc::PolyRESTProcessBase);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::CallableFunction);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(ravelCAPI::Database);

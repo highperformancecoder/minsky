@@ -7,7 +7,7 @@ cat >input.py <<EOF
 from pyminsky import minsky
 
 minsky.canvas.addVariable('par','parameter')
-csvDialog=minsky.variableValues[':par'].csvDialog
+csvDialog=minsky.variableValues[':par']
 csvDialog.url('$here/gui-js/examples/data/PatentsByCountry1980-2011.csv')
 csvDialog.loadFile()
 assert(len(csvDialog.parseLines()())==csvDialog.numInitialLines())

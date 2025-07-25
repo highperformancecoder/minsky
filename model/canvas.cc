@@ -146,9 +146,9 @@ namespace minsky
     
     if (itemFocus && clickType==ClickType::inItem)
       {
-        itemFocus->onMouseUp(x,y);
+        bool requestReset=itemFocus->onMouseUp(x,y);
         itemFocus.reset(); // prevent spurious mousemove events being processed
-        minsky().requestReset();
+        if (requestReset) minsky().requestReset();
       }
     if (fromPort.get())
       {

@@ -1,5 +1,6 @@
 import { defaultBackgroundColor } from '@minsky/shared';
 import Store from 'electron-store';
+import {homedir} from 'node:os';
 
 interface MinskyPreferences {
   godleyTableShowValues: boolean;
@@ -15,6 +16,8 @@ interface MinskyStore {
   recentFiles: Array<string>;
   backgroundColor: string;
   preferences: MinskyPreferences;
+  defaultModelDirectory: string;
+  defaultDataDirectory: string;
   ravelPlugin: string; // used for post installation installation of Ravel
 }
 
@@ -24,6 +27,8 @@ class StoreManager {
     defaults: {
       recentFiles: [],
       backgroundColor: defaultBackgroundColor,
+      defaultModelDirectory: homedir(),
+      defaultDataDirectory: homedir(),
       preferences: {
         godleyTableShowValues: false,
         godleyTableOutputStyle: 'sign',

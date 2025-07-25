@@ -258,8 +258,8 @@ namespace minsky
     virtual bool onItem(float x, float y) const;
     /// respond to mouse down events
     virtual void onMouseDown(float x, float y) {}
-    /// respond to mouse up events
-    virtual void onMouseUp(float x, float y) {}
+    /// respond to mouse up events. Return true if model needs to be reset.
+    virtual bool onMouseUp(float x, float y) {return false;}
     /// respond to mouse motion events with button pressed
     /// @return true if it needs to be rerendered
     virtual bool onMouseMotion(float x, float y) {return false;}
