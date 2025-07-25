@@ -919,7 +919,7 @@ export class ContextMenuManager {
           WindowManager.createPopupWindowWithRouting({
             title: 'Set numerical axes',
             url: '#/headless/ravel-select-horizontal-dim',
-            height: 180,
+            height: 400,
             width: 400,
           })
         },
@@ -1388,7 +1388,7 @@ export class ContextMenuManager {
 
   private static async initContextMenuForCSVImport(event: IpcMainEvent, variableValue: string, row: number, col: number)
   {
-    const refresh=()=>event.sender.send(events.CSV_IMPORT_REFRESH);
+    const refresh=()=>event.sender.send(events.REFRESH_CSV_IMPORT);
     const value=new VariableValue(variableValue);
     var menu=Menu.buildFromTemplate([
       new MenuItem({
