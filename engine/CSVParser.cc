@@ -347,6 +347,8 @@ bool DataSpec::processChunk(std::istream& input, const TokenizerFunction& tf, si
       if (starts.size()-1 < firstEmpty && starts.back()<nCols && emptyTail(line, starts.back()))
         firstEmpty=starts.size()-1;
     }
+  if (starts.empty())
+    throw runtime_error("CSV file is empty");
   // compute average of starts, then look for first row that drops below average
   double sum=0;
   for (unsigned long i=0; i<starts.size(); ++i) 

@@ -129,9 +129,6 @@ SUITE(CSVParser)
       CHECK(os.str().find("Invalid data") != std::string::npos);
     }
   
-  // disable temporarily until this is fixed.
-  TEST_FIXTURE(DataSpec,reportFromCSV)
-
   TEST_FIXTURE(DataSpec, reportFromCSVFileWithValidData)
     {
       string input="col1,col2\n";
@@ -176,6 +173,7 @@ SUITE(CSVParser)
       CHECK(result.length() > 0);
     }
 
+  TEST_FIXTURE(DataSpec,reportFromCSV)
     {
       string input="A comment\n"
         ";;foobar\n"
@@ -247,7 +245,6 @@ SUITE(CSVParser)
     void importFromCSV(const std::vector<std::string>&) override {}
   };
   
-  TEST_FIXTURE(TestCSVDialog,classifyColumns)
 
   TEST_FIXTURE(TestCSVDialog, classifyColumnsEdgeCases)
     {
@@ -288,6 +285,7 @@ SUITE(CSVParser)
       CHECK_EQUAL(2,spec.numCols);
     }
 
+  TEST_FIXTURE(TestCSVDialog,classifyColumns)
     {
       string input="10,2022/10/2,hello,\n"
         "'5,150,000','2023/1/3','foo bar',\n"
@@ -555,7 +553,6 @@ SUITE(CSVParser)
     }
 #endif
 
-  TEST_FIXTURE(DataSpec, duplicateActions)
 
   TEST_FIXTURE(DataSpec, duplicateActionsWithZeroValues)
     {
@@ -625,6 +622,7 @@ SUITE(CSVParser)
       }
     }
 
+  TEST_FIXTURE(DataSpec, duplicateActions)
     {
       string input="A comment\n"
         ";;foobar\n" // horizontal dim name
@@ -684,7 +682,6 @@ SUITE(CSVParser)
       }
     }
 
-  TEST_FIXTURE(DataSpec, toggleDimensions)
 
   TEST_FIXTURE(DataSpec, toggleDimensionsMultiple)
     {
@@ -713,6 +710,7 @@ SUITE(CSVParser)
       CHECK_EQUAL(200, nColAxes());
     }
 
+  TEST_FIXTURE(DataSpec, toggleDimensions)
     {
       toggleDimension(2);
       CHECK_EQUAL(1,dimensionCols.count(2));
@@ -760,16 +758,14 @@ SUITE(CSVParser)
     return x;
   }
   
-  TEST(escapeDoubledQuotes)
-
   TEST(escapeDoubledQuotesComplexCases)
     {
-      CHECK_EQUAL("'a&'&'b'",testEscapeDoubledQuotes("'a'''b'"));
+      CHECK_EQUAL("'a&''b'",testEscapeDoubledQuotes("'a'''b'"));
       CHECK_EQUAL("'&'start&'",testEscapeDoubledQuotes("'''start''"));
-      CHECK_EQUAL("'end&'&'",testEscapeDoubledQuotes("'end'''"));
-      CHECK_EQUAL("'&'&'&'",testEscapeDoubledQuotes("'''''"));
+      CHECK_EQUAL("'end&''",testEscapeDoubledQuotes("'end'''"));
+      CHECK_EQUAL("'&'&'",testEscapeDoubledQuotes("'''''"));
       CHECK_EQUAL("'a,b&'c'",testEscapeDoubledQuotes("'a,b''c'"));
-      CHECK_EQUAL("&'&'",testEscapeDoubledQuotes("'''"));
+      CHECK_EQUAL("'&'",testEscapeDoubledQuotes("'''"));
     }
 
   TEST(escapeDoubledQuotesWithBackslashEscape)
@@ -779,15 +775,16 @@ SUITE(CSVParser)
       spec.separator=',';
       spec.escape='\\';
       
-      string test1 = ""hello""world"";
+      string test1 = "hello\"\"world";
       escapeDoubledQuotes(test1, spec);
-      CHECK_EQUAL(""hello\\"world\\"", test1);
+      CHECK_EQUAL("hello\\\"world", test1);
       
-      string test2 = """""";
+      string test2 = "\"\"\"\"";
       escapeDoubledQuotes(test2, spec);
-      CHECK_EQUAL("\\"\\"", test2);
+      CHECK_EQUAL("\"\\\"\"", test2);
     }
 
+  TEST(escapeDoubledQuotes)
     {
       CHECK_EQUAL("foo",testEscapeDoubledQuotes("foo"));
       CHECK_EQUAL("'foo'",testEscapeDoubledQuotes("'foo'"));
@@ -921,8 +918,8 @@ SUITE(CSVParser)
   TEST_FIXTURE(DataSpec, unbalancedQuotes)
     {
       string input="col1,col2\n";
-      input += ""unclosed,normal\n";
-      input += "normal,"also unclosed\n";
+      input += "\"unclosed,normal\n";
+      input += "normal,\"also unclosed\n";
       istringstream is(input);
       separator=',';
       quote='"';
