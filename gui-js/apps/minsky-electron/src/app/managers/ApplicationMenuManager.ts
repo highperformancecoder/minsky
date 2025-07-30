@@ -3,6 +3,7 @@ import {
   importCSVvariableName,
   InstallCase,
   minsky,
+  VariableBase,
 } from '@minsky/shared';
 import {
   dialog,
@@ -142,8 +143,9 @@ export class ApplicationMenuManager {
           enabled: true,
           async click() {
             try {
-              const _dialog = await dialog.showOpenDialog({
+              const _dialog = await WindowManager.showOpenDialog({
                 properties: ['openFile'],
+                defaultPath: ':models',
                 filters: [
                   { name: 'Minsky/Ravel', extensions: ['rvl','mky'] },
                   { name: '*.xml', extensions: ['xml'] },
@@ -204,16 +206,36 @@ export class ApplicationMenuManager {
         },
         {
           label: 'Import Data',
-          async click() {
-            minsky.canvas.addVariable(importCSVvariableName, 'parameter');
-            CommandsManager.importCSV(await CommandsManager.getFocusItemInfo(), true);
-          }
+          submenu: [
+            {
+              label: 'to parameter',
+              async click() {
+                minsky.canvas.addVariable(importCSVvariableName, 'parameter');
+                let v=new VariableBase(minsky.canvas.itemFocus);
+                CommandsManager.importCSV(minsky.variableValues.elem(await v.valueId()), true);
+              }
+            },
+            {
+              label: 'to database',
+              enabled: await minsky.databaseIngestor.db.ravelPro(),
+              async click() {
+                WindowManager.createPopupWindowWithRouting({
+                  width: 250,
+                  height: 150,
+                  title: '',
+                  url: `#/headless/new-database`,
+                  modal: true,
+                });
+              }
+            },
+          ]
         },
         {
           label: 'Insert File as Group',
           async click() {
             try {
-              const insertGroupDialog = await dialog.showOpenDialog({
+              const insertGroupDialog = await WindowManager.showOpenDialog({
+                defaultPaths: ':models',
                 properties: ['openFile'],
               });
 
@@ -552,9 +574,9 @@ export class ApplicationMenuManager {
   }
 
   private static async exportPlot(extension: string, command: (file:string)=>void) {
-    const exportPlotDialog = await dialog.showSaveDialog({
+    const exportPlotDialog = await WindowManager.showSaveDialog({
       title: `Export plot as ${extension}`,
-      defaultPath: 'plot',
+      defaultPath: ':models/plot',
       properties: ['showOverwriteConfirmation', 'createDirectory'],
       filters: [{ extensions: [extension], name: extension.toUpperCase() }],
     });

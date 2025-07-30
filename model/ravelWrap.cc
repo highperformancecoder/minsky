@@ -159,12 +159,13 @@ namespace minsky
     wrappedRavel.onMouseDown((xx-x())*invZ,(yy-y())*invZ);
   }
   
-  void Ravel::onMouseUp(float xx, float yy)
+  bool Ravel::onMouseUp(float xx, float yy)
   {
     const double invZ=1/zoomFactor();
     wrappedRavel.onMouseUp((xx-x())*invZ,(yy-y())*invZ);
     resortHandleIfDynamic();
     broadcastStateToLockGroup();
+    return m_ports[1]->numWires(); // only reset if input port connected. Don't if sourced from database
   }
   bool Ravel::onMouseMotion(float xx, float yy)
   {
@@ -275,6 +276,30 @@ namespace minsky
     minsky().requestReset();
   }
 
+  void Ravel::initRavelFromDb()
+  {
+    if (db && m_ports[1]->wires().empty())
+      {
+        minsky().flags&=~Minsky::reset_needed; //disable resetting until user gets a chance to manipulate ravel
+        db.fullHypercube(wrappedRavel);
+      }
+  }
+
+  vector<TensorPtr> Ravel::createChain(const TensorPtr& arg)
+  {
+    if (arg)
+      {
+        populateHypercube(arg->hypercube());
+        return ravel::createRavelChain(getState(), arg);
+      }
+    pack_t buf; buf<<getState();
+    if (buf.cmp(lastState)!=0)
+      {
+        lastState.swap(buf);
+        cachedDbResult=db.hyperSlice(wrappedRavel);
+      }
+    return {cachedDbResult};
+  }
   
   bool Ravel::displayFilterCaliper() const
   {

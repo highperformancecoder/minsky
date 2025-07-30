@@ -7,15 +7,21 @@
 #include "bookmark.h"
 #include "bookmark.tcd"
 #include "cairoSurfaceImage.tcd"
+#include "cairoRenderer.tcd"
 #include "callableFunction.tcd"
 #include "canvas.tcd"
+#define CLASSDESC_typescriptAPI___CAPIRenderer
+#include "capiRenderer.tcd"
 #include "CSVDialog.tcd"
 #include "CSVParser.tcd"
+#include "CSVTools.tcd"
 #include "constMap.tcd"
 #include "dataSpecSchema.tcd"
 #include "dataOp.h"
 #include "dataOp.tcd"
+#include "databaseIngestor.tcd"
 #include "dimension.tcd"
+#include "dynamicRavelCAPI.tcd"
 #include "engNotation.tcd"
 #include "equationDisplay.tcd"
 #include "evalGodley.tcd"
@@ -242,10 +248,12 @@ int main()
   api.addClass<Bookmark>();
   api.addClass<Canvas::ZoomCrop>();
   api.addClass<civita::Dimension>();
+  api.addClass<civita::NamedDimension>();
   api.addClass<civita::Hypercube>();
   api.addClass<civita::Index>();
   api.addClass<civita::ITensor>();
   api.addClass<civita::XVector>();
+  api.addClass<CSVDialog>();
   api.addClass<DataSpecSchema>();
   api.addClass<ecolab::Plot::LineStyle>();
   api.addClass<EngNotation>();
@@ -254,8 +262,11 @@ int main()
   api.addClass<HandleLockInfo>();
   api.addClass<Port>();
   api.addClass<PubItem>();
+  api.addClass<ravel::DataSpec>();
   api.addClass<ravel::HandleState>();
   api.addClass<ravel::RavelState>();
+  api.addClass<ravelCAPI::Database>();
+  api.addClass<ravelCAPI::Ravel>();
   api.addClass<Units>();
   api.addClass<VariablePaneCell>();
   api.addClass<VariableValue>();
@@ -299,6 +310,7 @@ int main()
   cout << "class minsky__GodleyIcon__MoveCellArgs {}\n";
   cout << "class minsky__RenderNativeWindow__RenderFrameArgs {}\n";
   cout << "class minsky__VariableType__TypeT {}\n";
+  cout << "class CAPIRenderer  {}\n";
   cout << "class civita__ITensor__Args {}\n";
   cout << "class classdesc__json_pack_t {}\n";
   cout << "class classdesc__pack_t {}\n";

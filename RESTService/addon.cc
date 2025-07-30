@@ -242,6 +242,7 @@ namespace minsky
         if (reset_flag()) requestReset();
 
         civita::ITensor::cancel(false);
+        ravelCAPI::Ravel::cancel(false);
         // disable quoting wide characters in UTF-8 strings
         auto result=write(registry.process(command, arguments)->asBuffer(),json5_parser::raw_utf8);
         commandHook(command,arguments);
@@ -594,6 +595,7 @@ struct MinskyAddon: public Addon<MinskyAddon>
   Value cancelProgress(const Napi::CallbackInfo& info) {
     *addOnMinsky.progressState.cancel=true;
     civita::ITensor::cancel(true);
+    ravelCAPI::Ravel::cancel(true);
     return info.Env().Null();
   }
     

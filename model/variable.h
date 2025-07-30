@@ -219,14 +219,12 @@ namespace minsky
     /// export this variable as a CSV file
     /// @param tabular - if true, the longest dimension is split across columns as a horizontal dimension
     void exportAsCSV(const std::string& filename, bool tabular) const;
+    /// \deprecated To be removed in version 4.
     /// import CSV files, using \a spec
     void importFromCSV(const std::vector<std::string>& filenames,
                        const DataSpecSchema& spec) const;
     /// reload CSV file if previously imported
     void reloadCSV();
-
-    /// clean up popup window structures on window close
-    void destroyFrame() override;
 
     bool miniPlotEnabled() const {return bool(miniPlot);}
     bool miniPlotEnabled(bool);

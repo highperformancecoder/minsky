@@ -901,6 +901,30 @@ export class ContextMenuManager {
         click: () => {ravel.toggleEditorMode();}
       }),
       new MenuItem({
+        label: 'Connect to database',
+        enabled: await ravel.db.ravelPro(),
+        click: () => {
+          WindowManager.createPopupWindowWithRouting({
+            title: 'Connect to database',
+            url: '#/headless/connect-database',
+            height: 120,
+            width: 250,
+          })
+        },
+      }),
+      new MenuItem({
+        label: 'Set numerical axes',
+        enabled: await ravel.db.ravelPro(),
+        click: () => {
+          WindowManager.createPopupWindowWithRouting({
+            title: 'Set numerical axes',
+            url: '#/headless/ravel-select-horizontal-dim',
+            height: 400,
+            width: 400,
+          })
+        },
+      }),
+      new MenuItem({
         label: 'Export as CSV',
         submenu: this.exportAsCSVSubmenu(ravel),
       }),
@@ -1164,8 +1188,8 @@ export class ContextMenuManager {
       menuItems.push(
         new MenuItem({
           label: 'Import CSV',
-          click: () => {
-            CommandsManager.importCSV(itemInfo);
+          click: async () => {
+            CommandsManager.importCSV(minsky.variableValues.elem(await v.valueId()));
           },
         })
       );
@@ -1364,57 +1388,57 @@ export class ContextMenuManager {
 
   private static async initContextMenuForCSVImport(event: IpcMainEvent, variableValue: string, row: number, col: number)
   {
-    const refresh=()=>event.sender.send(events.CSV_IMPORT_REFRESH);
+    const refresh=()=>event.sender.send(events.REFRESH_CSV_IMPORT);
     const value=new VariableValue(variableValue);
     var menu=Menu.buildFromTemplate([
       new MenuItem({
         label: 'Set as header row',
         click: ()=>{
-          value.csvDialog.spec.headerRow(row);
+          value.spec.headerRow(row);
           refresh();
         },
       }),
       new MenuItem({
         label: 'Auto-classify columns as axis/data',
         click: async ()=>{
-          value.csvDialog.classifyColumns();
+          value.classifyColumns();
           refresh();
         },
       }),
       new MenuItem({
         label: 'Populate column labels',
         click: async ()=>{
-          value.csvDialog.populateHeaders();
+          value.populateHeaders();
           refresh();
         },
       }),
       new MenuItem({
         label: 'Populate current column label',
         click: ()=>{
-          value.csvDialog.populateHeader(col);
+          value.populateHeader(col);
           refresh();
         },
       }),
       new MenuItem({
         label: 'Set start of data row, and column',
         click: ()=>{
-          value.csvDialog.spec.setDataArea(row,col);
+          value.spec.setDataArea(row,col);
           refresh();
         },
       }),
       new MenuItem({
         label: 'Set start of data row',
         click: async ()=>{
-          let c=await value.csvDialog.spec.nColAxes();
-          value.csvDialog.spec.setDataArea(row,c);
+          let c=await value.spec.nColAxes();
+          value.spec.setDataArea(row,c);
           refresh();
         },
       }),
       new MenuItem({
         label: 'Set start of data column',
         click: async ()=>{
-          let r=await value.csvDialog.spec.nRowAxes();
-          value.csvDialog.spec.setDataArea(r,col);
+          let r=await value.spec.nRowAxes();
+          value.spec.setDataArea(r,col);
           refresh();
         },
       }),

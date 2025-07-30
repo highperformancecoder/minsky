@@ -17,6 +17,7 @@ import {
   ImportStockPayload,
   GodleyIcon,
   DownloadCSVPayload,
+  VariableBase,
 } from '@minsky/shared';
 import { BrowserWindow, dialog, ipcMain } from 'electron';
 import { BookmarkManager } from '../managers/BookmarkManager';
@@ -68,7 +69,7 @@ ipcMain.handle(events.CLOSE_WINDOW, (event) => {
 });
 
 ipcMain.handle(events.OPEN_FILE_DIALOG, async (event, options) => {
-  const fileDialog = await dialog.showOpenDialog(options);
+  const fileDialog = await WindowManager.showOpenDialog(options);
 
   if (fileDialog.canceled || !fileDialog.filePaths) return "";
   if (options?.properties?.includes('multiSelections'))
@@ -77,7 +78,7 @@ ipcMain.handle(events.OPEN_FILE_DIALOG, async (event, options) => {
 });
 
 ipcMain.handle(events.SAVE_FILE_DIALOG, async (event, options) => {
-  const fileDialog = await dialog.showSaveDialog(options);
+  const fileDialog = await WindowManager.showSaveDialog(options);
   if (fileDialog.canceled) return "";
   return fileDialog.filePath;
 });
@@ -215,8 +216,16 @@ ipcMain.handle(events.NEW_SYSTEM, async () => {
 ipcMain.handle(
   events.IMPORT_CSV,
   async (event) => {
-    const itemInfo = await CommandsManager.getFocusItemInfo();
-    CommandsManager.importCSV(itemInfo, true);
+    let v=new VariableBase(minsky.canvas.itemFocus);
+    CommandsManager.importCSV(minsky.variableValues.elem(await v.valueId()), true);
+    return;
+  }
+);
+
+ipcMain.handle(
+  events.IMPORT_CSV_TO_DB,
+  async (event, {dropTable}) => {
+    CommandsManager.importCSV(minsky.databaseIngestor, false, dropTable);
     return;
   }
 );

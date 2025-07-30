@@ -61,12 +61,12 @@ export async function backend(command: string, ...args: any[]): Promise<any> {
     if (typeof(error)!=="string") error=error?.message;
     log.error('Async Rest API: ',command,arg,'=>Exception caught: ' + error);
     if (!dialog) throw error; // rethrow to force error in jest environment
-      if (error && command !== 'minsky.canvas.item.importFromCSV')
-        dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
-          message: error,
-          type: 'error',
-        });
-      return error;
+    if (error && !command.endsWith('importFromCSV'))
+      dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
+        message: error,
+        type: 'error',
+      });
+    return error;
   }
 }
 
@@ -147,6 +147,10 @@ restService.setBusyCursorCallback(function (busy: boolean) {
   if (!initProgressBar && busy)
     initProgressBar=setTimeout(()=>{
       progress.browserWindow={parent: WindowManager.getMainWindow(), height: 200};
+      if (progressBar) {
+        progressBar.setCompleted();
+        progressBar.close();
+      }
       progressBar=new ProgressBar(progress);
       progressBar.on('ready',()=>{progressBar._window?.webContents.executeJavaScript(injectCancelButton);});
       progressBar.value=progress.value;

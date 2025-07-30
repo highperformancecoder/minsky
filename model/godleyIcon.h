@@ -151,7 +151,7 @@ namespace minsky
     void insertControlled(Selection& selection) override;
 
     void onMouseDown(float, float) override;
-    void onMouseUp(float, float) override;
+    bool onMouseUp(float, float) override;
     bool onMouseMotion(float, float) override;
     bool onMouseOver(float, float) override;
     void onMouseLeave() override;

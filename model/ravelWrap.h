@@ -78,11 +78,16 @@ namespace minsky
     std::vector<std::string> allSliceLabelsImpl(int axis, ravel::HandleSort::Order) const;
 
     ravelCAPI::Ravel wrappedRavel;
+    /// serialised copy of previous state for caching purposes
+    classdesc::pack_t lastState;
+    civita::TensorPtr cachedDbResult; ///< cache of database query result
     ravel::Op::ReductionOp m_nextReduction=ravel::Op::sum;
   public:
     static SVGRenderer svgRenderer; ///< SVG icon to display when not in editor mode
     RavelPopup popup; ///< popup Ravel control window
     bool flipped=false;
+    ravelCAPI::Database db; ///< backing database
+
     Ravel();
     // copy operations needed for clone, but not really used for now
     // define them as empty operations to prevent double frees if accidentally used
@@ -108,7 +113,7 @@ namespace minsky
     void resize(const LassoBox&) override;
     bool inItem(float x, float y) const override;
     void onMouseDown(float x, float y) override;
-    void onMouseUp(float x, float y) override;
+    bool onMouseUp(float x, float y) override;
     bool onMouseMotion(float x, float y) override;
     bool onMouseOver(float x, float y) override;
     void onMouseLeave() override {wrappedRavel.onMouseLeave();}
@@ -135,6 +140,14 @@ namespace minsky
     /// collapse all handles (applying nextReduction op where appropriate)
     /// @param collapse if true, uncollapse if false
     void collapseAllHandles(bool collapse=true);
+
+    /// if connected to a database, initialise the ravel state from it
+    void initRavelFromDb();
+
+    /// make a tensor expression corresponding to the state of this
+    /// Ravel, applied to \a arg. If \a arg is nullptr, then the
+    /// returned expression is extracted from the database.
+    std::vector<civita::TensorPtr> createChain(const TensorPtr& arg);
     
     /// enable/disable calipers on currently selected handle
     bool displayFilterCaliper() const;

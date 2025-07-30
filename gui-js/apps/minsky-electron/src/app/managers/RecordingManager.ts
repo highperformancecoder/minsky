@@ -23,7 +23,8 @@ export class RecordingManager {
   static async handleRecordingReplay() {
     this.stopRecording();
 
-    const replayRecordingDialog = await dialog.showOpenDialog({
+    const replayRecordingDialog = await WindowManager.showOpenDialog({
+      defaultPath: ':models',
       filters: [
         { extensions: ['json'], name: 'JSON' },
         { extensions: ['*'], name: 'All Files' },
@@ -47,7 +48,7 @@ export class RecordingManager {
     const index = dialog.showMessageBoxSync(options);
 
     if (options.buttons[index] === positiveResponseText) {
-      const saveDialog = await dialog.showSaveDialog({});
+      const saveDialog = await WindowManager.showSaveDialog({defaultPath: ':models'});
 
       const { canceled, filePath } = saveDialog;
 
@@ -128,13 +129,13 @@ export class RecordingManager {
       return;
     }
 
-    const saveRecordingDialog = await dialog.showSaveDialog({
+    const saveRecordingDialog = await WindowManager.showSaveDialog({
       properties: ['showOverwriteConfirmation', 'createDirectory'],
       filters: [
         { extensions: ['json'], name: 'JSON' },
         { extensions: ['*'], name: 'All Files' },
       ],
-      defaultPath: 'recording.json',
+      defaultPath: ':models/recording.json',
     });
 
     const { canceled, filePath } = saveRecordingDialog;

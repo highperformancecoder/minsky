@@ -428,12 +428,7 @@ export class CommunicationService {
 
   async importData() {
     this.electronService.minsky.canvas.addVariable(importCSVvariableName, 'parameter');
-
-    const payload: MinskyProcessPayload = {
-      mouseX: await this.electronService.minsky.canvas.itemFocus.x(),
-      mouseY: await this.electronService.minsky.canvas.itemFocus.y(),
-    };
-    this.electronService.invoke(events.IMPORT_CSV, payload);
+    this.electronService.invoke(events.IMPORT_CSV);
   }
 
   resetScrollTimeout = () => {

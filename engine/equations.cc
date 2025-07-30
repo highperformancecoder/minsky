@@ -208,6 +208,7 @@ namespace MathDAG
   {
     if (!visited.insert(this).second)
       return false; // cycle detected, break
+    if (type()==OperationType::ravel) return true;
     switch (OperationType::classify(type()))
       {
       case reduction: case scan: case tensor: case statistics:

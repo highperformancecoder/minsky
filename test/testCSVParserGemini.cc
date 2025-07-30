@@ -42,10 +42,15 @@ protected:
     DataSpec spec;
 };
 
+struct TestCSVDialog: CSVDialog
+{
+  void importFromCSV(const std::vector<std::string>&) override {}
+};
+
 // Fixture for CSVDialog tests
 class CSVDialogTest : public ::testing::Test {
 protected:
-    CSVDialog dialog;
+    TestCSVDialog dialog;
     DataSpec& spec = dialog.spec; // Access DataSpec through CSVDialog
     string url;
 
