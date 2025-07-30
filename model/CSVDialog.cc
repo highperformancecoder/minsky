@@ -25,6 +25,10 @@
 #include <pango.h>
 
 #include "CSVDialog.rcd"
+#include "CSVTools.xcd"
+#include "dynamicRavelCAPI.h"
+#include "dynamicRavelCAPI.rcd"
+#include "dynamicRavelCAPI.xcd"
 #include "minsky_epilogue.h"
 
 #include "zStream.h"

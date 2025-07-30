@@ -20,6 +20,7 @@
 #include "minsky.h"
 #include "CSVParser.h"
 
+#include "CSVTools.xcd"
 #include "CSVTools.rcd"
 #include "CSVParser.rcd"
 #include "dataSpecSchema.rcd"

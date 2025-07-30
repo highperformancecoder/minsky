@@ -27,6 +27,7 @@
 #include <cairo/cairo-pdf.h>
 #include <cairo/cairo-svg.h>
 
+#include "CSVTools.xcd"
 #include "itemT.rcd"
 #include "plotOptions.rcd"
 #include "plot.rcd"

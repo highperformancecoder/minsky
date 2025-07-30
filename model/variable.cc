@@ -25,6 +25,7 @@
 #include "equations.h"
 #include "nobble.h"
 
+#include "CSVTools.xcd"
 #include "dimension.rcd"
 #include "engNotation.rcd"
 #include "hypercube.xcd"

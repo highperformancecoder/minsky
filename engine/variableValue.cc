@@ -22,6 +22,7 @@
 #include "str.h"
 #include "valueId.h"
 
+#include "CSVTools.xcd"
 #include "constMap.rcd"
 #include "dimension.rcd"
 #include "hypercube.rcd"
