@@ -580,12 +580,18 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
 
     if (this.isInvokedUsingToolbar && this.parameterName.value) {
       // rename variable if newly added variable is still focussed
-      let v=new VariableBase(this.electronService.minsky.canvas.itemFocus);
       let vv=new VariableValue(this.csvDialog.$prefix());
-      if (await v?.valueId()===await vv?.valueId()) {
+      let v=new VariableBase(this.electronService.minsky.canvas.itemFocus);
+      let vvId=await vv?.valueId();
+      if (await v?.valueId()!==vvId) {// this is not a focussed item
+        v=new VariableBase(this.electronService.minsky.canvas.item); // item has been clicked
+        if (await v?.valueId()!==vvId)
+          v=null;
+      }
+      if (v) {
+        v.name(this.parameterName.value);
         v.tooltip(this.shortDescription.value);
         v.detailedText(this.detailedDescription.value);
-        v.name(this.parameterName.value);
       }
     }
     this.closeWindow();
