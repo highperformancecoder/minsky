@@ -144,6 +144,7 @@ namespace minsky
   {
     mouseMove(x,y);
     
+    if (itemFocus) item=itemFocus;
     if (itemFocus && clickType==ClickType::inItem)
       {
         bool requestReset=itemFocus->onMouseUp(x,y);

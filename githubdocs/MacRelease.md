@@ -10,6 +10,11 @@ NB unfortunately, the XCode command line tools package is out of date, so you wi
   - port install cairo pango gsl librsvg boost cmake pkgconfig tk n npm7
   - Minksy 3.x does not use Tk, so the X11 version suffices. For 2.x or earlier, tcl/tk needs to be installed from source code if using Aqua. See below. 
   - json_spirit needs to be installed from source code, but is not needed for Minsky 3.x
+  - soci is required for RavelPro. To build with all backends, do
+     - `port install soci +mysql5 +odbc +oracle +postgresql16 +sqlite3`
+     - Available options can be found via `port variants soci`
+     - Note at the time of writing, the mysql5 driver fails to build.
+     
 - Currently, Mac builds are done on a High Sierra virtual machine, and the binary packages for High Sierra are used, so that is the mininum OS version for the MacOSX Minsky release. Arm64 builds are done on Ventura for the same reason.
 - Ports installs of Python do not create a python3 package for pkg-config, rather they are a more specific name like python-3.12.pc. Use find to find the location of the specific .pc file, and link it to python3.pc in the same place, which will allow python builds to work.
 
@@ -24,7 +29,7 @@ NB unfortunately, the XCode command line tools package is out of date, so you wi
 
 # compile TCL/Tk from source code
 
-This step should no longer be needed for Minsky 3.x, but is currently, because the current EcoLab library requires it.
+This step should no longer be needed for Minsky 3.x.
 
 Because we need to use an internal function with tk when compiling Minsky for Aqua, we have to staticly link to the library. 
 
@@ -48,9 +53,9 @@ Because we need to use an internal function with tk when compiling Minsky for Aq
 
 # install node, and its dependencies
 
-At the time of writing, Minsky requires Node 14, and npm 7:
-- sudo n install 14
-- sudo npm install -g npm@7
+At the time of writing, Minsky requires Node 22, and npm 10:
+- sudo n install 22
+- sudo npm install -g npm@10
 - cd gui-js; npm install
   
 # compile Minsky
