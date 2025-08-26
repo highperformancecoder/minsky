@@ -4,9 +4,10 @@
 
 - Use the mxe-for-minsky branch of [my MXE fork](https://github.com/highperformancecoder/mxe/tree/mxe-for-minsky). 
 
-- `make boost cairo gsl pango librsvg openssl readline ncurses`
+- `make MXE_TARGETS=x86_64-w64-mingw32.shared boost cairo gsl pango librsvg openssl readline ncurses postgresql sqlite`
 - For Minsky 2.20 or less, `MXE_TARGETS=i686-w64-mingw32.static`
 - Prior to Minsky 3.16.16, TCL/Tk is a required dependency. To install TCL/Tk, do `make MXE_TARGETS=x86_64-w64-mingw32.shared MXE_PLUGIN_DIRS=plugins/tcl.tk tcl tk`
+- For RAVELPRO builds, you need to compile soci from source code. This should pick up all the supported drivers automatically if postgresql and sqlite have been built above. Leave the install directory as the default selected by `x86_64-w64-mingw32.shared-cmake`.
 
 - Install necessary prerequisites from your package manager as required by the above line (eg flex, gperf, intltool, scons).
 - Ensure the usr/bin directory of the cloned repo is in your PATH.
