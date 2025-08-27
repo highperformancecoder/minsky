@@ -28,6 +28,7 @@ export class NewDatabaseComponent implements OnInit {
   connection: string;
   table="";
   tables=[];
+  backends=[];
   constructor(
     private route: ActivatedRoute,
     private electronService: ElectronService,
@@ -35,9 +36,8 @@ export class NewDatabaseComponent implements OnInit {
   ) {
   }
 
-  ngOnInit(): void {
-    this.route.queryParams.subscribe((params) => {
-    });
+  async ngOnInit() {
+    this.backends=await this.electronService.minsky.databaseIngestor.db.backends();
   }
 
   setDbType(event) {

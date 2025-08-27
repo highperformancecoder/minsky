@@ -24,6 +24,7 @@ export class ConnectDatabaseComponent implements OnInit {
   connection: string;
   table="";
   tables=[];
+  backends=[];
   ravel: Ravel;
   constructor(
     private route: ActivatedRoute,
@@ -33,9 +34,8 @@ export class ConnectDatabaseComponent implements OnInit {
     this.ravel=new Ravel(this.electronService.minsky.canvas.item);
   }
 
-  ngOnInit(): void {
-    this.route.queryParams.subscribe((params) => {
-    });
+  async ngOnInit() {
+    this.backends=await this.ravel.db.backends();
   }
 
   setDbType(event) {
