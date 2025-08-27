@@ -23,6 +23,7 @@ export class ConnectDatabaseComponent {
   connection: string;
   table: string="";
   tables: string[]=[];
+  backends: string[]=[];
   ravel: Ravel;
   constructor(
     private route: ActivatedRoute,
@@ -32,7 +33,11 @@ export class ConnectDatabaseComponent {
     this.ravel=new Ravel(this.electronService.minsky.canvas.item);
   }
 
-  setDbType(event: Event) {
+  async ngOnInit() {
+    this.backends=await this.ravel.db.backends();
+  }
+
+  setDbType(event) {
     const target = event.target as HTMLSelectElement;
     this.dbType=target.value;
   }

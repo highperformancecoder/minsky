@@ -27,6 +27,7 @@ export class NewDatabaseComponent {
   connection: string;
   table: string="";
   tables: string[]=[];
+  backends: string[]=[];
   constructor(
     private route: ActivatedRoute,
     private electronService: ElectronService,
@@ -34,7 +35,11 @@ export class NewDatabaseComponent {
   ) {
   }
 
-  setDbType(event: Event) {
+  async ngOnInit() {
+    this.backends=await this.electronService.minsky.databaseIngestor.db.backends();
+  }
+
+  setDbType(event) {
     const target = event.target as HTMLSelectElement;
     this.dbType=target.value;
   }

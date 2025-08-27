@@ -2497,6 +2497,7 @@ export class ravelCAPI__Database extends CppClass {
   constructor(prefix: string){
     super(prefix);
   }
+  async backends(): Promise<string[]> {return this.$callMethod('backends');}
   async close(): Promise<void> {return this.$callMethod('close');}
   async connect(a1: string,a2: string,a3: string): Promise<void> {return this.$callMethod('connect',a1,a2,a3);}
   async connection(): Promise<object> {return this.$callMethod('connection');}
