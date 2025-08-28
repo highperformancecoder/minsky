@@ -292,6 +292,8 @@ libstdc++-6 libtermcap libwinpthread-1 libxml2-2 tcl86 zlib1
 BINDIR=$(subst bin,$(MXE_PREFIX)/bin,$(dir $(shell which $(CPLUSPLUS))))
 $(warning $(BINDIR))
 DLLS=$(wildcard $(MXE_DLLS:%=$(BINDIR)/%*.dll))
+# Add soci support for RAVELPRO
+DLLS+=$(wildcard $(BINDIR)/libsoci*.dll)
 else
 EXE=
 DL=so
