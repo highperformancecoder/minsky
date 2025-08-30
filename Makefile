@@ -287,7 +287,7 @@ libexpat-1 libffi libfontconfig-1 libfreetype-6 libfribidi-0 libgcc_s_seh-1 \
 libgdk_pixbuf-2 libgio-2 libglib-2 libgmodule-2 \
 libgobject-2 libgsl-25 libgslcblas-0 libharfbuzz-0 libiconv-2 libintl-8 \
 libjpeg-9 liblzma-5 libpango-1 libpangocairo-1 libpangoft2-1 libpangowin32-1 \
-libpcre-1 libpixman-1-0 libpng16-16 libreadline8 librsvg-2-2 libssl-3-x64 \
+libpcre-1 libpixman-1-0 libpng16-16 libpq libreadline8 librsvg-2-2 libssl-3-x64 \
 libstdc++-6 libtermcap libwinpthread-1 libxml2-2 tcl86 zlib1
 BINDIR=$(subst bin,$(MXE_PREFIX)/bin,$(dir $(shell which $(CPLUSPLUS))))
 $(warning $(BINDIR))

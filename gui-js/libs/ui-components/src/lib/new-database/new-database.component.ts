@@ -23,9 +23,9 @@ import { CommonModule } from '@angular/common'; // Often useful for ngIf, ngFor
     ],
 })
 export class NewDatabaseComponent {
-  dbType: string="sqlite3";
-  connection: string;
-  table: string="";
+  dbType: string='sqlite3';
+  connection: string='';
+  table: string='';
   tables: string[]=[];
   backends: string[]=[];
   constructor(
@@ -89,7 +89,8 @@ export class NewDatabaseComponent {
   }
 
   connect() {
-    if (!this.connection || !this.table) {
+    // on Windows, the odbc driver will prompt for a DSN: TODO does this happen on other platforms?
+    if (this.dbType!='odbc' && (!this.connection || !this.table)) {
       this.electronService.showMessageBoxSync({message: "Connection string or table not present"});
       return;
     }      
