@@ -6,6 +6,7 @@
     <button [hidden]="dbType!=='sqlite3'" (click)="selectFile()">Select File</button>
   </div>
   <input [hidden]="dbType==='sqlite3'" type="text"
+         (change)="setConnection($event)"
          placeholder="Connection string"/>
   <select (change)="setTable($event)">
     <option disabled selected>--Select Table--</option>

@@ -55,14 +55,15 @@ export class ConnectDatabaseComponent {
 
   setConnection(event: Event) {
     const target = event.target as HTMLSelectElement;
-    this.connection=target.value;    
+    this.connection=target.value;
+    this.getTables();
   }
   
   async selectFile() {
     let options: OpenDialogOptions = {
       defaultPath: ':models',
       filters: [
-        { extensions: ['sqlite'], name: 'CSV' },
+        { extensions: ['sqlite'], name: 'SQLite' },
         { extensions: ['*'], name: 'All Files' },
       ],
       properties: ['openFile'],
