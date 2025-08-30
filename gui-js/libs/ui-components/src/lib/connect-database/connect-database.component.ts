@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, SimpleChanges } from '@angular/core';
 import { FormsModule, } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
-import { Ravel} from '@minsky/shared';
+import { Functions, Ravel} from '@minsky/shared';
 import { MatButtonModule } from '@angular/material/button';
 import { OpenDialogOptions } from 'electron';
 import { CommonModule } from '@angular/common'; // Often useful for ngIf, ngFor
@@ -77,8 +77,11 @@ export class ConnectDatabaseComponent {
   }
 
   connect() {
-    // on Windows, the odbc driver will prompt for a DSN: TODO does this happen on other platforms?
-    if (this.dbType!='odbc' && (!this.connection || !this.table)) {
+    // on Windows, the odbc driver will prompt for a DSN, so allow for empty connection data
+    if (
+      (!Functions.isWindows() || this.dbType!='odbc') &&
+        (!this.connection || !this.table)
+    ) {
       this.electronService.showMessageBoxSync({message: "Connection string or table not present"});
       return;
     }      
