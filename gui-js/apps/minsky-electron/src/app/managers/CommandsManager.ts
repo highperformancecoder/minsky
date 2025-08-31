@@ -1348,7 +1348,7 @@ export class CommandsManager {
       }
     });
 
-    let clientId='I9sn5lKdemBdh8uTNA7H7YiplxQk3gI-pP0I9_2g1tcbE88T2C3Z9wOvoy51I4-U';
+    let clientId='-PiL7snNmZL_BlLJTPm62SHBcFTMG5d46m2336r118mfrp6sz4ty0g-thbKAs76c';
     // need to pass what platform we are
     let state;
     switch (process.platform) {
@@ -1382,7 +1382,7 @@ export class CommandsManager {
       state.previous=/[^:]*/.exec(await minsky.ravelVersion())[0];
     let encodedState=encodeURI(JSON.stringify(state));
     // load patreon's login page
-    window.loadURL(`https://www.patreon.com/oauth2/authorize?response_type=code&client_id=${clientId}&redirect_uri=https://ravelation.hpcoders.com.au/ravel-downloader.cgi&scope=identity%20identity%5Bemail%5D&state=${encodedState}`);
+    window.loadURL(`https://www.patreon.com/oauth2/authorize?response_type=code&client_id=${clientId}&redirect_uri=https://ravelation.net/ravel-downloader.cgi&scope=identity%20identity%5Bemail%5D&state=${encodedState}`);
   }
   
 }

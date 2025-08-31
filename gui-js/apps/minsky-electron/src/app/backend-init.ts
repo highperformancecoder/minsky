@@ -211,7 +211,7 @@ export function sanityCheck()
         buttons: ["OK","Upgrade"],
       });
       if (button==1)
-        shell.openExternal("https://ravelation.hpcoders.com.au");
+        shell.openExternal("https://ravelation.net");
     },1000);
   }
 }
