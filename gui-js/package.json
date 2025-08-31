@@ -22,7 +22,11 @@
       "icon": "apps/minsky-electron/src/assets/RavelLogo.icns"
     },
     "win": {
-      "icon": "apps/minsky-electron/src/assets/RavelLogo.ico"
+      "icon": "apps/minsky-electron/src/assets/RavelLogo.ico",
+      "target": "nsis"
+    },
+    "nsis": {
+      "include": "installer.nsh"
     },
     "linux": {
       "executableName": "minsky",
