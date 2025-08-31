@@ -25,9 +25,6 @@
       "icon": "apps/minsky-electron/src/assets/RavelLogo.ico",
       "target": "nsis"
     },
-    "nsis": {
-      "include": "installer.nsh"
-    },
     "linux": {
       "executableName": "minsky",
       "category": "Science"
