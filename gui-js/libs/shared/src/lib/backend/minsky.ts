@@ -2252,6 +2252,7 @@ export class VariableValue extends CppClass {
   async atHCIndex(a1: number): Promise<number> {return this.$callMethod('atHCIndex',a1);}
   async begin(): Promise<number> {return this.$callMethod('begin');}
   async cancel(a1: boolean): Promise<void> {return this.$callMethod('cancel',a1);}
+  async checkCancel(): Promise<void> {return this.$callMethod('checkCancel');}
   async data(): Promise<number[]> {return this.$callMethod('data');}
   async detailedText(...args: string[]): Promise<string> {return this.$callMethod('detailedText',...args);}
   async enableSlider(...args: boolean[]): Promise<boolean> {return this.$callMethod('enableSlider',...args);}
@@ -2382,6 +2383,7 @@ export class civita__ITensor extends CppClass {
   async at(a1: number): Promise<number> {return this.$callMethod('at',a1);}
   async atHCIndex(a1: number): Promise<number> {return this.$callMethod('atHCIndex',a1);}
   async cancel(a1: boolean): Promise<void> {return this.$callMethod('cancel',a1);}
+  async checkCancel(): Promise<void> {return this.$callMethod('checkCancel');}
   async data(): Promise<number[]> {return this.$callMethod('data');}
   async hypercube(...args: any[]): Promise<civita__Hypercube> {return this.$callMethod('hypercube',...args);}
   async imposeDimensions(a1: Container<Pair<string,civita__Dimension>>): Promise<void> {return this.$callMethod('imposeDimensions',a1);}
@@ -2410,11 +2412,12 @@ export class civita__TensorVal extends CppClass {
     super(prefix);
   }
   async allocVal(): Promise<void> {return this.$callMethod('allocVal');}
-  async assign(a1: Map<number,number>): Promise<void> {return this.$callMethod('assign',a1);}
+  async assign(...args: any[]): Promise<void> {return this.$callMethod('assign',...args);}
   async at(a1: number): Promise<number> {return this.$callMethod('at',a1);}
   async atHCIndex(a1: number): Promise<number> {return this.$callMethod('atHCIndex',a1);}
   async begin(): Promise<number> {return this.$callMethod('begin');}
   async cancel(a1: boolean): Promise<void> {return this.$callMethod('cancel',a1);}
+  async checkCancel(): Promise<void> {return this.$callMethod('checkCancel');}
   async data(): Promise<number[]> {return this.$callMethod('data');}
   async end(): Promise<number> {return this.$callMethod('end');}
   async hypercube(...args: any[]): Promise<civita__Hypercube> {return this.$callMethod('hypercube',...args);}
