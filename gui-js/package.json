@@ -1,6 +1,6 @@
 {
   "name": "ravel",
-  "version":"3.18.1",
+  "version":"3.18.2",
   "author": "High Performance Coders",
   "description": "Graphical dynamical systems simulator oriented towards economics",
   "repository": {
@@ -24,9 +24,6 @@
     "win": {
       "icon": "apps/minsky-electron/src/assets/RavelLogo.ico",
       "target": "nsis"
-    },
-    "nsis": {
-      "include": "installer.nsh"
     },
     "linux": {
       "executableName": "minsky",
