@@ -4,7 +4,7 @@ import { ElectronService } from '@minsky/core';
 import { PlotWidget } from '@minsky/shared';
 import { ColorPickerComponent, ColorPickerDirective } from 'ngx-color-picker';
 import { LatexDirective } from '../directives/latex.directive';
-import { NgFor, NgIf } from '@angular/common';
+
 
 interface Colour {
   r: number;
@@ -26,14 +26,12 @@ interface Palette {
     styleUrls: ['./pen-styles.component.scss'],
     standalone: true,
     imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        NgFor,
-        NgIf,
-        LatexDirective,
-        ColorPickerComponent,
-        ColorPickerDirective
-    ],
+    FormsModule,
+    ReactiveFormsModule,
+    LatexDirective,
+    ColorPickerComponent,
+    ColorPickerDirective
+],
 })
 export class PenStylesComponent implements OnInit {
   form: FormGroup;

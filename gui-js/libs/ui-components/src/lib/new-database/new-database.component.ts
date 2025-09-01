@@ -7,7 +7,6 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { OpenDialogOptions, SaveDialogOptions } from 'electron';
-import { CommonModule } from '@angular/common'; // Often useful for ngIf, ngFor
 
 @Component({
     selector: 'new-database',
@@ -15,12 +14,11 @@ import { CommonModule } from '@angular/common'; // Often useful for ngIf, ngFor
     styleUrls: ['./new-database.scss'],
     standalone: true,
     imports: [
-      FormsModule,
-      CommonModule,
-      MatAutocompleteModule,
-      MatButtonModule,
-      MatOptionModule,
-    ],
+    FormsModule,
+    MatAutocompleteModule,
+    MatButtonModule,
+    MatOptionModule
+],
 })
 export class NewDatabaseComponent {
   dbType: string='sqlite3';

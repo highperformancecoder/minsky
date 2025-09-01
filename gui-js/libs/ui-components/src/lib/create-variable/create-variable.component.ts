@@ -11,7 +11,7 @@ import { VariableBase } from '@minsky/shared';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { NgIf } from '@angular/common';
+
 
 @Component({
     selector: 'minsky-create-variable',
@@ -19,13 +19,12 @@ import { NgIf } from '@angular/common';
     styleUrls: ['./create-variable.component.scss'],
     standalone: true,
     imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        NgIf,
-        MatButtonModule,
-      MatAutocompleteModule,
-      MatOptionModule,
-    ],
+    FormsModule,
+    ReactiveFormsModule,
+    MatButtonModule,
+    MatAutocompleteModule,
+    MatOptionModule
+],
 })
 export class CreateVariableComponent implements OnInit, OnDestroy {
   variableType: string;

@@ -1,14 +1,14 @@
 import { Component } from '@angular/core';
 import { ElectronService } from '@minsky/core';
 import { MatButtonModule } from '@angular/material/button';
-import { NgFor } from '@angular/common';
+
 
 @Component({
     selector: 'minsky-find-all-instances',
     templateUrl: './find-all-instances.component.html',
     styleUrls: ['./find-all-instances.component.scss'],
     standalone: true,
-    imports: [NgFor, MatButtonModule],
+    imports: [MatButtonModule],
 })
 export class FindAllInstancesComponent {
   instances: string[];

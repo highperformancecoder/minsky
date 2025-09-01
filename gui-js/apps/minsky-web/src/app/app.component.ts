@@ -6,7 +6,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { MatButtonModule } from '@angular/material/button';
 import { HeaderComponent } from '../../../../libs/ui-components/src/lib/header/header.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { NgIf, NgFor } from '@angular/common';
+
 
 @Component({
     selector: 'minsky-root',
@@ -14,13 +14,11 @@ import { NgIf, NgFor } from '@angular/common';
     styleUrls: ['./app.component.scss'],
     standalone: true,
     imports: [
-        NgIf,
-        MatProgressSpinnerModule,
-        RouterOutlet,
-        HeaderComponent,
-        MatButtonModule,
-        NgFor,
-    ],
+    MatProgressSpinnerModule,
+    RouterOutlet,
+    HeaderComponent,
+    MatButtonModule
+],
 })
 export class AppComponent implements OnInit, DoCheck {
   htmlTabs = ['itemTab/summary'];

@@ -1,6 +1,6 @@
 <div class="wrapper">
   <div class="wiring-tabs">
-    <ng-container *ngIf="cmService.currentTab === wiringTab">
+    @if (cmService.currentTab === wiringTab) {
       <button class="tab toolButton" classType="Operation:csvImport" (click)="cmService.importData()">
         <img
           src="assets/images/icons/data.svg"
@@ -27,18 +27,18 @@
       </button>
       <minsky-variable></minsky-variable>
       <button class="tab toolButton" classType="PlotWidget"
-              (click)="electronService.minsky.canvas.addPlot()">
-              <img
-                src="assets/images/icons/plot.gif"
-                alt="PlotWidget"
-                title="PlotWidget"
-                />
+        (click)="electronService.minsky.canvas.addPlot()">
+        <img
+          src="assets/images/icons/plot.gif"
+          alt="PlotWidget"
+          title="PlotWidget"
+          />
       </button>
       <button class="tab toolButton" classType="Sheet" (click)="electronService.minsky.canvas.addSheet()">
         <img src="assets/images/icons/sheet.gif" alt="Sheet" title="Sheet" />
       </button>
       <button
-        class="tab toolButton" classType="Notes" 
+        class="tab toolButton" classType="Notes"
         (click)="electronService.minsky.canvas.addNote('Enter your note here')"
         >
         <img src="assets/images/icons/note.gif" alt="Note" title="Note" />
@@ -46,17 +46,17 @@
       <button class="tab toolButton" classType="Operation:time" (click)="electronService.minsky.canvas.addOperation('time')">
         <img src="assets/images/icons/time.png" alt="Time" title="Time" />
       </button>
-      <ng-container *ngFor="let operation of availableOperationsMapping | keyvalue">
+      @for (operation of availableOperationsMapping | keyvalue; track operation) {
         <minsky-available-operations
           [title]="getKey(operation)"
           [operations]="getValue(operation)"
-          ></minsky-available-operations>
-      </ng-container>
+        ></minsky-available-operations>
+      }
       <button class="tab toolButton"  classType="SwitchIcon" (click)="electronService.minsky.canvas.addSwitch()">
         <img src="assets/images/icons/switch.png" alt="Switch" title="Switch" />
       </button>
       <button class="tab toolButton"
-              classType="Operation:userFunction" (click)="electronService.minsky.canvas.addOperation('userFunction')">
+        classType="Operation:userFunction" (click)="electronService.minsky.canvas.addOperation('userFunction')">
         <img
           src="assets/images/icons/userFunction.png"
           alt="User Defined Function"
@@ -78,14 +78,14 @@
           />
       </button>
       <button class="tab toolButton"
-              classType="Operation:differentiate" (click)="electronService.minsky.canvas.addOperation('differentiate')">
+        classType="Operation:differentiate" (click)="electronService.minsky.canvas.addOperation('differentiate')">
         <img
           src="assets/images/icons/differentiate.png"
           alt="Differentiate"
           title="Differentiate"
           />
       </button>
-    </ng-container>
+    }
   </div>
 
   <div
@@ -93,7 +93,7 @@
     id="minsky-canvas-container"
     tabindex="0"
     pannable
-  >
+    >
     <canvas
       id="main-minsky-canvas"
     ></canvas>

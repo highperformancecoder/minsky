@@ -7,7 +7,7 @@ import { map, startWith } from 'rxjs/operators';
 import JSON5 from 'json5';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
-import { NgFor, AsyncPipe } from '@angular/common';
+import { AsyncPipe } from '@angular/common';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -18,16 +18,15 @@ import { MatFormFieldModule } from '@angular/material/form-field';
     styleUrls: ['./cli-input.component.scss'],
     standalone: true,
     imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        MatFormFieldModule,
-        MatInputModule,
-        MatAutocompleteModule,
-        NgFor,
-        MatOptionModule,
-        MatButtonModule,
-        AsyncPipe,
-    ],
+    FormsModule,
+    ReactiveFormsModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatAutocompleteModule,
+    MatOptionModule,
+    MatButtonModule,
+    AsyncPipe
+],
 })
 export class CliInputComponent implements OnInit, OnDestroy {
   commands: Array<string>;

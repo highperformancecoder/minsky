@@ -5,7 +5,7 @@ import { ElectronService } from '@minsky/core';
 import { dateTimeFormats } from '@minsky/shared';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
-import { NgIf, NgFor } from '@angular/common';
+
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @Component({
@@ -14,14 +14,12 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     styleUrls: ['./edit-handle-dimension.component.scss', '../generic-form.scss'],
     standalone: true,
     imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        MatAutocompleteModule,
-        NgIf,
-        NgFor,
-        MatOptionModule,
-        MatButtonModule,
-    ],
+    FormsModule,
+    ReactiveFormsModule,
+    MatAutocompleteModule,
+    MatOptionModule,
+    MatButtonModule
+],
 })
 export class EditHandleDimensionComponent implements OnInit, DoCheck {
   editDimensionForm: FormGroup;

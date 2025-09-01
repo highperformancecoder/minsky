@@ -11,14 +11,15 @@
           matInput
           formControlName="command"
           [matAutocomplete]="auto"
-        />
+          />
         <mat-autocomplete autoActiveFirstOption #auto="matAutocomplete">
-          <mat-option
-            *ngFor="let option of filteredOptions$ | async"
-            [value]="option"
-          >
-            {{ option }}
-          </mat-option>
+          @for (option of filteredOptions$ | async; track option) {
+            <mat-option
+              [value]="option"
+              >
+              {{ option }}
+            </mat-option>
+          }
         </mat-autocomplete>
       </mat-form-field>
 
@@ -36,18 +37,20 @@
       [disabled]="!this.commandControl.value"
       (click)="handleSubmit()"
       class="submit"
-    >
+      >
       Submit
     </button>
   </div>
   <div class="output-panel">
     <h3><b><u class="center">Output</u></b></h3>
     <div class="output">
-      <ul *ngFor="let o of output.reverse()">
-        <li>
-          {{ o }}
-        </li>
-      </ul>
+      @for (o of output.reverse(); track o) {
+        <ul>
+          <li>
+            {{ o }}
+          </li>
+        </ul>
+      }
     </div>
   </div>
 </div>

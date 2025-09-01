@@ -6,47 +6,50 @@
         <span class="form-control type">Type</span>
         <span class="form-control autocomplete">Units/Format</span>
       </div>
-      <ng-container
-        formArrayName="dimensions"
-        *ngFor="let control of dimensions.controls; let i = index"
-      >
-        <div *ngIf="dimensions.value.length" [formGroupName]="i" class="align">
-          <input
-            class="form-control dimension"
-            formControlName="dimension"
-            type="text"
-          />
-          <select
-            class="form-control type"
-            name="i"
-            id="i"
-            formControlName="type"
+      @for (control of dimensions.controls; track control; let i = $index) {
+        <ng-container
+          formArrayName="dimensions"
           >
-            <option *ngFor="let type of types" [value]="type">
-              {{ type }}
-            </option>
-          </select>
-
-          <input
-            type="text"
-            formControlName="units"
-            [matAutocomplete]="auto"
-            class="form-control autocomplete"
-          />
-          <mat-autocomplete #auto="matAutocomplete">
-            <ng-container
-              *ngIf="dimensions.controls[i].get('type').value === 'time'"
-            >
-              <mat-option
-                *ngFor="let tfs of timeFormatStrings"
-                [value]="tfs.value"
-              >
-                {{ tfs.label }}
-              </mat-option>
-            </ng-container>
-          </mat-autocomplete>
-        </div>
-      </ng-container>
+          @if (dimensions.value.length) {
+            <div [formGroupName]="i" class="align">
+              <input
+                class="form-control dimension"
+                formControlName="dimension"
+                type="text"
+                />
+              <select
+                class="form-control type"
+                name="i"
+                id="i"
+                formControlName="type"
+                >
+                @for (type of types; track type) {
+                  <option [value]="type">
+                    {{ type }}
+                  </option>
+                }
+              </select>
+              <input
+                type="text"
+                formControlName="units"
+                [matAutocomplete]="auto"
+                class="form-control autocomplete"
+                />
+              <mat-autocomplete #auto="matAutocomplete">
+                @if (dimensions.controls[i].get('type').value === 'time') {
+                  @for (tfs of timeFormatStrings; track tfs) {
+                    <mat-option
+                      [value]="tfs.value"
+                      >
+                      {{ tfs.label }}
+                    </mat-option>
+                  }
+                }
+              </mat-autocomplete>
+            </div>
+          }
+        </ng-container>
+      }
     </form>
     <div class="form-buttons">
       <button type="button" mat-raised-button (click)="closeWindow()">

@@ -5,7 +5,7 @@ import { dateTimeFormats } from '@minsky/shared';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
-import { NgFor, NgIf } from '@angular/common';
+
 
 interface Second {
   type: string;
@@ -23,14 +23,12 @@ interface Dimension {
     styleUrls: ['./dimensions.component.scss'],
     standalone: true,
     imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        NgFor,
-        NgIf,
-        MatAutocompleteModule,
-        MatOptionModule,
-        MatButtonModule,
-    ],
+    FormsModule,
+    ReactiveFormsModule,
+    MatAutocompleteModule,
+    MatOptionModule,
+    MatButtonModule
+],
 })
 export class DimensionsComponent implements OnInit {
   form: FormGroup;

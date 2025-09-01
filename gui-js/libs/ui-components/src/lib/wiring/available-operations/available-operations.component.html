@@ -1,28 +1,27 @@
-<ng-container *ngIf="title && operations.length">
+@if (title && operations.length) {
   <!--button class="tab toolButton" [attr.classType]="'Operations'" [matMenuTriggerFor]="opMenu" [attr.aria-label]="title"-->
   <button class="tab toolButton" [attr.classType]="'operations-'+title" [matMenuTriggerFor]="opMenu" [attr.aria-label]="title">
     <img
       src="assets/images/icons/{{ operations[0] }}.png"
       alt="{{ title }}"
       title="{{ title }}"
-    />
+      />
   </button>
-
   <mat-menu yPosition="above" #opMenu="matMenu" class="horizontal">
-    <ng-container *ngFor="let operation of operations">
+    @for (operation of operations; track operation) {
       <button id="button{{operation}}"
-              [attr.classType]="'Operation:' + operation"
-              mat-menu-item
+        [attr.classType]="'Operation:' + operation"
+        mat-menu-item
         class="tab toolButton"
         (click)="communicationService.addOperation(operation)"
         (dragstart)="onButtonDrag($event, operation)"
-      >
+        >
         <img
           src="assets/images/icons/{{ operation }}.png"
           alt="{{ operation }}"
           title="{{ operation }}"
-        />
+          />
       </button>
-    </ng-container>
+    }
   </mat-menu>
-</ng-container>
+}

@@ -1,16 +1,16 @@
 <div class="container">
   <label for="horizontalDimName">Horizontal dimension</label>
   <input type="text" id="horizontalDimName"
-         [ngModel]="horizontalDimName"/>
+    [ngModel]="horizontalDimName"/>
   <div class="selectors">
-    <ng-container *ngFor="let d of dataCols">
+    @for (d of dataCols; track d) {
       <div class="dim-selector">
         <label [for]="d">{{d}}</label>
         <input type="checkbox" [id]="d" [name]="d"
-               (change)="clickDim($event)"/>
+          (change)="clickDim($event)"/>
       </div>
-    </ng-container>
-    </div>
+    }
+  </div>
   <div class="row form-buttons">
     <button mat-raised-button class="btn cancel-btn" (click)="closeWindow()">Cancel</button>
     <button mat-raised-button class="btn submit ok-btn"

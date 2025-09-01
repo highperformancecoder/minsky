@@ -4,7 +4,7 @@ import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule } f
 import { ElectronService } from '@minsky/core';
 import { events } from '@minsky/shared';
 import { takeUntil } from 'rxjs';
-import { NgFor } from '@angular/common';
+
 
 @Component({
     selector: 'minsky-log-simulation',
@@ -12,10 +12,9 @@ import { NgFor } from '@angular/common';
     styleUrls: ['./log-simulation.component.scss'],
     standalone: true,
     imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        NgFor,
-    ],
+    FormsModule,
+    ReactiveFormsModule
+],
 })
 export class LogSimulationComponent implements OnDestroy {
   form = new FormGroup({

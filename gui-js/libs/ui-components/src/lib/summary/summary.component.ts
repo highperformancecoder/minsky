@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ScaleHandler } from '../scale-handler/scale-handler.class';
 import { FormsModule } from '@angular/forms';
 import { LatexDirective } from '../directives/latex.directive';
-import { NgFor, NgIf } from '@angular/common';
+
 
 @Component({
     selector: 'minsky-parameters',
@@ -12,11 +12,9 @@ import { NgFor, NgIf } from '@angular/common';
     styleUrls: ['./summary.component.scss'],
     standalone: true,
     imports: [
-        NgFor,
-        NgIf,
-        LatexDirective,
-        FormsModule,
-    ],
+    LatexDirective,
+    FormsModule
+],
 })
 export class SummaryComponent implements OnInit {
   allVariables;

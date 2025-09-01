@@ -1,18 +1,20 @@
 <div class="container">
   <div class="row">
     <select (change)="setDbType($event)">
-      <option *ngFor="let b of backends" [value]="b"
-              [selected]="b==='sqlite3'">{{b}}</option>
+      @for (b of backends; track b) {
+        <option [value]="b"
+        [selected]="b==='sqlite3'">{{b}}</option>
+      }
     </select>
     <button [hidden]="dbType!=='sqlite3'" (click)="selectFile()">Select File</button>
   </div>
   <input id="connection" type="text"
-         placeholder="Connection string"
-         [hidden]="dbType==='sqlite3' && !connection"
-         [(ngModel)]="connection"
-         />
+    placeholder="Connection string"
+    [hidden]="dbType==='sqlite3' && !connection"
+    [(ngModel)]="connection"
+    />
   <input id="table" type="text" placeholder="table" (change)="setTable($event)"
-           [matAutocomplete]="autocompleteFormat"/>
+    [matAutocomplete]="autocompleteFormat"/>
   <mat-autocomplete
     id="table-list"
     [panelWidth]="'14rem'"
@@ -20,7 +22,9 @@
     [(ngModel)]="table"
     (optionSelected)="setTableInput($event)"
     >
-    <mat-option *ngFor="let table of tables" [value]="table">{{table}}</mat-option>
+    @for (table of tables; track table) {
+      <mat-option [value]="table">{{table}}</mat-option>
+    }
   </mat-autocomplete>
   <div class="row form-buttons">
     <button mat-raised-button class="btn cancel-btn" (click)="closeWindow()">Cancel</button>

@@ -1,39 +1,47 @@
 <div class="popup-wrapper">
   <div class="form-wrapper">
     <form [formGroup]="form">
-      <ng-container
-        formArrayName="pens"
-        *ngFor="let control of pens.controls; let i = index"
-      >
-        <!--div *ngIf="i<penLabels.length" latex [equation]="penLabels[i]"></div-->
-        <div *ngIf="i<penLabels.length" >{{penLabels[i]}}</div>
-        <div *ngIf="pens.value.length" class="form-control" [formGroupName]="i">
-          <input
-            [colorPicker]="pens.controls[i]?.get('colour')?.value"
-            [style.background]="pens.controls[i]?.get('colour')?.value"
-            [style.color]="pens.controls[i]?.get('colour')?.value"
-            [cpOutputFormat]="'rgba'"
-            [cpAlphaChannel]="'always'"
+      @for (control of pens.controls; track control; let i = $index) {
+        <ng-container
+          formArrayName="pens"
+          >
+          <!--div *ngIf="i<penLabels.length" latex [equation]="penLabels[i]"></div-->
+          @if (i<penLabels.length) {
+            <div >{{penLabels[i]}}</div>
+          }
+          @if (pens.value.length) {
+            <div class="form-control" [formGroupName]="i">
+              <input
+                [colorPicker]="pens.controls[i]?.get('colour')?.value"
+                [style.background]="pens.controls[i]?.get('colour')?.value"
+                [style.color]="pens.controls[i]?.get('colour')?.value"
+                [cpOutputFormat]="'rgba'"
+                [cpAlphaChannel]="'always'"
             (colorPickerChange)="
               pens.controls[i]?.get('colour')?.setValue($event)
             "
-            formControlName="colour"
-            class="palette"
-          />
-          <input type="number" formControlName="width" class="palette width" />
-
-          <select class="palette" formControlName="dashStyle">
-            <option *ngFor="let item of dashStyles" [value]="item">
-              {{ item }}
-            </option>
-          </select>
-          <select class="palette" formControlName="plotType">
-            <option *ngFor="let item of plotTypes" [value]="item">
-              {{ item }}
-            </option>
-          </select>
-        </div>
-      </ng-container>
+                formControlName="colour"
+                class="palette"
+                />
+              <input type="number" formControlName="width" class="palette width" />
+              <select class="palette" formControlName="dashStyle">
+                @for (item of dashStyles; track item) {
+                  <option [value]="item">
+                    {{ item }}
+                  </option>
+                }
+              </select>
+              <select class="palette" formControlName="plotType">
+                @for (item of plotTypes; track item) {
+                  <option [value]="item">
+                    {{ item }}
+                  </option>
+                }
+              </select>
+            </div>
+          }
+        </ng-container>
+      }
 
       <div class="form-control form-buttons">
         <button type="button" mat-raised-button (click)="addPen()">+</button>
@@ -47,7 +55,7 @@
           class="submit"
           mat-raised-button
           (click)="handleSubmit()"
-        >
+          >
           OK
         </button>
       </div>

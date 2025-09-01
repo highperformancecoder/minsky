@@ -25,7 +25,7 @@
             name="godleyTableOutputStyle"
             value="DRCR"
             (change)="updatePreferences()"
-          />
+            />
           <label for="drCrRadio">DR/CR</label>
         </span>
 
@@ -38,7 +38,7 @@
             name="godleyTableOutputStyle"
             value="sign"
             (change)="updatePreferences()"
-          />
+            />
           <label for="plusMinusRadio">+/-</label>
         </span>
       </div>
@@ -46,86 +46,86 @@
       <div class="form-control">
         <label for="enableMultipleEquityColumns"
           >Enable multiple equity columns</label
-        >
-        <input
-          formControlName="enableMultipleEquityColumns"
-          type="checkbox"
-          class="enable-multiple-equity-columns-checkbox"
-          id="enableMultipleEquityColumns"
-          (change)="updatePreferences()"
-        />
-      </div>
+          >
+          <input
+            formControlName="enableMultipleEquityColumns"
+            type="checkbox"
+            class="enable-multiple-equity-columns-checkbox"
+            id="enableMultipleEquityColumns"
+            (change)="updatePreferences()"
+            />
+        </div>
 
-      <div class="form-control">
-        <label for="numberOfRecentFilesToDisplay"
-          >Number of recent files to display</label
-        >
-        <input
-          formControlName="numberOfRecentFilesToDisplay"
-          type="number"
-          class="numberOfRecentFilesToDisplay"
-          id="numberOfRecentFilesToDisplay"
-          value="10"
-        />
-      </div>
+        <div class="form-control">
+          <label for="numberOfRecentFilesToDisplay"
+            >Number of recent files to display</label
+            >
+            <input
+              formControlName="numberOfRecentFilesToDisplay"
+              type="number"
+              class="numberOfRecentFilesToDisplay"
+              id="numberOfRecentFilesToDisplay"
+              value="10"
+              />
+          </div>
 
-      <div class="form-control">
-        <label for="numBackups"
-          >Number of saved file backups</label
-        >
-        <input
-          formControlName="numBackups"
-          type="number"
-          class="numBackups"
-          id="numBackups"
-          value="1"
-        />
-      </div>
+          <div class="form-control">
+            <label for="numBackups"
+              >Number of saved file backups</label
+              >
+              <input
+                formControlName="numBackups"
+                type="number"
+                class="numBackups"
+                id="numBackups"
+                value="1"
+                />
+            </div>
 
-      <div class="form-control">
-        <label for="wrapLongEquationsInLatexExport"
-          >Wrap long equations in LaTeX export</label
-        >
-        <input
-          formControlName="wrapLongEquationsInLatexExport"
-          type="checkbox"
-          class="wrap-long-equations-in-latex-export-checkbox"
-          id="wrapLongEquationsInLatexExport"
-        />
-      </div>
+            <div class="form-control">
+              <label for="wrapLongEquationsInLatexExport"
+                >Wrap long equations in LaTeX export</label
+                >
+                <input
+                  formControlName="wrapLongEquationsInLatexExport"
+                  type="checkbox"
+                  class="wrap-long-equations-in-latex-export-checkbox"
+                  id="wrapLongEquationsInLatexExport"
+                  />
+              </div>
 
-      <!-- <div class="form-control">
-        <label for="focusFollowsMouse">Focus follows mouse</label>
-        <input
-          formControlName="focusFollowsMouse"
-          type="checkbox"
-          class="focus-follows-mouse-checkbox"
-          id="focusFollowsMouse"
-        />
-      </div> -->
+              <!-- <div class="form-control">
+              <label for="focusFollowsMouse">Focus follows mouse</label>
+              <input
+                formControlName="focusFollowsMouse"
+                type="checkbox"
+                class="focus-follows-mouse-checkbox"
+                id="focusFollowsMouse"
+                />
+            </div> -->
 
-      <div class="form-control">
-        <label for="font">Font</label>
-        <select formControlName="font" name="font" id="font">
-          <ng-container *ngFor="let font of availableFonts">
-            <option value="{{ font }}">{{ font }}</option>
-          </ng-container>
-        </select>
-      </div>
+            <div class="form-control">
+              <label for="font">Font</label>
+              <select formControlName="font" name="font" id="font">
+                @for (font of availableFonts; track font) {
+                  <option value="{{ font }}">{{ font }}</option>
+                }
+              </select>
+            </div>
 
-      <div class="form-control form-buttons">
-        <button type="button" mat-raised-button (click)="closeWindow()">
-          Cancel
-        </button>
-        <button
-          type="submit"
-          class="submit"
-          mat-raised-button
-          (click)="handleSubmit()"
-        >
-          OK
-        </button>
+            <div class="form-control form-buttons">
+              <button type="button" mat-raised-button (click)="closeWindow()">
+                Cancel
+              </button>
+              <button
+                type="submit"
+                class="submit"
+                mat-raised-button
+                (click)="handleSubmit()"
+                >
+                OK
+              </button>
+            </div>
+          </form>
+        </div>
       </div>
-    </form>
-  </div>
-</div>

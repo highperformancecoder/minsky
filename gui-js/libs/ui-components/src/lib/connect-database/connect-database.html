@@ -1,16 +1,20 @@
 <div class="container">
   <div class="row">
     <select (change)="setDbType($event)">
-      <option *ngFor="let b of backends" [value]="b" [selected]="b==='sqlite3'">{{b}}</option>
+      @for (b of backends; track b) {
+        <option [value]="b" [selected]="b==='sqlite3'">{{b}}</option>
+      }
     </select>
     <button [hidden]="dbType!=='sqlite3'" (click)="selectFile()">Select File</button>
   </div>
   <input [hidden]="dbType==='sqlite3'" type="text"
-         (change)="setConnection($event)"
-         placeholder="Connection string"/>
+    (change)="setConnection($event)"
+    placeholder="Connection string"/>
   <select (change)="setTable($event)">
     <option disabled selected>--Select Table--</option>
-    <option *ngFor="let t of tables" [value]="t">{{t}}</option>
+    @for (t of tables; track t) {
+      <option [value]="t">{{t}}</option>
+    }
   </select>
   <div class="row form-buttons">
     <button mat-raised-button class="btn cancel-btn" (click)="closeWindow()">Cancel</button>

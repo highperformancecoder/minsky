@@ -23,7 +23,7 @@
     <div class="form-control">
       <label for="numLines">Inputs on each side</label>
       <input type="number" min="1" id="numLines"
-             formControlName="numLines" />
+        formControlName="numLines" />
     </div>
 
     <div class="form-control">
@@ -40,7 +40,7 @@
     <div class="form-control">
       <label for="barWidth">Barchart bar width</label>
       <input type="number" max="100" min="0" id="barWidth"
-             formControlName="barWidth" />
+        formControlName="barWidth" />
     </div>
 
     <div class="form-control">
@@ -88,9 +88,9 @@
         <label for="legendFontSz">Legend font size</label>
         <input type="number" id="legendFontSz" formControlName="legendFontSz" />
       </span>
-      
+
     </div>
-    
+
     <div class="form-control checkboxes">
       <span>
         <label for="xLogScale">X Log Scale</label>
@@ -108,44 +108,48 @@
         <td colspan="3">Bounds Control</td>
         <tr><td></td><td>Min</td><td>Max</td></tr>
         <tr><td>X</td>
-          <td><input formControlName="xmin" type="text" value="NaN"/></td>
-          <td><input formControlName="xmax" type="text" value="NaN"/></td>
-        </tr>
-        <tr><td>Y (LHS)</td>
-          <td><input formControlName="ymin" type="text" value="NaN"/></td>
-          <td><input formControlName="ymax" type="text" value="NaN"/></td>
-        </tr>
-        <tr><td>Y (RHS)</td>
-          <td><input formControlName="y1min" type="text" value="NaN"/></td>
-          <td><input formControlName="y1max" type="text" value="NaN"/></td>
-        </tr>
-      </table>
-    </div>
-    
-    <div class="markers">
-      <select id="verticalMarkers" multiple size="5">
-        <option disabled>Vertical Markers</option>
-        <option *ngFor="let m of availableMarkers" [selected]="verticalMarkers.includes(m)">{{m}}</option>
-      </select>
-      <select id="horizontalMarkers" multiple size="5">
-        <option disabled>Horizontal Markers</option>
-        <option *ngFor="let m of availableMarkers" [selected]="horizontalMarkers.includes(m)">{{m}}</option>
-      </select>
-    </div>
-    
-    <div class="form-buttons">
-      <button mat-raised-button class="btn cancel-btn" (click)="closeWindow()">
-        Cancel
-      </button>
+        <td><input formControlName="xmin" type="text" value="NaN"/></td>
+        <td><input formControlName="xmax" type="text" value="NaN"/></td>
+      </tr>
+      <tr><td>Y (LHS)</td>
+      <td><input formControlName="ymin" type="text" value="NaN"/></td>
+      <td><input formControlName="ymax" type="text" value="NaN"/></td>
+    </tr>
+    <tr><td>Y (RHS)</td>
+    <td><input formControlName="y1min" type="text" value="NaN"/></td>
+    <td><input formControlName="y1max" type="text" value="NaN"/></td>
+  </tr>
+</table>
+</div>
 
-      <button
-        mat-raised-button
-        class="btn ok-btn submit"
-        type="submit"
-        (click)="handleSave()"
-      >
-        OK
-      </button>
-    </div>
-  </form>
+<div class="markers">
+  <select id="verticalMarkers" multiple size="5">
+    <option disabled>Vertical Markers</option>
+    @for (m of availableMarkers; track m) {
+      <option [selected]="verticalMarkers.includes(m)">{{m}}</option>
+    }
+  </select>
+  <select id="horizontalMarkers" multiple size="5">
+    <option disabled>Horizontal Markers</option>
+    @for (m of availableMarkers; track m) {
+      <option [selected]="horizontalMarkers.includes(m)">{{m}}</option>
+    }
+  </select>
+</div>
+
+<div class="form-buttons">
+  <button mat-raised-button class="btn cancel-btn" (click)="closeWindow()">
+    Cancel
+  </button>
+
+  <button
+    mat-raised-button
+    class="btn ok-btn submit"
+    type="submit"
+    (click)="handleSave()"
+    >
+    OK
+  </button>
+</div>
+</form>
 </div>

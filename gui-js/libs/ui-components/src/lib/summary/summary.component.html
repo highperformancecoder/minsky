@@ -1,159 +1,187 @@
 <div class="table-wrapper" (mousewheel)="changeScale($event)"
-     (keyup)="$event.stopImmediatePropagation()"
-     (keydown)="$event.stopImmediatePropagation()"
-     >
-    <div class="table" [style.zoom]="scale.zoomFactor">
-      <!-- all variables anbd global variables -->
-      <div *ngFor="let category of ['allVariables','globalVariables','groups','godleys']">
+  (keyup)="$event.stopImmediatePropagation()"
+  (keydown)="$event.stopImmediatePropagation()"
+  >
+  <div class="table" [style.zoom]="scale.zoomFactor">
+    <!-- all variables anbd global variables -->
+    @for (category of ['allVariables','globalVariables','groups','godleys']; track category) {
+      <div>
         <span class="caret" (click)="toggleCaret($event)">{{labels[category]}} - {{numVars[category]}}
-          <div *ngFor="let type of types(category)" class="nested">
-            <span *ngIf="type!=='constant'" class="caret one-indent" (click)="toggleCaret($event)">{{type}} - {{this[category][type]?.length}}
-              <div class="nested" (click)="$event.stopImmediatePropagation()">
-                <div class="table-row header-row">
-                  <div *ngIf="['groups','godleys'].includes(category)"
-                       class="data-cell">Type</div>
-                  <div class="data-cell">Name</div>
-                  <div class="data-cell extra-wide">Definition</div>
-                  <div class="data-cell wide">Dimensions</div>
-                  <div class="data-cell wide">Units</div>
-                  <div class="data-cell numeric">Initial</div>
-                  <div *ngIf="type=='parameter'" class="data-cell numeric">Step</div>
-                  <div *ngIf="type=='parameter'" class="data-cell numeric">Min</div>
-                  <div *ngIf="type=='parameter'" class="data-cell numeric">Max</div>
-                  <div class="data-cell numeric">Value</div>
-                </div>
-
-                <div *ngFor="let variable of this[category][type]"
-                     class="table-row">
-                  <div *ngIf="['groups','godleys'].includes(category)"
-                       class="data-cell">{{variable.type}}</div>
-                  <div [title]="variable.name" class="data-cell"
-                       latex [equation]="variable.name"
-                       *ngIf="!editing(variable,'name')"
-                       (click)="edit($event,variable,'name')"
-                       >
+          @for (type of types(category); track type) {
+            <div class="nested">
+              @if (type!=='constant') {
+                <span class="caret one-indent" (click)="toggleCaret($event)">{{type}} - {{this[category][type]?.length}}
+                  <div class="nested" (click)="$event.stopImmediatePropagation()">
+                    <div class="table-row header-row">
+                      @if (['groups','godleys'].includes(category)) {
+                        <div
+                        class="data-cell">Type</div>
+                      }
+                      <div class="data-cell">Name</div>
+                      <div class="data-cell extra-wide">Definition</div>
+                      <div class="data-cell wide">Dimensions</div>
+                      <div class="data-cell wide">Units</div>
+                      <div class="data-cell numeric">Initial</div>
+                      @if (type=='parameter') {
+                        <div class="data-cell numeric">Step</div>
+                      }
+                      @if (type=='parameter') {
+                        <div class="data-cell numeric">Min</div>
+                      }
+                      @if (type=='parameter') {
+                        <div class="data-cell numeric">Max</div>
+                      }
+                      <div class="data-cell numeric">Value</div>
+                    </div>
+                    @for (variable of this[category][type]; track variable) {
+                      <div
+                        class="table-row">
+                        @if (['groups','godleys'].includes(category)) {
+                          <div
+                          class="data-cell">{{variable.type}}</div>
+                        }
+                        @if (!editing(variable,'name')) {
+                          <div [title]="variable.name" class="data-cell"
+                            latex [equation]="variable.name"
+                            (click)="edit($event,variable,'name')"
+                            >
+                          </div>
+                        }
+                        @else {
+                          <div
+                            class="data-cell">
+                            <input
+                              (keydown.Enter)="finishEditing()"
+                              (click)="$event.stopImmediatePropagation()"
+                              type="text" [(ngModel)]="editCellContents"/>
+                          </div>
+                        }
+                        @if (!editing(variable,'definition')) {
+                          <div [title]="variable.definition" class="data-cell extra-wide" latex
+                            [equation]="variable.definition"
+                            (click)="edit($event,variable,'definition')"
+                            >
+                          </div>
+                        }
+                        @else {
+                          <div
+                            class="data-cell extra-wide">
+                            <input
+                              (keydown.Enter)="finishEditing()"
+                              (click)="$event.stopImmediatePropagation()"
+                              type="text" [(ngModel)]="editCellContents"/>
+                          </div>
+                        }
+                        <div [title]="variable.dimensions"
+                          class="data-cell wide">
+                          {{variable.dimensions.toString()}}
+                        </div>
+                        @if (!editing(variable,'units')) {
+                          <div
+                            [title]="variable.units"
+                            (click)="edit($event,variable,'units')"
+                            class="data-cell wide" latex
+                            equation="{{variable.units}}"
+                            >
+                          </div>
+                        }
+                        @else {
+                          <div
+                            class="data-cell wide">
+                            <input
+                              (keydown.Enter)="finishEditing()"
+                              (click)="$event.stopImmediatePropagation()"
+                              type="text" [(ngModel)]="editCellContents"/>
+                          </div>
+                        }
+                        @if (!editing(variable,'init')) {
+                          <div
+                            [title]="variable.init"
+                            (click)="edit($event,variable,'init')"
+                            class="data-cell numeric" latex
+                            equation="{{truncateValue(variable.init)}}"
+                            >
+                          </div>
+                        }
+                        @else {
+                          <div
+                            class="data-cell">
+                            <input
+                              (keydown.Enter)="finishEditing()"
+                              (click)="$event.stopImmediatePropagation()"
+                              type="text" [(ngModel)]="editCellContents"/>
+                          </div>
+                          }
+                        @if (type=='parameter') {
+                          @if (!editing(variable,'sliderStep')) {
+                          <div
+                            [title]="variable.sliderStep"
+                            (click)="edit($event,variable,'sliderStep')"
+                            class="data-cell numeric" latex
+                            equation="{{truncateValue(variable.sliderStep)}}"
+                            >
+                          </div>
+                          } @else  {
+                          <div
+                            class="data-cell">
+                            <input
+                              (keydown.Enter)="finishEditing()"
+                              (click)="$event.stopImmediatePropagation()"
+                              type="text" [(ngModel)]="editCellContents"/>
+                          </div>
+                          }
+                          @if (!editing(variable,'sliderMin')) {
+                          <div
+                            [title]="variable.sliderMin"
+                            (click)="edit($event,variable,'sliderMin')"
+                            class="data-cell numeric" latex
+                            equation="{{truncateValue(variable.sliderMin)}}"
+                            >
+                          </div>
+                          } @else {
+                          <div
+                            class="data-cell">
+                            <input
+                              (keydown.Enter)="finishEditing()"
+                              (click)="$event.stopImmediatePropagation()"
+                              type="text" [(ngModel)]="editCellContents"/>
+                          </div>
+                          }
+                          @if (!editing(variable,'sliderMax')) {
+                          <div
+                            [title]="variable.sliderMax"
+                            (click)="edit($event,variable,'sliderMax')"
+                            class="data-cell numeric" latex
+                            equation="{{truncateValue(variable.sliderMax)}}"
+                            >
+                          </div>
+                          } @else {
+                          <div
+                            class="data-cell">
+                            <input
+                              (keydown.Enter)="finishEditing()"
+                              (click)="$event.stopImmediatePropagation()"
+                              type="text" [(ngModel)]="editCellContents"/>
+                          </div>
+                          }
+                        }
+                        @if (!variable.dimensions.length) {
+                          <div
+                            [title]="variable.value" class="data-cell numeric"
+                            latex
+                            equation="{{truncateValue(variable.value)}}"
+                            >
+                          </div>
+                        }
+                      </div>
+                    }
                   </div>
-                  <div *ngIf="editing(variable,'name')"
-                       class="data-cell">
-                    <input
-                      (keydown.Enter)="finishEditing()"
-                      (click)="$event.stopImmediatePropagation()"
-                      type="text" [(ngModel)]="editCellContents"/>
-                  </div>
-                  
-                  <div [title]="variable.definition" class="data-cell extra-wide" latex
-                       [equation]="variable.definition"
-                       *ngIf="!editing(variable,'definition')"
-                       (click)="edit($event,variable,'definition')"
-                       >
-                  </div>
-                  <div *ngIf="editing(variable,'definition')"
-                       class="data-cell extra-wide">
-                    <input
-                      (keydown.Enter)="finishEditing()"
-                      (click)="$event.stopImmediatePropagation()"
-                      type="text" [(ngModel)]="editCellContents"/>
-                  </div>
-                  
-                  <div [title]="variable.dimensions"
-                       class="data-cell wide">
-                    {{variable.dimensions.toString()}}
-                  </div>
-
-                  <div *ngIf="!editing(variable,'units')"
-                       [title]="variable.units"
-                       (click)="edit($event,variable,'units')"
-                       class="data-cell wide" latex
-                       equation="{{variable.units}}"
-                       >
-                  </div>
-                  <div
-                    *ngIf="editing(variable,'units')"
-                    class="data-cell wide">
-                    <input
-                      (keydown.Enter)="finishEditing()"
-                      (click)="$event.stopImmediatePropagation()"
-                      type="text" [(ngModel)]="editCellContents"/>
-                  </div>
-                
-                  <div *ngIf="!editing(variable,'init')"
-                       [title]="variable.init"
-                       (click)="edit($event,variable,'init')"
-                       class="data-cell numeric" latex
-                       equation="{{truncateValue(variable.init)}}"
-                       >
-                  </div>
-                  <div *ngIf="editing(variable,'init')"
-                       class="data-cell">
-                    <input
-                      (keydown.Enter)="finishEditing()"
-                      (click)="$event.stopImmediatePropagation()"
-                      type="text" [(ngModel)]="editCellContents"/>
-                  </div>
-                  
-                  <div *ngIf="type=='parameter' && !editing(variable,'sliderStep')"
-                       [title]="variable.sliderStep"
-                       (click)="edit($event,variable,'sliderStep')"
-                       class="data-cell numeric" latex
-                       equation="{{truncateValue(variable.sliderStep)}}"
-                       >
-                  </div>
-                  <div *ngIf="type=='parameter' && editing(variable,'sliderStep')"
-                       class="data-cell">
-                    <input
-                      (keydown.Enter)="finishEditing()"
-                      (click)="$event.stopImmediatePropagation()"
-                      type="text" [(ngModel)]="editCellContents"/>
-                  </div>
-                  
-                  <div *ngIf="type=='parameter' && !editing(variable,'sliderMin')"
-                       [title]="variable.sliderMin"
-                       (click)="edit($event,variable,'sliderMin')"
-                       class="data-cell numeric" latex
-                       equation="{{truncateValue(variable.sliderMin)}}"
-                       >
-                  </div>
-                  <div *ngIf="type=='parameter' && editing(variable,'sliderMin')"
-                       class="data-cell">
-                    <input
-                      (keydown.Enter)="finishEditing()"
-                      (click)="$event.stopImmediatePropagation()"
-                      type="text" [(ngModel)]="editCellContents"/>
-                  </div>
-                  
-                  <div *ngIf="type=='parameter' && !editing(variable,'sliderMax')"
-                       [title]="variable.sliderMax"
-                       (click)="edit($event,variable,'sliderMax')"
-                       class="data-cell numeric" latex
-                       equation="{{truncateValue(variable.sliderMax)}}"
-                       >
-                  </div>
-                  <div *ngIf="type=='parameter' && editing(variable,'sliderMax')"
-                       class="data-cell">
-                    <input
-                      (keydown.Enter)="finishEditing()"
-                      (click)="$event.stopImmediatePropagation()"
-                      type="text" [(ngModel)]="editCellContents"/>
-                  </div>
-                  
-                  <div *ngIf="!variable.dimensions.length"
-                       [title]="variable.value" class="data-cell numeric"
-                       latex
-                       equation="{{truncateValue(variable.value)}}"
-                       >
-                  </div>
-
-
-                  
-                </div>
-              </div>
-            </span>
-          </div>
+                </span>
+              }
+            </div>
+          }
         </span>
       </div>
-     </div>
-
-    <!--div *ngIf="!variables" class="spinner">
-        <mat-spinner color="#ffa600" mode="indeterminate"></mat-spinner>
-      </div-->
+    }
+  </div>
 </div>

@@ -14,7 +14,7 @@ import {
 import { MessageBoxSyncOptions } from 'electron/renderer';
 import { OpenDialogOptions } from 'electron';
 import { Subject, takeUntil } from 'rxjs';
-import { NgIf, NgFor, NgStyle } from '@angular/common';
+import { NgStyle } from '@angular/common';
 import { MatOptionModule } from '@angular/material/core';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
@@ -58,10 +58,8 @@ class Dimension {
     MatButtonModule,
     MatAutocompleteModule,
     MatOptionModule,
-    NgIf,
-    NgFor,
-    NgStyle,
-  ],
+    NgStyle
+],
 })
 export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewInit, AfterViewChecked, OnDestroy {
   form: FormGroup;

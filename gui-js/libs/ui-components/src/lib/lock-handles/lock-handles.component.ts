@@ -6,7 +6,7 @@ import JSON5 from 'json5';
 import { MatButtonModule } from '@angular/material/button';
 import { FormsModule } from '@angular/forms';
 import { LatexDirective } from '../directives/latex.directive';
-import { NgFor } from '@angular/common';
+
 
 @Component({
     selector: 'minsky-lock-handles',
@@ -14,11 +14,10 @@ import { NgFor } from '@angular/common';
     styleUrls: ['../generic-form.scss', './lock-handles.component.scss'],
     standalone: true,
     imports: [
-        NgFor,
-        FormsModule,
-        LatexDirective,
-        MatButtonModule,
-    ],
+    FormsModule,
+    LatexDirective,
+    MatButtonModule
+],
 })
 export class LockHandlesComponent implements OnInit {
   handleLockInfo: any[];

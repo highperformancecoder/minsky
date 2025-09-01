@@ -5,7 +5,6 @@ import { ElectronService } from '@minsky/core';
 import { Functions, Ravel} from '@minsky/shared';
 import { MatButtonModule } from '@angular/material/button';
 import { OpenDialogOptions } from 'electron';
-import { CommonModule } from '@angular/common'; // Often useful for ngIf, ngFor
 
 @Component({
     selector: 'connect-database',
@@ -13,10 +12,9 @@ import { CommonModule } from '@angular/common'; // Often useful for ngIf, ngFor
     styleUrls: ['./connect-database.scss'],
     standalone: true,
     imports: [
-        FormsModule,
-        CommonModule,
-        MatButtonModule,
-    ],
+    FormsModule,
+    MatButtonModule
+],
 })
 export class ConnectDatabaseComponent {
   dbType: string='sqlite3';

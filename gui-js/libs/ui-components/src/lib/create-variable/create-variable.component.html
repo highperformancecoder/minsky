@@ -2,9 +2,9 @@
   <div class="form-title">
     {{ isEditMode ? 'Edit' : 'Create' }}
     {{
-      variableType === 'flow' || variableType === 'integral'
-        ? 'Variable'
-        : type.value
+    variableType === 'flow' || variableType === 'integral'
+    ? 'Variable'
+    : type.value
     }}
   </div>
 
@@ -16,7 +16,7 @@
         class="local"
         id="local"
         formControlName="local"
-      />
+        />
     </div>
     <div class="form-control">
       <label for="name">Name</label>
@@ -25,7 +25,7 @@
         class="name"
         id="name"
         formControlName="variableName"
-      />
+        />
     </div>
 
     <div class="form-control">
@@ -34,25 +34,25 @@
         <option
           [selected]="variableType === 'constant' ? true : null"
           value="constant"
-        >
+          >
           Constant
         </option>
         <option
           [selected]="variableType === 'parameter' ? true : null"
           value="parameter"
-        >
+          >
           Parameter
         </option>
         <option
           [selected]="variableType === 'flow' ? true : null"
           value="flow"
-        >
+          >
           Flow
         </option>
         <option
           [selected]="variableType === 'integral' ? true : null"
           value="integral"
-        >
+          >
           Integral
         </option>
       </select>
@@ -64,11 +64,11 @@
         <span class="help" (click)="displayInitHelp()">?</span>
       </label>
       <input type="text" class="value" id="value"
-             formControlName="value"
-             [matAutocomplete]="init"
-             />
+        formControlName="value"
+        [matAutocomplete]="init"
+        />
       <mat-autocomplete [panelWidth]="'10rem'"
-                        #init="matAutocomplete">
+        #init="matAutocomplete">
         <mat-option>Number</mat-option>
         <mat-option>Var Name</mat-option>
         <mat-option value="iota(5,5)">iota</mat-option>
@@ -92,7 +92,7 @@
         class="rotation"
         id="rotation"
         formControlName="rotation"
-      />
+        />
     </div>
 
     <div class="form-control">
@@ -102,7 +102,7 @@
         class="shortDescription"
         id="shortDescription"
         formControlName="shortDescription"
-      />
+        />
     </div>
 
     <div class="form-control">
@@ -112,7 +112,7 @@
         class="detailedDescription"
         id="detailedDescription"
         formControlName="detailedDescription"
-      />
+        />
     </div>
 
     <div class="form-control">
@@ -122,7 +122,7 @@
         class="enableSlider"
         id="enableSlider"
         formControlName="enableSlider"
-      />
+        />
     </div>
     <div class="form-control">
       <label for="sliderBoundsMax">Slider Bounds: Max</label>
@@ -131,7 +131,7 @@
         class="sliderBoundsMax"
         id="sliderBoundsMax"
         formControlName="sliderBoundsMax"
-      />
+        />
     </div>
 
     <div class="form-control">
@@ -141,7 +141,7 @@
         class="sliderBoundsMin"
         id="sliderBoundsMin"
         formControlName="sliderBoundsMin"
-      />
+        />
     </div>
 
     <div class="form-control">
@@ -151,18 +151,20 @@
         class="sliderStepSize"
         id="sliderStepSize"
         formControlName="sliderStepSize"
-      />
+        />
     </div>
 
-    <div *ngIf="isEditMode" class="form-control">
-      <label for="sliderStepSizeRel">Relative</label>
-      <input
-        type="checkbox"
-        class="sliderStepRel"
-        id="sliderStepRel"
-        formControlName="sliderStepRel"
-      />
-    </div>
+    @if (isEditMode) {
+      <div class="form-control">
+        <label for="sliderStepSizeRel">Relative</label>
+        <input
+          type="checkbox"
+          class="sliderStepRel"
+          id="sliderStepRel"
+          formControlName="sliderStepRel"
+          />
+      </div>
+    }
   </div>
 
   <div class="form-buttons">
@@ -170,7 +172,7 @@
       mat-raised-button
       class="btn cancel-btn"
       (click)="closeWindow()"
-    >
+      >
       Cancel
     </button>
 
@@ -179,7 +181,7 @@
       class="btn ok-btn submit"
       type="submit"
       (click)="handleSubmit()"
-    >
+      >
       OK
     </button>
   </div>

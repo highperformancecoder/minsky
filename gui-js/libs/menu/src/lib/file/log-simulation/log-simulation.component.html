@@ -9,18 +9,20 @@
           type="checkbox"
           id="logSimulationTableShowValues"
           formControlName="all"
-        />
+          />
         <label for="allSimulation">All</label>
       </div>
       <div class="keys" formArrayName="keys">
-        <div *ngFor="let control of keysControl.controls; let i = index">
-          <ng-container formGroupName="{{ i }}">
-            <input type="checkbox" id="{{ i }}" formControlName="isSelected" />
-            <label for="allSimulation">{{
-              keysControl.controls[i].get('key').value
-            }}</label>
-          </ng-container>
-        </div>
+        @for (control of keysControl.controls; track control; let i = $index) {
+          <div>
+            <ng-container formGroupName="{{ i }}">
+              <input type="checkbox" id="{{ i }}" formControlName="isSelected" />
+              <label for="allSimulation">{{
+                keysControl.controls[i].get('key').value
+              }}</label>
+            </ng-container>
+          </div>
+        }
       </div>
     </form>
   </div>

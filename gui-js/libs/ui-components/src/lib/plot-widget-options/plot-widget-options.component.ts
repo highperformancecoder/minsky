@@ -5,7 +5,7 @@ import { ElectronService } from '@minsky/core';
 import { events, PlotWidget } from '@minsky/shared';
 import { Subject, takeUntil } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
-import { NgFor } from '@angular/common';
+
 
 @Component({
     selector: 'minsky-plot-widget-options',
@@ -13,11 +13,10 @@ import { NgFor } from '@angular/common';
     styleUrls: ['./plot-widget-options.component.scss'],
     standalone: true,
     imports: [
-        FormsModule,
-        ReactiveFormsModule,
-      MatButtonModule,
-      NgFor,
-    ],
+    FormsModule,
+    ReactiveFormsModule,
+    MatButtonModule
+],
 })
 export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
   form: FormGroup;

@@ -1,8 +1,10 @@
 <div #fullDialog class="main" (click)="wedgeOptionPanelVisibleIndex = null" [formGroup]="form">
   <div class="tabs-header">
-      <div *ngFor="let tab of tabs" class="header-tab" (click)="onTabClick(tab.index)">
-          <div [class.disabled]="tab.disabled" [class.selected]="selectedTabIndex === tab.index">{{tab.caption}}</div>
+    @for (tab of tabs; track tab) {
+      <div class="header-tab" (click)="onTabClick(tab.index)">
+        <div [class.disabled]="tab.disabled" [class.selected]="selectedTabIndex === tab.index">{{tab.caption}}</div>
       </div>
+    }
   </div>
 
   <!-- File selection -->
@@ -31,58 +33,58 @@
   <!-- CSV settings -->
   <div class="options-row tab-area settings-area inputs-group csv-settings" [style.display]="selectedTabIndex !== 1 ? 'none' : 'flex'">
     <!--div class="options-row"-->
-      <span class="inputs-group csv-settings">
-        <span>
-          <label for="separator" title="CSV separator.">Separator</label>
-          <input
-            id="separator"
-            type="text"
-            formControlName="separator"
-            [matAutocomplete]="autocompleteSeparator"
-            class="form-control autocomplete"
-            (change)="onSeparatorChange()"
+    <span class="inputs-group csv-settings">
+      <span>
+        <label for="separator" title="CSV separator.">Separator</label>
+        <input
+          id="separator"
+          type="text"
+          formControlName="separator"
+          [matAutocomplete]="autocompleteSeparator"
+          class="form-control autocomplete"
+          (change)="onSeparatorChange()"
           />
-          <mat-autocomplete
-            [panelWidth]="'10rem'"
-            #autocompleteSeparator="matAutocomplete"
-            (optionSelected)="onSeparatorChange()"
+        <mat-autocomplete
+          [panelWidth]="'10rem'"
+          #autocompleteSeparator="matAutocomplete"
+          (optionSelected)="onSeparatorChange()"
           >
-            <mat-option value=",">,</mat-option>
-            <mat-option value=";">;</mat-option>
-            <mat-option value="tab">tab</mat-option>
-            <mat-option value="space">space</mat-option>
-          </mat-autocomplete>
-        </span>
+          <mat-option value=",">,</mat-option>
+          <mat-option value=";">;</mat-option>
+          <mat-option value="tab">tab</mat-option>
+          <mat-option value="space">space</mat-option>
+        </mat-autocomplete>
+      </span>
 
-        <span>
+      <span>
           <label for="decimal-separator" title="Separator of units and
           fraction part of numbers: '.' for UK/US data, ',' for European data.">Decimal Separator</label>
-          <input
-            id="decimal-separator"
-            type="text"
-            formControlName="decSeparator"
-            [matAutocomplete]="decSeparator"
-            class="form-control autocomplete"
-            (change)="onSeparatorChange()"
+        <input
+          id="decimal-separator"
+          type="text"
+          formControlName="decSeparator"
+          [matAutocomplete]="decSeparator"
+          class="form-control autocomplete"
+          (change)="onSeparatorChange()"
           />
-          <mat-autocomplete [panelWidth]="'10rem'" #decSeparator="matAutocomplete" (optionSelected)="onSeparatorChange()">
-            <mat-option value=".">.</mat-option>
-            <mat-option value=",">,</mat-option>
-          </mat-autocomplete>
-        </span>
+        <mat-autocomplete [panelWidth]="'10rem'" #decSeparator="matAutocomplete" (optionSelected)="onSeparatorChange()">
+          <mat-option value=".">.</mat-option>
+          <mat-option value=",">,</mat-option>
+        </mat-autocomplete>
+      </span>
 
-        <span>
+      <span>
           <label for="escape" title="Character used to embed special
           characters in strings, such as quotes.">Escape</label>
-          <input
-            id="escape"
-            type="text"
-            formControlName="escape"
-            [matAutocomplete]="escape"
-            class="form-control autocomplete"
-            (change)="onSeparatorChange()"
+        <input
+          id="escape"
+          type="text"
+          formControlName="escape"
+          [matAutocomplete]="escape"
+          class="form-control autocomplete"
+          (change)="onSeparatorChange()"
           />
-          <mat-autocomplete [panelWidth]="'10rem'" #escape="matAutocomplete" (optionSelected)="onSeparatorChange()">
+        <mat-autocomplete [panelWidth]="'10rem'" #escape="matAutocomplete" (optionSelected)="onSeparatorChange()">
             <mat-option value="\">\</mat-option>
           </mat-autocomplete>
         </span>
@@ -91,62 +93,74 @@
           <label for="quote" title="CSV quote character.">Quote</label>
           <input
             id="quote"
-            type="text"
-            formControlName="quote"
-            [matAutocomplete]="quote"
-            class="form-control autocomplete"
-            (change)="onSeparatorChange()"
+          type="text"
+          formControlName="quote"
+          [matAutocomplete]="quote"
+          class="form-control autocomplete"
+          (change)="onSeparatorChange()"
           />
-          <mat-autocomplete [panelWidth]="'10rem'" #quote="matAutocomplete" (optionSelected)="onSeparatorChange()">
-            <mat-option value="'">'</mat-option>
-            <mat-option value='"'>"</mat-option>
-          </mat-autocomplete>
-        </span>
+        <mat-autocomplete [panelWidth]="'10rem'" #quote="matAutocomplete" (optionSelected)="onSeparatorChange()">
+          <mat-option value="'">'</mat-option>
+          <mat-option value='"'>"</mat-option>
+        </mat-autocomplete>
+      </span>
 
-        <span>
+      <span>
           <label for="merge-delimiters" title="Consecutive separators
           treated as a single separator. Mostly useful for space delimited
           files.">Merge Delimiters</label>
-          <input
-            id="merge-delimiters"
-            type="checkbox"
-            formControlName="mergeDelimiters"
-            (change)="onSeparatorChange()"
+        <input
+          id="merge-delimiters"
+          type="checkbox"
+          formControlName="mergeDelimiters"
+          (change)="onSeparatorChange()"
           />
-        </span>
       </span>
-      <!--/div-->
-      <!-- display of parsed CSV to aid selecting CSV parameters -->
-      <div class="tab-area canvas-area" [style.display]="selectedTabIndex !== 1 ? 'none' : 'flex'">
-        <table *ngIf="parsedLines.length">
-          <tr *ngFor="let row of parsedLines; let rowIndex = index">
-            <td class="table-cell" *ngFor="let rowElement of row">
-              {{ rowElement }}
-            </td>
-          </tr>
+    </span>
+    <!--/div-->
+    <!-- display of parsed CSV to aid selecting CSV parameters -->
+    <div class="tab-area canvas-area" [style.display]="selectedTabIndex !== 1 ? 'none' : 'flex'">
+      @if (parsedLines.length) {
+        <table>
+          @for (row of parsedLines; track row; let rowIndex = $index) {
+            <tr>
+              @for (rowElement of row; track rowElement) {
+                <td class="table-cell">
+                  {{ rowElement }}
+                </td>
+              }
+            </tr>
+          }
         </table>
-      </div>
+      }
+    </div>
   </div>
 
   <!-- Data selection -->
   <div class="tab-area settings-area inputs-group csv-settings"
-       [style.display]="selectedTabIndex !== 2 ? 'none' : 'flex'">
+    [style.display]="selectedTabIndex !== 2 ? 'none' : 'flex'">
     <span class="inputs-group csv-settings">
       <span>
         <label for="horizontal-dimension"
-               title="Name of the collection of data columns.">Horizontal Dimension</label>
+        title="Name of the collection of data columns.">Horizontal Dimension</label>
         <div class="wedge-container hd-wedge-container">
           <input
             id="horizontal-dimension"
             type="text"
             formControlName="horizontalDimName"
             />
-          
-          <div *ngIf="existingDimensionNames.length > 0" class="material-icons wedge-icon" style="width: 20px;" (click)="onWedgeIconClicked($event, -1)">expand_more</div>
-          
-          <div *ngIf="wedgeOptionPanelVisibleIndex === -1" class="wedge-options-panel">
-            <div class="wedge-option" *ngFor="let dimensionName of existingDimensionNames" (click)="onWedgeOptionClicked($event, -1, dimensionName)">{{dimensionName}}</div>
-          </div>
+
+          @if (existingDimensionNames.length > 0) {
+            <div class="material-icons wedge-icon" style="width: 20px;" (click)="onWedgeIconClicked($event, -1)">expand_more</div>
+          }
+
+          @if (wedgeOptionPanelVisibleIndex === -1) {
+            <div class="wedge-options-panel">
+              @for (dimensionName of existingDimensionNames; track dimensionName) {
+                <div class="wedge-option" (click)="onWedgeOptionClicked($event, -1, dimensionName)">{{dimensionName}}</div>
+              }
+            </div>
+          }
         </div>
       </span>
       <ng-container [formGroup]="horizontalDimension">
@@ -158,7 +172,7 @@
             <option value="time">time</option>
           </select>
         </span>
-        
+
         <span>
           <label for="format" title="Format field for the horizontal
                                      dimension. Mostly useful for time dimensions.">Format</label>
@@ -170,14 +184,15 @@
             class="form-control autocomplete"
             />
           <mat-autocomplete [panelWidth]="'14rem'" #auto="matAutocomplete">
-            <ng-container *ngIf="type.value === 'time'">
-              <mat-option
-                *ngFor="let tfs of timeFormatStrings"
-                [value]="tfs.value"
-                >
-                {{ tfs.label }}
-              </mat-option>
-            </ng-container>
+            @if (type.value === 'time') {
+              @for (tfs of timeFormatStrings; track tfs) {
+                <mat-option
+                  [value]="tfs.value"
+                  >
+                  {{ tfs.label }}
+                </mat-option>
+              }
+            }
           </mat-autocomplete>
         </span>
         <span>
@@ -191,129 +206,145 @@
           </div>
         </span>
       </ng-container>
-      
+
     </span>
     <div class="tab-area canvas-area" #importCsvCanvasContainer id="import-csv-canvas-container">
-      <table *ngIf="parsedLines.length">
-        <tr>
-          <th>Name</th>
-          <td *ngFor="let col of csvCols; let i = index"
-              class="col-type-container wedge-container column-wedge-container" [class.selected]="selected[i]"
-              (mousedown)="typeMouseDown($event,i)"
-              (mousemove)="typeMouseMove($event,i)"
-              (mouseup)="typeMouseUp($event,'name',i)"
-              >
-            <input
-              *ngIf="colType[i]==='axis'||colType[i]==='data'"
-              type="text"
-              class="form-control"
-              [value]="dialogState.spec.dimensionNames[i]"
-              (change)="dialogState.spec.dimensionNames[i] = $event.target['value']"
-              >
-            
-            <div *ngIf="selectableDimensionNames[i]?.length > 0" class="material-icons wedge-icon" style="margin-right: -2px" (click)="onWedgeIconClicked($event, i)">expand_more</div>
-            
-            <div *ngIf="i === wedgeOptionPanelVisibleIndex" class="wedge-options-panel">
-              <div class="wedge-option" *ngFor="let dimensionName of selectableDimensionNames[i]" (click)="onWedgeOptionClicked($event, i, dimensionName)">{{dimensionName}}</div>
-            </div>
-          </td>
-        </tr>
-        
-        <tr>
-          <th>Unique Values</th>
-          <td *ngFor="let val of uniqueValues; let i = index">
-            {{val}}
-          </td>
-        </tr>
-       
-        <tr>
-          <th>Dimension</th>
-          <td #colTypeRow
-              *ngFor="let col of csvCols; let i = index"
-              class="col-type-container" [class.selected]="selected[i]"
-              >
-            <select
-              (change)="setColType(i,$event.target['value'])"
-              >
-              <option value="axis" style="color:blue">axis</option>
-              <option value="data">data</option>
-              <option value="ignore" style="color:red">ignore</option>
-            </select>
-          </td>
-        </tr>
-        
-        <tr>
-        <th>Type</th>
-        <td *ngFor="let col of csvCols; let i = index"
-            class="col-type-container col-container"
-            [class.selected]="selected[i]"
-            >
-          <ng-container *ngIf="colType[i]==='axis'">
-            <select
-              [value]="dialogState.spec.dimensions[i]?.type "
-              (change)="dialogState.spec.dimensions[i].type = $event.target['value']"
-              >
-              <option value="string">string</option>
-              <option value="value">value</option>
-              <option value="time">time</option>
-            </select>
-          </ng-container>
-        </td>
-        </tr>
-        
-        <tr>
-          <th>Format</th>
-          <td *ngFor="let col of csvCols; let i = index"
-              class="col-container" [class.selected]="selected[i]"
-              >
-            <input
-              *ngIf="colType[i]==='axis'"
-              type="text"
-              [value]="dialogState.spec.dimensions[i]?.units"
-              [matAutocomplete]="autocompleteFormat"
-              class="form-control"
-              (change)="dialogState.spec.dimensions[i].units = $event.target['value']"
-              />
-            <mat-autocomplete
-              id="format_{{ i }}"
-              [panelWidth]="'14rem'"
-              #autocompleteFormat="matAutocomplete"
-              (optionSelected)="dialogState.spec.dimensions[i].units = $event.option.value"
-              >
-              <ng-container *ngIf="dialogState.spec.dimensions[i]?.type === 'time'">
-                <mat-option
-                  *ngFor="let tfs of timeFormatStrings"
-                  [value]="tfs.value"
+      @if (parsedLines.length) {
+        <table>
+          <tr>
+            <th>Name</th>
+            @for (col of csvCols; track col; let i = $index) {
+              <td
+                class="col-type-container wedge-container column-wedge-container" [class.selected]="selected[i]"
+                (mousedown)="typeMouseDown($event,i)"
+                (mousemove)="typeMouseMove($event,i)"
+                (mouseup)="typeMouseUp($event,'name',i)"
+                >
+                @if (colType[i]==='axis'||colType[i]==='data') {
+                  <input
+                    type="text"
+                    class="form-control"
+                    [value]="dialogState.spec.dimensionNames[i]"
+                    (change)="dialogState.spec.dimensionNames[i] = $event.target['value']"
+                    >
+                }
+                @if (selectableDimensionNames[i]?.length > 0) {
+                  <div class="material-icons wedge-icon" style="margin-right: -2px" (click)="onWedgeIconClicked($event, i)">expand_more</div>
+                }
+                @if (i === wedgeOptionPanelVisibleIndex) {
+                  <div class="wedge-options-panel">
+                    @for (dimensionName of selectableDimensionNames[i]; track dimensionName) {
+                      <div class="wedge-option" (click)="onWedgeOptionClicked($event, i, dimensionName)">{{dimensionName}}</div>
+                    }
+                  </div>
+                }
+              </td>
+            }
+          </tr>
+          <tr>
+            <th>Unique Values</th>
+            @for (val of uniqueValues; track val; let i = $index) {
+              <td>
+                {{val}}
+              </td>
+            }
+          </tr>
+          <tr>
+            <th>Dimension</th>
+            @for (col of csvCols; track col; let i = $index) {
+              <td #colTypeRow
+                class="col-type-container" [class.selected]="selected[i]"
+                >
+                <select
+                  (change)="setColType(i,$event.target['value'])"
                   >
-                  {{ tfs.label }}
-                </mat-option>
-              </ng-container>
-            </mat-autocomplete>
-          </td>
-        </tr>
-        
-        <tr *ngFor="let row of parsedLines; let rowIndex = index">
-          <th class="header" (click)="selectHeader(rowIndex)">
-            <ng-container *ngIf="rowIndex === dialogState.spec.headerRow
-                                 && dialogState.spec.headerRow < dialogState.spec.dataRowOffset"
-                          >Header</ng-container
-                                   >
-          </th>
-          <td class="table-cell"
-              *ngFor="let rowElement of row; let colIndex = index"
-              (mousedown)="typeMouseDown($event,colIndex)"
-              (mousemove)="typeMouseMove($event,colIndex)"
-              (mouseup)="typeMouseUp($event,rowIndex,colIndex)"
-              (contextmenu)="contextMenu(rowIndex,colIndex)"
-              [ngStyle]="{ color: getColorForCell(rowIndex, colIndex) }"
-              >
-            {{ rowElement }}
-          </td>
-        </tr>
-      </table>
+                  <option value="axis" style="color:blue">axis</option>
+                  <option value="data">data</option>
+                  <option value="ignore" style="color:red">ignore</option>
+                </select>
+              </td>
+            }
+          </tr>
+          <tr>
+            <th>Type</th>
+            @for (col of csvCols; track col; let i = $index) {
+              <td
+                class="col-type-container col-container"
+                [class.selected]="selected[i]"
+                >
+                @if (colType[i]==='axis') {
+                  <select
+                    [value]="dialogState.spec.dimensions[i]?.type "
+                    (change)="dialogState.spec.dimensions[i].type = $event.target['value']"
+                    >
+                    <option value="string">string</option>
+                    <option value="value">value</option>
+                    <option value="time">time</option>
+                  </select>
+                }
+              </td>
+            }
+          </tr>
+          <tr>
+            <th>Format</th>
+            @for (col of csvCols; track col; let i = $index) {
+              <td
+                class="col-container" [class.selected]="selected[i]"
+                >
+                @if (colType[i]==='axis') {
+                  <input
+                    type="text"
+                    [value]="dialogState.spec.dimensions[i]?.units"
+                    [matAutocomplete]="autocompleteFormat"
+                    class="form-control"
+                    (change)="dialogState.spec.dimensions[i].units = $event.target['value']"
+                    />
+                }
+                <mat-autocomplete
+                  id="format_{{ i }}"
+                  [panelWidth]="'14rem'"
+                  #autocompleteFormat="matAutocomplete"
+                  (optionSelected)="dialogState.spec.dimensions[i].units = $event.option.value"
+                  >
+                  @if (dialogState.spec.dimensions[i]?.type === 'time') {
+                    @for (tfs of timeFormatStrings; track tfs) {
+                      <mat-option
+                        [value]="tfs.value"
+                        >
+                        {{ tfs.label }}
+                      </mat-option>
+                    }
+                  }
+                </mat-autocomplete>
+              </td>
+            }
+          </tr>
+          @for (row of parsedLines; track row; let rowIndex = $index) {
+            <tr>
+              <th class="header" (click)="selectHeader(rowIndex)">
+                @if (rowIndex === dialogState.spec.headerRow
+                  && dialogState.spec.headerRow < dialogState.spec.dataRowOffset) {
+                  Header
+                }
+              </th>
+              @for (rowElement of row; track rowElement; let colIndex = $index) {
+                <td class="table-cell"
+                  (mousedown)="typeMouseDown($event,colIndex)"
+                  (mousemove)="typeMouseMove($event,colIndex)"
+                  (mouseup)="typeMouseUp($event,rowIndex,colIndex)"
+                  (contextmenu)="contextMenu(rowIndex,colIndex)"
+                  [ngStyle]="{ color: getColorForCell(rowIndex, colIndex) }"
+                  >
+                  {{ rowElement }}
+                </td>
+              }
+            </tr>
+          }
+        </table>
+      }
     </div>
   </div>
-  
+
   <div class="tab-area settings-area" [style.display]="selectedTabIndex !== 3 ? 'none' : 'flex'">
     <div class="options-row">
       <span class="inputs-group import-settings">
@@ -366,13 +397,13 @@
             <mat-option value="0">0</mat-option>
           </mat-autocomplete>
         </span>
-        
+
         <span>
           <label for="duplicate-key-action"
                  title="What to do if multiple values exist for the same
                         data element."
-                 >Duplicate Key Action</label>
-          
+          >Duplicate Key Action</label>
+
           <select id="duplicate-key-action" formControlName="duplicateKeyAction">
             <option value="throwException">throwException</option>
             <option value="sum">sum</option>
@@ -382,12 +413,12 @@
             <option value="av">av</option>
           </select>
         </span>
-        
+
         <span>
           <label for="counter" title="Counts elements instead of reading
                                       data. Particularly useful if no numerical data in file.">Counter</label>
           <input id="counter" type="checkbox"
-                 formControlName="counter"/>
+            formControlName="counter"/>
         </span>
         <span>
           <label for="drop-table" title="Drop table before
@@ -403,19 +434,25 @@
       Cancel
     </button>
 
-    <button *ngIf="selectedTabIndex == 2" mat-raised-button type="button" (click)="load(2)">Reload</button>
+    @if (selectedTabIndex == 2) {
+      <button mat-raised-button type="button" (click)="load(2)">Reload</button>
+    }
 
-    <button *ngIf="selectedTabIndex !== 3" mat-raised-button class="btn next-btn" [disabled]="!fileLoaded" (click)="next()">
-      Next
-    </button>
+    @if (selectedTabIndex !== 3) {
+      <button mat-raised-button class="btn next-btn" [disabled]="!fileLoaded" (click)="next()">
+        Next
+      </button>
+    }
 
-    <button *ngIf="selectedTabIndex === 3" [disabled]="!fileLoaded"
-      mat-raised-button
-      class="btn ok-btn submit"
-      type="submit"
-      (click)="handleSubmit()"
-    >
-      Import
-    </button>
+    @if (selectedTabIndex === 3) {
+      <button [disabled]="!fileLoaded"
+        mat-raised-button
+        class="btn ok-btn submit"
+        type="submit"
+        (click)="handleSubmit()"
+        >
+        Import
+      </button>
+    }
   </div>
 </div>

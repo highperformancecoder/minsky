@@ -2,25 +2,36 @@
   <div class="form-body">
     <table>
       <tr class="form-row1">
-        <td class="header-cell" *ngFor="let ravelName of ravelNames;
-                                        let i = index" latex [equation]="ravelName"></td>
-        <td class="header-cell" *ngFor="let attribute of attributes" [title]="attribute.tooltip">{{attribute.label}}</td>
+        @for (ravelName of ravelNames; track ravelName; let i = $index) {
+          <td class="header-cell" latex [equation]="ravelName"></td>
+        }
+        @for (attribute of attributes; track attribute) {
+          <td class="header-cell" [title]="attribute.tooltip">{{attribute.label}}</td>
+        }
       </tr>
-      <tr class="form-row1" *ngFor="let handle of handleLockInfo">
-        <td class="form-cell" *ngFor="let ravelName of ravelNames; let i = index">
-          <select [(ngModel)]="handle.handleNames[i]">
-            <option value="">
-            <option *ngFor="let lockHandle of lockHandles" [value]="lockHandle">{{lockHandle}}</option>
-          </select>
-        </td>
-        <td class="form-cell" *ngFor="let attribute of attributes" [title]="attribute.tooltip">
-          <input [(ngModel)]="handle[attribute.key]" type="checkbox"/>
-        </td>
-      </tr>
-    </table>
+      @for (handle of handleLockInfo; track handle) {
+        <tr class="form-row1">
+          @for (ravelName of ravelNames; track ravelName; let i = $index) {
+            <td class="form-cell">
+              <select [(ngModel)]="handle.handleNames[i]">
+                <option value="">
+                  @for (lockHandle of lockHandles; track lockHandle) {
+                    <option [value]="lockHandle">{{lockHandle}}</option>
+                  }
+                </select>
+              </td>
+            }
+            @for (attribute of attributes; track attribute) {
+              <td class="form-cell" [title]="attribute.tooltip">
+                <input [(ngModel)]="handle[attribute.key]" type="checkbox"/>
+              </td>
+            }
+          </tr>
+        }
+      </table>
+    </div>
+    <div class="buttons">
+      <button mat-raised-button (click)="closeWindow()">Cancel</button>
+      <button mat-raised-button class="submit" (click)="handleSave()">OK</button>
+    </div>
   </div>
-  <div class="buttons">
-    <button mat-raised-button (click)="closeWindow()">Cancel</button>
-    <button mat-raised-button class="submit" (click)="handleSave()">OK</button>
-  </div>
-</div>

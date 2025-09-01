@@ -7,7 +7,6 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
 import { OpenDialogOptions, SaveDialogOptions } from 'electron';
-import { CommonModule } from '@angular/common'; // Often useful for ngIf, ngFor
 import JSON5 from 'json5';
 
 @Component({
@@ -16,12 +15,11 @@ import JSON5 from 'json5';
     styleUrls: ['./ravel-select-horizontal-dim.scss'],
     standalone: true,
     imports: [
-      FormsModule,
-      CommonModule,
-      MatAutocompleteModule,
-      MatButtonModule,
-      MatOptionModule,
-    ],
+    FormsModule,
+    MatAutocompleteModule,
+    MatButtonModule,
+    MatOptionModule
+],
 })
 export class RavelSelectHorizontalDimComponent implements OnInit  {
   dataCols=[];

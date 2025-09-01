@@ -1,17 +1,19 @@
-<div *ngIf="loading" class="spinner">
-  <mat-spinner color="#ffa600" mode="indeterminate"></mat-spinner>
-</div>
+@if (loading) {
+  <div class="spinner">
+    <mat-spinner color="#ffa600" mode="indeterminate"></mat-spinner>
+  </div>
+}
 
-<ng-container *ngIf="!loading">
-  <ng-container *ngIf="router.url.includes('headless');">
+@if (!loading) {
+  @if (router.url.includes('headless');) {
     <router-outlet></router-outlet>
-  </ng-container>
-  <ng-container *ngIf="!router.url.includes('headless');">
+  }
+  @else {
     <minsky-header></minsky-header>
     <div class="tabs-section">
       <div class="tabs example-button-row">
         <button (click)="changeTab('minsky.canvas')"
-                classType="tabs:Wiring" class="wiring toolButton" mat-raised-button>
+          classType="tabs:Wiring" class="wiring toolButton" mat-raised-button>
           Wiring
         </button>
         <button (click)="changeTab('minsky.equationDisplay')"
@@ -26,25 +28,25 @@
           classType="tabs:Phillips" class="phillips toolButton" mat-raised-button>
           Phillips diagram
         </button>
-         <div *ngFor="let tab of publicationTabs; let i=index">
-          <button (click)="changeTab('minsky.publicationTabs.@elemNoThrow.'+i)"                  (contextmenu)="pubTabContext($event,'minsky.publicationTabs.@elemNoThrow.'+i)"
-                  classType="tabs:Publication" class="pubTab toolButton" mat-raised-button>
-            {{tab}}
-          </button>
-         </div>
-         <button (click)="addPubTab()"
-                 classType="tabs:Publication" class="pubTab toolButton" title="Add new publication tab" mat-raised-button>
+        @for (tab of publicationTabs; track tab; let i = $index) {
+          <div>
+            <button (click)="changeTab('minsky.publicationTabs.@elemNoThrow.'+i)"                  (contextmenu)="pubTabContext($event,'minsky.publicationTabs.@elemNoThrow.'+i)"
+              classType="tabs:Publication" class="pubTab toolButton" mat-raised-button>
+              {{tab}}
+            </button>
+          </div>
+        }
+        <button (click)="addPubTab()"
+          classType="tabs:Publication" class="pubTab toolButton" title="Add new publication tab" mat-raised-button>
           +
         </button>
-          
         <span class="spacer"></span>
-
         <button class="variables minsky-service" mat-raised-button
-                (click)="startTerminal()" classType="terminal">
+          (click)="startTerminal()" classType="terminal">
           Terminal
         </button>
       </div>
-    <router-outlet></router-outlet>
-  </div>
-  </ng-container>
-</ng-container>
+      <router-outlet></router-outlet>
+    </div>
+  }
+}

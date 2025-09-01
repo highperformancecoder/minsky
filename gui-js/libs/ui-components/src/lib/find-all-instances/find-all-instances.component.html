@@ -1,11 +1,12 @@
 <div class="instance_container">
-  <div
-    class="instance"
-    (click)="goToInstance(i)"
-    *ngFor="let instance of instances; index as i"
-  >
-    {{ instance }}
-  </div>
+  @for (instance of instances; track instance; let i = $index) {
+    <div
+      class="instance"
+      (click)="goToInstance(i)"
+      >
+      {{ instance }}
+    </div>
+  }
 </div>
 
 <footer>
@@ -14,7 +15,7 @@
     type="submit"
     class="submit"
     (click)="closeWindow()"
-  >
+    >
     OK
   </button>
 </footer>

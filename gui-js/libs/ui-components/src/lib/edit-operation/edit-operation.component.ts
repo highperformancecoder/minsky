@@ -5,7 +5,7 @@ import { ElectronService } from '@minsky/core';
 import { ClassType, OperationBase } from '@minsky/shared';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
-import { NgFor } from '@angular/common';
+
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 
 @Component({
@@ -14,13 +14,12 @@ import { MatAutocompleteModule } from '@angular/material/autocomplete';
     styleUrls: ['./edit-operation.component.scss'],
     standalone: true,
     imports: [
-        FormsModule,
-        ReactiveFormsModule,
-        MatAutocompleteModule,
-        NgFor,
-        MatOptionModule,
-        MatButtonModule,
-    ],
+    FormsModule,
+    ReactiveFormsModule,
+    MatAutocompleteModule,
+    MatOptionModule,
+    MatButtonModule
+],
 })
 export class EditOperationComponent implements OnInit {
   form: FormGroup;
