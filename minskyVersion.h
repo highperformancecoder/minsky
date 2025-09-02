@@ -1,1 +1,1 @@
-#define MINSKY_VERSION "3.18.2"
+#define MINSKY_VERSION "3.18.4"

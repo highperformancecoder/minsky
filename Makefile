@@ -293,7 +293,7 @@ BINDIR=$(subst bin,$(MXE_PREFIX)/bin,$(dir $(shell which $(CPLUSPLUS))))
 $(warning $(BINDIR))
 DLLS=$(wildcard $(MXE_DLLS:%=$(BINDIR)/%*.dll))
 # Add soci support for RAVELPRO
-DLLS+=$(wildcard $(BINDIR)/libsoci*.dll)
+DLLS+=$(wildcard $(BINDIR)/libsoci*.dll) $(BINDIR)/libpq.dll
 else
 EXE=
 DL=so
