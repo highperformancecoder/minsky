@@ -42,7 +42,6 @@ TEST_F(CanvasTest, defaultPlotOptions)
     auto originalItem=itemFocus;
     auto originalPlot=dynamic_cast<PlotWidget*>(itemFocus.get());
     ASSERT_TRUE(originalPlot);
-    if (!originalPlot) return;
     originalPlot->subgrid=true;
     originalPlot->title="hello";
     originalPlot->xlabel("x");
@@ -56,7 +55,6 @@ TEST_F(CanvasTest, defaultPlotOptions)
     auto firstItem=itemFocus;
     auto firstPlot=dynamic_cast<PlotWidget*>(itemFocus.get());
     ASSERT_TRUE(firstPlot);
-    if (!firstPlot) return;
     EXPECT_EQ("",firstPlot->title);
     EXPECT_EQ("",firstPlot->xlabel());
     EXPECT_EQ("",firstPlot->ylabel());
@@ -80,6 +78,7 @@ TEST_F(CanvasTest, defaultPlotOptions)
 
     addPlot();
     auto secondPlot=dynamic_cast<PlotWidget*>(itemFocus.get());
+    ASSERT_TRUE(secondPlot);
     EXPECT_EQ(originalPlot->title,secondPlot->title);
     EXPECT_EQ(originalPlot->xlabel(),secondPlot->xlabel());
     EXPECT_EQ(originalPlot->ylabel(),secondPlot->ylabel());
