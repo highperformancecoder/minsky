@@ -1520,13 +1520,18 @@ namespace minsky
       double v=0;
       if (!chain.empty())
         {
-          v=(*chain.back())[i];
+          auto chainBack=chain.back(); // stash a reference to the current chain, in case it gets updated below
+          v=(*chainBack)[i];
           if (m_timestamp<chain.back()->timestamp())
-            { // update hypercube if argument has changed
-              const_cast<Ravel&>(ravel).populateHypercube(arg->hypercube());
-              chain=ravel::createRavelChain(ravel.getState(), arg);
-              m_timestamp=Timestamp::clock::now();
-            }
+#ifdef _OPENMP 
+#pragma omp critical(RavelTensor_updateChain)
+            if (m_timestamp<chain.back()->timestamp()) // test again once lock has been obtained
+#endif
+              { // update hypercube if argument has changed
+                const_cast<Ravel&>(ravel).populateHypercube(arg->hypercube());
+                chain=ravel::createRavelChain(ravel.getState(), arg);
+                m_timestamp=Timestamp::clock::now();
+              }
         }
       return v;
     }
@@ -1683,7 +1688,12 @@ namespace minsky
           throw FlowVarsResized();
         result.ev->update(fv, n, sv);
         assert(result.size()==rhs->size());
-        for (size_t i=0; i<rhs->size(); ++i)
+        // the assumption here is that rhs is independent of rhs
+        auto rhsSize=rhs->size();
+#ifdef _OPENMP
+#pragma omp parallel for if(rhsSize>20)
+#endif
+        for (size_t i=0; i<rhsSize; ++i)
           {
             auto v=(*rhs)[i];
             result[i]=v;

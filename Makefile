@@ -28,7 +28,7 @@ ifdef MXE
 MAKEOVERRIDES+=MXE_PREFIX=x86_64-w64-mingw32.shared
 endif
 
-MAKEOVERRIDES+=DEBUG=$(DEBUG)
+MAKEOVERRIDES+=DEBUG=$(DEBUG) OPENMP=$(OPENMP)
 # Build EcoLab with clang to avoid problems with old gcc compilers on
 # some Linux distros
 ifeq ($(HAVE_CLANG),1)
@@ -213,6 +213,7 @@ FLAGS+=-std=c++20 -UTR1 -Ischema -Iengine -Imodel -Icertify/include -IRESTServic
 ifeq ($(CPLUSPLUS),clang++)
 # note some of these flags are disabling warnings that are invalid in some circumstances
 FLAGS+=-Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-defaulted-function-deleted -Wno-uninitialized
+LIBS+=-fopenmp
 endif
 
 ifeq ($(DEBUG), 1)

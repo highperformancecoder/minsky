@@ -252,11 +252,19 @@ namespace minsky
     // firstly evaluate the flow variables. Initialise to flowVars so
     // that no input vars are correctly initialised
     auto flow(flowVars);
-    for (size_t i=0; i<equations.size(); ++i)
+    auto eqSize=equations.size();
+#ifdef _OPENMP
+#pragma omp parallel for if(eqSize>20)
+#endif
+    for (size_t i=0; i<eqSize; ++i)
       equations[i]->eval(flow.data(), flow.size(), vars);
 
     // then create the result using the Godley table
-    for (size_t i=0; i<stockVars.size(); ++i) result[i]=0;
+    auto stvSize=stockVars.size();
+#ifdef _OPENMP
+#pragma omp parallel for if(stvSize>20)
+#endif
+    for (size_t i=0; i<stvSize; ++i) result[i]=0;
     evalGodley.eval(result, flow.data());
 
     // integrations are kind of a copy
