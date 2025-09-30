@@ -19,7 +19,6 @@
 #include "cairoItems.h"
 #include "canvas.h"
 #include "minsky_epilogue.h"
-#undef True
 #include <gtest/gtest.h>
 using namespace minsky;
 using namespace std;
