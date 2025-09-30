@@ -52,13 +52,13 @@ TEST_F(CanvasTest, defaultPlotOptions)
     
     addPlot();
     auto firstItem=itemFocus;
-    auto firstPlot=dynamic_cast<PlotWidget*>(itemFocus.get());
-    ASSERT_TRUE(firstPlot);
-    EXPECT_EQ("",firstPlot->title);
-    EXPECT_EQ("",firstPlot->xlabel());
-    EXPECT_EQ("",firstPlot->ylabel());
-    EXPECT_EQ("",firstPlot->y1label());
-    EXPECT_EQ(originalPlot->palette.size()-1,firstPlot->palette.size());
+    auto plotBeforeDefaultsApplied=dynamic_cast<PlotWidget*>(itemFocus.get());
+    ASSERT_TRUE(plotBeforeDefaultsApplied);
+    EXPECT_EQ("",plotBeforeDefaultsApplied->title);
+    EXPECT_EQ("",plotBeforeDefaultsApplied->xlabel());
+    EXPECT_EQ("",plotBeforeDefaultsApplied->ylabel());
+    EXPECT_EQ("",plotBeforeDefaultsApplied->y1label());
+    EXPECT_EQ(originalPlot->palette.size()-1,plotBeforeDefaultsApplied->palette.size());
     
     item=originalItem;
     setDefaultPlotOptions();
@@ -66,24 +66,24 @@ TEST_F(CanvasTest, defaultPlotOptions)
     // check we can apply the default options
     item=firstItem;
     applyDefaultPlotOptions();
-    EXPECT_EQ("",firstPlot->title);
-    EXPECT_EQ("",firstPlot->xlabel());
-    EXPECT_EQ("",firstPlot->ylabel());
-    EXPECT_EQ("",firstPlot->y1label());
-    EXPECT_TRUE(firstPlot->subgrid);
-    EXPECT_EQ(originalPlot->palette.size(),firstPlot->palette.size());
-    EXPECT_EQ(originalPlot->palette.back().width, firstPlot->palette.back().width);
-    EXPECT_EQ(originalPlot->palette.back().dashStyle, firstPlot->palette.back().dashStyle);
+    EXPECT_EQ("",plotBeforeDefaultsApplied->title);
+    EXPECT_EQ("",plotBeforeDefaultsApplied->xlabel());
+    EXPECT_EQ("",plotBeforeDefaultsApplied->ylabel());
+    EXPECT_EQ("",plotBeforeDefaultsApplied->y1label());
+    EXPECT_TRUE(plotBeforeDefaultsApplied->subgrid);
+    EXPECT_EQ(originalPlot->palette.size(),plotBeforeDefaultsApplied->palette.size());
+    EXPECT_EQ(originalPlot->palette.back().width, plotBeforeDefaultsApplied->palette.back().width);
+    EXPECT_EQ(originalPlot->palette.back().dashStyle, plotBeforeDefaultsApplied->palette.back().dashStyle);
 
     addPlot();
-    auto secondPlot=dynamic_cast<PlotWidget*>(itemFocus.get());
-    ASSERT_TRUE(secondPlot);
-    EXPECT_EQ(originalPlot->title,secondPlot->title);
-    EXPECT_EQ(originalPlot->xlabel(),secondPlot->xlabel());
-    EXPECT_EQ(originalPlot->ylabel(),secondPlot->ylabel());
-    EXPECT_EQ(originalPlot->y1label(),secondPlot->y1label());
-    EXPECT_TRUE(secondPlot->subgrid);
-    EXPECT_EQ(originalPlot->palette.size(),secondPlot->palette.size());
-    EXPECT_EQ(originalPlot->palette.back().width, secondPlot->palette.back().width);
-    EXPECT_EQ(originalPlot->palette.back().dashStyle, secondPlot->palette.back().dashStyle);
+    auto plotAfterDefaultsApplied=dynamic_cast<PlotWidget*>(itemFocus.get());
+    ASSERT_TRUE(plotAfterDefaultsApplied);
+    EXPECT_EQ(originalPlot->title,plotAfterDefaultsApplied->title);
+    EXPECT_EQ(originalPlot->xlabel(),plotAfterDefaultsApplied->xlabel());
+    EXPECT_EQ(originalPlot->ylabel(),plotAfterDefaultsApplied->ylabel());
+    EXPECT_EQ(originalPlot->y1label(),plotAfterDefaultsApplied->y1label());
+    EXPECT_TRUE(plotAfterDefaultsApplied->subgrid);
+    EXPECT_EQ(originalPlot->palette.size(),plotAfterDefaultsApplied->palette.size());
+    EXPECT_EQ(originalPlot->palette.back().width, plotAfterDefaultsApplied->palette.back().width);
+    EXPECT_EQ(originalPlot->palette.back().dashStyle, plotAfterDefaultsApplied->palette.back().dashStyle);
 }
