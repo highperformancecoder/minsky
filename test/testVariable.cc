@@ -19,7 +19,7 @@
 
 #include "cairoItems.h"
 #undef True
-#include <UnitTest++/UnitTest++.h>
+#include <gtest/gtest.h>
 #include "variableValue.h"
 #include "group.h"
 #include "selection.h"
@@ -29,24 +29,21 @@
 
 using namespace minsky;
 
-SUITE(Variable)
-{
-  TEST(scoping)
-    {
-      CHECK_EQUAL(0, scope(":foo"));
-      CHECK_THROW(scope("furry[1]:foo"), std::exception);
-      CHECK_EQUAL(1, scope("1:foo"));
-      CHECK_THROW(scope("foo"), ecolab::error);
-      
-      CHECK_EQUAL("foo", uqName(":foo"));
-      CHECK_EQUAL("foo", uqName("furry[1]:foo"));
-      CHECK_EQUAL("foo", uqName("1:foo"));
-      CHECK_EQUAL("foo", uqName("foo"));
+TEST(Variable, scoping)
+  {
+    EXPECT_EQ(0, scope(":foo"));
+    EXPECT_THROW(scope("furry[1]:foo"), std::exception);
+    EXPECT_EQ(1, scope("1:foo"));
+    EXPECT_THROW(scope("foo"), ecolab::error);
+    
+    EXPECT_EQ("foo", uqName(":foo"));
+    EXPECT_EQ("foo", uqName("furry[1]:foo"));
+    EXPECT_EQ("foo", uqName("1:foo"));
+    EXPECT_EQ("foo", uqName("foo"));
 
-      CHECK_EQUAL(":foo",minsky::valueId(0,"foo"));
-      CHECK_EQUAL("1:foo",minsky::valueIdCanonical(1,"foo"));
-      CHECK_EQUAL(":foo",minsky::valueId(":foo"));
-      CHECK_THROW(minsky::valueId("foo"), ecolab::error);
+    EXPECT_EQ(":foo",minsky::valueId(0,"foo"));
+    EXPECT_EQ("1:foo",minsky::valueIdCanonical(1,"foo"));
+    EXPECT_EQ(":foo",minsky::valueId(":foo"));
+    EXPECT_THROW(minsky::valueId("foo"), ecolab::error);
 
-    }
-}
+  }
