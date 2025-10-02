@@ -25,61 +25,60 @@
 #include "minsky.h"
 #include "minsky_epilogue.h"
 #undef True
-#include <UnitTest++/UnitTest++.h>
+#include <gtest/gtest.h>
 #include <exception>
 using namespace minsky;
 
-SUITE(Units)
-{
-  TEST(set)
+
+TEST(Units, set)
     {
       Units a("m");
-      CHECK_EQUAL(1,a.size());
-      CHECK_EQUAL(1,a["m"]);
-      CHECK(Units(a.str())==a);
+      EXPECT_EQ(1,a.size());
+      EXPECT_EQ(1,a["m"]);
+      EXPECT_TRUE(Units(a.str())==a);
 
       a=Units("m/s");
-      CHECK_EQUAL(2,a.size());
-      CHECK_EQUAL(1,a["m"]);
-      CHECK_EQUAL(-1,a["s"]);
-      CHECK(Units(a.str())==a);
+      EXPECT_EQ(2,a.size());
+      EXPECT_EQ(1,a["m"]);
+      EXPECT_EQ(-1,a["s"]);
+      EXPECT_TRUE(Units(a.str())==a);
 
       a=Units("ma^2so^-1/Fd^2g^-3");
-      CHECK_EQUAL(4,a.size());
-      CHECK_EQUAL(2,a["ma"]);
-      CHECK_EQUAL(-1,a["so"]);
-      CHECK_EQUAL(-2,a["Fd"]);
-      CHECK_EQUAL(3,a["g"]);
-      CHECK(Units(a.str())==a);
+      EXPECT_EQ(4,a.size());
+      EXPECT_EQ(2,a["ma"]);
+      EXPECT_EQ(-1,a["so"]);
+      EXPECT_EQ(-2,a["Fd"]);
+      EXPECT_EQ(3,a["g"]);
+      EXPECT_TRUE(Units(a.str())==a);
 
       // a somewhat pathological case
       a=Units("m^0");
-      CHECK(a.empty());
+      EXPECT_TRUE(a.empty());
       
-      CHECK_THROW(Units("/w"),std::exception);
-      CHECK_THROW(Units("a/w/q"),std::exception);
-      CHECK_THROW(Units("^1"),std::exception);
-      CHECK_THROW(Units("a^b"),std::exception);
-      CHECK_THROW(Units("a^^1"),std::exception);
+      EXPECT_THROW(Units("/w"),std::exception);
+      EXPECT_THROW(Units("a/w/q"),std::exception);
+      EXPECT_THROW(Units("^1"),std::exception);
+      EXPECT_THROW(Units("a^b"),std::exception);
+      EXPECT_THROW(Units("a^^1"),std::exception);
 
       a=Units("m/s s");
-      CHECK_EQUAL(2,a.size());
-      CHECK_EQUAL(1,a["m"]);
-      CHECK_EQUAL(-2,a["s"]);
-      CHECK(Units(a.str())==a);
+      EXPECT_EQ(2,a.size());
+      EXPECT_EQ(1,a["m"]);
+      EXPECT_EQ(-2,a["s"]);
+      EXPECT_TRUE(Units(a.str())==a);
       
       a=Units("m m");
-      CHECK_EQUAL(1,a.size());
-      CHECK_EQUAL(2,a["m"]);
-      CHECK(Units(a.str())==a);
+      EXPECT_EQ(1,a.size());
+      EXPECT_EQ(2,a["m"]);
+      EXPECT_TRUE(Units(a.str())==a);
 
       a=Units("1/s");
-      CHECK_EQUAL(1,a.size());
-      CHECK_EQUAL(-1,a["s"]);
-      CHECK(Units(a.str())==a);
+      EXPECT_EQ(1,a.size());
+      EXPECT_EQ(-1,a["s"]);
+      EXPECT_TRUE(Units(a.str())==a);
     }
 
-  struct TestOp: public Minsky
+  struct TestOp: public Minsky, public ::testing::Test
   {
     VariablePtr from1{VariableType::flow, "a"}, from2{VariableType::flow, "b"};
     OperationPtr opp;
@@ -117,19 +116,19 @@ SUITE(Units)
     init(op);
     // most single arg functions are dimensionless, and args must match for two args
     if (OperationTypeInfo::numArguments<op>()>0 && op!=OperationType::percent)
-      CHECK_THROW(opp->checkUnits(), std::exception);
+      EXPECT_THROW(opp->checkUnits(), std::exception);
 
     from2->setUnits(from1->unitsStr());
     if (OperationTypeInfo::numArguments<op>()==1)
        if (op!=OperationType::percent)
-         CHECK_THROW(opp->checkUnits(), std::exception);
+         EXPECT_THROW(opp->checkUnits(), std::exception);
        else {
 		  // Add % sign to units from input to % operator. 
 		  from1->setUnits("%"+from1->unitsStr());
-		  CHECK(opp->checkUnits()==from1->units());  
+		  EXPECT_TRUE(opp->checkUnits()==from1->units());  
 	   }
     else 
-      CHECK(opp->checkUnits()==from1->units());
+      EXPECT_TRUE(opp->checkUnits()==from1->units());
   }
 
   // TODO - not sure what to do here
@@ -143,9 +142,9 @@ SUITE(Units)
   template <OperationType::Type op> void TestOp::testCmp()
   {
     init(op);
-    CHECK_THROW(opp->checkUnits(),std::exception);
+    EXPECT_THROW(opp->checkUnits(),std::exception);
     from2->setUnits(from1->unitsStr());
-    CHECK(opp->checkUnits().empty());
+    EXPECT_TRUE(opp->checkUnits().empty());
   }
 
   template <> void TestOp::impl<OperationType::lt>() {testCmp<OperationType::lt>();}
@@ -155,12 +154,12 @@ SUITE(Units)
   template <OperationType::Type op> void TestOp::testLogical()
   {
     init(op);
-    CHECK_THROW(opp->checkUnits(),std::exception);
+    EXPECT_THROW(opp->checkUnits(),std::exception);
     from2->setUnits(from1->unitsStr());
-    CHECK_THROW(opp->checkUnits(),std::exception);
+    EXPECT_THROW(opp->checkUnits(),std::exception);
     from1->setUnits("");
     from2->setUnits("");
-    CHECK(opp->checkUnits().empty());
+    EXPECT_TRUE(opp->checkUnits().empty());
   }
   
   template <> void TestOp::impl<OperationType::and_>() {testLogical<OperationType::and_>();}
@@ -171,68 +170,68 @@ SUITE(Units)
   {
     init(OperationType::pow);
     // pow's arguments must be dimensionless
-    CHECK_THROW(opp->checkUnits(),std::exception);
+    EXPECT_THROW(opp->checkUnits(),std::exception);
     // but if second argument is an integer
     model->removeItem(*from2);
     from2=VariablePtr(VariableType::constant);
     model->addItem(from2);
     model->addWire(from2->ports(0),opp->ports(2));
     from2->init("2");
-    CHECK_EQUAL(1,opp->checkUnits().size());
-    CHECK_EQUAL(2,opp->checkUnits()["m"]);
+    EXPECT_EQ(1,opp->checkUnits().size());
+    EXPECT_EQ(2,opp->checkUnits()["m"]);
     // check that it throws with a nonintegral exponent
     from2->init("2.5");
-    CHECK_THROW(opp->checkUnits(),std::exception);
+    EXPECT_THROW(opp->checkUnits(),std::exception);
   }
 
   template <> void TestOp::impl<OperationType::log>()
   {
     init(OperationType::log);
     // log's arguments must be dimensionless
-    CHECK_THROW(opp->checkUnits(),std::exception);
+    EXPECT_THROW(opp->checkUnits(),std::exception);
     from2->setUnits(from1->unitsStr());
-    CHECK_THROW(opp->checkUnits(),std::exception);
+    EXPECT_THROW(opp->checkUnits(),std::exception);
   }
 
   template <> void TestOp::impl<OperationType::polygamma>()
   {
     init(OperationType::polygamma);
     // polygamma's arguments must be dimensionless
-    CHECK_THROW(opp->checkUnits(),std::exception);
+    EXPECT_THROW(opp->checkUnits(),std::exception);
     from2->setUnits(from1->unitsStr());
-    CHECK_THROW(opp->checkUnits(),std::exception);
+    EXPECT_THROW(opp->checkUnits(),std::exception);
   }  
   
   template <> void TestOp::impl<OperationType::copy>()
   {
     init(OperationType::copy);
-    CHECK(opp->checkUnits()==from1->units());
+    EXPECT_TRUE(opp->checkUnits()==from1->units());
   }
 
   template <> void TestOp::impl<OperationType::divide>()
   {
     init(OperationType::divide);
-    CHECK_EQUAL(1,opp->units()["m"]);
-    CHECK_EQUAL(-1,opp->units()["s"]);
+    EXPECT_EQ(1,opp->units()["m"]);
+    EXPECT_EQ(-1,opp->units()["s"]);
     from2->setUnits(from1->unitsStr());
-    CHECK_EQUAL(0,opp->units()["m"]);
+    EXPECT_EQ(0,opp->units()["m"]);
   }
 
   template <> void TestOp::impl<OperationType::multiply>()
   {
     init(OperationType::multiply);
-    CHECK_EQUAL(1,opp->units()["m"]);
-    CHECK_EQUAL(1,opp->units()["s"]);
+    EXPECT_EQ(1,opp->units()["m"]);
+    EXPECT_EQ(1,opp->units()["s"]);
     from2->setUnits(from1->unitsStr());
-    CHECK_EQUAL(2,opp->units()["m"]);
-    CHECK_EQUAL(0,opp->units()["s"]);
+    EXPECT_EQ(2,opp->units()["m"]);
+    EXPECT_EQ(0,opp->units()["s"]);
   }
 
   template <> void TestOp::impl<OperationType::time>()
   {
     init(OperationType::time);
-    CHECK_EQUAL(1,opp->units().size());
-    CHECK_EQUAL(1,opp->units()[timeUnit]);
+    EXPECT_EQ(1,opp->units().size());
+    EXPECT_EQ(1,opp->units()[timeUnit]);
   }
 
   // specialising, terminating the static recursion
@@ -247,10 +246,10 @@ SUITE(Units)
     TestOp().test<OperationType::Type(op+1)>();
   }
   
-  TEST(opUnits)
+TEST(Units, opUnits)
   {
     TestOp().test<OperationType::add>();
-    CHECK(TestOp::finished);
+    EXPECT_TRUE(TestOp::finished);
   }
 
   // test that units are correctly inferred in a simple model
@@ -263,15 +262,16 @@ SUITE(Units)
   */
   namespace
   {
-    struct TestMinsky: public Minsky
+    class TestMinsky : public Minsky, public ::testing::Test
     {
+    public:
       LocalMinsky lm;
       TestMinsky(): lm(*this) {}
     };
   }
 
   
-  TEST_FIXTURE(TestMinsky,dimensionalAnalysis)
+  TEST_F(TestMinsky,dimensionalAnalysis)
   {
     timeUnit="s";
     auto t=model->addItem(OperationBase::create(OperationType::time));
@@ -295,18 +295,18 @@ SUITE(Units)
     model->addWire(*mult,*diff,1);
     model->addWire(*diff,*vd,1);
 
-    CHECK_THROW(dimensionalAnalysis(),std::exception);
+    EXPECT_THROW(dimensionalAnalysis(),std::exception);
     integ->intVar->setUnits("m s^2");
     dimensionalAnalysis();
-    CHECK_EQUAL(1,tm->units()["m"]);
-    CHECK_EQUAL(1,tm->units()["s"]);
-    CHECK_EQUAL(1,integ->intVar->units()["m"]);
-    CHECK_EQUAL(2,integ->intVar->units()["s"]);
-    CHECK_EQUAL(1,vd->units()["m"]);
-    CHECK_EQUAL(0,vd->units()["s"]);
+    EXPECT_EQ(1,tm->units()["m"]);
+    EXPECT_EQ(1,tm->units()["s"]);
+    EXPECT_EQ(1,integ->intVar->units()["m"]);
+    EXPECT_EQ(2,integ->intVar->units()["s"]);
+    EXPECT_EQ(1,vd->units()["m"]);
+    EXPECT_EQ(0,vd->units()["s"]);
   }
 
-  TEST_FIXTURE(TestMinsky,populateMissingDimensionsFromVariable)
+  TEST_F(TestMinsky,populateMissingDimensionsFromVariable)
   {
     civita::Hypercube hc({3,4});
     hc.xvectors[0].dimension=civita::Dimension(civita::Dimension::value,"m");
@@ -316,11 +316,10 @@ SUITE(Units)
     VariableValue v;
     v.hypercube(hc);
     populateMissingDimensionsFromVariable(v);
-    CHECK_EQUAL(1,dimensions.count("length"));
-    CHECK_EQUAL(1,dimensions.count("time"));
-    CHECK_EQUAL(civita::Dimension::value,dimensions["length"].type);
-    CHECK_EQUAL(civita::Dimension::time,dimensions["time"].type);
-    CHECK_EQUAL("m",dimensions["length"].units);
-    CHECK_EQUAL("%Y-%m-%d",dimensions["time"].units);
+    EXPECT_EQ(1,dimensions.count("length"));
+    EXPECT_EQ(1,dimensions.count("time"));
+    EXPECT_EQ(civita::Dimension::value,dimensions["length"].type);
+    EXPECT_EQ(civita::Dimension::time,dimensions["time"].type);
+    EXPECT_EQ("m",dimensions["length"].units);
+    EXPECT_EQ("%Y-%m-%d",dimensions["time"].units);
   }
-}
