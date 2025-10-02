@@ -20,13 +20,14 @@
 #include "minsky.h"
 #include "minsky_epilogue.h"
 #undef True
-#include <UnitTest++/UnitTest++.h>
+#include <gtest/gtest.h>
 using namespace minsky;
 
 namespace
 {
-  struct TestFixture: public Minsky
+  class TestFixture : public Minsky, public ::testing::Test
   {
+  public:
     LocalMinsky lm;
     string savedMessage;
     TestFixture(): lm(*this)
@@ -36,33 +37,29 @@ namespace
   };
 }
 
-SUITE(Ticket1461)
-{
-  TEST_FIXTURE(TestFixture, clone)
-    {
-      canvas.addVariable("foo",VariableType::flow);
-      auto var=canvas.itemFocus->variableCast();
-      CHECK(var);
-      var->tooltip("hello");
-      VariablePtr clone(var->clone());
-      CHECK_EQUAL("hello",clone->tooltip());
-    }
+TEST_F(TestFixture, clone)
+  {
+    canvas.addVariable("foo",VariableType::flow);
+    auto var=canvas.itemFocus->variableCast();
+    EXPECT_TRUE(var);
+    var->tooltip("hello");
+    VariablePtr clone(var->clone());
+    EXPECT_EQ("hello",clone->tooltip());
+  }
 
-  TEST_FIXTURE(TestFixture, copy)
-    {
-      canvas.addVariable("foo", VariableType::flow);
-      auto& var=*canvas.itemFocus->variableCast();
-      var.tooltip("hello");
-      var.setUnits("m");
-      canvas.selection.insertItem(canvas.itemFocus);
-      canvas.itemFocus.reset();
-      copy();
-      paste();
-      auto& varCopy=*canvas.itemFocus->variableCast();
-      CHECK(&var!=&varCopy);
-      CHECK_EQUAL("hello",varCopy.tooltip());
-      CHECK_EQUAL("m",varCopy.unitsStr());
-    }
-
-}
+TEST_F(TestFixture, copy)
+  {
+    canvas.addVariable("foo", VariableType::flow);
+    auto& var=*canvas.itemFocus->variableCast();
+    var.tooltip("hello");
+    var.setUnits("m");
+    canvas.selection.insertItem(canvas.itemFocus);
+    canvas.itemFocus.reset();
+    copy();
+    paste();
+    auto& varCopy=*canvas.itemFocus->variableCast();
+    EXPECT_TRUE(&var!=&varCopy);
+    EXPECT_EQ("hello",varCopy.tooltip());
+    EXPECT_EQ("m",varCopy.unitsStr());
+  }
 
