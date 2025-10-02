@@ -21,13 +21,14 @@
 #include <minsky.h>
 #include "minsky_epilogue.h"
 #undef True
-#include <UnitTest++/UnitTest++.h>
+#include <gtest/gtest.h>
 using namespace minsky;
 using namespace std;
 using MathDAG::differentiateName;
 
-struct BinOpFixture: public Minsky
+class BinOpFixture : public Minsky, public ::testing::Test
 {
+public:
   LocalMinsky lm{*this};
   VariablePtr offs{VariableType::constant};
   OperationPtr t{OperationType::time};
@@ -71,22 +72,26 @@ struct BinOpFixture: public Minsky
   }
 };
 
-SUITE(Derivative)
+class MinskyTest : public Minsky, public ::testing::Test
 {
-  TEST(differentiateName)
+public:
+  LocalMinsky lm{*this};
+};
+
+TEST(Derivative, differentiateName)
   {
     string dx=differentiateName("x");
     string d2x=differentiateName(dx);
     string d3x=differentiateName(d2x);
-    CHECK_EQUAL("dx/dt",dx);
-    CHECK_EQUAL("d^{2}x/dt^{2}",d2x);
-    CHECK_EQUAL("d^{3}x/dt^{3}",d3x);
-    CHECK_EQUAL("dd^nx/dt^n/dt",differentiateName("d^nx/dt^n"));
+    EXPECT_EQ("dx/dt",dx);
+    EXPECT_EQ("d^{2}x/dt^{2}",d2x);
+    EXPECT_EQ("d^{3}x/dt^{3}",d3x);
+    EXPECT_EQ("dd^nx/dt^n/dt",differentiateName("d^nx/dt^n"));
     // if user enters an invalid formula, such as \frac{d^2}{dt^3}x, then it should be processed as a name
-    CHECK_EQUAL("dd^2x/dt^3/dt",differentiateName("d^2x/dt^3"));
+    EXPECT_EQ("dd^2x/dt^3/dt",differentiateName("d^2x/dt^3"));
   }
 
-  TEST_FIXTURE(BinOpFixture,subtract)
+  TEST_F(BinOpFixture,subtract)
   {
     OperationPtr minus{OperationType::subtract};
     model->addItem(minus);
@@ -102,12 +107,12 @@ SUITE(Derivative)
     double f0=f->value();
     integ.intVar->value(f0);
     nSteps=1000; step();
-    CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
-    CHECK(abs(f->value()-f0)>0.000001*f0); // checks that evolution of function value occurs
+    EXPECT_NEAR(1, f->value()/integ.intVar->value(), 0.003);
+    EXPECT_TRUE(abs(f->value()-f0)>0.000001*f0); // checks that evolution of function value occurs
    
   }
 
-  TEST_FIXTURE(BinOpFixture,pow)
+  TEST_F(BinOpFixture,pow)
   {
     OperationPtr pow{OperationType::pow};
     model->addItem(pow);
@@ -126,12 +131,12 @@ SUITE(Derivative)
     double f0=f->value();
     integ.intVar->value(f0);
     nSteps=1000; step();step();
-    CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
-    CHECK(abs(f->value()-f0)>0.0000001*f0); // checks that evolution of function value occurs
+    EXPECT_NEAR(1, f->value()/integ.intVar->value(), 0.003);
+    EXPECT_TRUE(abs(f->value()-f0)>0.0000001*f0); // checks that evolution of function value occurs
    
   }
 
-  TEST_FIXTURE(BinOpFixture,log)
+  TEST_F(BinOpFixture,log)
   {
     OperationPtr log{OperationType::log};
     model->addItem(log);
@@ -158,12 +163,12 @@ SUITE(Derivative)
     integ.intVar->value(f0);
     running=true;
     nSteps=1000; step();
-    CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
-    CHECK(abs(f->value()-f0)>0.00001*f0); // checks that evolution of function value occurs
+    EXPECT_NEAR(1, f->value()/integ.intVar->value(), 0.003);
+    EXPECT_TRUE(abs(f->value()-f0)>0.00001*f0); // checks that evolution of function value occurs
    
   }
   
-  TEST_FIXTURE(BinOpFixture,comparisonOps)
+  TEST_F(BinOpFixture,comparisonOps)
   {
     auto ops={OperationType::lt,OperationType::le,OperationType::eq};
     for (auto op: ops)
@@ -197,7 +202,7 @@ SUITE(Derivative)
         reset(); 
         running=true;
         nSteps=1;step(); // ensure f is evaluated
-        CHECK_EQUAL(0, df->value());
+        EXPECT_EQ(0, df->value());
         model->deleteItem(*opp);
       }
 
@@ -213,7 +218,7 @@ SUITE(Derivative)
         reset(); 
         running=true;
         nSteps=1;step(); // ensure f is evaluated
-        CHECK_EQUAL(0, df->value());
+        EXPECT_EQ(0, df->value());
         
         auto opWire=model->addWire(new Wire(t->ports(0),opp->ports(1)));
 
@@ -228,8 +233,8 @@ SUITE(Derivative)
         integ.intVar->value(f0);
         running=true;
         nSteps=1000; step();
-        CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
-        CHECK(abs(f->value()-f0)>0.00001*f0); // checks that evolution of function value occurs
+        EXPECT_NEAR(1, f->value()/integ.intVar->value(), 0.003);
+        EXPECT_TRUE(abs(f->value()-f0)>0.00001*f0); // checks that evolution of function value occurs
 
         // check other single input wired
         model->removeWire(*opWire);
@@ -242,8 +247,8 @@ SUITE(Derivative)
         integ.intVar->value(f0);
         running=true;
         nSteps=1000; step();
-        CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
-        CHECK(abs(f->value()-f0)>0.00001*f0); // checks that evolution of function value occurs
+        EXPECT_NEAR(1, f->value()/integ.intVar->value(), 0.003);
+        EXPECT_TRUE(abs(f->value()-f0)>0.00001*f0); // checks that evolution of function value occurs
        
         // now check with two inputs wired
         model->addWire(new Wire(t->ports(0),opp->ports(1)));
@@ -254,15 +259,15 @@ SUITE(Derivative)
         f0=f->value();
         integ.intVar->value(f0);
         nSteps=1000; step();
-        CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
-        CHECK(abs(f->value()-f0)>0.00001*f0); // checks that evolution of function value occurs
+        EXPECT_NEAR(1, f->value()/integ.intVar->value(), 0.003);
+        EXPECT_TRUE(abs(f->value()-f0)>0.00001*f0); // checks that evolution of function value occurs
 
         model->deleteItem(*opp);
       }
 
   }
 
-  TEST_FIXTURE(BinOpFixture,singleArgFuncs)
+  TEST_F(BinOpFixture,singleArgFuncs)
     {
       // test functions
       OperationPtr funOp;
@@ -309,12 +314,12 @@ SUITE(Derivative)
           double f0=f->value();
           integ.intVar->value(f0);			  
           nSteps=1000; step();
-          CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
-          CHECK(abs(f->value()-f0)>0.00000000001*f0); // checks that evolution of function value occurs
+          EXPECT_NEAR(1, f->value()/integ.intVar->value(), 0.003);
+          EXPECT_TRUE(abs(f->value()-f0)>0.00000000001*f0); // checks that evolution of function value occurs
         }
     }
   
-  TEST_FIXTURE(Minsky,noInputs)
+  TEST_F(MinskyTest,noInputs)
     {
       using namespace MathDAG;
       SystemOfEquations se(*this);
@@ -329,12 +334,11 @@ SUITE(Derivative)
               if (constant)
                 {
                   if (op==OperationType::time)
-                    CHECK_EQUAL("1", constant->value);
+                    EXPECT_EQ("1", constant->value);
                   else
-                    CHECK_EQUAL("0", constant->value);
+                    EXPECT_EQ("0", constant->value);
                 }
             }
           catch (...) {} // ignore code that shouldn't be executed
         }
     }
-}
