@@ -21,7 +21,7 @@
 #include "schema3.h"
 #include "minsky_epilogue.h"
 #undef True
-#include <UnitTest++/UnitTest++.h>
+#include <gtest/gtest.h>
 #include <boost/filesystem.hpp>
 using namespace std;
 using namespace classdesc;
@@ -29,71 +29,69 @@ using namespace minsky;
 using namespace boost::filesystem;
 using namespace std::literals::chrono_literals;
 
-SUITE(Saver)
+class SaverFixture : public ::testing::Test
 {
-  struct Fixture
+public:
+  string saveFile;
+  SaverFixture()
   {
-    string saveFile;
-    Fixture()
-    {
-      do
-        saveFile=(temp_directory_path()/to_string(rand())).string();
-      while (boost::filesystem::exists(saveFile));
-    }
-    ~Fixture()
-    {
-      remove(saveFile);
-    }
-  };
-  
-  TEST_FIXTURE(Fixture, backgroundSaver)
-  {
-    ostringstream os;
-    {
-      BackgroundSaver bsaver(saveFile);
-      schema3::Minsky m;
-      bsaver.save(m);
-      xml_pack_t x(os,"http://minsky.sf.net/minsky");
-      xml_pack(x, "Minsky", m);
-      this_thread::sleep_for(100ms);
-    }
-    std::ifstream f(saveFile);
-    string savedData, buffer;
-    while (!getline(f, buffer).fail())
-      savedData+=buffer;
-    CHECK_EQUAL(os.str(), savedData);
+    do
+      saveFile=(temp_directory_path()/to_string(rand())).string();
+    while (boost::filesystem::exists(saveFile));
   }
+  ~SaverFixture()
+  {
+    remove(saveFile);
+  }
+};
 
-  //try to exercise the killthread feature
-  TEST_FIXTURE(Fixture, raceSaver)
+TEST_F(SaverFixture, backgroundSaver)
+{
+  ostringstream os;
   {
-    ostringstream os;
-    {
-      BackgroundSaver bsaver(saveFile);
-      schema3::Minsky m;
-      m.items.resize(10000);
-      bsaver.save(m);
-      this_thread::yield();
-      bsaver.save(m);
-      this_thread::yield();
-      bsaver.save(m);
-      xml_pack_t x(os,"http://minsky.sf.net/minsky");
-      xml_pack(x, "Minsky", m);
-      this_thread::sleep_for(100ms);
-    }
-    std::ifstream f(saveFile);
-    string savedData, buffer;
-    while (!getline(f, buffer).fail())
-      savedData+=buffer;
-    CHECK_EQUAL(os.str(), savedData);
-  }
-  
-  TEST_FIXTURE(Fixture, badFile)
-  {
-    ostringstream os;
-    BackgroundSaver bsaver("/dummy-dir/"+saveFile);
+    BackgroundSaver bsaver(saveFile);
     schema3::Minsky m;
     bsaver.save(m);
-    CHECK_THROW(bsaver.save(m), std::exception);
+    xml_pack_t x(os,"http://minsky.sf.net/minsky");
+    xml_pack(x, "Minsky", m);
+    this_thread::sleep_for(100ms);
   }
+  std::ifstream f(saveFile);
+  string savedData, buffer;
+  while (!getline(f, buffer).fail())
+    savedData+=buffer;
+  EXPECT_EQ(os.str(), savedData);
+}
+
+//try to exercise the killthread feature
+TEST_F(SaverFixture, raceSaver)
+{
+  ostringstream os;
+  {
+    BackgroundSaver bsaver(saveFile);
+    schema3::Minsky m;
+    m.items.resize(10000);
+    bsaver.save(m);
+    this_thread::yield();
+    bsaver.save(m);
+    this_thread::yield();
+    bsaver.save(m);
+    xml_pack_t x(os,"http://minsky.sf.net/minsky");
+    xml_pack(x, "Minsky", m);
+    this_thread::sleep_for(100ms);
+  }
+  std::ifstream f(saveFile);
+  string savedData, buffer;
+  while (!getline(f, buffer).fail())
+    savedData+=buffer;
+  EXPECT_EQ(os.str(), savedData);
+}
+
+TEST_F(SaverFixture, badFile)
+{
+  ostringstream os;
+  BackgroundSaver bsaver("/dummy-dir/"+saveFile);
+  schema3::Minsky m;
+  bsaver.save(m);
+  EXPECT_THROW(bsaver.save(m), std::exception);
 }
