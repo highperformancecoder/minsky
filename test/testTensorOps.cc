@@ -353,7 +353,7 @@ public:
       EXPECT_EQ(2,cnt);
       EXPECT_EQ(1, to->vValue()->hypercube().xvectors[1][0].value);
       vector<size_t> ii{3,8};
-      for (size_t _i=0; _i<ii.size(; ++_i) EXPECT_EQ(ii[_i], to->vValue()->index()[_i]));
+      for (size_t _i=0; _i<ii.size(); ++_i) EXPECT_EQ(ii[_i], to->vValue()->index()[_i]);
       
       evalOp<OperationType::difference>("1",delta=-1);
       EXPECT_EQ(4, to->vValue()->hypercube().dims()[1]);
@@ -367,7 +367,7 @@ public:
       EXPECT_EQ(2,cnt);
       EXPECT_EQ(0, to->vValue()->hypercube().xvectors[1][0].value);
       vector<size_t> i2{3,8};
-      for (size_t _i=0; _i<i2.size(; ++_i) EXPECT_EQ(i2[_i], to->vValue()->index()[_i]));
+      for (size_t _i=0; _i<i2.size(); ++_i) EXPECT_EQ(i2[_i], to->vValue()->index()[_i]);
     }
 
   TEST_F(TestFixture, gatherInterpolateValue)
@@ -556,7 +556,7 @@ public:
         if (!finite(g)) g=-1;
       vector<double> expected={-1,0,1};
       EXPECT_EQ(expected.size(), gathered.size());
-      for (size_t _i=0; _i<expected.size(; ++_i) EXPECT_EQ(expected[_i], gathered.begin()[_i]));
+      for (size_t _i=0; _i<expected.size(); ++_i) EXPECT_EQ(expected[_i], gathered.begin()[_i]);
 
     }
 
@@ -587,8 +587,8 @@ public:
         if (!finite(g)) g=-1;
       vector<double> expected={0,1,1};
       EXPECT_EQ(expected.size(), gathered.size());
-      for (size_t _i=0; _i<expected.size(; ++_i) EXPECT_EQ(expected[_i], gathered.begin()[_i]));
-      for (size_t _i=0; _i<toVal.index(; ++_i) EXPECT_EQ(gathered.index()[_i], toVal.index()[_i]).size());                
+      for (size_t _i=0; _i<expected.size(); ++_i) EXPECT_EQ(expected[_i], gathered.begin()[_i]);
+      for (size_t _i=0; _i<toVal.index().size(); ++_i) EXPECT_EQ(gathered.index()[_i], toVal.index()[_i]);
 
     }
 
@@ -680,9 +680,9 @@ public:
       Hypercube toHC(x);
       
       vector<int> checkV={2,3,5};
-      for (size_t _i=0; _i<checkV.size(; ++_i) EXPECT_EQ(checkV[_i], fromHC.dims()[_i]));
+      for (size_t _i=0; _i<checkV.size(); ++_i) EXPECT_EQ(checkV[_i], fromHC.dims()[_i]);
       checkV={2,2};
-      for (size_t _i=0; _i<checkV.size(; ++_i) EXPECT_EQ(checkV[_i], toHC.dims()[_i]));
+      for (size_t _i=0; _i<checkV.size(); ++_i) EXPECT_EQ(checkV[_i], toHC.dims()[_i]);
 
       auto& toVal=*to->vValue();
       auto& fromVal=*from->vValue();
@@ -717,7 +717,7 @@ public:
       
       vector<size_t> expectedDims{4,2,5};
       EXPECT_EQ(expectedDims.size(), gathered.rank());
-      for (size_t _i=0; _i<expectedDims.size(; ++_i) EXPECT_EQ(expectedDims[_i], gathered.hypercube().dims()[_i]));
+      for (size_t _i=0; _i<expectedDims.size(); ++_i) EXPECT_EQ(expectedDims[_i], gathered.hypercube().dims()[_i]);
 
       auto& gxv=gathered.hypercube().xvectors;
       EXPECT_EQ("y",gxv[0].name);
@@ -749,9 +749,9 @@ public:
       Hypercube toHC(x);
       
       vector<int> checkV={2,3,5};
-      for (size_t _i=0; _i<checkV.size(; ++_i) EXPECT_EQ(checkV[_i], fromHC.dims()[_i]));
+      for (size_t _i=0; _i<checkV.size(); ++_i) EXPECT_EQ(checkV[_i], fromHC.dims()[_i]);
       checkV={2,2};
-      for (size_t _i=0; _i<checkV.size(; ++_i) EXPECT_EQ(checkV[_i], toHC.dims()[_i]));
+      for (size_t _i=0; _i<checkV.size(); ++_i) EXPECT_EQ(checkV[_i], toHC.dims()[_i]);
 
       auto& toVal=*to->vValue();
       auto& fromVal=*from->vValue();
@@ -786,7 +786,7 @@ public:
       
       vector<size_t> expectedDims{4,2,5};
       EXPECT_EQ(expectedDims.size(), gathered.rank());
-      for (size_t _i=0; _i<expectedDims.size(; ++_i) EXPECT_EQ(expectedDims[_i], gathered.hypercube().dims()[_i]));
+      for (size_t _i=0; _i<expectedDims.size(); ++_i) EXPECT_EQ(expectedDims[_i], gathered.hypercube().dims()[_i]);
 
       for (size_t i=0; i<expectedDims[2]; ++i)
         for (size_t j=0; j<expectedDims[1]; ++j)
@@ -813,9 +813,9 @@ public:
       Hypercube toHC(x);
       
       vector<int> checkV={2,3,5};
-      for (size_t _i=0; _i<checkV.size(; ++_i) EXPECT_EQ(checkV[_i], fromHC.dims()[_i]));
+      for (size_t _i=0; _i<checkV.size(); ++_i) EXPECT_EQ(checkV[_i], fromHC.dims()[_i]);
       checkV={2,2};
-      for (size_t _i=0; _i<checkV.size(; ++_i) EXPECT_EQ(checkV[_i], toHC.dims()[_i]));
+      for (size_t _i=0; _i<checkV.size(); ++_i) EXPECT_EQ(checkV[_i], toHC.dims()[_i]);
 
       auto& toVal=*to->vValue();
       auto& fromVal=*from->vValue();
@@ -850,7 +850,7 @@ public:
       
       vector<size_t> expectedDims{4,2,5};
       EXPECT_EQ(expectedDims.size(), gathered.rank());
-      for (size_t _i=0; _i<expectedDims.size(; ++_i) EXPECT_EQ(expectedDims[_i], gathered.hypercube().dims()[_i]));
+      for (size_t _i=0; _i<expectedDims.size(); ++_i) EXPECT_EQ(expectedDims[_i], gathered.hypercube().dims()[_i]);
 
       for (size_t i=0; i<expectedDims[2]; ++i)
         for (size_t j=0; j<expectedDims[1]; ++j)
@@ -1269,9 +1269,9 @@ public:
       arg->index({0,4,8,12,16});
       auto chain=createRavelChain(state, arg);
       vector<double> expected={2};
-      for (size_t _i=0; _i<expected.size(; ++_i) EXPECT_EQ(expected[_i], *chain.back()[_i]));
+      for (size_t _i=0; _i<expected.size(); ++_i) EXPECT_EQ(expected[_i], *chain.back()[_i]);
       vector<double> expectedi={3};
-      for (size_t _i=0; _i<expectedi.size(; ++_i) EXPECT_EQ(expectedi[_i], chain.back()->index()[_i]));
+      for (size_t _i=0; _i<expectedi.size(); ++_i) EXPECT_EQ(expectedi[_i], chain.back()->index()[_i]);
       vector<size_t> dims={2,2};
       for (size_t _i=0; _i<2; ++_i) EXPECT_EQ(dims[_i], chain.back()->shape()[_i]);
     }
@@ -1313,7 +1313,7 @@ TEST(TensorOps, tensorValAssignment)
     tv=scan;
 
     EXPECT_EQ(tv.size(), scan.size());
-    for (size_t _i=0; _i<scan.rank(; ++_i) EXPECT_EQ(tv.hypercube().dims()[_i], scan.hypercube().dims()[_i]));
+    for (size_t _i=0; _i<scan.rank(); ++_i) EXPECT_EQ(tv.hypercube().dims()[_i], scan.hypercube().dims()[_i]);
     for (size_t i=0; i<tv.size(); ++i)
       EXPECT_EQ(scan[i], tv[i]);
   }
@@ -1438,7 +1438,7 @@ TEST(TensorOps, dimLabels)
     Hypercube hc(x);
     vector<string> expected{"x","y","z"};
     EXPECT_EQ(expected.size(), hc.dimLabels().size());
-    for (size_t _i=0; _i<expected.size(; ++_i) EXPECT_EQ(expected[_i], hc.dimLabels()[_i]));
+    for (size_t _i=0; _i<expected.size(); ++_i) EXPECT_EQ(expected[_i], hc.dimLabels()[_i]);
   }
 
   struct OuterFixture: public MinskyFixture
@@ -1472,11 +1472,11 @@ TEST(TensorOps, dimLabels)
       EXPECT_EQ(2, zz.rank());
       vector<unsigned> expectedIndex={6,8,16,18};
       EXPECT_EQ(expectedIndex.size(), zz.size());
-      for (size_t _i=0; _i<expectedIndex.size(; ++_i) EXPECT_EQ(expectedIndex[_i], zz.index()[_i]));
+      for (size_t _i=0; _i<expectedIndex.size(); ++_i) EXPECT_EQ(expectedIndex[_i], zz.index()[_i]);
       vector<double> zValues(&zz[0], &zz[0]+zz.size());
       vector<double> expectedValues={1,3,3,9};
       EXPECT_EQ(expectedValues.size(), zz.size());
-      for (size_t _i=0; _i<expectedValues.size(; ++_i) EXPECT_EQ(expectedValues[_i], zValues[_i]));
+      for (size_t _i=0; _i<expectedValues.size(); ++_i) EXPECT_EQ(expectedValues[_i], zValues[_i]);
     }
   
 
@@ -1491,11 +1491,11 @@ TEST_F(OuterFixture, sparse1OuterProduct)
       EXPECT_EQ(2, zz.rank());
       vector<unsigned> expectedIndex={5,6,7,8,9,15,16,17,18,19};
       EXPECT_EQ(expectedIndex.size(), zz.size());
-      for (size_t _i=0; _i<expectedIndex.size(; ++_i) EXPECT_EQ(expectedIndex[_i], zz.index()[_i]));
+      for (size_t _i=0; _i<expectedIndex.size(); ++_i) EXPECT_EQ(expectedIndex[_i], zz.index()[_i]);
       vector<double> zValues(&zz[0], &zz[0]+zz.size());
       vector<double> expectedValues={0,1,2,3,4,0,3,6,9,12};
       EXPECT_EQ(expectedValues.size(), zz.size());
-      for (size_t _i=0; _i<expectedValues.size(; ++_i) EXPECT_EQ(expectedValues[_i], zValues[_i]));
+      for (size_t _i=0; _i<expectedValues.size(); ++_i) EXPECT_EQ(expectedValues[_i], zValues[_i]);
     }
 TEST_F(OuterFixture, sparse2OuterProduct)
     {
@@ -1507,11 +1507,11 @@ TEST_F(OuterFixture, sparse2OuterProduct)
       EXPECT_EQ(2, zz.rank());
       vector<unsigned> expectedIndex={1,3,6,8,11,13,16,18,21,23};
       EXPECT_EQ(expectedIndex.size(), zz.size());
-      for (size_t _i=0; _i<expectedIndex.size(; ++_i) EXPECT_EQ(expectedIndex[_i], zz.index()[_i]));
+      for (size_t _i=0; _i<expectedIndex.size(); ++_i) EXPECT_EQ(expectedIndex[_i], zz.index()[_i]);
       vector<double> zValues(&zz[0], &zz[0]+zz.size());
       vector<double> expectedValues={0,0,1,3,2,6,3,9,4,12};
       EXPECT_EQ(expectedValues.size(), zz.size());
-      for (size_t _i=0; _i<expectedValues.size(; ++_i) EXPECT_EQ(expectedValues[_i], zValues[_i]));
+      for (size_t _i=0; _i<expectedValues.size(); ++_i) EXPECT_EQ(expectedValues[_i], zValues[_i]);
     }
 
  TEST_F(TestFixture,TensorVarValAssignment)
@@ -1523,7 +1523,7 @@ TEST_F(OuterFixture, sparse2OuterProduct)
      TensorVarVal tvv(to->vValue(),ev); 
      tvv=fromVal;
      EXPECT_EQ(fromVal.rank(), tvv.rank());
-     for (size_t _i=0; _i<fromVal.rank(; ++_i) EXPECT_EQ(fromVal.shape().data()[_i], tvv.shape().data()[_i]));
+     for (size_t _i=0; _i<fromVal.rank(); ++_i) EXPECT_EQ(fromVal.shape().data()[_i], tvv.shape().data()[_i]);
      for (size_t _i=0; _i<fromVal.size(); ++_i) EXPECT_NEAR(&fromVal[0][_i], &tvv[0][_i], 1e-5);
      
      EXPECT_TRUE(ev->timestamp()>startTimestamp);
@@ -1791,7 +1791,7 @@ TEST_F(OuterFixture, sparse2OuterProduct)
      EXPECT_EQ(result.size(), toVal.size());
      for (size_t _i=0; _i<toVal.size(); ++_i) EXPECT_NEAR(result[_i], &toVal[0][_i], 1e-4);
      EXPECT_EQ(x.rank(), toVal.rank());
-     for (size_t _i=0; _i<x.rank(; ++_i) EXPECT_EQ(x.hypercube().dims()[_i], toVal.hypercube().dims()[_i]));
+     for (size_t _i=0; _i<x.rank(); ++_i) EXPECT_EQ(x.hypercube().dims()[_i], toVal.hypercube().dims()[_i]);
    }
 
   TEST_F(CorrelationFixture,allMatrixLinearRegression)
@@ -1814,7 +1814,7 @@ TEST_F(OuterFixture, sparse2OuterProduct)
      EXPECT_EQ(result.size(), toVal.size());
      for (size_t _i=0; _i<toVal.size(); ++_i) EXPECT_NEAR(result[_i], &toVal[0][_i], 1e-4);
      EXPECT_EQ(x.rank(), toVal.rank());
-     for (size_t _i=0; _i<x.rank(; ++_i) EXPECT_EQ(x.hypercube().dims()[_i], toVal.hypercube().dims()[_i]));
+     for (size_t _i=0; _i<x.rank(); ++_i) EXPECT_EQ(x.hypercube().dims()[_i], toVal.hypercube().dims()[_i]);
    }
 
 

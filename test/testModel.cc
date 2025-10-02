@@ -110,11 +110,11 @@ namespace
       vector<string> group0AccessibleVars{":c","a","b","output1"};
       group0->makeSubroutine();
       EXPECT_EQ(globalAccessibleVars.size(), model->accessibleVars().size());
-      for (size_t _i=0; _i<globalAccessibleVars.size(; ++_i) EXPECT_EQ(globalAccessibleVars[_i], model->accessibleVars()[_i]));
+      for (size_t _i=0; _i<globalAccessibleVars.size(); ++_i) EXPECT_EQ(globalAccessibleVars[_i], model->accessibleVars()[_i]);
       EXPECT_EQ(group0AccessibleVars.size(), group0->accessibleVars().size());
-      for (size_t _i=0; _i<group0AccessibleVars.size(; ++_i) EXPECT_EQ(group0AccessibleVars[_i], group0->accessibleVars()[_i]));
+      for (size_t _i=0; _i<group0AccessibleVars.size(); ++_i) EXPECT_EQ(group0AccessibleVars[_i], group0->accessibleVars()[_i]);
       EXPECT_EQ(group0AccessibleVars.size(), a->variableCast()->accessibleVars().size());
-      for (size_t _i=0; _i<group0AccessibleVars.size(; ++_i) EXPECT_EQ(group0AccessibleVars[_i], a->variableCast()->accessibleVars()[_i]));
+      for (size_t _i=0; _i<group0AccessibleVars.size(); ++_i) EXPECT_EQ(group0AccessibleVars[_i], a->variableCast()->accessibleVars()[_i]);
     }
 
   TEST_F(TestFixture, makeSubroutine)
@@ -1321,8 +1321,8 @@ TEST(TensorOps, handles)
       mouseMove(x,y);
       EXPECT_EQ(1,colWidgets[1].mouseOver());
       mouseMove(0,0);
-      for (auto& i: rowWidgets) EXPECT_EQ(-1, i.mouseOver());
-      for (auto& i: colWidgets) EXPECT_EQ(-1, i.mouseOver());
+      for (auto& i: rowWidgets) EXPECT_EQ(-1, i.mouseOver();
+      for (auto& i: colWidgets) EXPECT_EQ(-1, i.mouseOver();
     }
   
   TEST_F(GodleyTableWindowFixture, mouseSelect)
