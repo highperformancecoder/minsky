@@ -26,7 +26,7 @@
 #include "minsky.h"
 #include "minsky_epilogue.h"
 #undef True
-#include <UnitTest++/UnitTest++.h>
+#include <gtest/gtest.h>
 using namespace minsky;
 
 #include <exception>
@@ -49,8 +49,9 @@ struct Eval: private std::shared_ptr<EvalCommon>, public TensorEval
   void operator()() {TensorEval::eval(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());}
 };
 
-struct TestFixture
+class TestFixture : public ::testing::Test
 {
+public:
   Minsky dummyM;
   LocalMinsky lm{dummyM};
 
@@ -83,7 +84,7 @@ struct TestFixture
     evalOp<op>();
     double ref=fromVal[0];
     for (size_t i=1; i<fromVal.size(); ++i) ref=f(ref, fromVal[i]);
-    CHECK_EQUAL(ref,to->vValue()->value());
+    EXPECT_EQ(ref,to->vValue()->value());
 
     vector<unsigned> dims{5,5};
     fromVal.hypercube(Hypercube(dims));
@@ -93,35 +94,34 @@ struct TestFixture
 
     // reduce over first dimension
     evalOp<op>("0");
-    CHECK_EQUAL(1, toVal.rank());
+    EXPECT_EQ(1, toVal.rank());
     for (size_t i=0; i<toVal.size(); ++i)
       {
         double ref=fromVal[dims[0]*i];
         for (size_t j=1; j<dims[0]; ++j)
           ref=f(ref,fromVal[j+dims[0]*i]);
-        CHECK_EQUAL(ref,toVal[i]);
+        EXPECT_EQ(ref,toVal[i]);
       }
       
     evalOp<op>("1");
-    CHECK_EQUAL(1, toVal.rank());
+    EXPECT_EQ(1, toVal.rank());
     for (size_t i=0; i<toVal.size(); ++i)
       {
         double ref=fromVal[i];
         for (size_t j=1; j<dims[1]; ++j)
           ref=f(ref,fromVal[i+dims[0]*j]);
-        CHECK_EQUAL(ref,toVal[i]);
+        EXPECT_EQ(ref,toVal[i]);
       }
   }
 };
 
-struct MinskyFixture: public Minsky
+class MinskyFixture : public Minsky, public ::testing::Test
 {
+public:
   LocalMinsky lm{*this};
 };
 
-SUITE(TensorOps)
-{
-  TEST_FIXTURE(TestFixture, reduction)
+  TEST_F(TestFixture, reduction)
     {
       checkReduction<OperationType::sum>([](double x,double y){return x+y;});
       checkReduction<OperationType::product>([](double x,double y){return x*y;});
@@ -141,12 +141,12 @@ SUITE(TensorOps)
       fromVal[1]=-1;
       fromVal[3]=100;
       evalOp<OperationType::infIndex>();
-      CHECK_EQUAL(1,to->vValue()->value());
+      EXPECT_EQ(1,to->vValue()->value());
       evalOp<OperationType::supIndex>();
-      CHECK_EQUAL(3,to->vValue()->value());
+      EXPECT_EQ(3,to->vValue()->value());
     }
   
-  TEST_FIXTURE(TestFixture, scan)
+  TEST_F(TestFixture, scan)
     {
       for (auto& i: fromVal)
         i=2;
@@ -155,14 +155,14 @@ SUITE(TensorOps)
       {
         auto& toVal=*to->vValue();
         for (size_t i=0; i<toVal.size(); ++i)
-          CHECK_EQUAL(2*(i+1),toVal[i]);
+          EXPECT_EQ(2*(i+1),toVal[i]);
       }
       
       evalOp<OperationType::runningProduct>();
       {
         auto& toVal=*to->vValue();
         for (size_t i=0; i<toVal.size(); ++i)
-          CHECK_EQUAL(pow(2,i+1),toVal[i]);
+          EXPECT_EQ(pow(2,i+1),toVal[i]);
       }
 
       vector<unsigned> dims{5,5};
@@ -181,7 +181,7 @@ SUITE(TensorOps)
               double ref=0;
               for (size_t k=0; k<=j; ++k)
                 ref+=fromVal({i,k});
-              CHECK_EQUAL(ref,toVal({i,j}));
+              EXPECT_EQ(ref,toVal({i,j}));
             }
       }
 
@@ -195,7 +195,7 @@ SUITE(TensorOps)
               double ref=0;
               for (size_t k=max(int(i)-bin+1,0); k<=i; ++k)
                 ref+=fromVal({k,j});
-              CHECK_EQUAL(ref,toVal({i,j}));
+              EXPECT_EQ(ref,toVal({i,j}));
             }
       }
       
@@ -209,7 +209,7 @@ SUITE(TensorOps)
               double ref=0;
               for (size_t k=max(int(j)-bin+1,0); k<=j; ++k)
                 ref+=fromVal({i,k});
-              CHECK_EQUAL(ref,toVal({i,j}));
+              EXPECT_EQ(ref,toVal({i,j}));
             }
       }
       
@@ -222,7 +222,7 @@ SUITE(TensorOps)
               double ref=1;
               for (size_t k=max(int(i)-bin+1,0); k<=i; ++k)
                 ref*=fromVal({k,j});
-              CHECK_EQUAL(ref,toVal({i,j}));
+              EXPECT_EQ(ref,toVal({i,j}));
             }
       }
 
@@ -235,12 +235,12 @@ SUITE(TensorOps)
               double ref=1;
               for (size_t k=max(int(j)-bin+1,0); k<=j; ++k)
                 ref*=fromVal({i,k});
-              CHECK_EQUAL(ref,toVal({i,j}));
+              EXPECT_EQ(ref,toVal({i,j}));
             }
       }
     }
 
-  TEST_FIXTURE(TestFixture, difference2D)
+  TEST_F(TestFixture, difference2D)
     {
       vector<unsigned> dims{5,5};
       fromVal.hypercube(Hypercube(dims));
@@ -252,22 +252,22 @@ SUITE(TensorOps)
       evalOp<OperationType::difference>("0",delta);
       for (auto& i: *to->vValue())
         if (std::isfinite(i))
-          CHECK_EQUAL(1,i);
+          EXPECT_EQ(1,i);
       evalOp<OperationType::difference>("1",delta);
       for (auto& i: *to->vValue())
         if (std::isfinite(i))
-          CHECK_EQUAL(5,i);
+          EXPECT_EQ(5,i);
       delta=2;
       evalOp<OperationType::difference>("0",delta);
       for (auto& i: *to->vValue())
         if (std::isfinite(i))
-          CHECK_EQUAL(2,i);
+          EXPECT_EQ(2,i);
       evalOp<OperationType::difference>("1",delta);
       for (auto& i: *to->vValue())
         if (std::isfinite(i))
-          CHECK_EQUAL(10,i);
+          EXPECT_EQ(10,i);
     }
-  TEST_FIXTURE(TestFixture, difference1D)
+  TEST_F(TestFixture, difference1D)
     {
       vector<unsigned> dims{5};
       fromVal.hypercube(Hypercube(dims));
@@ -277,35 +277,35 @@ SUITE(TensorOps)
 
       int delta=1;
       evalOp<OperationType::difference>("",delta=1);
-      CHECK_EQUAL(4, to->vValue()->hypercube().dims()[0]);
+      EXPECT_EQ(4, to->vValue()->hypercube().dims()[0]);
       for (auto& i: *to->vValue())
-        CHECK_EQUAL(1,i);
-      CHECK_EQUAL(1, to->vValue()->hypercube().xvectors[0][0].value);
+        EXPECT_EQ(1,i);
+      EXPECT_EQ(1, to->vValue()->hypercube().xvectors[0][0].value);
 
       evalOp<OperationType::difference>("",delta=-1);
-      CHECK_EQUAL(4, to->vValue()->hypercube().dims()[0]);
+      EXPECT_EQ(4, to->vValue()->hypercube().dims()[0]);
       for (auto& i: *to->vValue())
-        CHECK_EQUAL(-1,i);
-      CHECK_EQUAL(0, to->vValue()->hypercube().xvectors[0][0].value);
+        EXPECT_EQ(-1,i);
+      EXPECT_EQ(0, to->vValue()->hypercube().xvectors[0][0].value);
                   
       evalOp<OperationType::difference>("",delta=2);
-      CHECK_EQUAL(3, to->vValue()->hypercube().dims()[0]);
+      EXPECT_EQ(3, to->vValue()->hypercube().dims()[0]);
       for (auto& i: *to->vValue())
-        CHECK_EQUAL(2,i);
-      CHECK_EQUAL(2, to->vValue()->hypercube().xvectors[0][0].value);
+        EXPECT_EQ(2,i);
+      EXPECT_EQ(2, to->vValue()->hypercube().xvectors[0][0].value);
 
       // check that the sparse code works as expected
       fromVal.index({0,1,2,3,4});
       evalOp<OperationType::difference>("",delta=1);
-      CHECK_EQUAL(4, to->vValue()->hypercube().dims()[0]);
+      EXPECT_EQ(4, to->vValue()->hypercube().dims()[0]);
       for (auto& i: *to->vValue())
-        CHECK_EQUAL(1,i);
-      CHECK_EQUAL(1, to->vValue()->hypercube().xvectors[0][0].value);
+        EXPECT_EQ(1,i);
+      EXPECT_EQ(1, to->vValue()->hypercube().xvectors[0][0].value);
       vector<size_t> ii{0,1,2,3};
-      CHECK_ARRAY_EQUAL(ii, to->vValue()->index(), 4);
+      for (size_t _i=0; _i<4; ++_i) EXPECT_EQ(ii[_i], to->vValue()->index()[_i]);
     }
   
-  TEST_FIXTURE(TestFixture, difference2D_II)
+  TEST_F(TestFixture, difference2D_II)
     {
       vector<unsigned> dims{5,5,5};
       fromVal.hypercube(Hypercube(dims));
@@ -317,60 +317,60 @@ SUITE(TensorOps)
 
       int delta=1;
       evalOp<OperationType::difference>("1",delta=1);
-      CHECK_EQUAL(4, to->vValue()->hypercube().dims()[1]);
+      EXPECT_EQ(4, to->vValue()->hypercube().dims()[1]);
       for (auto& i: *to->vValue())
         if (std::isfinite(i))
-          CHECK_EQUAL(1,i);
-      CHECK_EQUAL(1, to->vValue()->hypercube().xvectors[1][0].value);
+          EXPECT_EQ(1,i);
+      EXPECT_EQ(1, to->vValue()->hypercube().xvectors[1][0].value);
 
       evalOp<OperationType::difference>("1",delta=-1);
-      CHECK_EQUAL(4, to->vValue()->hypercube().dims()[1]);
+      EXPECT_EQ(4, to->vValue()->hypercube().dims()[1]);
       for (auto& i: *to->vValue())
         if (std::isfinite(i))
-          CHECK_EQUAL(-1,i);
-      CHECK_EQUAL(0, to->vValue()->hypercube().xvectors[1][0].value);
+          EXPECT_EQ(-1,i);
+      EXPECT_EQ(0, to->vValue()->hypercube().xvectors[1][0].value);
                   
       evalOp<OperationType::difference>("1",delta=2);
-      CHECK_EQUAL(3, to->vValue()->hypercube().dims()[1]);
+      EXPECT_EQ(3, to->vValue()->hypercube().dims()[1]);
       for (auto& i: *to->vValue())
         if (std::isfinite(i))
-          CHECK_EQUAL(2,i);
-      CHECK_EQUAL(2, to->vValue()->hypercube().xvectors[1][0].value);
+          EXPECT_EQ(2,i);
+      EXPECT_EQ(2, to->vValue()->hypercube().xvectors[1][0].value);
 
       // check that the sparse code works as expected
       fromVal.index({3,8,13,16,32,64});
       for (size_t i=0; i<fromVal.size(); ++i)
         fromVal[i]=(i%5)+(i/5)%5+(i/5);
       evalOp<OperationType::difference>("1",delta=1);
-      CHECK_EQUAL(4, to->vValue()->hypercube().dims()[1]);
+      EXPECT_EQ(4, to->vValue()->hypercube().dims()[1]);
       cnt=0;
       for (auto& i: *to->vValue())
         if (std::isfinite(i))
           {
-            CHECK_EQUAL(1,i);
+            EXPECT_EQ(1,i);
             cnt++;
           }
-      CHECK_EQUAL(2,cnt);
-      CHECK_EQUAL(1, to->vValue()->hypercube().xvectors[1][0].value);
+      EXPECT_EQ(2,cnt);
+      EXPECT_EQ(1, to->vValue()->hypercube().xvectors[1][0].value);
       vector<size_t> ii{3,8};
-      CHECK_ARRAY_EQUAL(ii, to->vValue()->index(), ii.size());
+      for (size_t _i=0; _i<ii.size(; ++_i) EXPECT_EQ(ii[_i], to->vValue()->index()[_i]));
       
       evalOp<OperationType::difference>("1",delta=-1);
-      CHECK_EQUAL(4, to->vValue()->hypercube().dims()[1]);
+      EXPECT_EQ(4, to->vValue()->hypercube().dims()[1]);
       cnt=0;
       for (auto& i: *to->vValue())
         if (std::isfinite(i))
           {
-            CHECK_EQUAL(-1,i);
+            EXPECT_EQ(-1,i);
             cnt++;
           }
-      CHECK_EQUAL(2,cnt);
-      CHECK_EQUAL(0, to->vValue()->hypercube().xvectors[1][0].value);
+      EXPECT_EQ(2,cnt);
+      EXPECT_EQ(0, to->vValue()->hypercube().xvectors[1][0].value);
       vector<size_t> i2{3,8};
-      CHECK_ARRAY_EQUAL(i2, to->vValue()->index(), i2.size());
+      for (size_t _i=0; _i<i2.size(; ++_i) EXPECT_EQ(i2[_i], to->vValue()->index()[_i]));
     }
 
-  TEST_FIXTURE(TestFixture, gatherInterpolateValue)
+  TEST_F(TestFixture, gatherInterpolateValue)
     {
       vector<double> x{0,1.2,2.5,3,4};
       Hypercube hc(vector<unsigned>{unsigned(x.size())});
@@ -392,12 +392,12 @@ SUITE(TensorOps)
         {
           toVal[0]=i;
           eval();
-          CHECK_EQUAL(0,gathered.rank());
-          CHECK_CLOSE(i, gathered[0], 1E-4);
+          EXPECT_EQ(0,gathered.rank());
+          EXPECT_NEAR(i, gathered[0], 1E-4);
         }
     }
   
-  TEST_FIXTURE(TestFixture, gatherInterpolateDate)
+  TEST_F(TestFixture, gatherInterpolateDate)
     {
       using boost::gregorian::date;
       using boost::gregorian::Jan;
@@ -431,12 +431,12 @@ SUITE(TensorOps)
         {
           toVal[0]=i;
           eval();
-          CHECK_EQUAL(0,gathered.rank());
-          CHECK_CLOSE(i, gathered[0],0.01);
+          EXPECT_EQ(0,gathered.rank());
+          EXPECT_NEAR(i, gathered[0],0.01);
         }
     }
   
-  TEST_FIXTURE(TestFixture, gatherExtractRowColumn)
+  TEST_F(TestFixture, gatherExtractRowColumn)
     {
       from->init("rand(3,5)");
       minsky::minsky().variableValues.resetValue(fromVal);
@@ -448,7 +448,7 @@ SUITE(TensorOps)
       auto& gathered=*gatheredVar.vValue();
       auto& toVal=*to->vValue();
 
-      CHECK_EQUAL(2, fromVal.rank());
+      EXPECT_EQ(2, fromVal.rank());
       {
         // extract row
         gatherOp->axis="0";
@@ -457,12 +457,12 @@ SUITE(TensorOps)
           {
             toVal[0]=i;
             eval();
-            CHECK_EQUAL(1,gathered.rank());
+            EXPECT_EQ(1,gathered.rank());
             vector<double> expected;
             for (size_t j=0; j<fromVal.shape()[1]; ++j)
               expected.push_back(fromVal[i+fromVal.shape()[0]*j]);
-            CHECK_EQUAL(expected.size(), gathered.size());
-            CHECK_ARRAY_CLOSE(expected.data(), &gathered[0], expected.size(), 1e-4);
+            EXPECT_EQ(expected.size(), gathered.size());
+            for (size_t _i=0; _i<expected.size(); ++_i) EXPECT_NEAR(expected.data()[_i], &gathered[0][_i], 1e-4);
           }
       }
 
@@ -474,27 +474,27 @@ SUITE(TensorOps)
           {
             toVal[0]=i;
             eval();
-            CHECK_EQUAL(1,gathered.rank());
+            EXPECT_EQ(1,gathered.rank());
             vector<double> expected;
             for (size_t j=0; j<fromVal.shape()[0]; ++j)
               expected.push_back(fromVal[j+fromVal.shape()[0]*i]);
-            CHECK_EQUAL(expected.size(), gathered.size());
-            CHECK_ARRAY_CLOSE(expected.data(), &gathered[0], expected.size(), 1e-4);
+            EXPECT_EQ(expected.size(), gathered.size());
+            for (size_t _i=0; _i<expected.size(); ++_i) EXPECT_NEAR(expected.data()[_i], &gathered[0][_i], 1e-4);
           }
       }
     }
 
   
-  TEST_FIXTURE(TestFixture, indexGather)
+  TEST_F(TestFixture, indexGather)
     {
       auto& toVal=*to->vValue();
       for (auto& i: fromVal)
         i=(&i-&fromVal[0])%2;
       evalOp<OperationType::index>();
       vector<double> expected{1,3};
-      CHECK_ARRAY_EQUAL(expected,toVal.begin(),2);
+      for (size_t _i=0; _i<2; ++_i) EXPECT_EQ(expected[_i], toVal.begin()[_i]);
       for (size_t i=3; i<toVal.size(); ++i)
-        CHECK(std::isnan(toVal[i]));
+        EXPECT_TRUE(std::isnan(toVal[i]));
 
       // apply gather to the orignal vector and the index results.
       OperationPtr gatherOp(OperationType::gather);
@@ -511,7 +511,7 @@ SUITE(TensorOps)
       for (auto& g: gathered)
         if (!finite(g)) g=-1;
       expected={1,1,-1,-1,-1};
-      CHECK_ARRAY_EQUAL(expected,gathered.begin(),5);
+      for (size_t _i=0; _i<5; ++_i) EXPECT_EQ(expected[_i], gathered.begin()[_i]);
 
       // another example - check for corner cases
       vector<double> data{0.36,0.412,0.877,0.437,0.751};
@@ -519,18 +519,18 @@ SUITE(TensorOps)
       
       eval();
       expected={1,3};
-      CHECK_ARRAY_EQUAL(expected,toVal.begin(),2);
+      for (size_t _i=0; _i<2; ++_i) EXPECT_EQ(expected[_i], toVal.begin()[_i]);
       for (size_t i=3; i<toVal.size(); ++i)
-        CHECK(std::isnan(toVal[i]));
+        EXPECT_TRUE(std::isnan(toVal[i]));
 
       // replace nans with -1 to make comparison test simpler
       for (auto& g: gathered)
         if (!finite(g)) g=-1;
       expected={0.412, 0.437, -1, -1, -1};
-      CHECK_ARRAY_EQUAL(expected,gathered.begin(),5);
+      for (size_t _i=0; _i<5; ++_i) EXPECT_EQ(expected[_i], gathered.begin()[_i]);
     }
 
-   TEST_FIXTURE(TestFixture, sparseGather)
+   TEST_F(TestFixture, sparseGather)
     {
       auto& toVal=*to->vValue();
       fromVal.index({1,3,5});
@@ -555,13 +555,13 @@ SUITE(TensorOps)
       for (auto& g: gathered)
         if (!finite(g)) g=-1;
       vector<double> expected={-1,0,1};
-      CHECK_EQUAL(expected.size(), gathered.size());
-      CHECK_ARRAY_EQUAL(expected,gathered.begin(),expected.size());
+      EXPECT_EQ(expected.size(), gathered.size());
+      for (size_t _i=0; _i<expected.size(; ++_i) EXPECT_EQ(expected[_i], gathered.begin()[_i]));
 
     }
 
  
-   TEST_FIXTURE(TestFixture, sparse2Gather)
+   TEST_F(TestFixture, sparse2Gather)
     {
       auto& toVal=*to->vValue();
       for (auto& i: fromVal)
@@ -586,13 +586,13 @@ SUITE(TensorOps)
       for (auto& g: gathered)
         if (!finite(g)) g=-1;
       vector<double> expected={0,1,1};
-      CHECK_EQUAL(expected.size(), gathered.size());
-      CHECK_ARRAY_EQUAL(expected,gathered.begin(),expected.size());
-      CHECK_ARRAY_EQUAL(gathered.index(), toVal.index(), toVal.index().size());                
+      EXPECT_EQ(expected.size(), gathered.size());
+      for (size_t _i=0; _i<expected.size(; ++_i) EXPECT_EQ(expected[_i], gathered.begin()[_i]));
+      for (size_t _i=0; _i<toVal.index(; ++_i) EXPECT_EQ(gathered.index()[_i], toVal.index()[_i]).size());                
 
     }
 
-    TEST_FIXTURE(TestFixture, sparse3DGather)
+    TEST_F(TestFixture, sparse3DGather)
     {
       fromVal.hypercube(Hypercube({2,5,3}));
       fromVal.index({4,11,16,21});
@@ -619,15 +619,15 @@ SUITE(TensorOps)
       
       double n=nan("");
       vector<double> expected={n,n,0,n,n,n, n,n,n,n,n,n, n,n,n,2,n,n, 1,n,n,n,n,n, n,n,n,n,n,n, 3,n,n,n,n,n};
-      CHECK_EQUAL(expected.size(), gathered.hypercube().numElements());
+      EXPECT_EQ(expected.size(), gathered.hypercube().numElements());
       for (size_t i=0; i<expected.size(); ++i)
         if (isnan(expected[i]))
-          CHECK(isnan(gathered.atHCIndex(i)));
+          EXPECT_TRUE(isnan(gathered.atHCIndex(i)));
         else
-          CHECK_EQUAL(expected[i], gathered.atHCIndex(i));
+          EXPECT_EQ(expected[i], gathered.atHCIndex(i));
     }
 
-    TEST_FIXTURE(TestFixture, gatherExceptions)
+    TEST_F(TestFixture, gatherExceptions)
       {
         OperationPtr gatherOp(OperationType::gather);
         Variable<VariableType::flow> gatheredVar("gathered");
@@ -636,13 +636,13 @@ SUITE(TensorOps)
         Wire w3(gatherOp->ports(0), gatheredVar.ports(1));
         
         fromVal.hypercube(Hypercube());
-        CHECK_THROW(Eval(gatheredVar, gatherOp)(), std::exception);
+        EXPECT_THROW(Eval(gatheredVar, gatherOp)(), std::exception);
 
         fromVal.hypercube(Hypercube({3,4}));
-        CHECK_THROW(Eval(gatheredVar, gatherOp)(), std::exception);
+        EXPECT_THROW(Eval(gatheredVar, gatherOp)(), std::exception);
       }
 
-    TEST_FIXTURE(MinskyFixture, gatherBackElement)
+    TEST_F(MinskyFixture, gatherBackElement)
     {
       VariablePtr x(VariableType::parameter,"x"), i(VariableType::parameter,"i"), z(VariableType::flow,"z");
       x->init("iota(5)");
@@ -658,11 +658,11 @@ SUITE(TensorOps)
       model->addWire(*z, *model->addItem(new Sheet), 1);
       reset();
       auto& zz=*z->vValue();
-      CHECK_EQUAL(0, zz.rank());
-      CHECK_EQUAL(4, zz[0]);
+      EXPECT_EQ(0, zz.rank());
+      EXPECT_EQ(4, zz[0]);
     }
 
-  TEST_FIXTURE(TestFixture, indexGatherTensorStringArgs)
+  TEST_F(TestFixture, indexGatherTensorStringArgs)
     {
       vector<XVector> x{{"x",{Dimension::string,""}}, {"y",{Dimension::string,""}},
                                                         {"z",{Dimension::string,""}}};
@@ -680,9 +680,9 @@ SUITE(TensorOps)
       Hypercube toHC(x);
       
       vector<int> checkV={2,3,5};
-      CHECK_ARRAY_EQUAL(checkV, fromHC.dims(), checkV.size());
+      for (size_t _i=0; _i<checkV.size(; ++_i) EXPECT_EQ(checkV[_i], fromHC.dims()[_i]));
       checkV={2,2};
-      CHECK_ARRAY_EQUAL(checkV, toHC.dims(),checkV.size());
+      for (size_t _i=0; _i<checkV.size(; ++_i) EXPECT_EQ(checkV[_i], toHC.dims()[_i]));
 
       auto& toVal=*to->vValue();
       auto& fromVal=*from->vValue();
@@ -700,7 +700,7 @@ SUITE(TensorOps)
       toVal[2]=1.3; // interpolated
       toVal[3]=2;   // on exact point
 
-      CHECK_EQUAL(fv.size(), fromVal.size());
+      EXPECT_EQ(fv.size(), fromVal.size());
       memcpy(&fromVal[0], fv.data(), sizeof(double)*fv.size());
       
       // apply gather to the orignal vector and the index results.
@@ -716,25 +716,25 @@ SUITE(TensorOps)
       eval();
       
       vector<size_t> expectedDims{4,2,5};
-      CHECK_EQUAL(expectedDims.size(), gathered.rank());
-      CHECK_ARRAY_EQUAL(expectedDims, gathered.hypercube().dims(), expectedDims.size());
+      EXPECT_EQ(expectedDims.size(), gathered.rank());
+      for (size_t _i=0; _i<expectedDims.size(; ++_i) EXPECT_EQ(expectedDims[_i], gathered.hypercube().dims()[_i]));
 
       auto& gxv=gathered.hypercube().xvectors;
-      CHECK_EQUAL("y",gxv[0].name);
-      CHECK_EQUAL("x",gxv[1].name);
-      CHECK_EQUAL("z",gxv[2].name);
+      EXPECT_EQ("y",gxv[0].name);
+      EXPECT_EQ("x",gxv[1].name);
+      EXPECT_EQ("z",gxv[2].name);
 
       for (size_t i=0; i<expectedDims[2]; ++i)
         for (size_t j=0; j<expectedDims[1]; ++j)
           {
-            CHECK(isnan(gathered[(i*expectedDims[1]+j)*toVal.size()]));
-            CHECK(isnan(gathered[(i*expectedDims[1]+j)*toVal.size()+1]));
-            CHECK_CLOSE(i+j+1.3, gathered[(i*expectedDims[1]+j)*toVal.size()+2],0.01);
-            CHECK_EQUAL(i+j+2, gathered[(i*expectedDims[1]+j)*toVal.size()+3]);
+            EXPECT_TRUE(isnan(gathered[(i*expectedDims[1]+j)*toVal.size()]));
+            EXPECT_TRUE(isnan(gathered[(i*expectedDims[1]+j)*toVal.size()+1]));
+            EXPECT_NEAR(i+j+1.3, gathered[(i*expectedDims[1]+j)*toVal.size()+2],0.01);
+            EXPECT_EQ(i+j+2, gathered[(i*expectedDims[1]+j)*toVal.size()+3]);
           }
     }
 
-  TEST_FIXTURE(TestFixture, indexGatherTensorValueArgs)
+  TEST_F(TestFixture, indexGatherTensorValueArgs)
     {
       vector<XVector> x{{"x",{Dimension::string,""}}, {"y",{Dimension::value,""}},
                                                         {"z",{Dimension::string,""}}};
@@ -749,9 +749,9 @@ SUITE(TensorOps)
       Hypercube toHC(x);
       
       vector<int> checkV={2,3,5};
-      CHECK_ARRAY_EQUAL(checkV, fromHC.dims(), checkV.size());
+      for (size_t _i=0; _i<checkV.size(; ++_i) EXPECT_EQ(checkV[_i], fromHC.dims()[_i]));
       checkV={2,2};
-      CHECK_ARRAY_EQUAL(checkV, toHC.dims(),checkV.size());
+      for (size_t _i=0; _i<checkV.size(; ++_i) EXPECT_EQ(checkV[_i], toHC.dims()[_i]));
 
       auto& toVal=*to->vValue();
       auto& fromVal=*from->vValue();
@@ -769,7 +769,7 @@ SUITE(TensorOps)
       toVal[2]=1930; // interpolated
       toVal[3]=1950;   // on exact point
 
-      CHECK_EQUAL(fv.size(), fromVal.size());
+      EXPECT_EQ(fv.size(), fromVal.size());
       memcpy(&fromVal[0], fv.data(), sizeof(double)*fv.size());
       
       // apply gather to the orignal vector and the index results.
@@ -785,20 +785,20 @@ SUITE(TensorOps)
       eval();
       
       vector<size_t> expectedDims{4,2,5};
-      CHECK_EQUAL(expectedDims.size(), gathered.rank());
-      CHECK_ARRAY_EQUAL(expectedDims, gathered.hypercube().dims(), expectedDims.size());
+      EXPECT_EQ(expectedDims.size(), gathered.rank());
+      for (size_t _i=0; _i<expectedDims.size(; ++_i) EXPECT_EQ(expectedDims[_i], gathered.hypercube().dims()[_i]));
 
       for (size_t i=0; i<expectedDims[2]; ++i)
         for (size_t j=0; j<expectedDims[1]; ++j)
           {
-            CHECK(isnan(gathered[(i*expectedDims[1]+j)*toVal.size()]));
-            CHECK(isnan(gathered[(i*expectedDims[1]+j)*toVal.size()+1]));
-            CHECK_CLOSE(i+j+0.6, gathered[(i*expectedDims[1]+j)*toVal.size()+2],0.01);
-            CHECK_EQUAL(i+j+1, gathered[(i*expectedDims[1]+j)*toVal.size()+3]);
+            EXPECT_TRUE(isnan(gathered[(i*expectedDims[1]+j)*toVal.size()]));
+            EXPECT_TRUE(isnan(gathered[(i*expectedDims[1]+j)*toVal.size()+1]));
+            EXPECT_NEAR(i+j+0.6, gathered[(i*expectedDims[1]+j)*toVal.size()+2],0.01);
+            EXPECT_EQ(i+j+1, gathered[(i*expectedDims[1]+j)*toVal.size()+3]);
           }
     }
 
-  TEST_FIXTURE(TestFixture, indexGatherTensorTimeArgs)
+  TEST_F(TestFixture, indexGatherTensorTimeArgs)
     {
       vector<XVector> x{{"x",{Dimension::string,""}}, {"y",{Dimension::time,""}},
                                                         {"z",{Dimension::string,""}}};
@@ -813,9 +813,9 @@ SUITE(TensorOps)
       Hypercube toHC(x);
       
       vector<int> checkV={2,3,5};
-      CHECK_ARRAY_EQUAL(checkV, fromHC.dims(), checkV.size());
+      for (size_t _i=0; _i<checkV.size(; ++_i) EXPECT_EQ(checkV[_i], fromHC.dims()[_i]));
       checkV={2,2};
-      CHECK_ARRAY_EQUAL(checkV, toHC.dims(),checkV.size());
+      for (size_t _i=0; _i<checkV.size(; ++_i) EXPECT_EQ(checkV[_i], toHC.dims()[_i]));
 
       auto& toVal=*to->vValue();
       auto& fromVal=*from->vValue();
@@ -833,7 +833,7 @@ SUITE(TensorOps)
       toVal[2]=1930; // interpolated
       toVal[3]=1950;   // on exact point
 
-      CHECK_EQUAL(fv.size(), fromVal.size());
+      EXPECT_EQ(fv.size(), fromVal.size());
       memcpy(&fromVal[0], fv.data(), sizeof(double)*fv.size());
       
       // apply gather to the orignal vector and the index results.
@@ -849,22 +849,22 @@ SUITE(TensorOps)
       eval();
       
       vector<size_t> expectedDims{4,2,5};
-      CHECK_EQUAL(expectedDims.size(), gathered.rank());
-      CHECK_ARRAY_EQUAL(expectedDims, gathered.hypercube().dims(), expectedDims.size());
+      EXPECT_EQ(expectedDims.size(), gathered.rank());
+      for (size_t _i=0; _i<expectedDims.size(; ++_i) EXPECT_EQ(expectedDims[_i], gathered.hypercube().dims()[_i]));
 
       for (size_t i=0; i<expectedDims[2]; ++i)
         for (size_t j=0; j<expectedDims[1]; ++j)
           {
-            CHECK(isnan(gathered[(i*expectedDims[1]+j)*toVal.size()]));
-            CHECK(isnan(gathered[(i*expectedDims[1]+j)*toVal.size()+1]));
-            CHECK_CLOSE(i+j+0.6, gathered[(i*expectedDims[1]+j)*toVal.size()+2],0.01);
-            CHECK_EQUAL(i+j+1, gathered[(i*expectedDims[1]+j)*toVal.size()+3]);
+            EXPECT_TRUE(isnan(gathered[(i*expectedDims[1]+j)*toVal.size()]));
+            EXPECT_TRUE(isnan(gathered[(i*expectedDims[1]+j)*toVal.size()+1]));
+            EXPECT_NEAR(i+j+0.6, gathered[(i*expectedDims[1]+j)*toVal.size()+2],0.01);
+            EXPECT_EQ(i+j+1, gathered[(i*expectedDims[1]+j)*toVal.size()+3]);
           }
     }
 
   
   
-  TEST_FIXTURE(MinskyFixture, tensorUnOpFactory)
+  TEST_F(MinskyFixture, tensorUnOpFactory)
     {
       TensorOpFactory factory;
       auto ev=make_shared<EvalCommon>();
@@ -873,14 +873,14 @@ SUITE(TensorOps)
       model->addItem(src); model->addItem(dest);
       src->init("iota(5)");
       variableValues.reset();
-      CHECK_EQUAL(1,src->vValue()->rank());
-      CHECK_EQUAL(5,src->vValue()->size());
+      EXPECT_EQ(1,src->vValue()->rank());
+      EXPECT_EQ(5,src->vValue()->size());
       for (OperationType::Type op=OperationType::copy; op<OperationType::innerProduct;
            op=OperationType::Type(op+1))
         {
           OperationPtr o(op);
           model->addItem(o);
-          CHECK_EQUAL(2, o->numPorts());
+          EXPECT_EQ(2, o->numPorts());
           Wire w1(src->ports(0), o->ports(1)), w2(o->ports(0), dest->ports(1));
           TensorEval eval(dest->vValue(), ev, factory.create(o,tp));
           eval.eval(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());
@@ -889,38 +889,38 @@ SUITE(TensorOps)
             case OperationType::function:
               {
                 // just check that scalar functions are performed elementwise
-                CHECK_EQUAL(src->vValue()->size(), dest->vValue()->size());
+                EXPECT_EQ(src->vValue()->size(), dest->vValue()->size());
                 unique_ptr<ScalarEvalOp> scalarOp(ScalarEvalOp::create(op,o));
-                CHECK(scalarOp.get());
+                EXPECT_TRUE(scalarOp.get());
                 for (size_t i=0; i<src->vValue()->size(); ++i)
                   {
                     double x=scalarOp->evaluate((*src->vValue())[i]);
                     double y=(*dest->vValue())[i];
                     if (finite(x)||finite(y))
-                      CHECK_EQUAL(x,y);
+                      EXPECT_EQ(x,y);
                   }
                 break;
               }
             case OperationType::reduction:
-              CHECK_EQUAL(0, dest->vValue()->rank());
-              CHECK_EQUAL(1, dest->vValue()->size());
+              EXPECT_EQ(0, dest->vValue()->rank());
+              EXPECT_EQ(1, dest->vValue()->size());
               break;
             case OperationType::scan:
-              CHECK_EQUAL(1, dest->vValue()->rank());
+              EXPECT_EQ(1, dest->vValue()->rank());
               if (op==OperationType::difference || op==OperationType::differencePlus) //TODO should difference really be a scan?
-                CHECK_EQUAL(src->vValue()->size()-1, dest->vValue()->size());
+                EXPECT_EQ(src->vValue()->size()-1, dest->vValue()->size());
               else
-                CHECK_EQUAL(src->vValue()->size(), dest->vValue()->size());
+                EXPECT_EQ(src->vValue()->size(), dest->vValue()->size());
               break;
             default:
-              CHECK(false);
+              EXPECT_TRUE(false);
               break;
             }
           model->removeItem(*o);
         }
     }
   
-  TEST_FIXTURE(MinskyFixture, tensorBinOpFactory)
+  TEST_F(MinskyFixture, tensorBinOpFactory)
     {
       TensorOpFactory factory;
       auto ev=make_shared<EvalCommon>();
@@ -931,10 +931,10 @@ SUITE(TensorOps)
       src1->init("iota(5)");
       src2->init("one(5)");
       variableValues.reset();
-      CHECK_EQUAL(1,src1->vValue()->rank());
-      CHECK_EQUAL(5,src1->vValue()->size());
-      CHECK_EQUAL(1,src2->vValue()->rank());
-      CHECK_EQUAL(5,src2->vValue()->size());
+      EXPECT_EQ(1,src1->vValue()->rank());
+      EXPECT_EQ(5,src1->vValue()->size());
+      EXPECT_EQ(1,src2->vValue()->rank());
+      EXPECT_EQ(5,src2->vValue()->size());
       for (OperationType::Type op=OperationType::add; op<OperationType::copy;
            op=OperationType::Type(op+1))
         {
@@ -945,20 +945,20 @@ SUITE(TensorOps)
               f->expression="x+y";
               f->compile();
             }
-          CHECK_EQUAL(3, o->numPorts());
+          EXPECT_EQ(3, o->numPorts());
           Wire w1(src1->ports(0), o->ports(1)), w2(src2->ports(0), o->ports(2)),
             w3(o->ports(0), dest->ports(1));
           TensorEval eval(dest->vValue(), ev, factory.create(o,tp));
           eval.eval(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());
-          CHECK_EQUAL(src1->vValue()->size(), dest->vValue()->size());
-          CHECK_EQUAL(src2->vValue()->size(), dest->vValue()->size());
+          EXPECT_EQ(src1->vValue()->size(), dest->vValue()->size());
+          EXPECT_EQ(src2->vValue()->size(), dest->vValue()->size());
           unique_ptr<ScalarEvalOp> scalarOp(ScalarEvalOp::create(op,o));
           for (size_t i=0; i<src1->vValue()->size(); ++i)
             {
               double x=scalarOp->evaluate((*src1->vValue())[i], (*src2->vValue())[i]);
               double y=(*dest->vValue())[i];
               if (finite(x)||finite(y))
-                CHECK_EQUAL(x,y);
+                EXPECT_EQ(x,y);
             }
         }
     }
@@ -969,22 +969,22 @@ SUITE(TensorOps)
     //cout << OperationType::typeName(op)<<endl;
     OperationPtr o(op);
     auto tensorOp=TensorOpFactory().create(o);
-    CHECK_EQUAL(1, tensorOp->size());
-    CHECK_EQUAL(identity, (*tensorOp)[0]);
+    EXPECT_EQ(1, tensorOp->size());
+    EXPECT_EQ(identity, (*tensorOp)[0]);
     Hypercube hc(vector<unsigned>{2});
     auto tv1=make_shared<TensorVal>(hc), tv2=make_shared<TensorVal>(hc);
     map<size_t,double> tv1Data{{0,1},{1,2}}, tv2Data{{0,2},{1,1}};
     *tv1=tv1Data;
     *tv2=tv2Data;
     tensorOp->setArguments(vector<TensorPtr>{tv1,tv2},vector<TensorPtr>{});
-    CHECK_EQUAL(f((*tv1)[0],(*tv2)[0]), (*tensorOp)[0]);
-    CHECK_EQUAL(f((*tv1)[1],(*tv2)[1]), (*tensorOp)[1]);
+    EXPECT_EQ(f((*tv1)[0],(*tv2)[0]), (*tensorOp)[0]);
+    EXPECT_EQ(f((*tv1)[1],(*tv2)[1]), (*tensorOp)[1]);
     tensorOp->setArguments(vector<TensorPtr>{},vector<TensorPtr>{tv1,tv2});
-    CHECK_EQUAL(f2(f((*tv1)[0],(*tv2)[0])), (*tensorOp)[0]);
-    CHECK_EQUAL(f2(f((*tv1)[1],(*tv2)[1])), (*tensorOp)[1]);
+    EXPECT_EQ(f2(f((*tv1)[0],(*tv2)[0])), (*tensorOp)[0]);
+    EXPECT_EQ(f2(f((*tv1)[1],(*tv2)[1])), (*tensorOp)[1]);
   }
 
-  TEST_FIXTURE(MinskyFixture, tensorBinOpMultiples)
+  TEST_F(MinskyFixture, tensorBinOpMultiples)
     {
       auto id=[](double x){return x;};
       multiWireTest<OperationType::add>(0, [](double x,double y){return x+y;},id);
@@ -1001,7 +1001,7 @@ SUITE(TensorOps)
       multiWireTest<OperationType::or_>(0, [](double x,double y){return x>0.5 || y>0.5;}, id);
     }
 
-  TEST_FIXTURE(MinskyFixture, binOp)
+  TEST_F(MinskyFixture, binOp)
     {
       // same example as examples/binaryInterpolation.mky
       VariablePtr x1(VariableType::parameter,"x1"), x2(VariableType::parameter,"x2");
@@ -1023,13 +1023,13 @@ SUITE(TensorOps)
       auto ev=make_shared<EvalCommon>();
       TensorEval eval(variableValues[":result"], ev, tensorOpFactory.create(add,TensorsFromPort(ev)));
       eval.eval(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());
-      CHECK_EQUAL(x1Val.size(),result->vValue()->size());
+      EXPECT_EQ(x1Val.size(),result->vValue()->size());
 
       vector<double> expected{4,6,7,7,10,10,3};
-      CHECK_ARRAY_CLOSE(expected, result->vValue()->begin(), 7, 0.001);
+      for (size_t _i=0; _i<7; ++_i) EXPECT_NEAR(expected[_i], result->vValue()->begin()[_i], 0.001);
     }
 
-  TEST_FIXTURE(MinskyFixture, binOpInterpolation1D)
+  TEST_F(MinskyFixture, binOpInterpolation1D)
     {
       // same example as examples/binaryInterpolation.mky
       VariablePtr x1(VariableType::parameter,"x1"), x2(VariableType::parameter,"x2");
@@ -1054,13 +1054,13 @@ SUITE(TensorOps)
       auto ev=make_shared<EvalCommon>();
       TensorEval eval(variableValues[":result"], ev, tensorOpFactory.create(add,TensorsFromPort(ev)));
       eval.eval(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());
-      CHECK_EQUAL(5,result->vValue()->size());
+      EXPECT_EQ(5,result->vValue()->size());
 
       vector<double> expected{5,5.5,5,7.5,7};
-      CHECK_ARRAY_CLOSE(expected, result->vValue()->begin(), 5, 0.001);
+      for (size_t _i=0; _i<5; ++_i) EXPECT_NEAR(expected[_i], result->vValue()->begin()[_i], 0.001);
     }
   
-  TEST_FIXTURE(MinskyFixture, binOpInterpolation1Dunsorted)
+  TEST_F(MinskyFixture, binOpInterpolation1Dunsorted)
     {
       // same example as examples/binaryInterpolation.mky
       VariablePtr x1(VariableType::parameter,"x1"), x2(VariableType::parameter,"x2");
@@ -1085,13 +1085,13 @@ SUITE(TensorOps)
       auto ev=make_shared<EvalCommon>();
       TensorEval eval(variableValues[":result"], ev, tensorOpFactory.create(add,TensorsFromPort(ev)));
       eval.eval(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());
-      CHECK_EQUAL(5,result->vValue()->size());
+      EXPECT_EQ(5,result->vValue()->size());
 
       vector<double> expected{5,5.5,5,7.5,7};
-      CHECK_ARRAY_CLOSE(expected, result->vValue()->begin(), 5, 0.001);
+      for (size_t _i=0; _i<5; ++_i) EXPECT_NEAR(expected[_i], result->vValue()->begin()[_i], 0.001);
     }
   
-  TEST_FIXTURE(MinskyFixture, binOpInterpolation2D)
+  TEST_F(MinskyFixture, binOpInterpolation2D)
     {
       // same example as examples/binaryInterpolation.mky
       VariablePtr x1(VariableType::parameter,"x1"), x2(VariableType::parameter,"x2");
@@ -1118,9 +1118,9 @@ SUITE(TensorOps)
       TensorEval eval(variableValues[":result"], ev, tensorOpFactory.create(add,TensorsFromPort(ev)));
       eval.eval(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());
 
-      CHECK_EQUAL(9, result->vValue()->size());
+      EXPECT_EQ(9, result->vValue()->size());
       vector<double> expected{7,8.5,10,12.3333,13.8333,15.3333,15,16.5,18};
-      CHECK_ARRAY_CLOSE(expected, result->vValue()->begin(), expected.size(), 0.001);
+      for (size_t _i=0; _i<expected.size(); ++_i) EXPECT_NEAR(expected[_i], result->vValue()->begin()[_i], 0.001);
     }
 
   struct TensorValFixture
@@ -1146,36 +1146,36 @@ SUITE(TensorOps)
     }
   };
   
-  TEST_FIXTURE(TensorValFixture, sliced2dswapped)
+  TEST_F(TensorValFixture, sliced2dswapped)
     {
       auto sex=find_if(state.handleStates.begin(), state.handleStates.end(),
                        [](const ravel::HandleState& i){return i.description=="sex";});
       sex->sliceLabel="male";
       state.outputHandles={"date","country"};
       auto chain=createRavelChain(state, arg);
-      CHECK_EQUAL(2, chain.back()->rank());
+      EXPECT_EQ(2, chain.back()->rank());
       auto& chc=chain.back()->hypercube();
       auto& ahc=arg->hypercube();
-      CHECK_EQUAL("date",chc.xvectors[0].name);
-      CHECK(chc.xvectors[0]==ahc.xvectors[2]);
-      CHECK_EQUAL("country",chc.xvectors[1].name);
-      CHECK(chc.xvectors[1]==ahc.xvectors[0]);
-      CHECK_EQUAL(9,chain.back()->size());
+      EXPECT_EQ("date",chc.xvectors[0].name);
+      EXPECT_TRUE(chc.xvectors[0]==ahc.xvectors[2]);
+      EXPECT_EQ("country",chc.xvectors[1].name);
+      EXPECT_TRUE(chc.xvectors[1]==ahc.xvectors[0]);
+      EXPECT_EQ(9,chain.back()->size());
       for (size_t i=0; i<chain.back()->size(); ++i)
-        CHECK(ahc.splitIndex((*chain.back())[i])[1]==0); //entry is "male"
+        EXPECT_TRUE(ahc.splitIndex((*chain.back())[i])[1]==0); //entry is "male"
       vector<double> expected={0,1,2,6,7,8,12,13,14};
-      CHECK_ARRAY_EQUAL(expected, *chain[1], 9);
+      for (size_t _i=0; _i<9; ++_i) EXPECT_EQ(expected[_i], *chain[1][_i]);
       expected={0,6,12,1,7,13,2,8,14};
-      CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
+      for (size_t _i=0; _i<9; ++_i) EXPECT_EQ(expected[_i], *chain.back()[_i]);
 
       sex->sliceLabel="female";
       chain=createRavelChain(state, arg);
-      CHECK_EQUAL(9,chain.back()->size());
+      EXPECT_EQ(9,chain.back()->size());
       for (size_t i=0; i<chain.back()->size(); ++i)
-        CHECK(ahc.splitIndex((*chain.back())[i])[1]==1); //entry is "female"
+        EXPECT_TRUE(ahc.splitIndex((*chain.back())[i])[1]==1); //entry is "female"
       
     }
-  TEST_FIXTURE(TensorValFixture, reduction2dswapped)
+  TEST_F(TensorValFixture, reduction2dswapped)
     {
       auto sex=find_if(state.handleStates.begin(), state.handleStates.end(),
                        [](const ravel::HandleState& i){return i.description=="sex";});
@@ -1183,45 +1183,45 @@ SUITE(TensorOps)
       sex->reductionOp=ravel::Op::sum;
       state.outputHandles={"date","country"};
       auto chain=createRavelChain(state, arg);
-      CHECK_EQUAL(2, chain.back()->rank());
+      EXPECT_EQ(2, chain.back()->rank());
       auto& chc=chain.back()->hypercube();
       auto& ahc=arg->hypercube();
-      CHECK_EQUAL("date",chc.xvectors[0].name);
-      CHECK(chc.xvectors[0]==ahc.xvectors[2]);
-      CHECK_EQUAL("country",chc.xvectors[1].name);
-      CHECK(chc.xvectors[1]==ahc.xvectors[0]);
-      CHECK_EQUAL(9,chain.back()->size());
+      EXPECT_EQ("date",chc.xvectors[0].name);
+      EXPECT_TRUE(chc.xvectors[0]==ahc.xvectors[2]);
+      EXPECT_EQ("country",chc.xvectors[1].name);
+      EXPECT_TRUE(chc.xvectors[1]==ahc.xvectors[0]);
+      EXPECT_EQ(9,chain.back()->size());
       vector<double> expected={3,15,27,5,17,29,7,19,31};
-      CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
+      for (size_t _i=0; _i<9; ++_i) EXPECT_EQ(expected[_i], *chain.back()[_i]);
 
       sex->reductionOp=ravel::Op::prod;
       chain=createRavelChain(state, arg);
       expected={0,54,180,4,70,208,10,88,238};
-      CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
+      for (size_t _i=0; _i<9; ++_i) EXPECT_EQ(expected[_i], *chain.back()[_i]);
 
       sex->reductionOp=ravel::Op::av;
       chain=createRavelChain(state, arg);
       expected={1.5,7.5,13.5,2.5,8.5,14.5,3.5,9.5,15.5};
-      CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
+      for (size_t _i=0; _i<9; ++_i) EXPECT_EQ(expected[_i], *chain.back()[_i]);
 
       sex->reductionOp=ravel::Op::stddev;
       chain=createRavelChain(state, arg);
       expected={2.12132, 2.12132, 2.12132, 2.12132, 2.12132, 2.12132, 2.12132, 2.12132, 2.12132};
-      CHECK_ARRAY_CLOSE(expected, *chain.back(), 9, 1e-4);
+      for (size_t _i=0; _i<9; ++_i) EXPECT_NEAR(expected[_i], *chain.back()[_i], 1e-4);
 
       sex->reductionOp=ravel::Op::min;
       chain=createRavelChain(state, arg);
       expected={0,6,12,1,7,13,2,8,14};
-      CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
+      for (size_t _i=0; _i<9; ++_i) EXPECT_EQ(expected[_i], *chain.back()[_i]);
       
       sex->reductionOp=ravel::Op::max;
       chain=createRavelChain(state, arg);
       expected={3,9,15,4,10,16,5,11,17};
-      CHECK_ARRAY_EQUAL(expected, *chain.back(), 9);
+      for (size_t _i=0; _i<9; ++_i) EXPECT_EQ(expected[_i], *chain.back()[_i]);
      
     }
 
-  TEST_FIXTURE(TensorValFixture, sparseSlicedRavel)
+  TEST_F(TensorValFixture, sparseSlicedRavel)
     {
       state.outputHandles={"date","country"};
       auto sex=find_if(state.handleStates.begin(), state.handleStates.end(),
@@ -1229,33 +1229,33 @@ SUITE(TensorOps)
       arg->index({0,4,8,12,16});
       sex->sliceLabel="male";
       auto chain=createRavelChain(state, arg);
-      CHECK_EQUAL(2, chain.back()->rank());
-      CHECK_EQUAL(3, chain.back()->size());
+      EXPECT_EQ(2, chain.back()->rank());
+      EXPECT_EQ(3, chain.back()->size());
       vector<size_t> expectedi{0,5,6};
-      CHECK_ARRAY_EQUAL(expectedi, chain[1]->index(),3);
+      for (size_t _i=0; _i<3; ++_i) EXPECT_EQ(expectedi[_i], chain[1]->index()[_i]);
       expectedi={0,2,7};
-      CHECK_ARRAY_EQUAL(expectedi, chain.back()->index(),3);
+      for (size_t _i=0; _i<3; ++_i) EXPECT_EQ(expectedi[_i], chain.back()->index()[_i]);
       vector<double> expectedf{0,1,2,3,4};
-      CHECK_ARRAY_EQUAL(expectedf, *arg,3);
+      for (size_t _i=0; _i<3; ++_i) EXPECT_EQ(expectedf[_i], *arg[_i]);
       expectedf={0,2,3};
-      CHECK_ARRAY_EQUAL(expectedf, *chain[1],3);
+      for (size_t _i=0; _i<3; ++_i) EXPECT_EQ(expectedf[_i], *chain[1][_i]);
       expectedf={0,3,2};
-      CHECK_ARRAY_EQUAL(expectedf, *chain.back(),3);
+      for (size_t _i=0; _i<3; ++_i) EXPECT_EQ(expectedf[_i], *chain.back()[_i]);
 
       sex->collapsed=true;
       chain=createRavelChain(state, arg);
-      CHECK_EQUAL(5, chain.back()->size());
+      EXPECT_EQ(5, chain.back()->size());
       expectedi={0,1,5,6,7};
-      CHECK_ARRAY_EQUAL(expectedi, chain[1]->index(),3);
+      for (size_t _i=0; _i<3; ++_i) EXPECT_EQ(expectedi[_i], chain[1]->index()[_i]);
       expectedi={0,2,3,5,7};
-      CHECK_ARRAY_EQUAL(expectedi, chain.back()->index(),3);
+      for (size_t _i=0; _i<3; ++_i) EXPECT_EQ(expectedi[_i], chain.back()->index()[_i]);
       expectedf={0,1,2,3,4};
-      CHECK_ARRAY_EQUAL(expectedf, *chain[1], 5);
+      for (size_t _i=0; _i<5; ++_i) EXPECT_EQ(expectedf[_i], *chain[1][_i]);
       expectedf={0,3,1,4,2};
-      CHECK_ARRAY_EQUAL(expectedf, *chain.back(),5);
+      for (size_t _i=0; _i<5; ++_i) EXPECT_EQ(expectedf[_i], *chain.back()[_i]);
     }
     
-  TEST_FIXTURE(TensorValFixture, calipered)
+  TEST_F(TensorValFixture, calipered)
     {
       state.outputHandles={"date","country"};
       auto country=find_if(state.handleStates.begin(), state.handleStates.end(),
@@ -1269,56 +1269,56 @@ SUITE(TensorOps)
       arg->index({0,4,8,12,16});
       auto chain=createRavelChain(state, arg);
       vector<double> expected={2};
-      CHECK_ARRAY_EQUAL(expected, *chain.back(), expected.size());
+      for (size_t _i=0; _i<expected.size(; ++_i) EXPECT_EQ(expected[_i], *chain.back()[_i]));
       vector<double> expectedi={3};
-      CHECK_ARRAY_EQUAL(expectedi, chain.back()->index(), expectedi.size());
+      for (size_t _i=0; _i<expectedi.size(; ++_i) EXPECT_EQ(expectedi[_i], chain.back()->index()[_i]));
       vector<size_t> dims={2,2};
-      CHECK_ARRAY_EQUAL(dims, chain.back()->shape(), 2);
+      for (size_t _i=0; _i<2; ++_i) EXPECT_EQ(dims[_i], chain.back()->shape()[_i]);
     }
 
-  TEST_FIXTURE(TensorValFixture, imposeDimensions)
+  TEST_F(TensorValFixture, imposeDimensions)
     {
       Dimensions dimensions;
       dimensions.emplace("date",Dimension{Dimension::time,"%Y"});
       arg->imposeDimensions(dimensions);
       auto& xv=arg->hypercube().xvectors[2];
-      CHECK_EQUAL("date",xv.name);
-      CHECK_EQUAL(Dimension::time,xv.dimension.type);
-      CHECK_EQUAL("%Y",xv.dimension.units);
+      EXPECT_EQ("date",xv.name);
+      EXPECT_EQ(Dimension::time,xv.dimension.type);
+      EXPECT_EQ("%Y",xv.dimension.units);
       for (auto& i: xv)
-        CHECK(i.type==Dimension::time);
+        EXPECT_TRUE(i.type==Dimension::time);
     }
 
-  TEST(tensorValVectorIndex)
+TEST(TensorOps, tensorValVectorIndex)
   {
     TensorVal tv(vector<unsigned>{5,3,2});
     for (size_t i=0; i<tv.size(); ++i) tv[i]=i;
-    CHECK_EQUAL(8,tv({3,1,0}));
+    EXPECT_EQ(8,tv({3,1,0}));
     tv.index({1,4,8,12});
     for (size_t i=0; i<tv.size(); ++i) tv[i]=i;
-    CHECK_EQUAL(2,tv({3,1,0}));
-    CHECK(isnan(tv({2,1,0})));
+    EXPECT_EQ(2,tv({3,1,0}));
+    EXPECT_TRUE(isnan(tv({2,1,0})));
   }
     
-  TEST(tensorValAssignment)
+TEST(TensorOps, tensorValAssignment)
   {
     auto arg=std::make_shared<TensorVal>(vector<unsigned>{5,3,2});
     for (size_t i=0; i<arg->size(); ++i) (*arg)[i]=i;
     Scan scan([](double& x,double y,size_t){x+=y;});
     scan.setArgument(arg,{"0",0});
-    CHECK_EQUAL(arg->rank(), scan.rank());
-    CHECK(scan.size()>1);
+    EXPECT_EQ(arg->rank(), scan.rank());
+    EXPECT_TRUE(scan.size()>1);
         
     TensorVal tv;
     tv=scan;
 
-    CHECK_EQUAL(tv.size(), scan.size());
-    CHECK_ARRAY_EQUAL(tv.hypercube().dims(), scan.hypercube().dims(), scan.rank());
+    EXPECT_EQ(tv.size(), scan.size());
+    for (size_t _i=0; _i<scan.rank(; ++_i) EXPECT_EQ(tv.hypercube().dims()[_i], scan.hypercube().dims()[_i]));
     for (size_t i=0; i<tv.size(); ++i)
-      CHECK_EQUAL(scan[i], tv[i]);
+      EXPECT_EQ(scan[i], tv[i]);
   }
 
-  TEST(permuteAxis)
+TEST(TensorOps, permuteAxis)
   {
     // 5x5 example
     Hypercube hc{5,5};
@@ -1328,46 +1328,46 @@ SUITE(TensorOps)
     pa.setArgument(dense,{"0",0});
     vector<size_t> permutation{1,4,3};
     pa.setPermutation(permutation);
-    CHECK_EQUAL(2, pa.rank());
-    CHECK_EQUAL(3, pa.hypercube().dims()[0]);
-    CHECK_EQUAL(5, pa.hypercube().dims()[1]);
-    CHECK_EQUAL(15, pa.size());
+    EXPECT_EQ(2, pa.rank());
+    EXPECT_EQ(3, pa.hypercube().dims()[0]);
+    EXPECT_EQ(5, pa.hypercube().dims()[1]);
+    EXPECT_EQ(15, pa.size());
         
     for (size_t i=0; i<pa.size(); ++i)
       {
         switch (i%3)
           {
           case 0:
-            CHECK_EQUAL(1, int(pa[i])%5);
+            EXPECT_EQ(1, int(pa[i])%5);
             break;
           case 1:
-            CHECK_EQUAL(4, int(pa[i])%5);
+            EXPECT_EQ(4, int(pa[i])%5);
             break;
           case 2:
-            CHECK_EQUAL(3, int(pa[i])%5);
+            EXPECT_EQ(3, int(pa[i])%5);
             break;
           }
       }
 
     pa.setArgument(dense,{"1",0});
     pa.setPermutation(permutation);
-    CHECK_EQUAL(2, pa.rank());
-    CHECK_EQUAL(5, pa.hypercube().dims()[0]);
-    CHECK_EQUAL(3, pa.hypercube().dims()[1]);
-    CHECK_EQUAL(15, pa.size());
+    EXPECT_EQ(2, pa.rank());
+    EXPECT_EQ(5, pa.hypercube().dims()[0]);
+    EXPECT_EQ(3, pa.hypercube().dims()[1]);
+    EXPECT_EQ(15, pa.size());
         
     for (size_t i=0; i<pa.size(); ++i)
       {
         switch (i/5)
           {
           case 0:
-            CHECK_EQUAL(1, int(pa[i])/5);
+            EXPECT_EQ(1, int(pa[i])/5);
             break;
           case 1:
-            CHECK_EQUAL(4, int(pa[i])/5);
+            EXPECT_EQ(4, int(pa[i])/5);
             break;
           case 2:
-            CHECK_EQUAL(3, int(pa[i])/5);
+            EXPECT_EQ(3, int(pa[i])/5);
             break;
           }
       }
@@ -1380,10 +1380,10 @@ SUITE(TensorOps)
 
     pa.setArgument(sparse,{"0",0});
     pa.setPermutation(permutation);
-    CHECK_EQUAL(2, pa.rank());
-    CHECK_EQUAL(3, pa.hypercube().dims()[0]);
-    CHECK_EQUAL(5, pa.hypercube().dims()[1]);
-    CHECK_EQUAL(3, pa.size());
+    EXPECT_EQ(2, pa.rank());
+    EXPECT_EQ(3, pa.hypercube().dims()[0]);
+    EXPECT_EQ(5, pa.hypercube().dims()[1]);
+    EXPECT_EQ(3, pa.size());
         
     for (size_t i=0; i<pa.size(); ++i)
       {
@@ -1391,24 +1391,24 @@ SUITE(TensorOps)
         switch (splitted[0])
           {
           case 0:
-            CHECK_EQUAL(1, int(pa[i])%5);
+            EXPECT_EQ(1, int(pa[i])%5);
             break;
           case 1:
-            CHECK_EQUAL(4, int(pa[i])%5);
+            EXPECT_EQ(4, int(pa[i])%5);
             break;
           case 2:
-            CHECK_EQUAL(3, int(pa[i])%5);
+            EXPECT_EQ(3, int(pa[i])%5);
             break;
           default:
-            CHECK(false);
+            EXPECT_TRUE(false);
           }
       }
     pa.setArgument(sparse,{"1",0});
     pa.setPermutation(permutation);
-    CHECK_EQUAL(2, pa.rank());
-    CHECK_EQUAL(3, pa.hypercube().dims()[1]);
-    CHECK_EQUAL(5, pa.hypercube().dims()[0]);
-    CHECK_EQUAL(4, pa.size());
+    EXPECT_EQ(2, pa.rank());
+    EXPECT_EQ(3, pa.hypercube().dims()[1]);
+    EXPECT_EQ(5, pa.hypercube().dims()[0]);
+    EXPECT_EQ(4, pa.size());
         
     for (size_t i=0; i<pa.size(); ++i)
       {
@@ -1416,29 +1416,29 @@ SUITE(TensorOps)
         switch (splitted[1])
           {
           case 0:
-            CHECK_EQUAL(1, int(pa[i])/5);
+            EXPECT_EQ(1, int(pa[i])/5);
             break;
           case 1:
-            CHECK_EQUAL(4, int(pa[i])/5);
+            EXPECT_EQ(4, int(pa[i])/5);
             break;
           case 2:
-            CHECK_EQUAL(3, int(pa[i])/5);
+            EXPECT_EQ(3, int(pa[i])/5);
             break;
           default:
-            CHECK(false);
+            EXPECT_TRUE(false);
           }
       }
         
   }
 
-  TEST(dimLabels)
+TEST(TensorOps, dimLabels)
   {
     vector<XVector> x{{"x",{Dimension::string,""}}, {"y",{Dimension::string,""}},
                                                       {"z",{Dimension::string,""}}};
     Hypercube hc(x);
     vector<string> expected{"x","y","z"};
-    CHECK_EQUAL(expected.size(), hc.dimLabels().size());
-    CHECK_ARRAY_EQUAL(expected, hc.dimLabels(), expected.size());
+    EXPECT_EQ(expected.size(), hc.dimLabels().size());
+    for (size_t _i=0; _i<expected.size(; ++_i) EXPECT_EQ(expected[_i], hc.dimLabels()[_i]));
   }
 
   struct OuterFixture: public MinskyFixture
@@ -1462,59 +1462,59 @@ SUITE(TensorOps)
     }
   };
   
-  TEST_FIXTURE(OuterFixture, sparseOuterProduct)
+  TEST_F(OuterFixture, sparseOuterProduct)
     {
       model->addWire(*x,*outer,1);
       model->addWire(*x,*outer,2);
       model->addWire(*outer,*z,1);
       reset();
       auto& zz=*z->vValue();
-      CHECK_EQUAL(2, zz.rank());
+      EXPECT_EQ(2, zz.rank());
       vector<unsigned> expectedIndex={6,8,16,18};
-      CHECK_EQUAL(expectedIndex.size(), zz.size());
-      CHECK_ARRAY_EQUAL(expectedIndex, zz.index(), expectedIndex.size());
+      EXPECT_EQ(expectedIndex.size(), zz.size());
+      for (size_t _i=0; _i<expectedIndex.size(; ++_i) EXPECT_EQ(expectedIndex[_i], zz.index()[_i]));
       vector<double> zValues(&zz[0], &zz[0]+zz.size());
       vector<double> expectedValues={1,3,3,9};
-      CHECK_EQUAL(expectedValues.size(), zz.size());
-      CHECK_ARRAY_EQUAL(expectedValues, zValues, expectedValues.size());
+      EXPECT_EQ(expectedValues.size(), zz.size());
+      for (size_t _i=0; _i<expectedValues.size(; ++_i) EXPECT_EQ(expectedValues[_i], zValues[_i]));
     }
   
 
 
-TEST_FIXTURE(OuterFixture, sparse1OuterProduct)
+TEST_F(OuterFixture, sparse1OuterProduct)
     {
       model->addWire(*y,*outer,1);
       model->addWire(*x,*outer,2);
       model->addWire(*outer,*z,1);
       reset();
       auto& zz=*z->vValue();
-      CHECK_EQUAL(2, zz.rank());
+      EXPECT_EQ(2, zz.rank());
       vector<unsigned> expectedIndex={5,6,7,8,9,15,16,17,18,19};
-      CHECK_EQUAL(expectedIndex.size(), zz.size());
-      CHECK_ARRAY_EQUAL(expectedIndex, zz.index(), expectedIndex.size());
+      EXPECT_EQ(expectedIndex.size(), zz.size());
+      for (size_t _i=0; _i<expectedIndex.size(; ++_i) EXPECT_EQ(expectedIndex[_i], zz.index()[_i]));
       vector<double> zValues(&zz[0], &zz[0]+zz.size());
       vector<double> expectedValues={0,1,2,3,4,0,3,6,9,12};
-      CHECK_EQUAL(expectedValues.size(), zz.size());
-      CHECK_ARRAY_EQUAL(expectedValues, zValues, expectedValues.size());
+      EXPECT_EQ(expectedValues.size(), zz.size());
+      for (size_t _i=0; _i<expectedValues.size(; ++_i) EXPECT_EQ(expectedValues[_i], zValues[_i]));
     }
-TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
+TEST_F(OuterFixture, sparse2OuterProduct)
     {
       model->addWire(*x,*outer,1);
       model->addWire(*y,*outer,2);
       model->addWire(*outer,*z,1);
       reset();
       auto& zz=*z->vValue();
-      CHECK_EQUAL(2, zz.rank());
+      EXPECT_EQ(2, zz.rank());
       vector<unsigned> expectedIndex={1,3,6,8,11,13,16,18,21,23};
-      CHECK_EQUAL(expectedIndex.size(), zz.size());
-      CHECK_ARRAY_EQUAL(expectedIndex, zz.index(), expectedIndex.size());
+      EXPECT_EQ(expectedIndex.size(), zz.size());
+      for (size_t _i=0; _i<expectedIndex.size(; ++_i) EXPECT_EQ(expectedIndex[_i], zz.index()[_i]));
       vector<double> zValues(&zz[0], &zz[0]+zz.size());
       vector<double> expectedValues={0,0,1,3,2,6,3,9,4,12};
-      CHECK_EQUAL(expectedValues.size(), zz.size());
-      CHECK_ARRAY_EQUAL(expectedValues, zValues, expectedValues.size());
+      EXPECT_EQ(expectedValues.size(), zz.size());
+      for (size_t _i=0; _i<expectedValues.size(; ++_i) EXPECT_EQ(expectedValues[_i], zValues[_i]));
     }
 
- TEST_FIXTURE(TestFixture,TensorVarValAssignment)
+ TEST_F(TestFixture,TensorVarValAssignment)
    {
      auto ev=make_shared<EvalCommon>();
      double fv[100], sv[10];
@@ -1522,15 +1522,15 @@ TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
      auto startTimestamp=ev->timestamp();
      TensorVarVal tvv(to->vValue(),ev); 
      tvv=fromVal;
-     CHECK_EQUAL(fromVal.rank(), tvv.rank());
-     CHECK_ARRAY_EQUAL(fromVal.shape().data(), tvv.shape().data(), fromVal.rank());
-     CHECK_ARRAY_CLOSE(&fromVal[0], &tvv[0], fromVal.size(), 1e-5);
+     EXPECT_EQ(fromVal.rank(), tvv.rank());
+     for (size_t _i=0; _i<fromVal.rank(; ++_i) EXPECT_EQ(fromVal.shape().data()[_i], tvv.shape().data()[_i]));
+     for (size_t _i=0; _i<fromVal.size(); ++_i) EXPECT_NEAR(&fromVal[0][_i], &tvv[0][_i], 1e-5);
      
-     CHECK(ev->timestamp()>startTimestamp);
-     CHECK_EQUAL(fv,ev->flowVars());
-     CHECK_EQUAL(sv,ev->stockVars());
-     CHECK_EQUAL(sv,ev->stockVars());
-     CHECK_EQUAL(sizeof(fv)/sizeof(fv[0]),ev->fvSize());
+     EXPECT_TRUE(ev->timestamp()>startTimestamp);
+     EXPECT_EQ(fv,ev->flowVars());
+     EXPECT_EQ(sv,ev->stockVars());
+     EXPECT_EQ(sv,ev->stockVars());
+     EXPECT_EQ(sizeof(fv)/sizeof(fv[0]),ev->fvSize());
    }
 
  struct CorrelationFixture: public TestFixture
@@ -1559,7 +1559,7 @@ TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
    }
  };
  
- TEST_FIXTURE(CorrelationFixture,covariance)
+ TEST_F(CorrelationFixture,covariance)
    {
      // calculated on Octave cov(x,y)
      vector<double> cov{
@@ -1577,11 +1577,11 @@ TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
      Eval(*to, covOp)();
      
      auto& toVal=*to->vValue();
-     CHECK_EQUAL(cov.size(), toVal.size());
-     CHECK_ARRAY_CLOSE(cov, &toVal[0], toVal.size(), 1e-4);
+     EXPECT_EQ(cov.size(), toVal.size());
+     for (size_t _i=0; _i<toVal.size(); ++_i) EXPECT_NEAR(cov[_i], &toVal[0][_i], 1e-4);
    }
  
- TEST_FIXTURE(CorrelationFixture,rho)
+ TEST_F(CorrelationFixture,rho)
    {
      // calculated on Octave (cov(x,y)./(std(x)'*std(y)))'
      vector<double> rho{
@@ -1599,11 +1599,11 @@ TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
      Eval(*to, rhoOp)();
      
      auto& toVal=*to->vValue();
-     CHECK_EQUAL(rho.size(), toVal.size());
-     CHECK_ARRAY_CLOSE(rho, &toVal[0], toVal.size(), 1e-4);
+     EXPECT_EQ(rho.size(), toVal.size());
+     for (size_t _i=0; _i<toVal.size(); ++_i) EXPECT_NEAR(rho[_i], &toVal[0][_i], 1e-4);
    }
 
-  TEST_FIXTURE(CorrelationFixture,selfCovariance)
+  TEST_F(CorrelationFixture,selfCovariance)
    {
      // calculated on Octave cov(x)
      vector<double> cov{
@@ -1621,11 +1621,11 @@ TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
      Eval(*to, covOp)();
      
      auto& toVal=*to->vValue();
-     CHECK_EQUAL(cov.size(), toVal.size());
-     CHECK_ARRAY_CLOSE(cov, &toVal[0], toVal.size(), 1e-4);
+     EXPECT_EQ(cov.size(), toVal.size());
+     for (size_t _i=0; _i<toVal.size(); ++_i) EXPECT_NEAR(cov[_i], &toVal[0][_i], 1e-4);
    }
 
- TEST_FIXTURE(CorrelationFixture,nonConformantCovariance)
+ TEST_F(CorrelationFixture,nonConformantCovariance)
    {
      from1Val.hypercube(vector<unsigned>{5,4});
 
@@ -1633,19 +1633,19 @@ TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
      covOp->axis="1";
      g->addItem(covOp);
      Wire w1(from->ports(0),covOp->ports(1)), w2(from1->ports(0),covOp->ports(2)), w3(covOp->ports(0),to->ports(1));
-     CHECK_THROW(Eval(*to, covOp)(), std::exception);
+     EXPECT_THROW(Eval(*to, covOp)(), std::exception);
    }
  
- TEST_FIXTURE(CorrelationFixture,dimensionNotFound)
+ TEST_F(CorrelationFixture,dimensionNotFound)
    {
      OperationPtr covOp(OperationType::covariance);
      covOp->axis="foo";
      g->addItem(covOp);
      Wire w1(from->ports(0),covOp->ports(1)), w2(from1->ports(0),covOp->ports(2)), w3(covOp->ports(0),to->ports(1));
-     CHECK_THROW(Eval(*to, covOp)(), std::exception);
+     EXPECT_THROW(Eval(*to, covOp)(), std::exception);
    }
  
- TEST_FIXTURE(CorrelationFixture,vectorCovariance)
+ TEST_F(CorrelationFixture,vectorCovariance)
    {
      fromVal.hypercube(vector<unsigned>{5});
      from1Val.hypercube(vector<unsigned>{5});
@@ -1658,11 +1658,11 @@ TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
      Eval(*to, covOp)();
      
      auto& toVal=*to->vValue();
-     CHECK_EQUAL(cov.size(), toVal.size());
-     CHECK_ARRAY_CLOSE(cov, &toVal[0], toVal.size(), 1e-4);
+     EXPECT_EQ(cov.size(), toVal.size());
+     for (size_t _i=0; _i<toVal.size(); ++_i) EXPECT_NEAR(cov[_i], &toVal[0][_i], 1e-4);
    }
 
-  TEST_FIXTURE(CorrelationFixture,lineLinearRegression)
+  TEST_F(CorrelationFixture,lineLinearRegression)
    {
      TensorVal x(vector<unsigned>{6}); x=vector<double>{0,1,2,3,4,5};
      TensorVal y(vector<unsigned>{6}); y=vector<double>{1,2,3,4,5,6};
@@ -1678,11 +1678,11 @@ TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
      Eval(*to, op)();
      
      auto& toVal=*to->vValue();
-     CHECK_EQUAL(result.size(), toVal.size());
-     CHECK_ARRAY_CLOSE(result, &toVal[0], toVal.size(), 1e-4);
+     EXPECT_EQ(result.size(), toVal.size());
+     for (size_t _i=0; _i<toVal.size(); ++_i) EXPECT_NEAR(result[_i], &toVal[0][_i], 1e-4);
    }
 
-  TEST_FIXTURE(CorrelationFixture,xvectorValueLinearRegression)
+  TEST_F(CorrelationFixture,xvectorValueLinearRegression)
    {
      Hypercube hc;
      hc.xvectors.emplace_back("0", Dimension(Dimension::value,""), vector<any>{0,1,2,3,4,5});
@@ -1698,11 +1698,11 @@ TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
      Eval(*to, op)();
      
      auto& toVal=*to->vValue();
-     CHECK_EQUAL(result.size(), toVal.size());
-     CHECK_ARRAY_CLOSE(result, &toVal[0], toVal.size(), 1e-4);
+     EXPECT_EQ(result.size(), toVal.size());
+     for (size_t _i=0; _i<toVal.size(); ++_i) EXPECT_NEAR(result[_i], &toVal[0][_i], 1e-4);
    }
 
-  TEST_FIXTURE(CorrelationFixture,xvectorTimeLinearRegression)
+  TEST_F(CorrelationFixture,xvectorTimeLinearRegression)
    {
      Hypercube hc;
      hc.xvectors.emplace_back("0", Dimension(Dimension::time,""),
@@ -1726,12 +1726,12 @@ TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
      Eval(*to, op)();
      
      auto& toVal=*to->vValue();
-     CHECK_EQUAL(result.size(), toVal.size());
+     EXPECT_EQ(result.size(), toVal.size());
      // larger tolerance to allow for years not all being the same length
-     CHECK_ARRAY_CLOSE(result, &toVal[0], toVal.size(), 1e-1);
+     for (size_t _i=0; _i<toVal.size(); ++_i) EXPECT_NEAR(result[_i], &toVal[0][_i], 1e-1);
    }
 
-  TEST_FIXTURE(CorrelationFixture,xvectorStringLinearRegression)
+  TEST_F(CorrelationFixture,xvectorStringLinearRegression)
    {
      Hypercube hc;
      hc.xvectors.emplace_back("0", Dimension(Dimension::string,""), vector<any>{"a","b","c","d","e","f"});
@@ -1747,11 +1747,11 @@ TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
      Eval(*to, op)();
      
      auto& toVal=*to->vValue();
-     CHECK_EQUAL(result.size(), toVal.size());
-     CHECK_ARRAY_CLOSE(result, &toVal[0], toVal.size(), 1e-4);
+     EXPECT_EQ(result.size(), toVal.size());
+     for (size_t _i=0; _i<toVal.size(); ++_i) EXPECT_NEAR(result[_i], &toVal[0][_i], 1e-4);
    }
 
-  TEST_FIXTURE(CorrelationFixture,vectorLinearRegression)
+  TEST_F(CorrelationFixture,vectorLinearRegression)
    {
      TensorVal x(vector<unsigned>{8}); x=vector<double>{0,0,1,1,2,2,3,3};
      TensorVal y(vector<unsigned>{8}); y=vector<double>{0,2,1,3,2,4,3,5};
@@ -1767,11 +1767,11 @@ TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
      Eval(*to, op)();
      
      auto& toVal=*to->vValue();
-     CHECK_EQUAL(result.size(), toVal.size());
-     CHECK_ARRAY_CLOSE(result, &toVal[0], toVal.size(), 1e-4);
+     EXPECT_EQ(result.size(), toVal.size());
+     for (size_t _i=0; _i<toVal.size(); ++_i) EXPECT_NEAR(result[_i], &toVal[0][_i], 1e-4);
    }
 
-  TEST_FIXTURE(CorrelationFixture,matrixLinearRegression)
+  TEST_F(CorrelationFixture,matrixLinearRegression)
    {
      TensorVal x(vector<unsigned>{8,2}); x=vector<double>{0,0,1,1,2,2,3,3,0,0,1,1,2,2,3,3};
      TensorVal y(vector<unsigned>{8,2}); y=vector<double>{0,2,1,3,2,4,3,5,1,3,3,5,5,7,7,9};
@@ -1788,13 +1788,13 @@ TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
      Eval(*to, op)();
      
      auto& toVal=*to->vValue();
-     CHECK_EQUAL(result.size(), toVal.size());
-     CHECK_ARRAY_CLOSE(result, &toVal[0], toVal.size(), 1e-4);
-     CHECK_EQUAL(x.rank(), toVal.rank());
-     CHECK_ARRAY_EQUAL(x.hypercube().dims(), toVal.hypercube().dims(), x.rank());
+     EXPECT_EQ(result.size(), toVal.size());
+     for (size_t _i=0; _i<toVal.size(); ++_i) EXPECT_NEAR(result[_i], &toVal[0][_i], 1e-4);
+     EXPECT_EQ(x.rank(), toVal.rank());
+     for (size_t _i=0; _i<x.rank(; ++_i) EXPECT_EQ(x.hypercube().dims()[_i], toVal.hypercube().dims()[_i]));
    }
 
-  TEST_FIXTURE(CorrelationFixture,allMatrixLinearRegression)
+  TEST_F(CorrelationFixture,allMatrixLinearRegression)
    {
      TensorVal x(vector<unsigned>{8,2}); x=vector<double>{0,0,1,1,2,2,3,3,0,0,1,1,2,2,3,3};
      TensorVal y(vector<unsigned>{8,2}); y=vector<double>{0,2,1,3,2,4,3,5,0,2,1,3,2,4,3,5};
@@ -1811,12 +1811,11 @@ TEST_FIXTURE(OuterFixture, sparse2OuterProduct)
      Eval(*to, op)();
      
      auto& toVal=*to->vValue();
-     CHECK_EQUAL(result.size(), toVal.size());
-     CHECK_ARRAY_CLOSE(result, &toVal[0], toVal.size(), 1e-4);
-     CHECK_EQUAL(x.rank(), toVal.rank());
-     CHECK_ARRAY_EQUAL(x.hypercube().dims(), toVal.hypercube().dims(), x.rank());
+     EXPECT_EQ(result.size(), toVal.size());
+     for (size_t _i=0; _i<toVal.size(); ++_i) EXPECT_NEAR(result[_i], &toVal[0][_i], 1e-4);
+     EXPECT_EQ(x.rank(), toVal.rank());
+     for (size_t _i=0; _i<x.rank(; ++_i) EXPECT_EQ(x.hypercube().dims()[_i], toVal.hypercube().dims()[_i]));
    }
 
 
  
-}
