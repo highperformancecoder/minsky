@@ -27,7 +27,7 @@ using namespace minsky;
 
 namespace
 {
-  struct TestFixture: public Minsky
+  struct TestFixture: public Minsky, testing::Test
   {
     LocalMinsky lm;
     string savedMessage;

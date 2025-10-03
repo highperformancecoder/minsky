@@ -25,9 +25,6 @@
 #include <cairo/cairo.h>
 #include "operation.h"
 #include "variable.h"
-#undef True
-#undef Bool
-#undef None
 
 namespace minsky
 {

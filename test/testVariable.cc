@@ -18,14 +18,13 @@
 */
 
 #include "cairoItems.h"
-#undef True
-#include <gtest/gtest.h>
 #include "variableValue.h"
 #include "group.h"
 #include "selection.h"
 #include "lasso.h"
 #include "valueId.h"
 #include "minsky_epilogue.h"
+#include <gtest/gtest.h>
 
 using namespace minsky;
 

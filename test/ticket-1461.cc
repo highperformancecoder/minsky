@@ -35,7 +35,7 @@ namespace
     }
     void message(const string& x) override {savedMessage=x;}
   };
-}
+
 
 TEST_F(TestFixture, clone)
   {
@@ -63,3 +63,4 @@ TEST_F(TestFixture, copy)
     EXPECT_EQ("m",varCopy.unitsStr());
   }
 
+}

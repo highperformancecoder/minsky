@@ -78,7 +78,7 @@ TEST(Units, set)
       EXPECT_TRUE(Units(a.str())==a);
     }
 
-  struct TestOp: public Minsky, public ::testing::Test
+  struct TestOp: public Minsky
   {
     VariablePtr from1{VariableType::flow, "a"}, from2{VariableType::flow, "b"};
     OperationPtr opp;
