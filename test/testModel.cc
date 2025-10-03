@@ -32,14 +32,14 @@ using namespace std;
 namespace
 {
 
-  struct TestFixture: public Minsky, public ::testing::Test
+  struct ModelSuite: public Minsky, public ::testing::Test
   {
     GroupPtr group0;
     ItemPtr a,b,c;
     WirePtr ab,bc; 
     LocalMinsky lm;
 
-    TestFixture(): lm(*this)
+    ModelSuite(): lm(*this)
     {
       a=model->addItem(new Variable<VariableType::flow>("a"));
       b=model->addItem(new Variable<VariableType::flow>("b"));
@@ -109,7 +109,7 @@ namespace
 }
 
 
-TEST_F(TestFixture, accessibleVars)
+TEST_F(ModelSuite, accessibleVars)
 {
   vector<string> globalAccessibleVars{"c"};
   vector<string> group0AccessibleVars{":c","a","b","output1"};
@@ -122,7 +122,7 @@ TEST_F(TestFixture, accessibleVars)
   for (size_t _i=0; _i<group0AccessibleVars.size(); ++_i) EXPECT_EQ(group0AccessibleVars[_i], a->variableCast()->accessibleVars()[_i]);
 }
 
-TEST_F(TestFixture, makeSubroutine)
+TEST_F(ModelSuite, makeSubroutine)
 {
   group0->makeSubroutine();
   for (auto& i: group0->items)
@@ -130,7 +130,7 @@ TEST_F(TestFixture, makeSubroutine)
       EXPECT_TRUE(v->rawName()[0]!=':');
 }
   
-TEST_F(TestFixture, SelectGroup)
+TEST_F(ModelSuite, SelectGroup)
 {
   auto& g=*model->addGroup(new Group);
   g.addItem(a);
@@ -150,7 +150,7 @@ TEST_F(TestFixture, SelectGroup)
   model->removeGroup(g); // why is this needed???
 }
 
-TEST_F(TestFixture, addVariable)
+TEST_F(ModelSuite, addVariable)
 {
   group0->addItem(c);
   EXPECT_TRUE(model->uniqueItems());
@@ -170,7 +170,7 @@ TEST_F(TestFixture, addVariable)
   EXPECT_EQ(1,model->wires.size());
 }
 
-TEST_F(TestFixture, addIntegral)
+TEST_F(ModelSuite, addIntegral)
 {
   unsigned numItems=model->numItems();
   auto integ=make_shared<IntOp>();
@@ -183,7 +183,7 @@ TEST_F(TestFixture, addIntegral)
   EXPECT_TRUE(integ->intVar->group.lock()==group0);
 }
   
-TEST_F(TestFixture, addBookmark)
+TEST_F(ModelSuite, addBookmark)
 {
   model->addBookmark("bookmark0");
   EXPECT_EQ("bookmark0",model->bookmarkList()[model->bookmarks.size()-1]);
@@ -226,7 +226,7 @@ TEST_F(TestFixture, addBookmark)
 }  
   
 // check that removing then adding an item leaves the group idempotent
-TEST_F(TestFixture, removeAddItem)
+TEST_F(ModelSuite, removeAddItem)
 {
   EXPECT_EQ(1,group0->createdIOvariables.size());
   EXPECT_EQ(3,model->items.size());
@@ -246,7 +246,7 @@ TEST_F(TestFixture, removeAddItem)
   EXPECT_EQ(3,group0->items.size());
 }
 
-TEST_F(TestFixture, displayPlot)
+TEST_F(ModelSuite, displayPlot)
 {
   auto plot=new PlotWidget;
   group0->addItem(plot);
@@ -256,12 +256,12 @@ TEST_F(TestFixture, displayPlot)
   EXPECT_TRUE(!group0->displayPlot.get());
 }
 
-TEST_F(TestFixture, findGroup)
+TEST_F(ModelSuite, findGroup)
 {
   EXPECT_TRUE(model->findGroup(*group0)==group0);
 }
 
-TEST_F(TestFixture, copy)
+TEST_F(ModelSuite, copy)
 {
   auto t=model->addItem(new minsky::Time);
   model->addWire(new Wire(t->ports(0),a->ports(1)));
@@ -346,14 +346,14 @@ TEST_F(GroupFixture, GroupRecursiveDo)
   {return dynamic_cast<Operation<OperationType::add>*>(i->get());}));
 }
   
-TEST_F(TestFixture, removeGroup)
+TEST_F(ModelSuite, removeGroup)
 {
   auto g=model->removeGroup(*group0);
   EXPECT_TRUE(g==group0);
   EXPECT_TRUE(find(model->groups.begin(),model->groups.end(),group0)==model->groups.end());
 }
    
-TEST_F(TestFixture,moveContents)
+TEST_F(ModelSuite,moveContents)
 {
   group0->addItem(new Group);
   unsigned numItems=model->numItems();
@@ -388,7 +388,7 @@ TEST_F(GroupFixture, checkAddIORegion)
     
 
 
-TEST_F(TestFixture, getItemAt)
+TEST_F(ModelSuite, getItemAt)
 {
   // zoom to display group0 to make a & b visible
   canvas.item=group0;
@@ -404,7 +404,7 @@ TEST_F(TestFixture, getItemAt)
   EXPECT_TRUE(group0==canvas.item);
 }
   
-TEST_F(TestFixture, getWireAt)
+TEST_F(ModelSuite, getWireAt)
 {
   auto from=a->ports(0).lock(), to=b->ports(1).lock();
   float x=0.5f*(from->x()+to->x())+1;
@@ -455,7 +455,7 @@ TEST_F(CanvasFixture,findVariableDefinition)
 
 }
 
-TEST_F(TestFixture,moveItem)
+TEST_F(ModelSuite,moveItem)
 {
   cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr));
   c->draw(surf.cairo());// reposition ports
@@ -466,7 +466,7 @@ TEST_F(TestFixture,moveItem)
   EXPECT_EQ(500,c->y());
 }
     
-TEST_F(TestFixture,resizeVariable)
+TEST_F(ModelSuite,resizeVariable)
 {
   c->moveTo(400,300);
   c->updateBoundingBox();
@@ -480,7 +480,7 @@ TEST_F(TestFixture,resizeVariable)
   EXPECT_NEAR(800, c->bottom(),4*portRadiusMult);
 }    
 
-TEST_F(TestFixture,resizeOperation)
+TEST_F(ModelSuite,resizeOperation)
 {
   OperationPtr add(OperationType::add);
   model->addItem(add);
@@ -495,7 +495,7 @@ TEST_F(TestFixture,resizeOperation)
   EXPECT_NEAR(800,add->bottom(),4*portRadiusMult);
 }    
 
-TEST_F(TestFixture,onSlider)
+TEST_F(ModelSuite,onSlider)
 {
   auto cc=model->addItem(new Variable<VariableType::flow>("cc"));
   cc->moveTo(500,300);
@@ -529,7 +529,7 @@ TEST_F(TestFixture,onSlider)
   EXPECT_EQ(cv->sliderMin(), cv->value());
 }
 
-TEST_F(TestFixture,lasso)
+TEST_F(ModelSuite,lasso)
 {
   canvas.selection.clear();
   canvas.mouseDown(250,0); //Adjusted for new shape of operation icons. For ticket 362.
@@ -737,7 +737,7 @@ TEST_F(CanvasFixture, removeItemFromItsGroup)
   EXPECT_TRUE(a->visible());
 }
 
-TEST_F(TestFixture,selectAllVariables)
+TEST_F(ModelSuite,selectAllVariables)
 {
   model->moveContents(*group0);
   canvas.item=a;
@@ -772,7 +772,7 @@ TEST_F(TestFixture,selectAllVariables)
   EXPECT_TRUE(canvas.selection.items[1].get()==integ);
 }
     
-TEST_F(TestFixture,renameAllInstances)
+TEST_F(ModelSuite,renameAllInstances)
 {
         
   model->moveContents(*group0);
@@ -827,7 +827,7 @@ TEST_F(TestFixture,renameAllInstances)
   EXPECT_TRUE(integ->description()=="bar");
 }
 
-TEST_F(TestFixture,ungroupItem)
+TEST_F(ModelSuite,ungroupItem)
 {
   unsigned originalNumItems=model->numItems();
   unsigned originalNumGroups=model->numGroups();
@@ -837,7 +837,7 @@ TEST_F(TestFixture,ungroupItem)
   EXPECT_EQ(originalNumGroups-1, model->numGroups());
 }
 
-TEST_F(TestFixture,copyItem)
+TEST_F(ModelSuite,copyItem)
 {
   model->addItem(a);
   unsigned originalNumItems=model->numItems();
@@ -858,7 +858,7 @@ TEST_F(TestFixture,copyItem)
             dynamic_cast<VariableBase*>(model->items.back().get())->valueId());
 }
 
-TEST_F(TestFixture,openGroupInCanvas)
+TEST_F(ModelSuite,openGroupInCanvas)
 {
   // remove a from group0, which should add an invariable
   model->addItem(a);
@@ -916,7 +916,7 @@ TEST_F(CanvasFixture,copyVars)
     EXPECT_EQ(2, idCnt[v->valueId()]);    
 }
 
-TEST_F(TestFixture,handleArrows)
+TEST_F(ModelSuite,handleArrows)
 {
   // need a variable that is not defined
   auto v=model->addItem(new Variable<VariableType::parameter>("v"))->variableCast();
@@ -937,7 +937,7 @@ TEST_F(TestFixture,handleArrows)
   EXPECT_EQ(0,v->value());
 }
     
-TEST_F(TestFixture,selectVar)
+TEST_F(ModelSuite,selectVar)
 {
   EXPECT_TRUE(!group0->outVariables.empty());
   auto v=group0->outVariables[0];
@@ -1049,7 +1049,7 @@ TEST_F(GodleyIconFixture, select)
   EXPECT_TRUE(!select(x(),y()));
 }
   
-TEST_F(TestFixture, update)
+TEST_F(ModelSuite, update)
 {
   auto godley=new GodleyIcon;
   model->addItem(godley);
@@ -1093,7 +1093,7 @@ TEST_F(TestFixture, update)
 }
 
 
-TEST_F(TestFixture,saveGroupAndInsert)
+TEST_F(ModelSuite,saveGroupAndInsert)
 {
   unsigned origNumItems=model->numItems();
   unsigned origNumGroups=model->numGroups();
@@ -1107,7 +1107,7 @@ TEST_F(TestFixture,saveGroupAndInsert)
 }
 
 
-TEST_F(TestFixture, description)
+TEST_F(ModelSuite, description)
 {
   auto intop=new IntOp;
   model->addItem(intop);
@@ -1608,7 +1608,7 @@ TEST_F(GodleyTableWindowFixture, undoRedo)
   EXPECT_EQ("xxx",t.cell(1,0));
 }
 
-TEST_F(TestFixture, copyBetweenCols)
+TEST_F(ModelSuite, copyBetweenCols)
 {
   // test scenario in bug #1212, where item is dragged from one column to another in linked tables
   auto godley1=dynamic_pointer_cast<GodleyIcon>(model->addItem(new GodleyIcon));
@@ -1659,7 +1659,7 @@ TEST_F(TestFixture, copyBetweenCols)
   EXPECT_EQ(1,fc.coef);
 }
    
-TEST_F(TestFixture, almalgamateLines)
+TEST_F(ModelSuite, almalgamateLines)
 {
   // test scenario in bug #1212, where item is dragged from one column to another in linked tables
   auto godley1=dynamic_pointer_cast<GodleyIcon>(model->addItem(new GodleyIcon));
@@ -1713,7 +1713,7 @@ TEST_F(TestFixture, almalgamateLines)
       
 }
 
-TEST_F(TestFixture, saveAsGroup)
+TEST_F(ModelSuite, saveAsGroup)
 {
   group0->inVariables.push_back(a);
   group0->makeSubroutine();

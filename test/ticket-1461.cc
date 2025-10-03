@@ -25,19 +25,17 @@ using namespace minsky;
 
 namespace
 {
-  class TestFixture : public Minsky, public ::testing::Test
+  class Ticket1461 : public Minsky, public ::testing::Test
   {
   public:
     LocalMinsky lm;
     string savedMessage;
-    TestFixture(): lm(*this)
-    {
-    }
+    Ticket1461(): lm(*this){}
     void message(const string& x) override {savedMessage=x;}
   };
 
 
-TEST_F(TestFixture, clone)
+TEST_F(Ticket1461, clone)
   {
     canvas.addVariable("foo",VariableType::flow);
     auto var=canvas.itemFocus->variableCast();
@@ -47,7 +45,7 @@ TEST_F(TestFixture, clone)
     EXPECT_EQ("hello",clone->tooltip());
   }
 
-TEST_F(TestFixture, copy)
+TEST_F(Ticket1461, copy)
   {
     canvas.addVariable("foo", VariableType::flow);
     auto& var=*canvas.itemFocus->variableCast();

@@ -24,18 +24,18 @@ using namespace minsky;
 
 namespace
 {
-  class TestFixture : public Minsky, public ::testing::Test
+  class PhillipsSuite : public Minsky, public ::testing::Test
   {
   public:
     LocalMinsky lm;
-    TestFixture(): lm(*this)
+    PhillipsSuite(): lm(*this)
     {
     }
   };
 }
 
 
-TEST_F(TestFixture,fromInit)
+TEST_F(PhillipsSuite,fromInit)
   {
     load("1Free.mky");
     phillipsDiagram.clear();
@@ -86,7 +86,7 @@ TEST_F(TestFixture,fromInit)
 
   }
 
-  TEST_F(TestFixture,emptyModelClears)
+  TEST_F(PhillipsSuite,emptyModelClears)
   {
     load("1Free.mky");
     phillipsDiagram.init();
@@ -100,7 +100,7 @@ TEST_F(TestFixture,fromInit)
     EXPECT_TRUE(phillipsDiagram.flows.empty());
   }
 
-  TEST_F(TestFixture,panning)
+  TEST_F(PhillipsSuite,panning)
     {
       phillipsDiagram.moveTo(100,100);
       vector expected{100,100};
@@ -109,7 +109,7 @@ TEST_F(TestFixture,fromInit)
     }
 
   
-  TEST_F(TestFixture,movingItem)
+  TEST_F(PhillipsSuite,movingItem)
     {
       load("1Free.mky");
       phillipsDiagram.init();
@@ -122,7 +122,7 @@ TEST_F(TestFixture,fromInit)
       EXPECT_NEAR(y,phillipsStock.y(),0.1);
     }
 
-    TEST_F(TestFixture,rotateItem)
+    TEST_F(PhillipsSuite,rotateItem)
     {
       load("1Free.mky");
       phillipsDiagram.init();
@@ -134,7 +134,7 @@ TEST_F(TestFixture,fromInit)
       EXPECT_NEAR(45,phillipsStock.rotation(),0.1);
     }
     
-    TEST_F(TestFixture,bendFlow)
+    TEST_F(PhillipsSuite,bendFlow)
     {
       load("1Free.mky");
       phillipsDiagram.init();

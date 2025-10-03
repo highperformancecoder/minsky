@@ -27,11 +27,11 @@ using namespace minsky;
 
 namespace
 {
-  struct TestFixture: public Minsky, testing::Test
+  struct MinskySuite: public Minsky, testing::Test
   {
     LocalMinsky lm;
     string savedMessage;
-    TestFixture(): lm(*this)
+    MinskySuite(): lm(*this)
     {
     }
     void message(const string& x) override {savedMessage=x;}
@@ -51,7 +51,7 @@ namespace
     e ------------ f
   */
 
-  TEST_F(TestFixture,constructEquationsEx1)
+  TEST_F(MinskySuite,constructEquationsEx1)
     {
       auto gi=new GodleyIcon;
       model->addItem(gi);
@@ -143,7 +143,7 @@ namespace
     K
   */
 
-  TEST_F(TestFixture,constructEquationsEx2)
+  TEST_F(MinskySuite,constructEquationsEx2)
     {
       model->addItem(VariablePtr(VariableType::flow,"g"));
       model->addItem(VariablePtr(VariableType::flow,"h"));
@@ -188,7 +188,7 @@ namespace
 
     }
 
-  TEST_F(TestFixture,godleyEval)
+  TEST_F(MinskySuite,godleyEval)
     {
       auto gi=new GodleyIcon;
       model->addItem(gi);
@@ -236,7 +236,7 @@ namespace
     /
     e ------------ f
   */
-  TEST_F(TestFixture,derivative)
+  TEST_F(MinskySuite,derivative)
     {
       auto gi=new GodleyIcon;
       model->addItem(gi);
@@ -305,7 +305,7 @@ namespace
       EXPECT_EQ(0,jac(3,3));
     }
 
-  TEST_F(TestFixture,integrals)
+  TEST_F(MinskySuite,integrals)
     {
       // First, integrate a constant
       auto op1=model->addItem(new VarConstant);
@@ -350,7 +350,7 @@ namespace
     b
   */
 
-  TEST_F(TestFixture,cyclicThrows)
+  TEST_F(MinskySuite,cyclicThrows)
     {
       // First, integrate a constant
       auto op1=model->addItem(OperationPtr(OperationType::add));
@@ -376,7 +376,7 @@ namespace
     b
   */
 
-  TEST_F(TestFixture,cyclicIntegrateDoesntThrow)
+  TEST_F(MinskySuite,cyclicIntegrateDoesntThrow)
     {
       // First, integrate a constant
       auto op1=model->addItem(OperationPtr(OperationType::integrate));
@@ -394,7 +394,7 @@ namespace
       constructEquations();
     }
 
-  TEST_F(TestFixture,godleyIconVariableOrder)
+  TEST_F(MinskySuite,godleyIconVariableOrder)
     {
       auto& g=dynamic_cast<GodleyIcon&>(*model->addItem(new GodleyIcon));
       g.table.dimension(3,4);
@@ -421,7 +421,7 @@ namespace
   */
    
 
-  TEST_F(TestFixture,multiVariableInputsAdd)
+  TEST_F(MinskySuite,multiVariableInputsAdd)
     {
       auto varA = model->addItem(VariablePtr(VariableType::flow, "a"));
       auto varB = model->addItem(VariablePtr(VariableType::flow, "b"));
@@ -453,7 +453,7 @@ namespace
       EXPECT_NEAR(0.3, variableValues[":c"]->value(), 1e-5);
     }
 
-  TEST_F(TestFixture,multiVariableInputsSubtract)
+  TEST_F(MinskySuite,multiVariableInputsSubtract)
     {
       auto varA = model->addItem(VariablePtr(VariableType::flow, "a"));
       auto varB = model->addItem(VariablePtr(VariableType::flow, "b"));
@@ -484,7 +484,7 @@ namespace
       EXPECT_NEAR(-0.3, variableValues[":c"]->value(), 1e-5);
     }
 
-  TEST_F(TestFixture,multiVariableInputsMultiply)
+  TEST_F(MinskySuite,multiVariableInputsMultiply)
     {
       auto varA = model->addItem(VariablePtr(VariableType::flow, "a"));
       auto varB = model->addItem(VariablePtr(VariableType::flow, "b"));
@@ -515,7 +515,7 @@ namespace
       EXPECT_NEAR(0.02, variableValues[":c"]->value(), 1e-5);
     }
 
-  TEST_F(TestFixture,multiVariableInputsDivide)
+  TEST_F(MinskySuite,multiVariableInputsDivide)
     {
       auto varA = model->addItem(VariablePtr(VariableType::flow, "a"));
       auto varB = model->addItem(VariablePtr(VariableType::flow, "b"));
@@ -710,7 +710,7 @@ TEST(TensorOps, evalOpEvaluate)
     EXPECT_NEAR(0.2,frac.evaluate(3.2,0),1e-6);
   }
   
-  TEST_F(TestFixture,multiGodleyRules)
+  TEST_F(MinskySuite,multiGodleyRules)
     {
       auto g1=new GodleyIcon; model->addItem(g1);
       auto g2=new GodleyIcon; model->addItem(g2);
@@ -791,7 +791,7 @@ TEST(TensorOps, evalOpEvaluate)
 
     }
 
-  TEST_F(TestFixture,matchingTableColumns)
+  TEST_F(MinskySuite,matchingTableColumns)
     {
       auto g1=new GodleyIcon; model->addItem(g1);
       auto g2=new GodleyIcon; model->addItem(g2);
@@ -879,7 +879,7 @@ TEST(TensorOps, evalOpEvaluate)
       EXPECT_EQ("row3",godley2.cell(3,0)); // check label transferred
     }
 
-  TEST_F(TestFixture,bug1157)
+  TEST_F(MinskySuite,bug1157)
     {
       auto g1=new GodleyIcon; model->addItem(g1);
       auto g2=new GodleyIcon; model->addItem(g2);
@@ -916,7 +916,7 @@ TEST(TensorOps, evalOpEvaluate)
       EXPECT_EQ("2b",godley2.cell(3,1));  // sign should be transferred
     }
 
-  TEST_F(TestFixture,importDuplicateColumn)
+  TEST_F(MinskySuite,importDuplicateColumn)
     {
       auto g1=new GodleyIcon; model->addItem(g1);
       auto g2=new GodleyIcon; model->addItem(g2);
@@ -952,7 +952,7 @@ TEST(TensorOps, evalOpEvaluate)
       EXPECT_EQ("",godley1.cell(2,2));
     }
 
-  TEST_F(TestFixture,godleyRowSums)
+  TEST_F(MinskySuite,godleyRowSums)
     {
       auto g1=new GodleyIcon; model->addItem(g1);
       GodleyTable& godley1=g1->table;
@@ -966,7 +966,7 @@ TEST(TensorOps, evalOpEvaluate)
       EXPECT_EQ("a-2b+c",godley1.rowSum(1));
     }
 
-  TEST_F(TestFixture,godleyMoveRowCol)
+  TEST_F(MinskySuite,godleyMoveRowCol)
     {
       auto g1=new GodleyIcon; model->addItem(g1);
       GodleyTable& godley1=g1->table;
@@ -991,7 +991,7 @@ TEST(TensorOps, evalOpEvaluate)
       EXPECT_EQ("2b1",godley1.cell(1,1));
     }
 
-  TEST_F(TestFixture,godleyNameUnique)
+  TEST_F(MinskySuite,godleyNameUnique)
     {
       auto g1=new GodleyIcon; model->addItem(g1);
       auto g2=new GodleyIcon; model->addItem(g2);
@@ -1007,7 +1007,7 @@ TEST(TensorOps, evalOpEvaluate)
       EXPECT_TRUE(godley1.title!=godley3.title);
     }
 
-    TEST_F(TestFixture,clearInitCond)
+    TEST_F(MinskySuite,clearInitCond)
     {
       auto g1=new GodleyIcon; model->addItem(g1);
       EXPECT_TRUE(g1->table.initialConditionRow(1));
@@ -1029,7 +1029,7 @@ TEST(TensorOps, evalOpEvaluate)
       \---------------------------------/
     */
     
-    TEST_F(TestFixture,varNameScoping)
+    TEST_F(MinskySuite,varNameScoping)
     {
       auto g0=model->addGroup(new Group);
       auto g1=model->addGroup(new Group);
@@ -1105,7 +1105,7 @@ TEST(TensorOps, evalOpEvaluate)
 
     }
 
-    TEST_F(TestFixture,cantMultiplyDefineVars)
+    TEST_F(MinskySuite,cantMultiplyDefineVars)
     {
       VariablePtr f1(VariableType::flow,"foo");
       VariablePtr f2(VariableType::flow,"foo");
@@ -1119,7 +1119,7 @@ TEST(TensorOps, evalOpEvaluate)
       EXPECT_EQ(0, f2->ports(1).lock()->wires().size());
     }
 
-    TEST_F(TestFixture,MultiplyDefinedVarsThrowsOnReset)
+    TEST_F(MinskySuite,MultiplyDefinedVarsThrowsOnReset)
     {
       VariablePtr f1(VariableType::flow,"foo");
       VariablePtr f2(VariableType::flow,"foo");
@@ -1135,7 +1135,7 @@ TEST(TensorOps, evalOpEvaluate)
       EXPECT_THROW(reset(), std::exception);
     }
 
-    TEST_F(TestFixture, RemoveDefinitionsFromPastedVars)
+    TEST_F(MinskySuite, RemoveDefinitionsFromPastedVars)
       {
         VariablePtr a(VariableType::flow,"a");
         VariablePtr b(VariableType::flow,"b");
@@ -1153,7 +1153,7 @@ TEST(TensorOps, evalOpEvaluate)
         EXPECT_TRUE(definingVar(":b")==b);
       }
 
-    TEST_F(TestFixture, DefinitionPasted)
+    TEST_F(MinskySuite, DefinitionPasted)
       {
         VariablePtr a(VariableType::flow,"a");
         VariablePtr b(VariableType::flow,"b");
@@ -1171,7 +1171,7 @@ TEST(TensorOps, evalOpEvaluate)
         EXPECT_TRUE(definingVar(":b")!=b);
       }
     
-    TEST_F(TestFixture, PastedIntOpShowsMessage)
+    TEST_F(MinskySuite, PastedIntOpShowsMessage)
       {
         auto intOp=make_shared<IntOp>();
         intOp->description("foo");
@@ -1183,7 +1183,7 @@ TEST(TensorOps, evalOpEvaluate)
         EXPECT_TRUE(savedMessage.size()); // check that pop message is written
       }
 
-    TEST_F(TestFixture, RetypePastedIntegralVariable)
+    TEST_F(MinskySuite, RetypePastedIntegralVariable)
       {
         auto intOp=make_shared<IntOp>();
         intOp->description("foo");
@@ -1201,7 +1201,7 @@ TEST(TensorOps, evalOpEvaluate)
         EXPECT_EQ(clonedIntVar->name(), model->items[1]->variableCast()->name());
       }
     
-    TEST_F(TestFixture, cut)
+    TEST_F(MinskySuite, cut)
       {
         auto a=model->addItem(new Variable<VariableType::flow>("a"));
         auto integ=new IntOp;
@@ -1229,7 +1229,7 @@ TEST(TensorOps, evalOpEvaluate)
         EXPECT_EQ(0,model->numGroups());
       }
 
-    TEST_F(TestFixture,renameAll)
+    TEST_F(MinskySuite,renameAll)
     {
       auto gi=make_shared<GodleyIcon>();
       model->addItem(gi);

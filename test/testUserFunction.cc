@@ -25,7 +25,7 @@
 using namespace minsky;
 using namespace std;
 
-class MinskyFixture : public Minsky, public ::testing::Test
+class UserFunctionSuite : public Minsky, public ::testing::Test
 {
 public:
   LocalMinsky lm{*this};
@@ -39,7 +39,7 @@ TEST(UserFunction, symbolNames1)
     EXPECT_TRUE(f.symbolNames()==expected);
   }
 
-TEST_F(MinskyFixture, referenceMinskyVariables)
+TEST_F(UserFunctionSuite, referenceMinskyVariables)
   {
     variableValues.emplace(":foo", VariableType::flow);
     variableValues.emplace(":bar", VariableType::flow);
@@ -50,7 +50,7 @@ TEST_F(MinskyFixture, referenceMinskyVariables)
     EXPECT_EQ(8, f({}));
   }
 
-TEST_F(MinskyFixture, arguments)
+TEST_F(UserFunctionSuite, arguments)
   {
     UserFunction f("test","x+y");
     f.argNames={"x","y"};
@@ -58,14 +58,14 @@ TEST_F(MinskyFixture, arguments)
     EXPECT_EQ(7, f({3,4}));
   }  
 
-TEST_F(MinskyFixture, error)
+TEST_F(UserFunctionSuite, error)
   {
     UserFunction f("test","x+");
     f.argNames={"x","y"};
     EXPECT_THROW(f.compile(), std::exception);
   }  
 
-TEST_F(MinskyFixture, stringProcessing)
+TEST_F(UserFunctionSuite, stringProcessing)
   {
      UserFunction f("test(x)","x:='foo\\'s bar'[]");
      f.compile(); // checks this is syntactically valid
@@ -74,7 +74,7 @@ TEST_F(MinskyFixture, stringProcessing)
      EXPECT_EQ("x",sn[0]);
   }
 
-TEST_F(MinskyFixture, units)
+TEST_F(UserFunctionSuite, units)
   {
     variableValues.emplace(":foo", VariableType::flow);
     variableValues.emplace(":bar", VariableType::flow);

@@ -24,11 +24,11 @@ using namespace minsky;
 
 namespace
 {
-  class MinskyFixture : public Minsky, public ::testing::Test
+  class PubTabSuite : public Minsky, public ::testing::Test
   {
   public:
     LocalMinsky lm;
-    MinskyFixture(): lm(*this)
+    PubTabSuite(): lm(*this)
     {
     }
   };
@@ -38,7 +38,7 @@ class PubTabTest : public PubTab, public ::testing::Test
 {
 };
 
-TEST_F(MinskyFixture,removeSelf)
+TEST_F(PubTabSuite,removeSelf)
   {
     assert(!publicationTabs.empty());
     auto numPubTabs=publicationTabs.size();
@@ -134,7 +134,7 @@ TEST_F(MinskyFixture,removeSelf)
         mouseMove(100,100);
         EXPECT_TRUE(items[0].itemRef->mouseFocus);
       }
-     TEST_F(MinskyFixture,moveSlider)
+     TEST_F(PubTabSuite,moveSlider)
        {
          VariablePtr var(VariableBase::parameter, "foobar");
          // this member should always be initialised, but occasionally is not, causing the test to fail. Why?
@@ -151,7 +151,7 @@ TEST_F(MinskyFixture,removeSelf)
          tab.mouseUp(x+0.5*var->width(),y);
          EXPECT_NEAR(var->sliderMax(),var->value(),0.1);
        }
-     TEST_F(MinskyFixture,redraw)
+     TEST_F(PubTabSuite,redraw)
        {
          setGodleyIconResource("bank.svg");
          load("1Free.mky");
@@ -173,14 +173,14 @@ TEST_F(MinskyFixture,removeSelf)
          publicationTabs[0].renderToSVG("1FreeWiringEditorPubNot.svg");
        }
 
-     TEST_F(MinskyFixture,addNewTab)
+     TEST_F(PubTabSuite,addNewTab)
        {
          EXPECT_EQ(1,publicationTabs.size());
          addNewPublicationTab("foo");
          EXPECT_EQ(2,publicationTabs.size());
          EXPECT_EQ("foo",publicationTabs.back().name);
        }
-     TEST_F(MinskyFixture,addItem)
+     TEST_F(PubTabSuite,addItem)
        {
          canvas.addOperation(OperationType::time);
          canvas.mouseUp(100,100);

@@ -24,17 +24,17 @@ using namespace minsky;
 
 namespace
 {
-  class MinskyFixture : public Minsky, public ::testing::Test
+  class VariablePaneSuite : public Minsky, public ::testing::Test
   {
   public:
     LocalMinsky lm;
-    MinskyFixture(): lm(*this)
+    VariablePaneSuite(): lm(*this)
     {
     }
   };
 }
 
-TEST_F(MinskyFixture, updateAndDraw)
+TEST_F(VariablePaneSuite, updateAndDraw)
   {
     load("1Free.mky");
     variablePane.updateWithHeight(100);
@@ -54,7 +54,7 @@ TEST_F(MinskyFixture, updateAndDraw)
     variablePane.renderToSVG("1FreeNoStock.svg");
   }
 
-TEST_F(MinskyFixture, emplace)
+TEST_F(VariablePaneSuite, emplace)
   {
     load("1Free.mky");
     variablePane.updateWithHeight(100);
