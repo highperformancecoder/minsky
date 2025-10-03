@@ -116,6 +116,8 @@ public:
   }
 };
 
+class TensorOpSuite1: public TensorOpSuite {};
+
 class MinskyTensorOpSuite : public Minsky, public ::testing::Test
 {
 public:
@@ -1290,7 +1292,7 @@ TEST_F(TensorValFixture, imposeDimensions)
     EXPECT_TRUE(i.type==Dimension::time);
 }
 
-TEST(TensorOps, tensorValVectorIndex)
+TEST(TensorOp, tensorValVectorIndex)
 {
   TensorVal tv(vector<unsigned>{5,3,2});
   for (size_t i=0; i<tv.size(); ++i) tv[i]=i;
@@ -1301,7 +1303,7 @@ TEST(TensorOps, tensorValVectorIndex)
   EXPECT_TRUE(isnan(tv({2,1,0})));
 }
     
-TEST(TensorOps, tensorValAssignment)
+TEST(TensorOp, tensorValAssignment)
 {
   auto arg=std::make_shared<TensorVal>(vector<unsigned>{5,3,2});
   for (size_t i=0; i<arg->size(); ++i) (*arg)[i]=i;
@@ -1319,7 +1321,7 @@ TEST(TensorOps, tensorValAssignment)
     EXPECT_EQ(scan[i], tv[i]);
 }
 
-TEST(TensorOps, permuteAxis)
+TEST(TensorOp, permuteAxis)
 {
   // 5x5 example
   Hypercube hc{5,5};
@@ -1432,7 +1434,7 @@ TEST(TensorOps, permuteAxis)
         
 }
 
-TEST(TensorOps, dimLabels)
+TEST(TensorOp, dimLabels)
 {
   vector<XVector> x{{"x",{Dimension::string,""}}, {"y",{Dimension::string,""}},
                     {"z",{Dimension::string,""}}};
@@ -1515,24 +1517,23 @@ TEST_F(OuterFixture, sparse2OuterProduct)
   for (size_t _i=0; _i<expectedValues.size(); ++_i) EXPECT_EQ(expectedValues[_i], zValues[_i]);
 }
 
-//TEST_F(TensorOpSuite,TensorVarValAssignment)
-//{
-//  auto ev=make_shared<EvalCommon>();
-//  double fv[100], sv[10];
-//  ev->update(fv,sizeof(fv)/sizeof(fv[0]),sv);
-//  auto startTimestamp=ev->timestamp();
-//  TensorVarVal tvv(to->vValue(),ev); 
-//  tvv=fromVal;
-//  EXPECT_EQ(fromVal.rank(), tvv.rank());
-//  for (size_t _i=0; _i<fromVal.rank(); ++_i) EXPECT_EQ(fromVal.shape().data()[_i], tvv.shape().data()[_i]);
-//  for (size_t _i=0; _i<fromVal.size(); ++_i) EXPECT_NEAR(fromVal[_i], tvv[_i], 1e-5);
-//     
-//  EXPECT_TRUE(ev->timestamp()>startTimestamp);
-//  EXPECT_EQ(fv,ev->flowVars());
-//  EXPECT_EQ(sv,ev->stockVars());
-//  EXPECT_EQ(sv,ev->stockVars());
-//  EXPECT_EQ(sizeof(fv)/sizeof(fv[0]),ev->fvSize());
-//}
+TEST_F(TensorOpSuite1,TensorVarValAssignment)
+{
+  auto ev=make_shared<EvalCommon>();
+  double fv[100], sv[10];
+  ev->update(fv,sizeof(fv)/sizeof(fv[0]),sv);
+  auto startTimestamp=ev->timestamp();
+  TensorVarVal tvv(to->vValue(),ev); 
+  tvv=fromVal;
+  EXPECT_EQ(fromVal.rank(), tvv.rank());
+  for (size_t _i=0; _i<fromVal.rank(); ++_i) EXPECT_EQ(fromVal.shape()[_i], tvv.shape()[_i]);
+  for (size_t _i=0; _i<fromVal.size(); ++_i) EXPECT_NEAR(fromVal[_i], tvv[_i], 1e-5);
+     
+  EXPECT_TRUE(ev->timestamp()>startTimestamp);
+  EXPECT_EQ(fv,ev->flowVars());
+  EXPECT_EQ(sv,ev->stockVars());
+  EXPECT_EQ(sizeof(fv)/sizeof(fv[0]),ev->fvSize());
+}
 
 struct CorrelationSuite: public TensorOpSuite
 {
