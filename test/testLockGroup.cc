@@ -91,8 +91,7 @@ TEST_F(RavelLockGroupTest, LockGroup)
   // now add c back in, should be same as a & b
   selection.items={a,c};
   lockRavelsInSelection();
-  EXPECT_TRUE(a->lockGroup=lockGroup);
-  EXPECT_TRUE(b->lockGroup=lockGroup);
-  EXPECT_TRUE(c->lockGroup=lockGroup);
+  EXPECT_TRUE(a->lockGroup==c->lockGroup);
+  EXPECT_TRUE(b->lockGroup==c->lockGroup);
   EXPECT_FALSE(d->lockGroup);
 }

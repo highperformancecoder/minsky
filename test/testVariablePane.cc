@@ -61,8 +61,7 @@ TEST_F(VariablePaneSuite, emplace)
     EXPECT_EQ("Variable:undefined", variablePane.cell(variablePane.numRows()-1,variablePane.numCols()-1).variable().classType());
     EXPECT_TRUE(variablePane.cell(0,0).width()>0);
     variablePane.cell(0,0).emplace();
-    EXPECT_TRUE(canvas.itemFocus);
-    auto v=canvas.itemFocus->variableCast();
-    EXPECT_TRUE(v);
+    ASSERT_TRUE(canvas.itemFocus);
+    EXPECT_TRUE(canvas.itemFocus->variableCast());
     EXPECT_EQ(variablePane.cell(0,0).variable().classType(), canvas.itemFocus->classType());
   }
