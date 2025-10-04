@@ -305,10 +305,7 @@ ifeq ($(OS),CYGWIN)
 FLAGS+=-Wa,-mbig-obj -Wl,-x -Wl,--oformat,pe-bigobj-x86-64
 endif
 
-LIBS+=	-LRavelCAPI -lravelCAPI -LRavelCAPI/civita -lcivita \
-	-lboost_system$(BOOST_EXT) -lboost_regex$(BOOST_EXT) \
-	-lboost_date_time$(BOOST_EXT) -lboost_program_options$(BOOST_EXT) \
-	-lboost_filesystem$(BOOST_EXT) -lboost_thread$(BOOST_EXT) -lgsl -lgslcblas -lssl -lcrypto
+LIBS+=	-LRavelCAPI -lravelCAPI -LRavelCAPI/civita -lcivita  -lboost_system$(BOOST_EXT) -lgsl -lgslcblas -lssl -lcrypto
 
 ifdef MXE
 LIBS+=-lcrypt32 -lbcrypt -lshcore

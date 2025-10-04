@@ -11,10 +11,7 @@ LIBS:=$(subst -lecolab,$(ECOLAB_HOME)/lib/libecolab.a,$(LIBS))
 
 VPATH= .. ../schema ../model ../engine ../RESTService ../RavelCAPI/civita ../RavelCAPI $(ECOLAB_HOME)/include
 
-UNITTESTOBJS=main.o testCSVParser.o testCanvas.o testDerivative.o testExpressionWalker.o testGrid.o testLatexToPango.o testLockGroup.o testMdl.o testMinsky.o testModel.o testPannableTab.o testPhillips.o testPlotWidget.o testPubTab.o testSaver.o testStr.o testTensorOps.o testUnits.o testUserFunction.o testVariable.o testVariablePane.o testXVector.o ticket-1461.o
-
-#GTESTOBJS=testCSVParserGtest.o
-GTESTOBJS=testCSVParserGemini.o
+GTESTOBJS=testCSVParser.o testCanvas.o testDerivative.o testExpressionWalker.o testGrid.o testLatexToPango.o testLockGroup.o testMdl.o testMinsky.o testModel.o testPannableTab.o testPhillips.o testPlotWidget.o testPubTab.o testSaver.o testStr.o testTensorOps.o testUnits.o testUserFunction.o testVariable.o testVariablePane.o testXVector.o ticket-1461.o
 
 MINSKYOBJS=localMinsky.o ../libminsky.a
 FLAGS:=-I.. -I../RESTService -I../RavelCAPI/civita -I../RavelCAPI $(FLAGS)
@@ -22,7 +19,7 @@ FLAGS+=-std=c++20  -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -DUSE_UNROLLED -DCLA
   -Wno-unknown-warning-option -Wno-unused-local-typedefs -Wno-unused-command-line-argument -I../model -I../engine -I../schema
 LIBS+=-L../RavelCAPI -lravelCAPI -L../RavelCAPI/civita -lcivita -lboost_system -lboost_thread \
 	-lboost_regex -lboost_date_time -lboost_filesystem -lclipboard -lxcb -lX11 \
-	-lUnitTest++ -lgsl -lssl -lcrypto -lgslcblas  -lxml2 -ltiff -ldl
+	-lgsl -lssl -lcrypto -lgslcblas  -lxml2 -ltiff -ldl
 
 ifdef MXE
 else
@@ -45,12 +42,9 @@ ifdef ASAN
 FLAGS+=-fsanitize=address -fno-omit-frame-pointer
 endif
 
-all: unittests gtestUnittests $(EXES)
+all: unittests $(EXES)
 
-unittests: $(UNITTESTOBJS) $(MINSKYOBJS)
-	$(CPLUSPLUS) $(FLAGS)  -o $@ $^ $(LIBS)
-
-gtestUnittests: gtestUnittests.o $(GTESTOBJS) $(MINSKYOBJS)
+unittests: gtestUnittests.o $(GTESTOBJS) $(MINSKYOBJS)
 	$(CPLUSPLUS) $(FLAGS)  -o $@ $^ $(LIBS) -lgtest
 
 # todo - remove dependency on all MINSKYOBJS
@@ -73,7 +67,7 @@ tcl-cov: tcl-cov.o $(MINSKYOBJS)
 	$(CPLUSPLUS) $(FLAGS) -o $@ $^ $(LIBS)
 
 ifneq ($(MAKECMDGOALS),clean)
-include $(UNITTESTOBJS:.o=.d) $(EXES:=.d)
+include $(UNITTESTOBJS:.o=.d) $(GTESTOBJS:.o=.d) $(EXES:=.d)
 endif
 
 BASIC_CLEAN=rm -rf *.o *~ "\#*\#" core *.d *.cd *.xcd *.gcda *.gcno

@@ -21,25 +21,23 @@
 #include "matrix.h"
 #include "minsky_epilogue.h"
 #undef True
-#include <UnitTest++/UnitTest++.h>
+#include <gtest/gtest.h>
 #include <gsl/gsl_integration.h>
 using namespace minsky;
 
 namespace
 {
-  struct TestFixture: public Minsky
+  struct MinskySuite: public Minsky, testing::Test
   {
     LocalMinsky lm;
     string savedMessage;
-    TestFixture(): lm(*this)
+    MinskySuite(): lm(*this)
     {
     }
     void message(const string& x) override {savedMessage=x;}
   };
 }
 
-SUITE(Minsky)
-{
   /*
     ASCII Art diagram for the below test:
 
@@ -53,7 +51,7 @@ SUITE(Minsky)
     e ------------ f
   */
 
-  TEST_FIXTURE(TestFixture,constructEquationsEx1)
+  TEST_F(MinskySuite,constructEquationsEx1)
     {
       auto gi=new GodleyIcon;
       model->addItem(gi);
@@ -73,20 +71,20 @@ SUITE(Minsky)
         if (auto v=dynamic_pointer_cast<VariableBase>(i))
           var[v->name()]=v;
 
-      CHECK(var["a"]->lhs());
-      CHECK(var["b"]->lhs());
-      CHECK(!var["c"]->lhs());
-      CHECK(!var["d"]->lhs());
-      CHECK(!var["e"]->lhs());
-      CHECK(var["f"]->lhs());
+      EXPECT_TRUE(var["a"]->lhs());
+      EXPECT_TRUE(var["b"]->lhs());
+      EXPECT_TRUE(!var["c"]->lhs());
+      EXPECT_TRUE(!var["d"]->lhs());
+      EXPECT_TRUE(!var["e"]->lhs());
+      EXPECT_TRUE(var["f"]->lhs());
 
       auto addOp=model->addItem(OperationBase::create(OperationType::add)); 
-      CHECK_EQUAL(3, addOp->portsSize());
+      EXPECT_EQ(3, addOp->portsSize());
       auto intOp=dynamic_cast<IntOp*>(OperationBase::create(OperationType::integrate));
       model->addItem(intOp); 
-      CHECK_EQUAL(3, intOp->portsSize());
+      EXPECT_EQ(3, intOp->portsSize());
       auto mulOp=model->addItem(OperationBase::create(OperationType::multiply)); 
-      CHECK_EQUAL(3, mulOp->portsSize());
+      EXPECT_EQ(3, mulOp->portsSize());
  
       model->addWire(*var["e"], *var["f"], 1);
       model->addWire(*var["c"], *addOp, 1);
@@ -99,26 +97,26 @@ SUITE(Minsky)
 
       for (auto& w: model->wires)
         {
-          CHECK(!w->from()->input());
-          CHECK(w->to()->input());
+          EXPECT_TRUE(!w->from()->input());
+          EXPECT_TRUE(w->to()->input());
         }
 
       save("constructEquationsEx1.mky");
 
-      CHECK(!cycleCheck());
+      EXPECT_TRUE(!cycleCheck());
 
       constructEquations();
 
-      CHECK_EQUAL(4, integrals.size());
+      EXPECT_EQ(4, integrals.size());
       // check that integral  stock vars aren't flowVars
       int nakedIntegral=-1;
       for (size_t i=0; i<integrals.size(); ++i)
         {
           if (integrals[i].stock->name=="int1")
             nakedIntegral=i;
-          CHECK(!integrals[i].stock->isFlowVar());
+          EXPECT_TRUE(!integrals[i].stock->isFlowVar());
         }
-      CHECK(nakedIntegral>=0);
+      EXPECT_TRUE(nakedIntegral>=0);
 
       var["c"]->value(0.1);
       var["d"]->value(0.2);
@@ -128,10 +126,10 @@ SUITE(Minsky)
       implicit=false;
       step();
 
-      CHECK_CLOSE(var["c"]->value()+var["d"]->value(), integrals[nakedIntegral].input().value(), 1e-4);
-      CHECK_CLOSE(integrals[nakedIntegral].stock->value(), var["a"]->value(), 1e-4);
-      CHECK_CLOSE(integrals[nakedIntegral].stock->value()*var["e"]->value(), var["b"]->value(), 1e-4);
-      CHECK_CLOSE(var["e"]->value(), var["f"]->value(), 1e-4);
+      EXPECT_NEAR(var["c"]->value()+var["d"]->value(), integrals[nakedIntegral].input().value(), 1e-4);
+      EXPECT_NEAR(integrals[nakedIntegral].stock->value(), var["a"]->value(), 1e-4);
+      EXPECT_NEAR(integrals[nakedIntegral].stock->value()*var["e"]->value(), var["b"]->value(), 1e-4);
+      EXPECT_NEAR(var["e"]->value(), var["f"]->value(), 1e-4);
       ode.reset();
     }
 
@@ -145,7 +143,7 @@ SUITE(Minsky)
     K
   */
 
-  TEST_FIXTURE(TestFixture,constructEquationsEx2)
+  TEST_F(MinskySuite,constructEquationsEx2)
     {
       model->addItem(VariablePtr(VariableType::flow,"g"));
       model->addItem(VariablePtr(VariableType::flow,"h"));
@@ -157,11 +155,11 @@ SUITE(Minsky)
             var[v->name()]=v;
 
       auto op4=model->addItem(new VarConstant);
-      CHECK_EQUAL(1, op4->portsSize());
+      EXPECT_EQ(1, op4->portsSize());
       auto op5=model->addItem(new VarConstant);
-      CHECK_EQUAL(1, op5->portsSize());
+      EXPECT_EQ(1, op5->portsSize());
       auto op6=model->addItem(OperationBase::create(OperationType::add));
-      CHECK_EQUAL(3, op6->portsSize());
+      EXPECT_EQ(3, op6->portsSize());
 
       ecolab::array<float> coords(4,0);
  
@@ -172,25 +170,25 @@ SUITE(Minsky)
  
       for (auto& w: model->wires)
         {
-          CHECK(!w->from()->input());
-          CHECK(w->to()->input());
+          EXPECT_TRUE(!w->from()->input());
+          EXPECT_TRUE(w->to()->input());
         }
  
-      CHECK(dynamic_cast<VarConstant*>(op4.get()));
+      EXPECT_TRUE(dynamic_cast<VarConstant*>(op4.get()));
       if (VarConstant* c=dynamic_cast<VarConstant*>(op4.get()))
         c->init("0.1");
-      CHECK(dynamic_cast<VarConstant*>(op5.get()));
+      EXPECT_TRUE(dynamic_cast<VarConstant*>(op5.get()));
       if (VarConstant* c=dynamic_cast<VarConstant*>(op5.get()))
         c->init("0.2");
 
       reset();
 
-      CHECK_CLOSE(0.1, var["g"]->value(), 1e-4);
-      CHECK_CLOSE(0.3, var["h"]->value(), 1e-4);
+      EXPECT_NEAR(0.1, var["g"]->value(), 1e-4);
+      EXPECT_NEAR(0.3, var["h"]->value(), 1e-4);
 
     }
 
-  TEST_FIXTURE(TestFixture,godleyEval)
+  TEST_F(MinskySuite,godleyEval)
     {
       auto gi=new GodleyIcon;
       model->addItem(gi);
@@ -211,18 +209,18 @@ SUITE(Minsky)
  
       garbageCollect();
       reset();
-      CHECK_EQUAL(10,variableValues[":c"]->value());
-      CHECK_EQUAL(20,variableValues[":d"]->value());
-      CHECK_EQUAL(30,variableValues[":e"]->value());
-      CHECK_EQUAL(5,variableValues[":a"]->value());
+      EXPECT_EQ(10,variableValues[":c"]->value());
+      EXPECT_EQ(20,variableValues[":d"]->value());
+      EXPECT_EQ(30,variableValues[":e"]->value());
+      EXPECT_EQ(5,variableValues[":a"]->value());
       for (size_t i=0; i<stockVars.size(); ++i)
         stockVars[i]=0;
      
       evalGodley.eval(stockVars.data(), flowVars.data());
-      CHECK_EQUAL(5,variableValues[":c"]->value());
-      CHECK_EQUAL(-5,variableValues[":d"]->value());
-      CHECK_EQUAL(0,variableValues[":e"]->value());
-      CHECK_EQUAL(5,variableValues[":a"]->value());
+      EXPECT_EQ(5,variableValues[":c"]->value());
+      EXPECT_EQ(-5,variableValues[":d"]->value());
+      EXPECT_EQ(0,variableValues[":e"]->value());
+      EXPECT_EQ(5,variableValues[":a"]->value());
     
     }
 
@@ -238,7 +236,7 @@ SUITE(Minsky)
     /
     e ------------ f
   */
-  TEST_FIXTURE(TestFixture,derivative)
+  TEST_F(MinskySuite,derivative)
     {
       auto gi=new GodleyIcon;
       model->addItem(gi);
@@ -274,7 +272,7 @@ SUITE(Minsky)
       model->addWire(*var["e"],* op3, 2);
       model->addWire(*op3, *var["b"], 1);
  
-      CHECK(!cycleCheck());
+      EXPECT_TRUE(!cycleCheck());
       reset();
       vector<double> j(stockVars.size()*stockVars.size());
       Matrix jac(stockVars.size(),j.data());
@@ -284,42 +282,42 @@ SUITE(Minsky)
       auto& e=*variableValues[":e"];   e=300;
       double& x=stockVars.back();   x=0; // temporary variable storing \int c+d
  
-      CHECK_EQUAL(4, stockVars.size());
+      EXPECT_EQ(4, stockVars.size());
  
       save("derivative.mky");
       evalJacobian(jac,t,stockVars.data());
    
-      CHECK_EQUAL(0, jac(0,0));
-      CHECK_EQUAL(0, jac(0,1));  
-      CHECK_EQUAL(0, jac(0,2));
-      CHECK_EQUAL(1, jac(0,3));
-      CHECK_EQUAL(0, jac(1,0));
-      CHECK_EQUAL(0, jac(1,1));
-      CHECK_EQUAL(x, jac(1,2));
-      CHECK_EQUAL(e.value(), jac(1,3));
-      CHECK_EQUAL(0,jac(2,0));
-      CHECK_EQUAL(0,jac(2,1));
-      CHECK_EQUAL(1,jac(2,2));
-      CHECK_EQUAL(0,jac(2,3));
-      CHECK_EQUAL(1,jac(3,0));
-      CHECK_EQUAL(1,jac(3,1));
-      CHECK_EQUAL(0,jac(3,2));
-      CHECK_EQUAL(0,jac(3,3));
+      EXPECT_EQ(0, jac(0,0));
+      EXPECT_EQ(0, jac(0,1));  
+      EXPECT_EQ(0, jac(0,2));
+      EXPECT_EQ(1, jac(0,3));
+      EXPECT_EQ(0, jac(1,0));
+      EXPECT_EQ(0, jac(1,1));
+      EXPECT_EQ(x, jac(1,2));
+      EXPECT_EQ(e.value(), jac(1,3));
+      EXPECT_EQ(0,jac(2,0));
+      EXPECT_EQ(0,jac(2,1));
+      EXPECT_EQ(1,jac(2,2));
+      EXPECT_EQ(0,jac(2,3));
+      EXPECT_EQ(1,jac(3,0));
+      EXPECT_EQ(1,jac(3,1));
+      EXPECT_EQ(0,jac(3,2));
+      EXPECT_EQ(0,jac(3,3));
     }
 
-  TEST_FIXTURE(TestFixture,integrals)
+  TEST_F(MinskySuite,integrals)
     {
       // First, integrate a constant
       auto op1=model->addItem(new VarConstant);
       auto op2=model->addItem(OperationPtr(OperationBase::integrate));
       
       IntOp* intOp=dynamic_cast<IntOp*>(op2.get());
-      CHECK(intOp);
+      EXPECT_TRUE(intOp);
       intOp->description("output");
       model->addWire(*op1,*op2,1);
 
       constructEquations();
-      CHECK(variableValues.validEntries());
+      EXPECT_TRUE(variableValues.validEntries());
       
       double value = 10;
       dynamic_cast<VariableBase*>(op1.get())->init(to_string(value));
@@ -327,8 +325,8 @@ SUITE(Minsky)
       running=true;
       step();
       // for now, constructEquations doesn work
-      CHECK_CLOSE(value*t, integrals[0].stock->value(), 1e-5);
-      CHECK_CLOSE(integrals[0].stock->value(), variableValues[":output"]->value(), 1e-5);
+      EXPECT_NEAR(value*t, integrals[0].stock->value(), 1e-5);
+      EXPECT_NEAR(integrals[0].stock->value(), variableValues[":output"]->value(), 1e-5);
  
       // now integrate the linear function
       auto op3=model->addItem(OperationPtr(OperationBase::integrate));
@@ -336,10 +334,10 @@ SUITE(Minsky)
       reset();
       running=true;
       step();
-      //      CHECK_CLOSE(0.5*value*t*t, integrals[1].stock.value(), 1e-5);
+      //      EXPECT_NEAR(0.5*value*t*t, integrals[1].stock.value(), 1e-5);
       intOp=dynamic_cast<IntOp*>(op3.get());
-      CHECK(intOp);
-      CHECK_CLOSE(0.5*value*t*t, intOp->intVar->value(), 1e-5);
+      EXPECT_TRUE(intOp);
+      EXPECT_NEAR(0.5*value*t*t, intOp->intVar->value(), 1e-5);
     }
 
   /*
@@ -352,20 +350,20 @@ SUITE(Minsky)
     b
   */
 
-  TEST_FIXTURE(TestFixture,cyclicThrows)
+  TEST_F(MinskySuite,cyclicThrows)
     {
       // First, integrate a constant
       auto op1=model->addItem(OperationPtr(OperationType::add));
       auto w=model->addItem(VariablePtr(VariableType::flow,"w"));
       auto a=model->addItem(VariablePtr(VariableType::flow,"a"));
-      CHECK(model->addWire(new Wire(op1->ports(0), w->ports(1))));
-      CHECK(model->addWire(new Wire(w->ports(0), op1->ports(1))));
+      EXPECT_TRUE(model->addWire(new Wire(op1->ports(0), w->ports(1))));
+      EXPECT_TRUE(model->addWire(new Wire(w->ports(0), op1->ports(1))));
       model->addWire(new Wire(op1->ports(0), w->ports(1)));
       model->addWire(new Wire(w->ports(0), op1->ports(1)));
       model->addWire(new Wire(a->ports(0), op1->ports(2)));
 
-      CHECK(cycleCheck());
-      CHECK_THROW(constructEquations(), ecolab::error);
+      EXPECT_TRUE(cycleCheck());
+      EXPECT_THROW(constructEquations(), ecolab::error);
     }
 
   /*
@@ -378,25 +376,25 @@ SUITE(Minsky)
     b
   */
 
-  TEST_FIXTURE(TestFixture,cyclicIntegrateDoesntThrow)
+  TEST_F(MinskySuite,cyclicIntegrateDoesntThrow)
     {
       // First, integrate a constant
       auto op1=model->addItem(OperationPtr(OperationType::integrate));
       auto op2=model->addItem(OperationPtr(OperationType::multiply));
       auto a=model->addItem(VariablePtr(VariableType::flow,"a"));
-      CHECK(model->addWire(new Wire(op1->ports(0), op2->ports(1))));
-      CHECK(model->addWire(new Wire(op2->ports(0), op1->ports(1))));
-      CHECK(model->addWire(new Wire(a->ports(0), op2->ports(2))));
+      EXPECT_TRUE(model->addWire(new Wire(op1->ports(0), op2->ports(1))));
+      EXPECT_TRUE(model->addWire(new Wire(op2->ports(0), op1->ports(1))));
+      EXPECT_TRUE(model->addWire(new Wire(a->ports(0), op2->ports(2))));
 
       model->addWire(new Wire(op1->ports(0), op2->ports(1)));
       model->addWire(new Wire(op2->ports(0), op1->ports(1)));
       model->addWire(new Wire(a->ports(0), op2->ports(2)));
 
-      CHECK(!cycleCheck());
+      EXPECT_TRUE(!cycleCheck());
       constructEquations();
     }
 
-  TEST_FIXTURE(TestFixture,godleyIconVariableOrder)
+  TEST_F(MinskySuite,godleyIconVariableOrder)
     {
       auto& g=dynamic_cast<GodleyIcon&>(*model->addItem(new GodleyIcon));
       g.table.dimension(3,4);
@@ -411,8 +409,8 @@ SUITE(Minsky)
       assert(g.stockVars().size()==g.table.cols()-1 && g.flowVars().size()==g.table.cols()-1);
       for (size_t i=1; i<g.table.cols(); ++i)
         {
-          CHECK_EQUAL(g.table.cell(0,i), g.stockVars()[i-1]->name());
-          CHECK_EQUAL(g.table.cell(2,i), g.flowVars()[i-1]->name());
+          EXPECT_EQ(g.table.cell(0,i), g.stockVars()[i-1]->name());
+          EXPECT_EQ(g.table.cell(2,i), g.flowVars()[i-1]->name());
         }
     }
 
@@ -423,7 +421,7 @@ SUITE(Minsky)
   */
    
 
-  TEST_FIXTURE(TestFixture,multiVariableInputsAdd)
+  TEST_F(MinskySuite,multiVariableInputsAdd)
     {
       auto varA = model->addItem(VariablePtr(VariableType::flow, "a"));
       auto varB = model->addItem(VariablePtr(VariableType::flow, "b"));
@@ -452,10 +450,10 @@ SUITE(Minsky)
 
       constructEquations();
       step();
-      CHECK_CLOSE(0.3, variableValues[":c"]->value(), 1e-5);
+      EXPECT_NEAR(0.3, variableValues[":c"]->value(), 1e-5);
     }
 
-  TEST_FIXTURE(TestFixture,multiVariableInputsSubtract)
+  TEST_F(MinskySuite,multiVariableInputsSubtract)
     {
       auto varA = model->addItem(VariablePtr(VariableType::flow, "a"));
       auto varB = model->addItem(VariablePtr(VariableType::flow, "b"));
@@ -483,10 +481,10 @@ SUITE(Minsky)
 
       constructEquations();
       step();
-      CHECK_CLOSE(-0.3, variableValues[":c"]->value(), 1e-5);
+      EXPECT_NEAR(-0.3, variableValues[":c"]->value(), 1e-5);
     }
 
-  TEST_FIXTURE(TestFixture,multiVariableInputsMultiply)
+  TEST_F(MinskySuite,multiVariableInputsMultiply)
     {
       auto varA = model->addItem(VariablePtr(VariableType::flow, "a"));
       auto varB = model->addItem(VariablePtr(VariableType::flow, "b"));
@@ -514,10 +512,10 @@ SUITE(Minsky)
 
       constructEquations();
       step();
-      CHECK_CLOSE(0.02, variableValues[":c"]->value(), 1e-5);
+      EXPECT_NEAR(0.02, variableValues[":c"]->value(), 1e-5);
     }
 
-  TEST_FIXTURE(TestFixture,multiVariableInputsDivide)
+  TEST_F(MinskySuite,multiVariableInputsDivide)
     {
       auto varA = model->addItem(VariablePtr(VariableType::flow, "a"));
       auto varB = model->addItem(VariablePtr(VariableType::flow, "b"));
@@ -545,12 +543,12 @@ SUITE(Minsky)
 
       constructEquations();
       step();
-      CHECK_CLOSE(50, variableValues[":c"]->value(), 1e-5);
+      EXPECT_NEAR(50, variableValues[":c"]->value(), 1e-5);
     }
 
   // instantiate all operations and variables to ensure that definitions
   // have been provided for all virtual methods
-  TEST(checkAllOpsDefined)
+TEST(TensorOps, checkAllOpsDefined)
   {
     using namespace MathDAG;
     for (int o=0; o<OperationType::sum; ++o)
@@ -558,15 +556,15 @@ SUITE(Minsky)
         if (OperationType::Type(o)==OperationType::constant) continue; // constant deprecated
         OperationType::Type op=OperationType::Type(o);
         OperationPtr po(op);
-        CHECK_EQUAL(OperationType::typeName(op), OperationType::typeName(po->type()));
+        EXPECT_EQ(OperationType::typeName(op), OperationType::typeName(po->type()));
         if (o!=OperationType::differentiate) // no evalop etc for differentiate needed.
           {
             EvalOpPtr ev(op);
-            CHECK_EQUAL(OperationType::typeName(op), OperationType::typeName(ev->type()));
+            EXPECT_EQ(OperationType::typeName(op), OperationType::typeName(ev->type()));
 
             shared_ptr<OperationDAGBase> opDAG
               (OperationDAGBase::create(OperationType::Type(op), ""));
-            CHECK_EQUAL(OperationType::typeName(op), OperationType::typeName(opDAG->type()));
+            EXPECT_EQ(OperationType::typeName(op), OperationType::typeName(opDAG->type()));
           }
       }
 
@@ -574,7 +572,7 @@ SUITE(Minsky)
       {
         VariableType::Type vt=VariableType::Type(v);
         VariablePtr pv(vt);
-        CHECK_EQUAL(vt, pv->type());
+        EXPECT_EQ(vt, pv->type());
       }
   }
 
@@ -595,7 +593,7 @@ SUITE(Minsky)
       gsl_function_struct integ={integrand, &evalOp};                   \
       gsl_integration_qag (&integ, a, b, 1e-5, 1e-3, 100, 1, ws,        \
                            &result, &abserr);                           \
-      CHECK_CLOSE(evalOp->evaluate(b,0)-evalOp->evaluate(a,0), result, 2*abserr); \
+      EXPECT_NEAR(evalOp->evaluate(b,0)-evalOp->evaluate(a,0), result, 2*abserr); \
     }
   
 
@@ -646,22 +644,22 @@ SUITE(Minsky)
   }
 
   // Tests certain functions as throwing
-  TEST(checkDerivativesThrow)
+TEST(TensorOps, checkDerivativesThrow)
   {
-    CHECK_THROW(EvalOp<OperationType::and_>().d1(0,0),error); 
-    CHECK_THROW(EvalOp<OperationType::or_>().d1(0,0),error); 
-    CHECK_THROW(EvalOp<OperationType::not_>().d1(0,0),error); 
-    CHECK_THROW(EvalOp<OperationType::lt>().d1(0,0),error); 
-    CHECK_THROW(EvalOp<OperationType::le>().d1(0,0),error); 
-    CHECK_THROW(EvalOp<OperationType::eq>().d1(0,0),error); 
-    CHECK_THROW(EvalOp<OperationType::floor>().d1(0,0),error); 
-    CHECK_THROW(EvalOp<OperationType::frac>().d1(0,0),error); 
+    EXPECT_THROW(EvalOp<OperationType::and_>().d1(0,0),error); 
+    EXPECT_THROW(EvalOp<OperationType::or_>().d1(0,0),error); 
+    EXPECT_THROW(EvalOp<OperationType::not_>().d1(0,0),error); 
+    EXPECT_THROW(EvalOp<OperationType::lt>().d1(0,0),error); 
+    EXPECT_THROW(EvalOp<OperationType::le>().d1(0,0),error); 
+    EXPECT_THROW(EvalOp<OperationType::eq>().d1(0,0),error); 
+    EXPECT_THROW(EvalOp<OperationType::floor>().d1(0,0),error); 
+    EXPECT_THROW(EvalOp<OperationType::frac>().d1(0,0),error); 
  }
   
   // Tests derivative definitions of one argument functions by
   // integration over [0.5,1], using fundamental theorem of calculus.
   // Hopefully, this range will avoid any singularities in the derivative
-  TEST(checkDerivatives)
+TEST(TensorOps, checkDerivatives)
   {
     gsl_integration_workspace* ws=gsl_integration_workspace_alloc(1000);
     // do not test tensor ops
@@ -704,15 +702,15 @@ SUITE(Minsky)
     gsl_integration_workspace_free(ws);
   }
 
-  TEST(evalOpEvaluate)
+TEST(TensorOps, evalOpEvaluate)
   {
     EvalOp<OperationType::floor> floor;
-    CHECK_EQUAL(3,floor.evaluate(3.2,0));
+    EXPECT_EQ(3,floor.evaluate(3.2,0));
     EvalOp<OperationType::frac> frac;
-    CHECK_CLOSE(0.2,frac.evaluate(3.2,0),1e-6);
+    EXPECT_NEAR(0.2,frac.evaluate(3.2,0),1e-6);
   }
   
-  TEST_FIXTURE(TestFixture,multiGodleyRules)
+  TEST_F(MinskySuite,multiGodleyRules)
     {
       auto g1=new GodleyIcon; model->addItem(g1);
       auto g2=new GodleyIcon; model->addItem(g2);
@@ -755,14 +753,14 @@ SUITE(Minsky)
       godley3.cell(0,2)=":foo2"; 
 
       // two incompatible columns
-      CHECK_THROW(initGodleys(), ecolab::error);
+      EXPECT_THROW(initGodleys(), ecolab::error);
 
   
       godley3.cell(0,2)=":foo3"; 
       godley3.cell(0,1)=":hello2"; 
 
       // two incompatible columns asset columns
-      CHECK_THROW(initGodleys(), ecolab::error);
+      EXPECT_THROW(initGodleys(), ecolab::error);
 
       // should now be a compatible asset/liability pair
       godley3.assetClass(1, GodleyAssetClass::liability);
@@ -775,7 +773,7 @@ SUITE(Minsky)
 
       // now conflict that pair
       godley2.cell(0,3)=":bar3";godley2.assetClass(3, GodleyAssetClass::asset);
-      CHECK_THROW(initGodleys(), ecolab::error);
+      EXPECT_THROW(initGodleys(), ecolab::error);
       godley2.cell(0,3)=":bar2";
   
       // now add some flow variables and check those
@@ -788,12 +786,12 @@ SUITE(Minsky)
       initGodleys();
 
       godley3.cell(3,1)="";
-      CHECK_THROW(initGodleys(), ecolab::error);
+      EXPECT_THROW(initGodleys(), ecolab::error);
  
 
     }
 
-  TEST_FIXTURE(TestFixture,matchingTableColumns)
+  TEST_F(MinskySuite,matchingTableColumns)
     {
       auto g1=new GodleyIcon; model->addItem(g1);
       auto g2=new GodleyIcon; model->addItem(g2);
@@ -817,8 +815,8 @@ SUITE(Minsky)
       g1->update();
       
       set<string> cols=matchingTableColumns(*g2,GodleyAssetClass::asset);
-      CHECK_EQUAL(1, cols.size());
-      CHECK_EQUAL("l1", *cols.begin());
+      EXPECT_EQ(1, cols.size());
+      EXPECT_EQ("l1", *cols.begin());
 
       godley2.cell(0,1)="l1";  
       godley2.cell(0,2)="l2";  
@@ -826,26 +824,26 @@ SUITE(Minsky)
       g2->update();
       
       cols=matchingTableColumns(*g1,GodleyAssetClass::asset);
-      CHECK_EQUAL(1, cols.size());
-      CHECK_EQUAL("l2", *cols.begin());
+      EXPECT_EQ(1, cols.size());
+      EXPECT_EQ("l2", *cols.begin());
 
       cols=matchingTableColumns(*g1,GodleyAssetClass::liability);
-      CHECK_EQUAL(0, cols.size());
+      EXPECT_EQ(0, cols.size());
 
       cols=matchingTableColumns(*g1,GodleyAssetClass::equity);
-      CHECK_EQUAL(1, cols.size());
-      CHECK_EQUAL("a1", *cols.begin());
+      EXPECT_EQ(1, cols.size());
+      EXPECT_EQ("a1", *cols.begin());
 
       cols=matchingTableColumns(*g2,GodleyAssetClass::equity);
-      CHECK_EQUAL(0, cols.size());
+      EXPECT_EQ(0, cols.size());
 
       cols=matchingTableColumns(*g3,GodleyAssetClass::asset);
-      CHECK_EQUAL(1, cols.size());
-      CHECK_EQUAL("l2", *cols.begin());
+      EXPECT_EQ(1, cols.size());
+      EXPECT_EQ("l2", *cols.begin());
 
       cols=matchingTableColumns(*g3,GodleyAssetClass::liability);
-      CHECK_EQUAL(1, cols.size());
-      CHECK_EQUAL("a1", *cols.begin());
+      EXPECT_EQ(1, cols.size());
+      EXPECT_EQ("a1", *cols.begin());
 
       
 
@@ -870,18 +868,18 @@ SUITE(Minsky)
       g2->update();
 
       godley2.exportToCSV("before.csv");
-      CHECK_EQUAL(3,godley2.rows());
+      EXPECT_EQ(3,godley2.rows());
       balanceDuplicateColumns(*g1, 2); 
       godley2.exportToCSV("after.csv");
       // two rows should have been added, and one deleted
-      CHECK_EQUAL(4,godley2.rows());
-      CHECK_EQUAL("a",trimWS(godley2.cell(1,1)));
-      CHECK_EQUAL("b",godley2.cell(2,1));
-      CHECK_EQUAL("c",godley2.cell(3,1));
-      CHECK_EQUAL("row3",godley2.cell(3,0)); // check label transferred
+      EXPECT_EQ(4,godley2.rows());
+      EXPECT_EQ("a",trimWS(godley2.cell(1,1)));
+      EXPECT_EQ("b",godley2.cell(2,1));
+      EXPECT_EQ("c",godley2.cell(3,1));
+      EXPECT_EQ("row3",godley2.cell(3,0)); // check label transferred
     }
 
-  TEST_FIXTURE(TestFixture,bug1157)
+  TEST_F(MinskySuite,bug1157)
     {
       auto g1=new GodleyIcon; model->addItem(g1);
       auto g2=new GodleyIcon; model->addItem(g2);
@@ -903,22 +901,22 @@ SUITE(Minsky)
       godley2.cell(2,1)="-b";
       g2->update();
 
-      CHECK_EQUAL(3,godley2.rows());
-      CHECK_EQUAL("yy",godley2.cell(2,0));
-      CHECK_EQUAL("-b",godley2.cell(2,1));
+      EXPECT_EQ(3,godley2.rows());
+      EXPECT_EQ("yy",godley2.cell(2,0));
+      EXPECT_EQ("-b",godley2.cell(2,1));
       godley2.exportToCSV("before.csv");
 
       godley1.cell(2,1)="b";
       balanceDuplicateColumns(*g1, 1); 
       godley2.exportToCSV("after.csv");
-      CHECK_EQUAL(4,godley2.rows());
-      CHECK_EQUAL("yy",godley2.cell(2,0)); // row label should be updated
-      CHECK_EQUAL("-b",godley2.cell(2,1));  // sign should be transferred
-      CHECK_EQUAL("xx",godley2.cell(3,0)); // row label should be updated
-      CHECK_EQUAL("2b",godley2.cell(3,1));  // sign should be transferred
+      EXPECT_EQ(4,godley2.rows());
+      EXPECT_EQ("yy",godley2.cell(2,0)); // row label should be updated
+      EXPECT_EQ("-b",godley2.cell(2,1));  // sign should be transferred
+      EXPECT_EQ("xx",godley2.cell(3,0)); // row label should be updated
+      EXPECT_EQ("2b",godley2.cell(3,1));  // sign should be transferred
     }
 
-  TEST_FIXTURE(TestFixture,importDuplicateColumn)
+  TEST_F(MinskySuite,importDuplicateColumn)
     {
       auto g1=new GodleyIcon; model->addItem(g1);
       auto g2=new GodleyIcon; model->addItem(g2);
@@ -938,23 +936,23 @@ SUITE(Minsky)
 
       godley2.cell(0,1)="a1";
       importDuplicateColumn(godley2, 1);
-      CHECK_EQUAL("row1",godley2.cell(2,0));
-      CHECK_EQUAL("a",godley2.cell(2,1));
-      CHECK_EQUAL("row2",godley2.cell(3,0));
-      CHECK_EQUAL("b",godley2.cell(3,1));
+      EXPECT_EQ("row1",godley2.cell(2,0));
+      EXPECT_EQ("a",godley2.cell(2,1));
+      EXPECT_EQ("row2",godley2.cell(3,0));
+      EXPECT_EQ("b",godley2.cell(3,1));
 
       // move cell between columns
       g1->moveCell({2,1,2,2});
-      CHECK_EQUAL("a",godley1.cell(2,2));
-      CHECK_EQUAL("",godley1.cell(2,1));
-      CHECK_EQUAL("",godley2.cell(2,1));
+      EXPECT_EQ("a",godley1.cell(2,2));
+      EXPECT_EQ("",godley1.cell(2,1));
+      EXPECT_EQ("",godley2.cell(2,1));
 
       g1->moveCell({2,2,3,2});
-      CHECK_EQUAL("a",godley1.cell(3,2));
-      CHECK_EQUAL("",godley1.cell(2,2));
+      EXPECT_EQ("a",godley1.cell(3,2));
+      EXPECT_EQ("",godley1.cell(2,2));
     }
 
-  TEST_FIXTURE(TestFixture,godleyRowSums)
+  TEST_F(MinskySuite,godleyRowSums)
     {
       auto g1=new GodleyIcon; model->addItem(g1);
       GodleyTable& godley1=g1->table;
@@ -965,10 +963,10 @@ SUITE(Minsky)
       godley1.cell(1,1)="a";
       godley1.cell(1,2)="2b";
       godley1.cell(1,3)="-c";
-      CHECK_EQUAL("a-2b+c",godley1.rowSum(1));
+      EXPECT_EQ("a-2b+c",godley1.rowSum(1));
     }
 
-  TEST_FIXTURE(TestFixture,godleyMoveRowCol)
+  TEST_F(MinskySuite,godleyMoveRowCol)
     {
       auto g1=new GodleyIcon; model->addItem(g1);
       GodleyTable& godley1=g1->table;
@@ -982,18 +980,18 @@ SUITE(Minsky)
       godley1.assetClass(1,GodleyAssetClass::asset);
       godley1.assetClass(2,GodleyAssetClass::asset);
       godley1.moveRow(1,1);
-      CHECK_EQUAL("a",godley1.cell(2,1));
-      CHECK_EQUAL("2b",godley1.cell(2,2));
-      CHECK_EQUAL("a1",godley1.cell(1,1));
-      CHECK_EQUAL("2b1",godley1.cell(1,2));
+      EXPECT_EQ("a",godley1.cell(2,1));
+      EXPECT_EQ("2b",godley1.cell(2,2));
+      EXPECT_EQ("a1",godley1.cell(1,1));
+      EXPECT_EQ("2b1",godley1.cell(1,2));
       godley1.moveCol(1,1);
-      CHECK_EQUAL("a",godley1.cell(2,2));
-      CHECK_EQUAL("2b",godley1.cell(2,1));
-      CHECK_EQUAL("a1",godley1.cell(1,2));
-      CHECK_EQUAL("2b1",godley1.cell(1,1));
+      EXPECT_EQ("a",godley1.cell(2,2));
+      EXPECT_EQ("2b",godley1.cell(2,1));
+      EXPECT_EQ("a1",godley1.cell(1,2));
+      EXPECT_EQ("2b1",godley1.cell(1,1));
     }
 
-  TEST_FIXTURE(TestFixture,godleyNameUnique)
+  TEST_F(MinskySuite,godleyNameUnique)
     {
       auto g1=new GodleyIcon; model->addItem(g1);
       auto g2=new GodleyIcon; model->addItem(g2);
@@ -1004,19 +1002,19 @@ SUITE(Minsky)
       godley1.nameUnique();
       godley2.nameUnique();
       godley3.nameUnique();
-      CHECK(godley1.title!=godley2.title);
-      CHECK(godley2.title!=godley3.title);
-      CHECK(godley1.title!=godley3.title);
+      EXPECT_TRUE(godley1.title!=godley2.title);
+      EXPECT_TRUE(godley2.title!=godley3.title);
+      EXPECT_TRUE(godley1.title!=godley3.title);
     }
 
-    TEST_FIXTURE(TestFixture,clearInitCond)
+    TEST_F(MinskySuite,clearInitCond)
     {
       auto g1=new GodleyIcon; model->addItem(g1);
-      CHECK(g1->table.initialConditionRow(1));
+      EXPECT_TRUE(g1->table.initialConditionRow(1));
       // to clear a cell, it first needs to contain something
       g1->setCell(1,1,"1");
       g1->setCell(1,1,"");
-      CHECK_EQUAL("0",g1->table.cell(1,1));
+      EXPECT_EQ("0",g1->table.cell(1,1));
     }
 
     /*
@@ -1031,7 +1029,7 @@ SUITE(Minsky)
       \---------------------------------/
     */
     
-    TEST_FIXTURE(TestFixture,varNameScoping)
+    TEST_F(MinskySuite,varNameScoping)
     {
       auto g0=model->addGroup(new Group);
       auto g1=model->addGroup(new Group);
@@ -1072,42 +1070,42 @@ SUITE(Minsky)
       if (b4->local()) b4->toggleLocal();
       
       // check valueIds correspond to the scoping rules
-      CHECK(a0->valueId()!=a1->valueId());
-      CHECK(a0->valueId()!=a3->valueId());
-      CHECK_EQUAL(a1->valueId(),a2->valueId());
-      CHECK(a1->valueId()!=a3->valueId());
+      EXPECT_TRUE(a0->valueId()!=a1->valueId());
+      EXPECT_TRUE(a0->valueId()!=a3->valueId());
+      EXPECT_EQ(a1->valueId(),a2->valueId());
+      EXPECT_TRUE(a1->valueId()!=a3->valueId());
 
-      CHECK_EQUAL(b0->valueId(),b1->valueId());
-      CHECK_EQUAL(b0->valueId(),b3->valueId());
-      CHECK(b2->valueId()!=b3->valueId());
+      EXPECT_EQ(b0->valueId(),b1->valueId());
+      EXPECT_EQ(b0->valueId(),b3->valueId());
+      EXPECT_TRUE(b2->valueId()!=b3->valueId());
 
       // check display values:
-      CHECK_EQUAL("a",a0->name());
-      CHECK_EQUAL("a",a1->name());
-      CHECK_EQUAL("a",a2->name());
-      CHECK_EQUAL("a",a3->name());
-      CHECK_EQUAL("b",b0->name());
-      CHECK_EQUAL("b",b1->name());
-      CHECK_EQUAL("b",b2->name());
-      CHECK_EQUAL("b",b3->name());
-      CHECK_EQUAL("c",c->name());
+      EXPECT_EQ("a",a0->name());
+      EXPECT_EQ("a",a1->name());
+      EXPECT_EQ("a",a2->name());
+      EXPECT_EQ("a",a3->name());
+      EXPECT_EQ("b",b0->name());
+      EXPECT_EQ("b",b1->name());
+      EXPECT_EQ("b",b2->name());
+      EXPECT_EQ("b",b3->name());
+      EXPECT_EQ("c",c->name());
 
       // now check move rules
       g0->addItem(a1);
-      CHECK_EQUAL("a",a1->name());
+      EXPECT_EQ("a",a1->name());
 
       g2->addItem(a1);
-      CHECK_EQUAL("a",a1->name());
+      EXPECT_EQ("a",a1->name());
 
       g1->addItem(a1);
-      CHECK_EQUAL("a",a1->name());
+      EXPECT_EQ("a",a1->name());
 
       g1->addItem(c);
-      CHECK_EQUAL("c",c->name());
+      EXPECT_EQ("c",c->name());
 
     }
 
-    TEST_FIXTURE(TestFixture,cantMultiplyDefineVars)
+    TEST_F(MinskySuite,cantMultiplyDefineVars)
     {
       VariablePtr f1(VariableType::flow,"foo");
       VariablePtr f2(VariableType::flow,"foo");
@@ -1117,11 +1115,11 @@ SUITE(Minsky)
       model->addItem(op);
       model->addWire(op->ports(0),f1->ports(1));
       model->addWire(op->ports(0),f2->ports(1));
-      CHECK_EQUAL(1, f1->ports(1).lock()->wires().size());
-      CHECK_EQUAL(0, f2->ports(1).lock()->wires().size());
+      EXPECT_EQ(1, f1->ports(1).lock()->wires().size());
+      EXPECT_EQ(0, f2->ports(1).lock()->wires().size());
     }
 
-    TEST_FIXTURE(TestFixture,MultiplyDefinedVarsThrowsOnReset)
+    TEST_F(MinskySuite,MultiplyDefinedVarsThrowsOnReset)
     {
       VariablePtr f1(VariableType::flow,"foo");
       VariablePtr f2(VariableType::flow,"foo");
@@ -1131,13 +1129,13 @@ SUITE(Minsky)
       model->addItem(op);
       model->addWire(op->ports(0),f1->ports(1));
       model->addWire(std::make_shared<Wire>(op->ports(0),f2->ports(1)));
-      CHECK_EQUAL(1, f1->ports(1).lock()->wires().size());
+      EXPECT_EQ(1, f1->ports(1).lock()->wires().size());
       // We've tricked the system into having a multiply defined variable
-      CHECK_EQUAL(1, f2->ports(1).lock()->wires().size());
-      CHECK_THROW(reset(), std::exception);
+      EXPECT_EQ(1, f2->ports(1).lock()->wires().size());
+      EXPECT_THROW(reset(), std::exception);
     }
 
-    TEST_FIXTURE(TestFixture, RemoveDefinitionsFromPastedVars)
+    TEST_F(MinskySuite, RemoveDefinitionsFromPastedVars)
       {
         VariablePtr a(VariableType::flow,"a");
         VariablePtr b(VariableType::flow,"b");
@@ -1145,17 +1143,17 @@ SUITE(Minsky)
         model->addWire(a->ports(0), b->ports(1));
         canvas.selection.ensureItemInserted(a);
         canvas.selection.ensureItemInserted(b);
-        CHECK_EQUAL(1,canvas.selection.numWires());
+        EXPECT_EQ(1,canvas.selection.numWires());
         copy();
         paste();
-        CHECK_EQUAL(4, model->items.size());
+        EXPECT_EQ(4, model->items.size());
         // ensure extra wire is not copied
-        CHECK_EQUAL(1, model->wires.size());
+        EXPECT_EQ(1, model->wires.size());
         // check that b's definition remains as before
-        CHECK(definingVar(":b")==b);
+        EXPECT_TRUE(definingVar(":b")==b);
       }
 
-    TEST_FIXTURE(TestFixture, DefinitionPasted)
+    TEST_F(MinskySuite, DefinitionPasted)
       {
         VariablePtr a(VariableType::flow,"a");
         VariablePtr b(VariableType::flow,"b");
@@ -1165,27 +1163,27 @@ SUITE(Minsky)
         canvas.selection.ensureItemInserted(b);
         copy();
         model->deleteItem(*b);
-        CHECK_EQUAL(0, model->wires.size());
+        EXPECT_EQ(0, model->wires.size());
         paste();
         // ensure extra wire is not copied
-        CHECK_EQUAL(1, model->wires.size());
+        EXPECT_EQ(1, model->wires.size());
         // check that b's definition is now the copied var
-        CHECK(definingVar(":b")!=b);
+        EXPECT_TRUE(definingVar(":b")!=b);
       }
     
-    TEST_FIXTURE(TestFixture, PastedIntOpShowsMessage)
+    TEST_F(MinskySuite, PastedIntOpShowsMessage)
       {
         auto intOp=make_shared<IntOp>();
         intOp->description("foo");
         model->addItem(intOp);
-        CHECK_EQUAL(2,model->items.size());
+        EXPECT_EQ(2,model->items.size());
         canvas.selection.ensureItemInserted(intOp);
         copy();
         paste();
-        CHECK(savedMessage.size()); // check that pop message is written
+        EXPECT_TRUE(savedMessage.size()); // check that pop message is written
       }
 
-    TEST_FIXTURE(TestFixture, RetypePastedIntegralVariable)
+    TEST_F(MinskySuite, RetypePastedIntegralVariable)
       {
         auto intOp=make_shared<IntOp>();
         intOp->description("foo");
@@ -1197,41 +1195,41 @@ SUITE(Minsky)
         model->removeItem(*intOp);
         intOp.reset();
         paste();
-        CHECK_EQUAL(2,model->items.size());
-        CHECK(model->items[1]->variableCast());
-        CHECK_EQUAL(VariableType::flow, model->items[1]->variableCast()->type());
-        CHECK_EQUAL(clonedIntVar->name(), model->items[1]->variableCast()->name());
+        EXPECT_EQ(2,model->items.size());
+        EXPECT_TRUE(model->items[1]->variableCast());
+        EXPECT_EQ(VariableType::flow, model->items[1]->variableCast()->type());
+        EXPECT_EQ(clonedIntVar->name(), model->items[1]->variableCast()->name());
       }
     
-    TEST_FIXTURE(TestFixture, cut)
+    TEST_F(MinskySuite, cut)
       {
         auto a=model->addItem(new Variable<VariableType::flow>("a"));
         auto integ=new IntOp;
         model->addItem(integ);
         auto g=model->addGroup(new Group);
         g->addItem(new Variable<VariableType::flow>("a1"));
-        CHECK_EQUAL(4,model->numItems());
-        CHECK_EQUAL(1,model->numGroups());
+        EXPECT_EQ(4,model->numItems());
+        EXPECT_EQ(1,model->numGroups());
 
         canvas.selection.ensureItemInserted(a);
-        CHECK_EQUAL(1,canvas.selection.numItems());
+        EXPECT_EQ(1,canvas.selection.numItems());
         canvas.selection.toggleItemMembership(integ->intVar);
-        CHECK_EQUAL(3,canvas.selection.numItems()); // both integral and intVar must be inserted
+        EXPECT_EQ(3,canvas.selection.numItems()); // both integral and intVar must be inserted
         canvas.selection.toggleItemMembership(model->findItem(*integ));
-        CHECK_EQUAL(1,canvas.selection.numItems());
+        EXPECT_EQ(1,canvas.selection.numItems());
         canvas.selection.items.push_back(integ->intVar);
-        CHECK_EQUAL(2,canvas.selection.numItems());
+        EXPECT_EQ(2,canvas.selection.numItems());
         canvas.selection.ensureGroupInserted(g);
-        CHECK_EQUAL(3,canvas.selection.numItems());
-        CHECK_EQUAL(1,canvas.selection.numGroups());
+        EXPECT_EQ(3,canvas.selection.numItems());
+        EXPECT_EQ(1,canvas.selection.numGroups());
 
         a.reset(); g.reset(); // prevent triggering assertion filaure in cut()
         cut();
-        CHECK_EQUAL(2,model->numItems()); //intVar should not be deleted
-        CHECK_EQUAL(0,model->numGroups());
+        EXPECT_EQ(2,model->numItems()); //intVar should not be deleted
+        EXPECT_EQ(0,model->numGroups());
       }
 
-    TEST_FIXTURE(TestFixture,renameAll)
+    TEST_F(MinskySuite,renameAll)
     {
       auto gi=make_shared<GodleyIcon>();
       model->addItem(gi);
@@ -1249,8 +1247,8 @@ SUITE(Minsky)
       model->addItem(stockVar)->variableCast();
       canvas.item=stockVar;
       canvas.renameAllInstances("newC");
-      CHECK_EQUAL("newC",stockVar->name());
-      CHECK_EQUAL("newC",godley.cell(0,1));
+      EXPECT_EQ("newC",stockVar->name());
+      EXPECT_EQ("newC",godley.cell(0,1));
       gi->update();
 
       // renaming godley column should rename canvas stock vars
@@ -1260,23 +1258,22 @@ SUITE(Minsky)
       ged.selectedCol=1;
       godley.savedText="newC";
       ged.update();
-      CHECK_EQUAL("c",stockVar->name());
-      CHECK_EQUAL("c",godley.cell(0,1));
+      EXPECT_EQ("c",stockVar->name());
+      EXPECT_EQ("c",godley.cell(0,1));
 
       // renaming just the canvas variable should change  it's type
       canvas.item=stockVar;
       if (auto v=canvas.item->variableCast())
         {
           canvas.renameItem("foo");
-          CHECK(canvas.item && canvas.item->variableCast());
+          EXPECT_TRUE(canvas.item && canvas.item->variableCast());
           if (auto v1=canvas.item->variableCast())
             {
-              CHECK_EQUAL("foo",v1->name());
-              CHECK_EQUAL(VariableType::flow, v1->type());
-              CHECK(model->findItem(*canvas.item));
+              EXPECT_EQ("foo",v1->name());
+              EXPECT_EQ(VariableType::flow, v1->type());
+              EXPECT_TRUE(model->findItem(*canvas.item));
             }
         }
-      CHECK_EQUAL("c",godley.cell(0,1));
+      EXPECT_EQ("c",godley.cell(0,1));
     }
 
-}
