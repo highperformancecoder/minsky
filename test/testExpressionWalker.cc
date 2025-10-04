@@ -18,25 +18,23 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include <UnitTest++/UnitTest++.h>
+#include <gtest/gtest.h>
 #include "expressionWalker.h"
 #include "exprtk/exprtk.hpp"
 #include "minsky_epilogue.h"
 using namespace minsky;
 using namespace std;
 
-SUITE(ExpressionWalker)
+void checkCompile(const std::string& expr, exprtk::expression<UnitsExpressionWalker>& expression)
 {
-  void checkCompile(const std::string& expr, exprtk::expression<UnitsExpressionWalker>& expression)
+  exprtk::parser<UnitsExpressionWalker> parser;
+  EXPECT_TRUE(parser.compile(expr,expression));
+  for (size_t i=0; i<parser.error_count(); ++i)
+    cout << parser.get_error(i).diagnostic<<endl;
+}
+
+TEST(ExpressionWalker, UnitsExpressionWalker)
   {
-    exprtk::parser<UnitsExpressionWalker> parser;
-    CHECK(parser.compile(expr,expression));
-    for (size_t i=0; i<parser.error_count(); ++i)
-      cout << parser.get_error(i).diagnostic<<endl;
-  }
-  
-  TEST(UnitsExpressionWalker)
-    {
       UnitsExpressionWalker metre("m"), second("s"), x;
       exprtk::symbol_table<UnitsExpressionWalker> symbolTable;
       
@@ -48,51 +46,51 @@ SUITE(ExpressionWalker)
       expression.register_symbol_table(symbolTable);
       
       checkCompile("-metre",expression);
-      CHECK_EQUAL("m",expression.value().units.str());
+      EXPECT_EQ("m",expression.value().units.str());
       checkCompile("+metre",expression);
-      CHECK_EQUAL("m",expression.value().units.str());
+      EXPECT_EQ("m",expression.value().units.str());
       checkCompile("metre+metre",expression);
-      CHECK_EQUAL("m",expression.value().units.str());
+      EXPECT_EQ("m",expression.value().units.str());
       checkCompile("metre+second",expression);
-      CHECK_THROW(expression.value(),std::exception);
+      EXPECT_THROW(expression.value(),std::exception);
       checkCompile("metre-metre",expression);
-      CHECK_EQUAL("m",expression.value().units.str());
+      EXPECT_EQ("m",expression.value().units.str());
       checkCompile("metre-second",expression);
-      CHECK_THROW(expression.value(),std::exception);
+      EXPECT_THROW(expression.value(),std::exception);
       checkCompile("metre*metre",expression);
-      CHECK_EQUAL("m^2",expression.value().units.str());
+      EXPECT_EQ("m^2",expression.value().units.str());
       checkCompile("metre*second",expression);
-      CHECK_EQUAL("m s",expression.value().units.str());
+      EXPECT_EQ("m s",expression.value().units.str());
       checkCompile("metre/metre",expression);
-      CHECK_EQUAL("",expression.value().units.str());
+      EXPECT_EQ("",expression.value().units.str());
       checkCompile("metre/second",expression);
-      CHECK_EQUAL("m s^-1",expression.value().units.str());
+      EXPECT_EQ("m s^-1",expression.value().units.str());
       checkCompile("metre%second",expression);
-      CHECK_EQUAL("m",expression.value().units.str());
+      EXPECT_EQ("m",expression.value().units.str());
       checkCompile("x^3.5",expression);
-      CHECK_EQUAL("",expression.value().units.str());
+      EXPECT_EQ("",expression.value().units.str());
       checkCompile("metre^3.5",expression);
-      CHECK_THROW(expression.value(),std::exception);
+      EXPECT_THROW(expression.value(),std::exception);
       checkCompile("metre^2",expression);
-      CHECK_EQUAL("m^2",expression.value().units.str());
+      EXPECT_EQ("m^2",expression.value().units.str());
       checkCompile("pow(metre,2.0)",expression);
-      CHECK_EQUAL("m^2",expression.value().units.str());
+      EXPECT_EQ("m^2",expression.value().units.str());
       checkCompile("metre^64",expression);
-      CHECK_EQUAL("m^64",expression.value().units.str());
+      EXPECT_EQ("m^64",expression.value().units.str());
       checkCompile("pow(metre,64)",expression);
-      CHECK_EQUAL("m^64",expression.value().units.str());
+      EXPECT_EQ("m^64",expression.value().units.str());
 
 #define testFunction(f)                                 \
       checkCompile(#f "(metre)",expression);          \
-      CHECK_THROW(expression.value(),std::exception);   \
+      EXPECT_THROW(expression.value(),std::exception);   \
       checkCompile(#f "(x)",expression);              \
-      CHECK_EQUAL("",expression.value().units.str());
+      EXPECT_EQ("",expression.value().units.str());
 
       checkCompile("abs(metre)",expression); 
-      CHECK_EQUAL("m",expression.value().units.str());
+      EXPECT_EQ("m",expression.value().units.str());
       
       checkCompile("avg(metre,metre)",expression); 
-      CHECK_EQUAL("m",expression.value().units.str());
+      EXPECT_EQ("m",expression.value().units.str());
 
       testFunction(ceil);
       testFunction(erf);
@@ -101,7 +99,7 @@ SUITE(ExpressionWalker)
       testFunction(expm1);
       testFunction(floor);
       checkCompile("frac(metre)",expression); 
-      CHECK_EQUAL("m",expression.value().units.str());
+      EXPECT_EQ("m",expression.value().units.str());
       testFunction(log);
       testFunction(log10);
       testFunction(log1p);
@@ -109,15 +107,15 @@ SUITE(ExpressionWalker)
       testFunction(ncdf);
 
       checkCompile("sgn(metre)",expression);            \
-      CHECK_EQUAL("",expression.value().units.str());
+      EXPECT_EQ("",expression.value().units.str());
       checkCompile("sgn(x)",expression);              \
-      CHECK_EQUAL("",expression.value().units.str());
+      EXPECT_EQ("",expression.value().units.str());
       
       checkCompile("sqrt(metre^2)",expression);
-      CHECK_EQUAL("m",expression.value().units.str()); 
+      EXPECT_EQ("m",expression.value().units.str()); 
 
       checkCompile("trunc(metre)",expression);
-      CHECK_EQUAL("m",expression.value().units.str()); 
+      EXPECT_EQ("m",expression.value().units.str()); 
 
       testFunction(acos);
       testFunction(acosh);
@@ -144,9 +142,9 @@ SUITE(ExpressionWalker)
 
 #define testLogicalOp(op)                                 \
       checkCompile("metre " #op " second",expression);  \
-      CHECK_THROW(expression.value(),std::exception);     \
+      EXPECT_THROW(expression.value(),std::exception);     \
       checkCompile("metre " #op " metre",expression);   \
-      CHECK_EQUAL("",expression.value().units.str()); 
+      EXPECT_EQ("",expression.value().units.str()); 
 
       testLogicalOp(==);
       testLogicalOp(!=);
@@ -163,18 +161,18 @@ SUITE(ExpressionWalker)
 
 #define testBinaryFunction(f)                                 \
       checkCompile(#f "(metre, second)",expression);  \
-      CHECK_THROW(expression.value(),std::exception);     \
+      EXPECT_THROW(expression.value(),std::exception);     \
       checkCompile(#f "(x, x)",expression);  \
-      CHECK_EQUAL("",expression.value().units.str()); 
+      EXPECT_EQ("",expression.value().units.str()); 
 
       testBinaryFunction(atan2);
       testBinaryFunction(equal);
       checkCompile("equal(metre, metre)",expression);
-      CHECK_EQUAL("",expression.value().units.str());
+      EXPECT_EQ("",expression.value().units.str());
 
       // parser doesn't seem to understand nequal
       //      checkCompile("nequal(metre, metre)",expression);
-      //      CHECK_EQUAL("",expression.value().units.str()); 
+      //      EXPECT_EQ("",expression.value().units.str()); 
     
       
       testBinaryFunction(hypot);
@@ -184,33 +182,32 @@ SUITE(ExpressionWalker)
       testBinaryFunction(root);
 
       checkCompile("root(metre^3, 3)",expression);
-      CHECK_EQUAL("m",expression.value().units.str()); 
+      EXPECT_EQ("m",expression.value().units.str()); 
 
       checkCompile("roundn(metre, 3)",expression);
-      CHECK_EQUAL("m",expression.value().units.str()); 
+      EXPECT_EQ("m",expression.value().units.str()); 
       checkCompile("round(metre)",expression);
-      CHECK_EQUAL("m",expression.value().units.str()); 
+      EXPECT_EQ("m",expression.value().units.str()); 
   
       checkCompile("mod(metre,second)",expression);
-      CHECK_EQUAL("m",expression.value().units.str());
+      EXPECT_EQ("m",expression.value().units.str());
 
       checkCompile("clamp(metre,metre,3*metre)",expression);
-      CHECK_EQUAL("m",expression.value().units.str());
+      EXPECT_EQ("m",expression.value().units.str());
       checkCompile("iclamp(metre,metre,3*metre)",expression);
-      CHECK_EQUAL("m",expression.value().units.str());
+      EXPECT_EQ("m",expression.value().units.str());
       checkCompile("inrange(metre,metre,3*metre)",expression);
-      CHECK_EQUAL("",expression.value().units.str());
+      EXPECT_EQ("",expression.value().units.str());
 
       testBinaryFunction(max);
       checkCompile("max(metre,metre)",expression);
-      CHECK_EQUAL("m",expression.value().units.str());
+      EXPECT_EQ("m",expression.value().units.str());
       testBinaryFunction(min);
       checkCompile("min(metre,metre)",expression);
-      CHECK_EQUAL("m",expression.value().units.str());
+      EXPECT_EQ("m",expression.value().units.str());
       checkCompile("mul(metre,metre)",expression);
-      CHECK_EQUAL("m^2",expression.value().units.str());
+      EXPECT_EQ("m^2",expression.value().units.str());
       checkCompile("mul(metre,second)",expression);
-      CHECK_EQUAL("m s",expression.value().units.str());
+      EXPECT_EQ("m s",expression.value().units.str());
 
     }
-}

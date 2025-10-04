@@ -18,8 +18,7 @@
 */
 #include "grid.h"
 #include "minsky_epilogue.h"
-#undef True
-#include <UnitTest++/UnitTest++.h>
+#include <gtest/gtest.h>
 
 using namespace minsky;
 using namespace std;
@@ -49,13 +48,13 @@ namespace
     Justification justification(unsigned col) const override {return m_justification;}
   };
   
-  struct EvenHeightLeftGrid: public GridMock
+  struct EvenHeightLeftGrid: public GridMock, public ::testing::Test
   {
     SizedCellMock theCell;
     SizedCellMock& cell(unsigned row, unsigned col) override {return theCell;}
   };
 
-  struct UnevenHeightGridMock: public GridMock
+  struct UnevenHeightGridMock: public GridMock, public ::testing::Test
   {
     vector<vector<SizedCellMock>> cells;
     UnevenHeightGridMock() {
@@ -72,140 +71,138 @@ namespace
 
 }
 
+
 const double padx=2;
 
-SUITE(Grid)
-{
-  TEST_FIXTURE(EvenHeightLeftGrid, draw)
-    {
-      draw();
-      CHECK(numCols()>1 && numRows()>1);
-      CHECK_EQUAL(numCols(), rightColMargin.size());
-      CHECK_EQUAL(numRows(), bottomRowMargin.size());
-      for (size_t i=0; i<rightColMargin.size(); ++i)
-        CHECK_EQUAL((i+1)*(cell(0,0).width()+padx), rightColMargin[i]);
-      for (size_t i=0; i<bottomRowMargin.size(); ++i)
-        CHECK_EQUAL((i+1)*cell(0,0).height(), bottomRowMargin[i]);
+TEST_F(EvenHeightLeftGrid, draw)
+  {
+    draw();
+    EXPECT_TRUE(numCols()>1 && numRows()>1);
+    EXPECT_EQ(numCols(), rightColMargin.size());
+    EXPECT_EQ(numRows(), bottomRowMargin.size());
+    for (size_t i=0; i<rightColMargin.size(); ++i)
+      EXPECT_EQ((i+1)*(cell(0,0).width()+padx), rightColMargin[i]);
+    for (size_t i=0; i<bottomRowMargin.size(); ++i)
+      EXPECT_EQ((i+1)*cell(0,0).height(), bottomRowMargin[i]);
 
-      size_t m=0;
-      for (size_t col=0; col<numCols(); ++col) 
-        for (size_t row=0; row<numRows(); ++row, ++m)
-         {
-           CHECK_EQUAL((col>0? rightColMargin[col-1]: 0)+0.5*padx, xpos[m]);
-           CHECK_EQUAL(row>0? bottomRowMargin[row-1]: 0, ypos[m]);
-          }
-    }
-  
-  TEST_FIXTURE(UnevenHeightGridMock, left)
-    {
-      draw();
-      CHECK(numCols()>1 && numRows()>1);
-      CHECK_EQUAL(numCols(), rightColMargin.size());
-      CHECK_EQUAL(numRows(), bottomRowMargin.size());
-
-      // maximum cell width is final row
-      double x=0;
-      for (size_t i=0; i<rightColMargin.size(); ++i)
-        {
-          x+=cell(numRows()-1,i).width()+padx;
-          CHECK_EQUAL(x, rightColMargin[i]);
+    size_t m=0;
+    for (size_t col=0; col<numCols(); ++col) 
+      for (size_t row=0; row<numRows(); ++row, ++m)
+       {
+         EXPECT_EQ((col>0? rightColMargin[col-1]: 0)+0.5*padx, xpos[m]);
+         EXPECT_EQ(row>0? bottomRowMargin[row-1]: 0, ypos[m]);
         }
-      // maximum cell height is final column
-      double y=0;
-      for (size_t i=0; i<bottomRowMargin.size(); ++i)
-        {
-          y+=cell(i,numCols()-1).height();
-          CHECK_EQUAL(y, bottomRowMargin[i]);
+  }
+
+TEST_F(UnevenHeightGridMock, left)
+  {
+    draw();
+    EXPECT_TRUE(numCols()>1 && numRows()>1);
+    EXPECT_EQ(numCols(), rightColMargin.size());
+    EXPECT_EQ(numRows(), bottomRowMargin.size());
+
+    // maximum cell width is final row
+    double x=0;
+    for (size_t i=0; i<rightColMargin.size(); ++i)
+      {
+        x+=cell(numRows()-1,i).width()+padx;
+        EXPECT_EQ(x, rightColMargin[i]);
+      }
+    // maximum cell height is final column
+    double y=0;
+    for (size_t i=0; i<bottomRowMargin.size(); ++i)
+      {
+        y+=cell(i,numCols()-1).height();
+        EXPECT_EQ(y, bottomRowMargin[i]);
+      }
+
+    size_t m=0;
+    for (size_t col=0; col<numCols(); ++col) 
+      for (size_t row=0; row<numRows(); ++row, ++m)
+       {
+         EXPECT_EQ((col>0? rightColMargin[col-1]: 0)+0.5*padx, xpos[m]);
+         EXPECT_EQ(row>0? bottomRowMargin[row-1]: 0, ypos[m]);
         }
+  }
 
-      size_t m=0;
-      for (size_t col=0; col<numCols(); ++col) 
-        for (size_t row=0; row<numRows(); ++row, ++m)
-         {
-           CHECK_EQUAL((col>0? rightColMargin[col-1]: 0)+0.5*padx, xpos[m]);
-           CHECK_EQUAL(row>0? bottomRowMargin[row-1]: 0, ypos[m]);
-          }
-    }
+TEST_F(UnevenHeightGridMock, right)
+  {
+    m_justification=right;
+    draw();
+    EXPECT_TRUE(numCols()>1 && numRows()>1);
+    EXPECT_EQ(numCols(), rightColMargin.size());
+    EXPECT_EQ(numRows(), bottomRowMargin.size());
 
-  TEST_FIXTURE(UnevenHeightGridMock, right)
-    {
-      m_justification=right;
-      draw();
-      CHECK(numCols()>1 && numRows()>1);
-      CHECK_EQUAL(numCols(), rightColMargin.size());
-      CHECK_EQUAL(numRows(), bottomRowMargin.size());
+    // maximum cell width is final row
+    double x=0;
+    for (size_t i=0; i<rightColMargin.size(); ++i)
+      {
+        x+=cell(numRows()-1,i).width()+padx;
+        EXPECT_EQ(x, rightColMargin[i]);
+      }
+    // maximum cell height is final column
+    double y=0;
+    for (size_t i=0; i<bottomRowMargin.size(); ++i)
+      {
+        y+=cell(i,numCols()-1).height();
+        EXPECT_EQ(y, bottomRowMargin[i]);
+      }
 
-      // maximum cell width is final row
-      double x=0;
-      for (size_t i=0; i<rightColMargin.size(); ++i)
-        {
-          x+=cell(numRows()-1,i).width()+padx;
-          CHECK_EQUAL(x, rightColMargin[i]);
+    size_t m=0;
+    for (size_t col=0; col<numCols(); ++col) 
+      for (size_t row=0; row<numRows(); ++row, ++m)
+       {
+         EXPECT_EQ((rightColMargin[col]-cell(row,col).width())+0.5*padx, xpos[m]);
+         EXPECT_EQ((row>0? bottomRowMargin[row-1]: 0), ypos[m]);
         }
-      // maximum cell height is final column
-      double y=0;
-      for (size_t i=0; i<bottomRowMargin.size(); ++i)
-        {
-          y+=cell(i,numCols()-1).height();
-          CHECK_EQUAL(y, bottomRowMargin[i]);
+  }
+
+TEST_F(UnevenHeightGridMock, centre)
+  {
+    m_justification=centre;
+    draw();
+    EXPECT_TRUE(numCols()>1 && numRows()>1);
+    EXPECT_EQ(numCols(), rightColMargin.size());
+    EXPECT_EQ(numRows(), bottomRowMargin.size());
+
+    // maximum cell width is final row
+    double x=0;
+    for (size_t i=0; i<rightColMargin.size(); ++i)
+      {
+        x+=cell(numRows()-1,i).width()+padx;
+        EXPECT_EQ(x, rightColMargin[i]);
+      }
+    // maximum cell height is final column
+    double y=0;
+    for (size_t i=0; i<bottomRowMargin.size(); ++i)
+      {
+        y+=cell(i,numCols()-1).height();
+        EXPECT_EQ(y, bottomRowMargin[i]);
+      }
+
+    size_t m=0;
+    for (size_t col=0; col<numCols(); ++col) 
+      for (size_t row=0; row<numRows(); ++row, ++m)
+       {
+         EXPECT_EQ(0.5*((col>0? rightColMargin[col-1]: 0) + rightColMargin[col] - cell(row,col).width())+0.5*padx, xpos[m]);
+         EXPECT_EQ((row>0? bottomRowMargin[row-1]: 0), ypos[m]);
         }
+  }
 
-      size_t m=0;
-      for (size_t col=0; col<numCols(); ++col) 
-        for (size_t row=0; row<numRows(); ++row, ++m)
-         {
-           CHECK_EQUAL((rightColMargin[col]-cell(row,col).width())+0.5*padx, xpos[m]);
-           CHECK_EQUAL((row>0? bottomRowMargin[row-1]: 0), ypos[m]);
-          }
-    }
+TEST_F(UnevenHeightGridMock, colX)
+  {
+    draw();
+    EXPECT_EQ(-1, colX(-1));
+    EXPECT_EQ(-1, colX(rightColMargin.back()));
+    for (size_t i=0; i<rightColMargin.size(); ++i)
+      EXPECT_EQ(i, colX(rightColMargin[i]-0.5));
+  }
 
-  TEST_FIXTURE(UnevenHeightGridMock, centre)
-    {
-      m_justification=centre;
-      draw();
-      CHECK(numCols()>1 && numRows()>1);
-      CHECK_EQUAL(numCols(), rightColMargin.size());
-      CHECK_EQUAL(numRows(), bottomRowMargin.size());
-
-      // maximum cell width is final row
-      double x=0;
-      for (size_t i=0; i<rightColMargin.size(); ++i)
-        {
-          x+=cell(numRows()-1,i).width()+padx;
-          CHECK_EQUAL(x, rightColMargin[i]);
-        }
-      // maximum cell height is final column
-      double y=0;
-      for (size_t i=0; i<bottomRowMargin.size(); ++i)
-        {
-          y+=cell(i,numCols()-1).height();
-          CHECK_EQUAL(y, bottomRowMargin[i]);
-        }
-
-      size_t m=0;
-      for (size_t col=0; col<numCols(); ++col) 
-        for (size_t row=0; row<numRows(); ++row, ++m)
-         {
-           CHECK_EQUAL(0.5*((col>0? rightColMargin[col-1]: 0) + rightColMargin[col] - cell(row,col).width())+0.5*padx, xpos[m]);
-           CHECK_EQUAL((row>0? bottomRowMargin[row-1]: 0), ypos[m]);
-          }
-    }
-
-  TEST_FIXTURE(UnevenHeightGridMock, colX)
-    {
-      draw();
-      CHECK_EQUAL(-1, colX(-1));
-      CHECK_EQUAL(-1, colX(rightColMargin.back()));
-      for (size_t i=0; i<rightColMargin.size(); ++i)
-        CHECK_EQUAL(i, colX(rightColMargin[i]-0.5));
-    }
-  
-  TEST_FIXTURE(UnevenHeightGridMock, rowY)
-    {
-      draw();
-      CHECK_EQUAL(-1, rowY(-1));
-      CHECK_EQUAL(-1, rowY(bottomRowMargin.back()));
-      for (size_t i=0; i<bottomRowMargin.size(); ++i)
-        CHECK_EQUAL(i, rowY(bottomRowMargin[i]-0.5));
-    }
-}
+TEST_F(UnevenHeightGridMock, rowY)
+  {
+    draw();
+    EXPECT_EQ(-1, rowY(-1));
+    EXPECT_EQ(-1, rowY(bottomRowMargin.back()));
+    for (size_t i=0; i<bottomRowMargin.size(); ++i)
+      EXPECT_EQ(i, rowY(bottomRowMargin[i]-0.5));
+  }

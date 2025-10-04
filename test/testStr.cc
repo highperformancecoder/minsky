@@ -20,24 +20,21 @@
 #include "str.h"
 using namespace minsky;
 
-#include <UnitTest++/UnitTest++.h>
+#include <gtest/gtest.h>
 
-SUITE(Str)
-{
-  TEST(numBytes)
-    {
-      CHECK_EQUAL(strlen("A"),numBytes("A"[0]));
-      CHECK_EQUAL(strlen("π"),numBytes("π"[0]));
-      CHECK_EQUAL(strlen("㐀"),numBytes("㐀"[0]));
-      CHECK_EQUAL(strlen("𪜢"),numBytes("𪜢"[0]));
-    }
+TEST(Str, numBytes)
+  {
+    EXPECT_EQ(strlen("A"),numBytes("A"[0]));
+    EXPECT_EQ(strlen("π"),numBytes("π"[0]));
+    EXPECT_EQ(strlen("㐀"),numBytes("㐀"[0]));
+    EXPECT_EQ(strlen("𪜢"),numBytes("𪜢"[0]));
+  }
 
-  TEST(prevIndex)
-    {
-      CHECK_EQUAL(0, prevIndex("1A", 0));
-      CHECK_EQUAL(1, prevIndex("1A", strlen("1A")));
-      CHECK_EQUAL(1, prevIndex("1π", strlen("1π")));
-      CHECK_EQUAL(1, prevIndex("1㐀", strlen("1㐀")));
-      CHECK_EQUAL(1, prevIndex("1𪜢", strlen("1𪜢")));
-    }
-}
+TEST(Str, prevIndex)
+  {
+    EXPECT_EQ(0, prevIndex("1A", 0));
+    EXPECT_EQ(1, prevIndex("1A", strlen("1A")));
+    EXPECT_EQ(1, prevIndex("1π", strlen("1π")));
+    EXPECT_EQ(1, prevIndex("1㐀", strlen("1㐀")));
+    EXPECT_EQ(1, prevIndex("1𪜢", strlen("1𪜢")));
+  }
