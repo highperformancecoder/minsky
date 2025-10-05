@@ -252,26 +252,29 @@ namespace minsky
     // firstly evaluate the flow variables. Initialise to flowVars so
     // that no input vars are correctly initialised
     auto flow(flowVars);
-    auto eqSize=equations.size();
-    string threadErrMsg;
-#ifdef _OPENMP
-    //#pragma omp parallel for if(eqSize>20)
+
+    for (size_t i=0; i<equations.size(); ++i)
+      equations[i]->eval(flow.data(), flow.size(), vars);
     // TODO - equations are ordered, so we can't naively parallelise this loop.
-#endif
-    for (size_t i=0; i<eqSize; ++i)
-      try
-        {
-          equations[i]->eval(flow.data(), flow.size(), vars);
-        }
-      catch (std::exception& e)
-        {
-#ifdef _OPENMP
-#pragma omp critical
-#endif
-          threadErrMsg=e.what();
-        }
-    if (!threadErrMsg.empty())
-      throw runtime_error(threadErrMsg);
+//    auto eqSize=equations.size();
+//    string threadErrMsg;
+//#ifdef _OPENMP
+//    //#pragma omp parallel for if(eqSize>20)
+//#endif
+//    for (size_t i=0; i<eqSize; ++i)
+//      try
+//        {
+//          equations[i]->eval(flow.data(), flow.size(), vars);
+//        }
+//      catch (const std::exception& e)
+//        {
+//#ifdef _OPENMP
+//#pragma omp critical
+//#endif
+//          threadErrMsg=e.what();
+//        }
+//    if (!threadErrMsg.empty())
+//      throw runtime_error(threadErrMsg);
 
     // then create the result using the Godley table
     auto stvSize=stockVars.size();

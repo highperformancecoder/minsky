@@ -1519,7 +1519,6 @@ namespace minsky
     mutable vector<TensorPtr> chain;
     TensorPtr arg;
     mutable Timestamp m_timestamp;
-    bool redoCalc=false;
     
     CLASSDESC_ACCESS(Ravel);
   public:
@@ -1538,22 +1537,22 @@ namespace minsky
       do
         {
           if (!chain.empty())
-            v=(*chain.back())[i];
-              
-          auto chainBack=chain.back(); // stash a reference to the current chain, in case it gets updated below
-          v=(*chainBack)[i];
+            {
+              v=(*chain.back())[i];
 #ifdef _OPENMP
+#pragma omp barrier
 #pragma omp single copyprivate(redoCalc)
 #endif
-          {
-            redoCalc=m_timestamp<chain.back()->timestamp();
-            if (redoCalc)
-              { // update hypercube if argument has changed
-                const_cast<Ravel&>(ravel).populateHypercube(arg->hypercube());
-                chain=ravel::createRavelChain(ravel.getState(), arg);
-                m_timestamp=Timestamp::clock::now();
+              {
+                redoCalc=m_timestamp<chain.back()->timestamp();
+                if (redoCalc)
+                  { // update hypercube if argument has changed
+                    const_cast<Ravel&>(ravel).populateHypercube(arg->hypercube());
+                    chain=ravel::createRavelChain(ravel.getState(), arg);
+                    m_timestamp=Timestamp::clock::now();
+                  }
               }
-          }
+            }
         }
       while (redoCalc);
       return v;

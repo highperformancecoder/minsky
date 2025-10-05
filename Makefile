@@ -213,6 +213,10 @@ FLAGS+=-std=c++20 -UTR1 -Ischema -Iengine -Imodel -Icertify/include -IRESTServic
 ifeq ($(CPLUSPLUS),clang++)
 # note some of these flags are disabling warnings that are invalid in some circumstances
 FLAGS+=-Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-defaulted-function-deleted -Wno-uninitialized
+endif
+
+ifdef OPENMP
+FLAGS+=-fopenmp
 LIBS+=-fopenmp
 endif
 

@@ -100,7 +100,7 @@ namespace minsky
 
 #ifdef _OPENMP
     size_t sidxSize=sidx.size();
-#pragma omp parallel for if(initIdxSize>20)
+#pragma omp parallel for if(sidxSize>20)
     for (size_t i=0; i<sidxSize; ++i)
       atomic_ref(sv[sidx[i]]) += fv[fidx[i]] * m[i];
 #else

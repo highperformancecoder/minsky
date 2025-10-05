@@ -28,6 +28,7 @@ endif
 
 ifdef OPENMP
 FLAGS+=-fopenmp
+LIBS+=-fopenmp
 endif
 
 # RSVG dependencies calculated here
