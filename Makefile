@@ -28,7 +28,7 @@ ifdef MXE
 MAKEOVERRIDES+=MXE_PREFIX=x86_64-w64-mingw32.shared
 endif
 
-MAKEOVERRIDES+=DEBUG=$(DEBUG) OPENMP=$(OPENMP)
+MAKEOVERRIDES+=DEBUG=$(DEBUG)
 # Build EcoLab with clang to avoid problems with old gcc compilers on
 # some Linux distros
 ifeq ($(HAVE_CLANG),1)

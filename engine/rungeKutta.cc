@@ -253,11 +253,25 @@ namespace minsky
     // that no input vars are correctly initialised
     auto flow(flowVars);
     auto eqSize=equations.size();
+    string threadErrMsg;
 #ifdef _OPENMP
-#pragma omp parallel for if(eqSize>20)
+    //#pragma omp parallel for if(eqSize>20)
+    // TODO - equations are ordered, so we can't naively parallelise this loop.
 #endif
     for (size_t i=0; i<eqSize; ++i)
-      equations[i]->eval(flow.data(), flow.size(), vars);
+      try
+        {
+          equations[i]->eval(flow.data(), flow.size(), vars);
+        }
+      catch (std::exception& e)
+        {
+#ifdef _OPENMP
+#pragma omp critical
+#endif
+          threadErrMsg=e.what();
+        }
+    if (!threadErrMsg.empty())
+      throw runtime_error(threadErrMsg);
 
     // then create the result using the Godley table
     auto stvSize=stockVars.size();
@@ -278,6 +292,10 @@ namespace minsky
           }
         // enable element-wise integration of tensor variables. for feature 147
         assert(i->input().size()==i->stock->size());
+        auto inputSize=i->input().size();
+#ifdef _OPENMP
+#pragma omp parallel for if(inputSize>20)
+#endif
 	for (size_t j=0; j<i->input().size(); ++j)
           result[i->stock->idx()+j] = reverseFactor *
             (i->input().isFlowVar()? flow[i->input().idx()+j] : vars[i->input().idx()+j]);

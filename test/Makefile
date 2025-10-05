@@ -26,6 +26,9 @@ else
 LIBS+=-lxcb
 endif
 
+ifdef OPENMP
+FLAGS+=-fopenmp
+endif
 
 # RSVG dependencies calculated here
 FLAGS+=$(shell pkg-config --cflags librsvg-2.0)
@@ -34,9 +37,6 @@ LIBS+=$(shell pkg-config --libs librsvg-2.0)
 EXES=cmpFp checkSchemasAreSame
 #testDatabase testGroup 
 
-ifdef AEGIS
-#EXES+=tcl-cov
-endif
 
 ifdef ASAN
 FLAGS+=-fsanitize=address -fno-omit-frame-pointer
