@@ -257,21 +257,22 @@ namespace minsky
 #ifdef _OPENMP
     //#pragma omp parallel for if(eqSize>20)
     // TODO - equations are ordered, so we can't naively parallelise this loop.
-#endif
     for (size_t i=0; i<eqSize; ++i)
       try
         {
           equations[i]->eval(flow.data(), flow.size(), vars);
         }
-      catch (std::exception& e)
+      catch (const std::exception& e)
         {
-#ifdef _OPENMP
 #pragma omp critical
-#endif
-          threadErrMsg=e.what();
+          threadErrMsg = e.what();
         }
     if (!threadErrMsg.empty())
       throw runtime_error(threadErrMsg);
+#else
+    for (size_t i=0; i<eqSize; ++i)
+      equations[i]->eval(flow.data(), flow.size(), vars);
+#endif
 
     // then create the result using the Godley table
     auto stvSize=stockVars.size();
