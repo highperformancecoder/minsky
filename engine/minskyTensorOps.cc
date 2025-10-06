@@ -347,19 +347,34 @@ namespace minsky
   template <>
   struct GeneralTensorOp<OperationType::all>: public civita::ReductionOp
   {
-    GeneralTensorOp(): civita::ReductionOp([](double& x, double y,size_t){x*=(y>0.5);},1){}
+    GeneralTensorOp(): civita::ReductionOp([](double& x, double y,size_t){
+#ifdef _OPENMP
+#pragma omp atomic
+#endif
+      x*=(y>0.5);
+    },1){}
    };
 
   template <>
   struct GeneralTensorOp<OperationType::runningSum>: public civita::Scan
   {
-    GeneralTensorOp(): civita::Scan([](double& x,double y,size_t){x+=y;}) {}
+    GeneralTensorOp(): civita::Scan([](double& x,double y,size_t){
+#ifdef _OPENMP
+#pragma omp atomic
+#endif
+      x+=y;
+    }) {}
   };
 
   template <>
   struct GeneralTensorOp<OperationType::runningProduct>: public civita::Scan
   {
-    GeneralTensorOp(): civita::Scan([](double& x,double y,size_t){x*=y;}) {}
+    GeneralTensorOp(): civita::Scan([](double& x,double y,size_t){
+#ifdef _OPENMP
+#pragma omp atomic
+#endif
+      x*=y;
+    }) {}
   };
   
   template <>
@@ -1518,16 +1533,28 @@ namespace minsky
 
     double operator[](size_t i) const override {
       double v=0;
-      if (!chain.empty())
+      bool redoCalc=false;
+      do
         {
-          v=(*chain.back())[i];
-          if (m_timestamp<chain.back()->timestamp())
-            { // update hypercube if argument has changed
-              const_cast<Ravel&>(ravel).populateHypercube(arg->hypercube());
-              chain=ravel::createRavelChain(ravel.getState(), arg);
-              m_timestamp=Timestamp::clock::now();
+          if (!chain.empty())
+            {
+              v=(*chain.back())[i];
+#ifdef _OPENMP
+#pragma omp barrier
+#pragma omp single copyprivate(redoCalc)
+#endif
+              {
+                redoCalc=m_timestamp<chain.back()->timestamp();
+                if (redoCalc)
+                  { // update hypercube if argument has changed
+                    const_cast<Ravel&>(ravel).populateHypercube(arg->hypercube());
+                    chain=ravel::createRavelChain(ravel.getState(), arg);
+                    m_timestamp=Timestamp::clock::now();
+                  }
+              }
             }
         }
+      while (redoCalc);
       return v;
     }
     size_t size() const override {return chain.empty()? 1: chain.back()->size();}
@@ -1683,12 +1710,28 @@ namespace minsky
           throw FlowVarsResized();
         result.ev->update(fv, n, sv);
         assert(result.size()==rhs->size());
-        for (size_t i=0; i<rhs->size(); ++i)
-          {
-            auto v=(*rhs)[i];
-            result[i]=v;
-            assert(!isfinite(result[i]) || fv[result.idx()+i]==v);
-          }
+        // the assumption here is that rhs is independent of rhs
+        auto rhsSize=rhs->size();
+        string errMsg;
+#ifdef _OPENMP
+#pragma omp parallel for if(rhsSize>20)
+#endif
+        for (size_t i=0; i<rhsSize; ++i)
+          try
+            {
+              auto v=(*rhs)[i];
+              result[i]=v;
+              assert(!isfinite(result[i]) || fv[result.idx()+i]==v);
+            }
+          catch (const std::exception& ex)
+            {
+#ifdef _OPENMP
+#pragma omp critical
+#endif
+              errMsg=ex.what();
+            }
+        if (!errMsg.empty())
+          throw runtime_error(errMsg);
       }
   }
    
