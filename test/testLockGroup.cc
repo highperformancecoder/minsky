@@ -98,6 +98,12 @@ TEST_F(RavelLockGroupTest, LockGroup)
 
 TEST_F(RavelLockGroupTest, JoinLockGroupBroadcast)
 {
+  // Skip test if ravels not available
+  if (!minsky.ravelAvailable())
+    {
+      cerr << "Ravel not available, skipping test" << endl;
+      return;
+    }
   auto a=make_shared<Ravel>(), b=make_shared<Ravel>();
   
   // Add ravels to model so joinLockGroup can find them
