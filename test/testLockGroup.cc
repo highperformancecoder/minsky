@@ -131,6 +131,5 @@ TEST_F(RavelLockGroupTest, JoinLockGroupBroadcast)
   EXPECT_EQ(2, a->lockGroup->ravels().size());
   
   // Verify state was broadcast - check if b got a's caliper settings
-  auto bState=b->getState();
   EXPECT_TRUE(b->getState()==aState);
 }
