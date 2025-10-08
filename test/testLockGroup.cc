@@ -95,3 +95,23 @@ TEST_F(RavelLockGroupTest, LockGroup)
   EXPECT_TRUE(b->lockGroup==c->lockGroup);
   EXPECT_FALSE(d->lockGroup);
 }
+
+TEST_F(RavelLockGroupTest, JoinLockGroupBroadcast)
+{
+  auto a=make_shared<Ravel>(), b=make_shared<Ravel>();
+  
+  // Create a lock group with ravel a
+  selection.items={a};
+  a->lockGroup.reset(new RavelLockGroup);
+  a->lockGroup->addRavel(a);
+  auto lockGroup=a->lockGroup;
+  
+  // Now have b join the lock group using joinLockGroup
+  b->lockGroup=lockGroup;
+  lockGroup->addRavel(b);
+  lockGroup->initialBroadcast();
+  
+  // Verify both ravels are in the same lock group
+  EXPECT_TRUE(a->lockGroup==b->lockGroup);
+  EXPECT_EQ(2, lockGroup->ravels().size());
+}

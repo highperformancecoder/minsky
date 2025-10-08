@@ -593,6 +593,7 @@ namespace minsky
             {
               lockGroup=ravel->lockGroup;
               lockGroup->addRavel(ravelPtr);
+              lockGroup->initialBroadcast();
               return true;
             }
         }
