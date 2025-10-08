@@ -32,6 +32,7 @@ namespace
 
 class RavelLockGroupTest : public Canvas, public ::testing::Test
 {
+protected:
   Minsky minsky; // provides model and selection
   LocalMinsky lminsky{minsky};
 public:
@@ -107,8 +108,8 @@ TEST_F(RavelLockGroupTest, JoinLockGroupBroadcast)
   auto a=make_shared<Ravel>(), b=make_shared<Ravel>();
   
   // Add ravels to model so joinLockGroup can find them
-  minsky::minsky().model->addItem(a);
-  minsky::minsky().model->addItem(b);
+  minsky.model->addItem(a);
+  minsky.model->addItem(b);
   
   // Create a lock group with ravel a and set some state
   a->lockGroup.reset(new RavelLockGroup);
