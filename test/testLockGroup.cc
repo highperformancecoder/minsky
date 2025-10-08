@@ -100,18 +100,39 @@ TEST_F(RavelLockGroupTest, JoinLockGroupBroadcast)
 {
   auto a=make_shared<Ravel>(), b=make_shared<Ravel>();
   
-  // Create a lock group with ravel a
-  selection.items={a};
+  // Add ravels to model so joinLockGroup can find them
+  model->addItem(a);
+  model->addItem(b);
+  
+  // Create a lock group with ravel a and set some state
   a->lockGroup.reset(new RavelLockGroup);
   a->lockGroup->addRavel(a);
   auto lockGroup=a->lockGroup;
+  auto colour=lockGroup->colour();
   
-  // Now have b join the lock group using joinLockGroup
-  b->lockGroup=lockGroup;
-  lockGroup->addRavel(b);
-  lockGroup->initialBroadcast();
+  // Set calipers on ravel a to have some distinguishable state
+  auto aState=a->getState();
+  if (!aState.handleStates.empty())
+    {
+      aState.handleStates[0].displayFilterCaliper=true;
+      aState.handleStates[0].minLabel="min";
+      aState.handleStates[0].maxLabel="max";
+      a->applyState(aState);
+    }
+  
+  // Now have b join the lock group using joinLockGroup method
+  b->joinLockGroup(colour);
   
   // Verify both ravels are in the same lock group
   EXPECT_TRUE(a->lockGroup==b->lockGroup);
   EXPECT_EQ(2, lockGroup->ravels().size());
+  
+  // Verify state was broadcast - check if b got a's caliper settings
+  auto bState=b->getState();
+  if (!aState.handleStates.empty() && !bState.handleStates.empty())
+    {
+      EXPECT_EQ(aState.handleStates[0].displayFilterCaliper, bState.handleStates[0].displayFilterCaliper);
+      EXPECT_EQ(aState.handleStates[0].minLabel, bState.handleStates[0].minLabel);
+      EXPECT_EQ(aState.handleStates[0].maxLabel, bState.handleStates[0].maxLabel);
+    }
 }
