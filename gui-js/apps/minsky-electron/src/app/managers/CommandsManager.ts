@@ -510,19 +510,23 @@ export class CommandsManager {
 
   static async exportGodleyAs(
     ext: string,
-    command: (x: string)=>void = null
+    command: (x: string)=>void = null,
+    parentWindow: Electron.BrowserWindow = null
   ): Promise<void> {
-    const saveDialog = await dialog.showSaveDialog({
-      filters: [
-        {
-          name: '.' + ext,
-          extensions: [ext],
-        },
-        { name: 'All', extensions: ['*'] },
-      ],
-      defaultPath: `godley.${ext}`,
-      properties: ['showOverwriteConfirmation'],
-    });
+    const saveDialog = await dialog.showSaveDialog(
+      parentWindow,
+      {
+        filters: [
+          {
+            name: '.' + ext,
+            extensions: [ext],
+          },
+          { name: 'All', extensions: ['*'] },
+        ],
+        defaultPath: `godley.${ext}`,
+        properties: ['showOverwriteConfirmation'],
+      }
+    );
 
     const { canceled, filePath } = saveDialog;
 
