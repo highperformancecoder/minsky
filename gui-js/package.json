@@ -152,8 +152,10 @@
     "jest-preset-angular": "^14.6.0",
     "material-design-icons": "^3.0.1",
     "ngx-color-picker": "^20.0.0",
+    "npm-run-all": "^4.1.5",
     "nx-electron": "^21.0.0",
     "@nx/js": "21.2.1",
+    "@nrwl/workspace": "^19.8.4",
     "wait-on": "^8.0.3"
   },
   "dependencies": {
@@ -165,7 +167,6 @@
     "@angular/forms": "^20.0.0",
     "@angular/platform-browser-dynamic": "^20.0.0",
     "@angular/router": "^20.0.0",
-    "@nrwl/workspace": "^19.8.4",
     "bindings": "^1.5.0",
     "call-bind-apply-helpers": "^1.0.2",
     "decompress": "^4.2.1",
@@ -175,7 +176,6 @@
     "glob": "^11.0.3",
     "JSONStream": "^1.3.5",
     "mathjax": "^3.2.2",
-    "npm-run-all": "^4.1.5",
     "readable-stream": "^4.7.0",
     "typescript": "5.8.3",
     "utf8": "^3.0.0",
