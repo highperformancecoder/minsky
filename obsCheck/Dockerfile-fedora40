@@ -1,0 +1,12 @@
+FROM fedora:40
+ARG project=minsky
+ADD . /root
+RUN dnf install -y 'dnf-command(config-manager)' util-linux
+
+# handle dnf syntax change - here document didn't work, so this is a specialised Dockerfile
+ARG repo=https://download.opensuse.org/repositories/home:/hpcoder1/Fedora_40/home:hpcoder1.repo
+RUN dnf config-manager --add-repo $repo
+RUN dnf install -y $project
+RUN useradd -m minsky
+RUN su - minsky -c "minsky --version --no-sandbox"
+RUN python3 -c "import pyminsky"
