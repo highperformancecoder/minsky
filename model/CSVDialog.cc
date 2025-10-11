@@ -47,8 +47,8 @@ using namespace civita;
 using ecolab::Pango;
 using ecolab::cairo::CairoSave;
 
-#include <boost/filesystem.hpp>
-using boost::filesystem::file_size;
+#include <filesystem>
+using std::filesystem::file_size;
 
 const unsigned CSVDialog::numInitialLines;
 
@@ -58,45 +58,6 @@ void CSVDialog::reportFromFile(const std::string& input, const std::string& outp
   stripByteOrderingMarker(is);
   ofstream of(output);
   reportFromCSVFile(is,of,spec,file_size(input));
-}
-
-namespace
-{
-  // manage temporary files
-  struct CacheEntry
-  {
-    chrono::time_point<chrono::system_clock> timestamp;
-    string url, filename;
-    CacheEntry(const string& url): timestamp(chrono::system_clock::now()), url(url),
-                            filename(boost::filesystem::unique_path().string()) {}
-    ~CacheEntry() {boost::filesystem::remove(filename);}
-    bool operator<(const CacheEntry& x) const {return url<x.url;}
-  };
-
-  // note: this cache will leak disk storage if Minsky is killed, not shut down cleanly
-  struct Cache: private set<CacheEntry> 
-  {
-    using set<CacheEntry>::find;
-    using set<CacheEntry>::end;
-    using set<CacheEntry>::erase;
-    iterator emplace(const string& url)
-    {
-      if (size()>=10)
-        {
-          // find oldest element and erase
-          auto entryToErase=begin();
-          auto ts=entryToErase->timestamp;
-          for (auto i=begin(); i!=end(); ++i)
-            if (i->timestamp<ts)
-              {
-                ts=i->timestamp;
-                entryToErase=i;
-              }
-          erase(entryToErase);
-        }
-      return set<CacheEntry>::emplace(url).first;
-    }
-  };
 }
 
 void CSVDialog::loadFile()

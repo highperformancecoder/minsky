@@ -17,12 +17,12 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "latexMarkup.h"
-#include <UnitTest++/UnitTest++.h>
+#include <gtest/gtest.h>
 #include <iostream>
 using namespace minsky;
 using namespace std;
 
-TEST(LaTeXToPango)
+TEST(LaTeXToPango, LaTeXToPango)
 {
   struct {const char* latex, *pango;} 
   qr[]= {
@@ -53,7 +53,7 @@ TEST(LaTeXToPango)
     
   for (size_t i=0; i<sizeof(qr)/sizeof(qr[0]); ++i)
     {
-      CHECK_EQUAL(qr[i].pango, latexToPango(qr[i].latex));
+      EXPECT_EQ(qr[i].pango, latexToPango(qr[i].latex));
       if (qr[i].pango != latexToPango(qr[i].latex))
         cout << qr[i].latex << " failed."<<endl;
     }

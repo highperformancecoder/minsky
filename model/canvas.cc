@@ -461,7 +461,7 @@ namespace minsky
           ravelsToLock.push_back(r);
           if (!lockGroup)
             lockGroup=r->lockGroup;
-          if (lockGroup!=r->lockGroup)
+          if (r->lockGroup && lockGroup!=r->lockGroup)
             conflictingLockGroups=true;
         }
     if (ravelsToLock.size()<2)

@@ -19,73 +19,71 @@
 #include "cairoItems.h"
 #include "canvas.h"
 #include "minsky_epilogue.h"
-#undef True
-#include <UnitTest++/UnitTest++.h>
+#include <gtest/gtest.h>
 using namespace minsky;
 using namespace std;
 
-namespace {
-  struct CanvasFixture: public minsky::Canvas
-  {
-    CanvasFixture(): minsky::Canvas(make_shared<Group>()) {}
-  };
-}
-
-SUITE(Canvas)
+// Test fixture for Canvas tests
+class CanvasTest : public ::testing::Test, public minsky::Canvas
 {
-  TEST_FIXTURE(CanvasFixture,defaultPlotOptions)
+protected:
+    CanvasTest() : minsky::Canvas(make_shared<Group>()) {}
+    
+    void SetUp() override
     {
-      addPlot();
-      auto originalItem=itemFocus;
-      auto originalPlot=dynamic_cast<PlotWidget*>(itemFocus.get());
-      CHECK(originalPlot);
-      if (!originalPlot) return;
-      originalPlot->subgrid=true;
-      originalPlot->title="hello";
-      originalPlot->xlabel("x");
-      originalPlot->ylabel("y");
-      originalPlot->y1label("y1");
-      originalPlot->palette.emplace_back();
-      originalPlot->palette.back().width=2;
-      originalPlot->palette.back().dashStyle=ecolab::Plot::LineStyle::dash;
-      
-      addPlot();
-      auto firstItem=itemFocus;
-      auto firstPlot=dynamic_cast<PlotWidget*>(itemFocus.get());
-      CHECK(firstPlot);
-      if (!firstPlot) return;
-      CHECK_EQUAL("",firstPlot->title);
-      CHECK_EQUAL("",firstPlot->xlabel());
-      CHECK_EQUAL("",firstPlot->ylabel());
-      CHECK_EQUAL("",firstPlot->y1label());
-      CHECK_EQUAL(originalPlot->palette.size()-1,firstPlot->palette.size());
-      
-      item=originalItem;
-      setDefaultPlotOptions();
-
-      // check we can apply the default options
-      item=firstItem;
-      applyDefaultPlotOptions();
-      CHECK_EQUAL("",firstPlot->title);
-      CHECK_EQUAL("",firstPlot->xlabel());
-      CHECK_EQUAL("",firstPlot->ylabel());
-      CHECK_EQUAL("",firstPlot->y1label());
-      CHECK(firstPlot->subgrid);
-      CHECK_EQUAL(originalPlot->palette.size(),firstPlot->palette.size());
-      CHECK_EQUAL(originalPlot->palette.back().width, firstPlot->palette.back().width);
-      CHECK_EQUAL(originalPlot->palette.back().dashStyle, firstPlot->palette.back().dashStyle);
-
-      addPlot();
-      auto secondPlot=dynamic_cast<PlotWidget*>(itemFocus.get());
-      CHECK_EQUAL(originalPlot->title,secondPlot->title);
-      CHECK_EQUAL(originalPlot->xlabel(),secondPlot->xlabel());
-      CHECK_EQUAL(originalPlot->ylabel(),secondPlot->ylabel());
-      CHECK_EQUAL(originalPlot->y1label(),secondPlot->y1label());
-      CHECK(secondPlot->subgrid);
-      CHECK_EQUAL(originalPlot->palette.size(),secondPlot->palette.size());
-      CHECK_EQUAL(originalPlot->palette.back().width, secondPlot->palette.back().width);
-      CHECK_EQUAL(originalPlot->palette.back().dashStyle, secondPlot->palette.back().dashStyle);
-      
-      
+        // Initialize canvas if needed
     }
+};
+
+TEST_F(CanvasTest, defaultPlotOptions)
+{
+    addPlot();
+    auto originalItem=itemFocus;
+    auto originalPlot=dynamic_cast<PlotWidget*>(itemFocus.get());
+    ASSERT_TRUE(originalPlot);
+    originalPlot->subgrid=true;
+    originalPlot->title="hello";
+    originalPlot->xlabel("x");
+    originalPlot->ylabel("y");
+    originalPlot->y1label("y1");
+    originalPlot->palette.emplace_back();
+    originalPlot->palette.back().width=2;
+    originalPlot->palette.back().dashStyle=ecolab::Plot::LineStyle::dash;
+    
+    addPlot();
+    auto firstItem=itemFocus;
+    auto plotBeforeDefaultsApplied=dynamic_cast<PlotWidget*>(itemFocus.get());
+    ASSERT_TRUE(plotBeforeDefaultsApplied);
+    EXPECT_EQ("",plotBeforeDefaultsApplied->title);
+    EXPECT_EQ("",plotBeforeDefaultsApplied->xlabel());
+    EXPECT_EQ("",plotBeforeDefaultsApplied->ylabel());
+    EXPECT_EQ("",plotBeforeDefaultsApplied->y1label());
+    EXPECT_EQ(originalPlot->palette.size()-1,plotBeforeDefaultsApplied->palette.size());
+    
+    item=originalItem;
+    setDefaultPlotOptions();
+
+    // check we can apply the default options
+    item=firstItem;
+    applyDefaultPlotOptions();
+    EXPECT_EQ("",plotBeforeDefaultsApplied->title);
+    EXPECT_EQ("",plotBeforeDefaultsApplied->xlabel());
+    EXPECT_EQ("",plotBeforeDefaultsApplied->ylabel());
+    EXPECT_EQ("",plotBeforeDefaultsApplied->y1label());
+    EXPECT_TRUE(plotBeforeDefaultsApplied->subgrid);
+    EXPECT_EQ(originalPlot->palette.size(),plotBeforeDefaultsApplied->palette.size());
+    EXPECT_EQ(originalPlot->palette.back().width, plotBeforeDefaultsApplied->palette.back().width);
+    EXPECT_EQ(originalPlot->palette.back().dashStyle, plotBeforeDefaultsApplied->palette.back().dashStyle);
+
+    addPlot();
+    auto plotAfterDefaultsApplied=dynamic_cast<PlotWidget*>(itemFocus.get());
+    ASSERT_TRUE(plotAfterDefaultsApplied);
+    EXPECT_EQ(originalPlot->title,plotAfterDefaultsApplied->title);
+    EXPECT_EQ(originalPlot->xlabel(),plotAfterDefaultsApplied->xlabel());
+    EXPECT_EQ(originalPlot->ylabel(),plotAfterDefaultsApplied->ylabel());
+    EXPECT_EQ(originalPlot->y1label(),plotAfterDefaultsApplied->y1label());
+    EXPECT_TRUE(plotAfterDefaultsApplied->subgrid);
+    EXPECT_EQ(originalPlot->palette.size(),plotAfterDefaultsApplied->palette.size());
+    EXPECT_EQ(originalPlot->palette.back().width, plotAfterDefaultsApplied->palette.back().width);
+    EXPECT_EQ(originalPlot->palette.back().dashStyle, plotAfterDefaultsApplied->palette.back().dashStyle);
 }

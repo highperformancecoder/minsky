@@ -19,52 +19,49 @@
 #include "minsky.h"
 #include "minsky_epilogue.h"
 #undef True
-#include <UnitTest++/UnitTest++.h>
+#include <gtest/gtest.h>
 using namespace minsky;
 
 namespace
 {
-  struct MinskyFixture: public Minsky
+  class VariablePaneSuite : public Minsky, public ::testing::Test
   {
+  public:
     LocalMinsky lm;
-    MinskyFixture(): lm(*this)
+    VariablePaneSuite(): lm(*this)
     {
     }
   };
 }
 
-SUITE(VariablePane)
-{
-  TEST_FIXTURE(MinskyFixture,updateAndDraw)
-    {
-      load("1Free.mky");
-      variablePane.updateWithHeight(100);
-      // count the number of non-temporary variables
-      size_t nonTempCount=0;
-      for (auto& [valueId, v]: variableValues)
-        if (v->type()!=VariableType::tempFlow)
-          nonTempCount++;
-      CHECK(nonTempCount<=variablePane.numRows()*variablePane.numCols());
-      variablePane.renderToSVG("1FreeAllVariableTab.svg");
-      variablePane.deselect(VariableType::parameter);
-      variablePane.deselect(VariableType::stock);
-      variablePane.update();
-      variablePane.renderToSVG("1FreeNoParamStock.svg");
-      variablePane.select(VariableType::parameter);
-      variablePane.update();
-      variablePane.renderToSVG("1FreeNoStock.svg");
-    }
-  
-  TEST_FIXTURE(MinskyFixture,emplace)
-    {
-      load("1Free.mky");
-      variablePane.updateWithHeight(100);
-      CHECK_EQUAL("Variable:undefined", variablePane.cell(variablePane.numRows()-1,variablePane.numCols()-1).variable().classType());
-      CHECK(variablePane.cell(0,0).width()>0);
-      variablePane.cell(0,0).emplace();
-      CHECK(canvas.itemFocus);
-      auto v=canvas.itemFocus->variableCast();
-      CHECK(v);
-      CHECK_EQUAL(variablePane.cell(0,0).variable().classType(), canvas.itemFocus->classType());
-    }
-}
+TEST_F(VariablePaneSuite, updateAndDraw)
+  {
+    load("1Free.mky");
+    variablePane.updateWithHeight(100);
+    // count the number of non-temporary variables
+    size_t nonTempCount=0;
+    for (auto& [valueId, v]: variableValues)
+      if (v->type()!=VariableType::tempFlow)
+        nonTempCount++;
+    EXPECT_TRUE(nonTempCount<=variablePane.numRows()*variablePane.numCols());
+    variablePane.renderToSVG("1FreeAllVariableTab.svg");
+    variablePane.deselect(VariableType::parameter);
+    variablePane.deselect(VariableType::stock);
+    variablePane.update();
+    variablePane.renderToSVG("1FreeNoParamStock.svg");
+    variablePane.select(VariableType::parameter);
+    variablePane.update();
+    variablePane.renderToSVG("1FreeNoStock.svg");
+  }
+
+TEST_F(VariablePaneSuite, emplace)
+  {
+    load("1Free.mky");
+    variablePane.updateWithHeight(100);
+    EXPECT_EQ("Variable:undefined", variablePane.cell(variablePane.numRows()-1,variablePane.numCols()-1).variable().classType());
+    EXPECT_TRUE(variablePane.cell(0,0).width()>0);
+    variablePane.cell(0,0).emplace();
+    ASSERT_TRUE(canvas.itemFocus);
+    EXPECT_TRUE(canvas.itemFocus->variableCast());
+    EXPECT_EQ(variablePane.cell(0,0).variable().classType(), canvas.itemFocus->classType());
+  }

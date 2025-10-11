@@ -28,9 +28,9 @@
 
 #include "schema3.h"
 
-//#include <thread>
+#include <thread>
 // std::thread apparently not supported on MXE for now...
-#include <boost/thread.hpp>
+//#include <boost/thread.hpp>
 
 #include "minskyVersion.h"
 
@@ -60,7 +60,7 @@
 #include "minsky_epilogue.h"
 
 #include <algorithm>
-#include <boost/filesystem.hpp>
+#include <filesystem>
 
 #ifdef _WIN32
 #include <windows.h>
@@ -132,7 +132,7 @@ namespace minsky
   {
     if (edited() && autoSaver)
       // if we're at this point, then the user has already been asked to save, and chosen no.
-      boost::filesystem::remove(autoSaver->fileName);
+      filesystem::remove(autoSaver->fileName);
   }
 
   void Minsky::clearAllMaps(bool doClearHistory)
@@ -1047,7 +1047,7 @@ namespace minsky
     flags &= ~is_edited;
     fileVersion=minskyVersion;
     if (autoSaver)
-      boost::filesystem::remove(autoSaver->fileName);
+      filesystem::remove(autoSaver->fileName);
     // rotate saved versions
     for (int i=numBackups; i>1; --i)
       rename((filename+";"+to_string(i-1)).c_str(), (filename+";"+to_string(i)).c_str());

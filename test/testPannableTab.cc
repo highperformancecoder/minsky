@@ -19,7 +19,7 @@
 #include "pannableTab.h"
 #include "minsky_epilogue.h"
 #undef True
-#include <UnitTest++/UnitTest++.h>
+#include <gtest/gtest.h>
 
 namespace minsky
 {
@@ -39,21 +39,23 @@ namespace minsky
       double m_zoomFactor=1;
     };
 
-    using PannableTabFixture=PannableTab<Base>;
+    class PannableTabFixture : public PannableTab<Base>, public ::testing::Test
+    {
+    };
 
-    TEST_FIXTURE(PannableTabFixture, mouseDownUp)
+    TEST_F(PannableTabFixture, mouseDownUp)
     {
       moveTo(100,150);
       auto x1=position();
-      CHECK_EQUAL(2,x1.size());
-      CHECK_EQUAL(100,x1[0]);
-      CHECK_EQUAL(150,x1[1]);
+      EXPECT_EQ(2,x1.size());
+      EXPECT_EQ(100,x1[0]);
+      EXPECT_EQ(150,x1[1]);
       mouseDown(10,10);
       mouseUp(20,20);
       auto x2=position();
-      CHECK_EQUAL(2,x2.size());
-      CHECK_EQUAL(110,x2[0]);
-      CHECK_EQUAL(160,x2[1]);
+      EXPECT_EQ(2,x2.size());
+      EXPECT_EQ(110,x2[0]);
+      EXPECT_EQ(160,x2[1]);
     }
   }
 }

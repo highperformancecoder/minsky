@@ -21,13 +21,14 @@
 #include <minsky.h>
 #include "minsky_epilogue.h"
 #undef True
-#include <UnitTest++/UnitTest++.h>
+#include <gtest/gtest.h>
 using namespace minsky;
 using namespace std;
 using MathDAG::differentiateName;
 
-struct BinOpFixture: public Minsky
+class BinOpFixture : public Minsky, public ::testing::Test
 {
+public:
   LocalMinsky lm{*this};
   VariablePtr offs{VariableType::constant};
   OperationPtr t{OperationType::time};
@@ -71,270 +72,273 @@ struct BinOpFixture: public Minsky
   }
 };
 
-SUITE(Derivative)
+class MinskyTest : public Minsky, public ::testing::Test
 {
-  TEST(differentiateName)
-  {
-    string dx=differentiateName("x");
-    string d2x=differentiateName(dx);
-    string d3x=differentiateName(d2x);
-    CHECK_EQUAL("dx/dt",dx);
-    CHECK_EQUAL("d^{2}x/dt^{2}",d2x);
-    CHECK_EQUAL("d^{3}x/dt^{3}",d3x);
-    CHECK_EQUAL("dd^nx/dt^n/dt",differentiateName("d^nx/dt^n"));
-    // if user enters an invalid formula, such as \frac{d^2}{dt^3}x, then it should be processed as a name
-    CHECK_EQUAL("dd^2x/dt^3/dt",differentiateName("d^2x/dt^3"));
-  }
+public:
+  LocalMinsky lm{*this};
+};
 
-  TEST_FIXTURE(BinOpFixture,subtract)
-  {
-    OperationPtr minus{OperationType::subtract};
-    model->addItem(minus);
-    model->addWire(new Wire(t->ports(0),minus->ports(1)));
-    model->addWire(new Wire(tsq->ports(0),minus->ports(2)));
-    model->addWire(new Wire(minus->ports(0), deriv->ports(1)));
-    model->addWire(new Wire(minus->ports(0), f->ports(1)));
+TEST(Derivative, differentiateName)
+{
+  string dx=differentiateName("x");
+  string d2x=differentiateName(dx);
+  string d3x=differentiateName(d2x);
+  EXPECT_EQ("dx/dt",dx);
+  EXPECT_EQ("d^{2}x/dt^{2}",d2x);
+  EXPECT_EQ("d^{3}x/dt^{3}",d3x);
+  EXPECT_EQ("dd^nx/dt^n/dt",differentiateName("d^nx/dt^n"));
+  // if user enters an invalid formula, such as \frac{d^2}{dt^3}x, then it should be processed as a name
+  EXPECT_EQ("dd^2x/dt^3/dt",differentiateName("d^2x/dt^3"));
+}
 
-    reset(); 
-    running=true;
-    nSteps=1;step(); // ensure f is evaluated
-    // set the constant of integration to the value of f at t=0
-    double f0=f->value();
-    integ.intVar->value(f0);
-    nSteps=1000; step();
-    CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
-    CHECK(abs(f->value()-f0)>0.000001*f0); // checks that evolution of function value occurs
+TEST_F(BinOpFixture,subtract)
+{
+  OperationPtr minus{OperationType::subtract};
+  model->addItem(minus);
+  model->addWire(new Wire(t->ports(0),minus->ports(1)));
+  model->addWire(new Wire(tsq->ports(0),minus->ports(2)));
+  model->addWire(new Wire(minus->ports(0), deriv->ports(1)));
+  model->addWire(new Wire(minus->ports(0), f->ports(1)));
+
+  reset(); 
+  running=true;
+  nSteps=1;step(); // ensure f is evaluated
+  // set the constant of integration to the value of f at t=0
+  double f0=f->value();
+  integ.intVar->value(f0);
+  nSteps=1000; step();
+  EXPECT_NEAR(1, f->value()/integ.intVar->value(), 0.003);
+  EXPECT_TRUE(abs(f->value()-f0)>0.000001*f0); // checks that evolution of function value occurs
    
-  }
+}
 
-  TEST_FIXTURE(BinOpFixture,pow)
-  {
-    OperationPtr pow{OperationType::pow};
-    model->addItem(pow);
-    model->addWire(new Wire(plus->ports(0),pow->ports(1)));
-    model->addWire(new Wire(pow->ports(0), deriv->ports(1)));
-    model->addWire(new Wire(pow->ports(0), f->ports(1)));
+TEST_F(BinOpFixture,pow)
+{
+  OperationPtr pow{OperationType::pow};
+  model->addItem(pow);
+  model->addWire(new Wire(plus->ports(0),pow->ports(1)));
+  model->addWire(new Wire(pow->ports(0), deriv->ports(1)));
+  model->addWire(new Wire(pow->ports(0), f->ports(1)));
 
-    // firstly check when base port is unwired
-    CHECK_THROW(reset(),std::exception);
-    model->addWire(new Wire(tsq->ports(0),pow->ports(2)));
+  // firstly check when base port is unwired
+  EXPECT_THROW(reset(),std::exception);
+  model->addWire(new Wire(tsq->ports(0),pow->ports(2)));
 
-    reset();
-    running=true;
-    nSteps=1;step(); // ensure f is evaluated
-    // set the constant of integration to the value of f at t=0
-    double f0=f->value();
-    integ.intVar->value(f0);
-    nSteps=1000; step();step();
-    CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
-    CHECK(abs(f->value()-f0)>0.0000001*f0); // checks that evolution of function value occurs
+  reset();
+  running=true;
+  nSteps=1;step(); // ensure f is evaluated
+  // set the constant of integration to the value of f at t=0
+  double f0=f->value();
+  integ.intVar->value(f0);
+  nSteps=1000; step();step();
+  EXPECT_NEAR(1, f->value()/integ.intVar->value(), 0.003);
+  EXPECT_TRUE(abs(f->value()-f0)>0.0000001*f0); // checks that evolution of function value occurs
    
-  }
+}
 
-  TEST_FIXTURE(BinOpFixture,log)
-  {
-    OperationPtr log{OperationType::log};
-    model->addItem(log);
-    OperationPtr exp{OperationType::exp};
-    model->addItem(exp);
+TEST_F(BinOpFixture,log)
+{
+  OperationPtr log{OperationType::log};
+  model->addItem(log);
+  OperationPtr exp{OperationType::exp};
+  model->addItem(exp);
 
 
-    model->addWire(new Wire(plus->ports(0),exp->ports(1)));
-    model->addWire(new Wire(exp->ports(0),log->ports(1)));
-    model->addWire(new Wire(log->ports(0), deriv->ports(1)));
-    model->addWire(new Wire(log->ports(0), f->ports(1)));
+  model->addWire(new Wire(plus->ports(0),exp->ports(1)));
+  model->addWire(new Wire(exp->ports(0),log->ports(1)));
+  model->addWire(new Wire(log->ports(0), deriv->ports(1)));
+  model->addWire(new Wire(log->ports(0), f->ports(1)));
 
-    // firstly check when base port is unwired 
-    CHECK_THROW(reset(),std::exception);
+  // firstly check when base port is unwired 
+  EXPECT_THROW(reset(),std::exception);
     
-    model->addWire(new Wire(tsq->ports(0),log->ports(2)));
+  model->addWire(new Wire(tsq->ports(0),log->ports(2)));
 
     
-    reset(); 
-    running=true;
-    nSteps=1;step(); // ensure f is evaluated
-    // set the constant of integration to the value of f at t=0
-    double f0=f->value();
-    integ.intVar->value(f0);
-    running=true;
-    nSteps=1000; step();
-    CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
-    CHECK(abs(f->value()-f0)>0.00001*f0); // checks that evolution of function value occurs
+  reset(); 
+  running=true;
+  nSteps=1;step(); // ensure f is evaluated
+  // set the constant of integration to the value of f at t=0
+  double f0=f->value();
+  integ.intVar->value(f0);
+  running=true;
+  nSteps=1000; step();
+  EXPECT_NEAR(1, f->value()/integ.intVar->value(), 0.003);
+  EXPECT_TRUE(abs(f->value()-f0)>0.00001*f0); // checks that evolution of function value occurs
    
-  }
+}
   
-  TEST_FIXTURE(BinOpFixture,comparisonOps)
-  {
-    auto ops={OperationType::lt,OperationType::le,OperationType::eq};
-    for (auto op: ops)
-      {
-        OperationPtr opp{op};
-        model->addItem(opp);
-        
-        model->addWire(new Wire(t->ports(0),opp->ports(1)));
-        model->addWire(new Wire(tsq->ports(0),opp->ports(2)));
-        model->addWire(new Wire(opp->ports(0), deriv->ports(1)));
-        model->addWire(new Wire(opp->ports(0), f->ports(1)));
-
-        CHECK_THROW(reset(),error);
-        model->deleteItem(*opp);
-      }
-
-    /// boolean operations have zero derivative
-    auto ops2={OperationType::and_,OperationType::or_,OperationType::not_};
-    
-    for (auto op: ops2)
-      {
-        OperationPtr opp{op};
-        model->addItem(opp);
-       
-        model->addWire(new Wire(t->ports(0),opp->ports(1)));
-        if (opp->portsSize()>2)
-          model->addWire(new Wire(tsq->ports(0),opp->ports(2)));
-        model->addWire(new Wire(opp->ports(0), deriv->ports(1)));
-        model->addWire(new Wire(opp->ports(0), f->ports(1)));
-
-        reset(); 
-        running=true;
-        nSteps=1;step(); // ensure f is evaluated
-        CHECK_EQUAL(0, df->value());
-        model->deleteItem(*opp);
-      }
-
-    auto ops3={OperationType::min,OperationType::max};
-    for (auto op: ops3)
-      {
-        OperationPtr opp{op};
-        model->addItem(opp);
-        model->addWire(new Wire(opp->ports(0), deriv->ports(1)));
-        model->addWire(new Wire(opp->ports(0), f->ports(1)));
-
-        // no inputs should evaluate to zero
-        reset(); 
-        running=true;
-        nSteps=1;step(); // ensure f is evaluated
-        CHECK_EQUAL(0, df->value());
-        
-        auto opWire=model->addWire(new Wire(t->ports(0),opp->ports(1)));
-
-        
-        // check first with single input wired
-        save(OperationType::typeName(op)+".mky");
-        reset(); 
-        running=true;
-        nSteps=1;step(); // ensure f is evaluated
-        // set the constant of integration to the value of f at t=0
-        double f0=f->value();
-        integ.intVar->value(f0);
-        running=true;
-        nSteps=1000; step();
-        CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
-        CHECK(abs(f->value()-f0)>0.00001*f0); // checks that evolution of function value occurs
-
-        // check other single input wired
-        model->removeWire(*opWire);
-        model->addWire(new Wire(tsq->ports(0),opp->ports(2)));
-        reset(); 
-        running=true;
-        nSteps=1;step(); // ensure f is evaluated
-        // set the constant of integration to the value of f at t=0
-        f0=f->value();
-        integ.intVar->value(f0);
-        running=true;
-        nSteps=1000; step();
-        CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
-        CHECK(abs(f->value()-f0)>0.00001*f0); // checks that evolution of function value occurs
-       
-        // now check with two inputs wired
-        model->addWire(new Wire(t->ports(0),opp->ports(1)));
-        reset(); 
-        running=true;
-        nSteps=1;step(); // ensure f is evaluated
-        // set the constant of integration to the value of f at t=0
-        f0=f->value();
-        integ.intVar->value(f0);
-        nSteps=1000; step();
-        CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
-        CHECK(abs(f->value()-f0)>0.00001*f0); // checks that evolution of function value occurs
-
-        model->deleteItem(*opp);
-      }
-
-  }
-
-  TEST_FIXTURE(BinOpFixture,singleArgFuncs)
+TEST_F(BinOpFixture,comparisonOps)
+{
+  auto ops={OperationType::lt,OperationType::le,OperationType::eq};
+  for (auto op: ops)
     {
-      // test functions
-      OperationPtr funOp;
-      for (int op=OperationType::integrate; op<OperationType::numOps; ++op)
-        {
-          //TODO for now, ignore tensor operations
-          switch (OperationType::classify(OperationType::Type(op)))
-            {
-            case OperationType::reduction:
-            case OperationType::scan:
-            case OperationType::tensor:
-            case OperationType::binop:
-            case OperationType::constop:
-            case OperationType::statistics:
-              continue;
-            default:
-              break;
-            }
-          cout << OperationType::typeName(op) << endl;
-          model->removeItem(*funOp);
-          funOp.reset(OperationBase::create(OperationType::Type(op)));
-          garbageCollect();
-          model->addItem(funOp);
-          model->addWire(new Wire(tcube->ports(0), funOp->ports(1)));
-          model->addWire(new Wire(funOp->ports(0), f->ports(1)));
-          model->addWire(new Wire(funOp->ports(0), deriv->ports(1)));
-          save(OperationType::typeName(op)+".mky");
-          switch (OperationType::Type(op))
-            {
-            case OperationType::floor: case OperationType::frac:
-            case OperationType::index:
-            case OperationType::data:
-              CHECK_THROW(reset(), ecolab::error);
-              continue;
-            case OperationType::ravel:
-            case OperationType::not_:
-              continue; // test not meaningful for a step function
-            default:
-              reset(); 
-            }
-          running=true;
-          nSteps=1;step(); // ensure f is evaluated
-          // set the constant of integration to the value of f at t=0
-          double f0=f->value();
-          integ.intVar->value(f0);			  
-          nSteps=1000; step();
-          CHECK_CLOSE(1, f->value()/integ.intVar->value(), 0.003);
-          CHECK(abs(f->value()-f0)>0.00000000001*f0); // checks that evolution of function value occurs
-        }
+      OperationPtr opp{op};
+      model->addItem(opp);
+        
+      model->addWire(new Wire(t->ports(0),opp->ports(1)));
+      model->addWire(new Wire(tsq->ports(0),opp->ports(2)));
+      model->addWire(new Wire(opp->ports(0), deriv->ports(1)));
+      model->addWire(new Wire(opp->ports(0), f->ports(1)));
+
+      EXPECT_THROW(reset(),error);
+      model->deleteItem(*opp);
     }
-  
-  TEST_FIXTURE(Minsky,noInputs)
+
+  /// boolean operations have zero derivative
+  auto ops2={OperationType::and_,OperationType::or_,OperationType::not_};
+    
+  for (auto op: ops2)
     {
-      using namespace MathDAG;
-      SystemOfEquations se(*this);
-      for (auto op=0; op<OperationType::numOps; ++op)
+      OperationPtr opp{op};
+      model->addItem(opp);
+       
+      model->addWire(new Wire(t->ports(0),opp->ports(1)));
+      if (opp->portsSize()>2)
+        model->addWire(new Wire(tsq->ports(0),opp->ports(2)));
+      model->addWire(new Wire(opp->ports(0), deriv->ports(1)));
+      model->addWire(new Wire(opp->ports(0), f->ports(1)));
+
+      reset(); 
+      running=true;
+      nSteps=1;step(); // ensure f is evaluated
+      EXPECT_EQ(0, df->value());
+      model->deleteItem(*opp);
+    }
+
+  auto ops3={OperationType::min,OperationType::max};
+  for (auto op: ops3)
+    {
+      OperationPtr opp{op};
+      model->addItem(opp);
+      model->addWire(new Wire(opp->ports(0), deriv->ports(1)));
+      model->addWire(new Wire(opp->ports(0), f->ports(1)));
+
+      // no inputs should evaluate to zero
+      reset(); 
+      running=true;
+      nSteps=1;step(); // ensure f is evaluated
+      EXPECT_EQ(0, df->value());
+        
+      auto opWire=model->addWire(new Wire(t->ports(0),opp->ports(1)));
+
+        
+      // check first with single input wired
+      save(OperationType::typeName(op)+".mky");
+      reset(); 
+      running=true;
+      nSteps=1;step(); // ensure f is evaluated
+      // set the constant of integration to the value of f at t=0
+      double f0=f->value();
+      integ.intVar->value(f0);
+      running=true;
+      nSteps=1000; step();
+      EXPECT_NEAR(1, f->value()/integ.intVar->value(), 0.003);
+      EXPECT_TRUE(abs(f->value()-f0)>0.00001*f0); // checks that evolution of function value occurs
+
+      // check other single input wired
+      model->removeWire(*opWire);
+      model->addWire(new Wire(tsq->ports(0),opp->ports(2)));
+      reset(); 
+      running=true;
+      nSteps=1;step(); // ensure f is evaluated
+      // set the constant of integration to the value of f at t=0
+      f0=f->value();
+      integ.intVar->value(f0);
+      running=true;
+      nSteps=1000; step();
+      EXPECT_NEAR(1, f->value()/integ.intVar->value(), 0.003);
+      EXPECT_TRUE(abs(f->value()-f0)>0.00001*f0); // checks that evolution of function value occurs
+       
+      // now check with two inputs wired
+      model->addWire(new Wire(t->ports(0),opp->ports(1)));
+      reset(); 
+      running=true;
+      nSteps=1;step(); // ensure f is evaluated
+      // set the constant of integration to the value of f at t=0
+      f0=f->value();
+      integ.intVar->value(f0);
+      nSteps=1000; step();
+      EXPECT_NEAR(1, f->value()/integ.intVar->value(), 0.003);
+      EXPECT_TRUE(abs(f->value()-f0)>0.00001*f0); // checks that evolution of function value occurs
+
+      model->deleteItem(*opp);
+    }
+
+}
+
+TEST_F(BinOpFixture,singleArgFuncs)
+{
+  // test functions
+  OperationPtr funOp;
+  for (int op=OperationType::integrate; op<OperationType::numOps; ++op)
+    {
+      //TODO for now, ignore tensor operations
+      switch (OperationType::classify(OperationType::Type(op)))
         {
-          NodePtr funOp{OperationDAGBase::create(OperationType::Type(op))};
-          try
-            {
-              auto derivative=funOp->derivative(se);
-              auto constant=dynamic_cast<ConstantDAG*>(derivative.get());
-          
-              if (constant)
-                {
-                  if (op==OperationType::time)
-                    CHECK_EQUAL("1", constant->value);
-                  else
-                    CHECK_EQUAL("0", constant->value);
-                }
-            }
-          catch (...) {} // ignore code that shouldn't be executed
+        case OperationType::reduction:
+        case OperationType::scan:
+        case OperationType::tensor:
+        case OperationType::binop:
+        case OperationType::constop:
+        case OperationType::statistics:
+          continue;
+        default:
+          break;
         }
+      cout << OperationType::typeName(op) << endl;
+      model->removeItem(*funOp);
+      funOp.reset(OperationBase::create(OperationType::Type(op)));
+      garbageCollect();
+      model->addItem(funOp);
+      model->addWire(new Wire(tcube->ports(0), funOp->ports(1)));
+      model->addWire(new Wire(funOp->ports(0), f->ports(1)));
+      model->addWire(new Wire(funOp->ports(0), deriv->ports(1)));
+      save(OperationType::typeName(op)+".mky");
+      switch (OperationType::Type(op))
+        {
+        case OperationType::floor: case OperationType::frac:
+        case OperationType::index:
+        case OperationType::data:
+          EXPECT_THROW(reset(), ecolab::error);
+          continue;
+        case OperationType::ravel:
+        case OperationType::not_:
+          continue; // test not meaningful for a step function
+        default:
+          reset(); 
+        }
+      running=true;
+      nSteps=1;step(); // ensure f is evaluated
+      // set the constant of integration to the value of f at t=0
+      double f0=f->value();
+      integ.intVar->value(f0);			  
+      nSteps=1000; step();
+      EXPECT_NEAR(1, f->value()/integ.intVar->value(), 0.003);
+      EXPECT_TRUE(abs(f->value()-f0)>0.00000000001*f0); // checks that evolution of function value occurs
+    }
+}
+  
+TEST_F(MinskyTest,noInputs)
+{
+  using namespace MathDAG;
+  SystemOfEquations se(*this);
+  for (auto op=0; op<OperationType::numOps; ++op)
+    {
+      NodePtr funOp{OperationDAGBase::create(OperationType::Type(op))};
+      try
+        {
+          auto derivative=funOp->derivative(se);
+          auto constant=dynamic_cast<ConstantDAG*>(derivative.get());
+          
+          if (constant)
+            {
+              if (op==OperationType::time)
+                EXPECT_EQ("1", constant->value);
+              else
+                EXPECT_EQ("0", constant->value);
+            }
+        }
+      catch (...) {} // ignore code that shouldn't be executed
     }
 }

@@ -5,16 +5,9 @@ ARG version
 ADD . /root
 RUN dnf install -y 'dnf-command(config-manager)' util-linux
 
-# handle dnf syntax change
+# handle dnf syntax change: here documents not working, so split Fedora 40 into separate Dockerfile
 ARG repo=https://download.opensuse.org/repositories/home:/hpcoder1/Fedora_$version/home:hpcoder1.repo
-RUN <<EOF
-if [ $version -le 40 ]; then
-  dnf config-manager --add-repo $repo
-else
-  dnf config-manager addrepo --from-repofile=$repo
-fi
-EOF
-
+RUN dnf config-manager addrepo --from-repofile=$repo
 RUN dnf install -y $project
 RUN useradd -m minsky
 RUN su - minsky -c "minsky --version --no-sandbox"

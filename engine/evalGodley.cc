@@ -91,11 +91,22 @@ namespace minsky
 
   void EvalGodley::eval(double* sv, const double* fv) const
   {
-    for (size_t i=0; i<initIdx.size(); ++i)
+    size_t initIdxSize=initIdx.size();
+#ifdef _OPENMP
+#pragma omp parallel for if(initIdxSize>20)
+#endif
+    for (size_t i=0; i<initIdxSize; ++i)
       sv[initIdx[i]]=0;
 
+#ifdef _OPENMP
+    size_t sidxSize=sidx.size();
+#pragma omp parallel for if(sidxSize>20)
+    for (size_t i=0; i<sidxSize; ++i)
+      atomic_ref(sv[sidx[i]]) += fv[fidx[i]] * m[i];
+#else
     for (size_t i=0; i<sidx.size(); ++i)
       sv[sidx[i]] += fv[fidx[i]] * m[i];
+#endif
   }
 }
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::EvalGodley);

@@ -20,6 +20,7 @@
 #ifndef MINSKY_EPILOGUE_H
 #define MINSKY_EPILOGUE_H
 
+
 #include "cairoSurfaceImage.h"
 #if defined(CLASSDESC_RESTPROCESS_BASE_H)
 
@@ -163,3 +164,9 @@ namespace classdesc_access
   }
 
 #endif
+
+// these macros are defined in XLib, but interfere with gtest, for example.
+#undef True
+#undef Bool
+#undef None
+

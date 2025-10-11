@@ -215,6 +215,11 @@ ifeq ($(CPLUSPLUS),clang++)
 FLAGS+=-Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-defaulted-function-deleted -Wno-uninitialized
 endif
 
+ifdef OPENMP
+FLAGS+=-fopenmp
+LIBS+=-fopenmp
+endif
+
 ifeq ($(DEBUG), 1)
 FLAGS+=-Wp,-D_GLIBCXX_ASSERTIONS
 endif
@@ -304,10 +309,10 @@ ifeq ($(OS),CYGWIN)
 FLAGS+=-Wa,-mbig-obj -Wl,-x -Wl,--oformat,pe-bigobj-x86-64
 endif
 
-LIBS+=	-LRavelCAPI -lravelCAPI -LRavelCAPI/civita -lcivita \
-	-lboost_system$(BOOST_EXT) -lboost_regex$(BOOST_EXT) \
-	-lboost_date_time$(BOOST_EXT) -lboost_program_options$(BOOST_EXT) \
-	-lboost_filesystem$(BOOST_EXT) -lboost_thread$(BOOST_EXT) -lgsl -lgslcblas -lssl -lcrypto
+LIBS+=-LRavelCAPI -lravelCAPI -LRavelCAPI/civita -lcivita  -lboost_date_time$(BOOST_EXT) -lgsl -lgslcblas -lssl -lcrypto
+
+# Some boost installation require linking to boost_system, others don't have the library installed
+LIBS+=$(if $(call search,lib*/libboost_system.so),-lboost_system$(BOOST_EXT))
 
 ifdef MXE
 LIBS+=-lcrypt32 -lbcrypt -lshcore

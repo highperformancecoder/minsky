@@ -511,7 +511,7 @@ export class CommandsManager {
 
   static async exportGodleyAs(
     ext: string,
-    command: (x: string)=>void = null
+    command: (x: string)=>void = null,
   ): Promise<void> {
     const saveDialog = await WindowManager.showSaveDialog({
       filters: [

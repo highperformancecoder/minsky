@@ -16,7 +16,7 @@
   You should have received a copy of the GNU General Public License
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
-#include <UnitTest++/UnitTest++.h>
+#include <gtest/gtest.h>
 #include "selection.h"
 #include "userFunction.h"
 #include "minsky.h"
@@ -25,73 +25,70 @@
 using namespace minsky;
 using namespace std;
 
-struct MinskyFixture: public Minsky
+class UserFunctionSuite : public Minsky, public ::testing::Test
 {
+public:
   LocalMinsky lm{*this};
 };
 
 
-SUITE(UserFunction)
-{
-  TEST(symbolNames1)
-    {
-      UserFunction f("test","input/referenceInput");
-      vector<string> expected{"input","referenceInput"};
-      CHECK(f.symbolNames()==expected);
-    }
+TEST(UserFunction, symbolNames1)
+  {
+    UserFunction f("test","input/referenceInput");
+    vector<string> expected{"input","referenceInput"};
+    EXPECT_TRUE(f.symbolNames()==expected);
+  }
 
-  TEST_FIXTURE(MinskyFixture, referenceMinskyVariables)
-    {
-      variableValues.emplace(":foo", VariableType::flow);
-      variableValues.emplace(":bar", VariableType::flow);
-      variableValues[":foo"]->allocValue()=3.0;
-      variableValues[":bar"]->allocValue()=5.0;
-      UserFunction f("test","foo+bar");
-      f.compile();
-      CHECK_EQUAL(8, f({}));
-    }
+TEST_F(UserFunctionSuite, referenceMinskyVariables)
+  {
+    variableValues.emplace(":foo", VariableType::flow);
+    variableValues.emplace(":bar", VariableType::flow);
+    variableValues[":foo"]->allocValue()=3.0;
+    variableValues[":bar"]->allocValue()=5.0;
+    UserFunction f("test","foo+bar");
+    f.compile();
+    EXPECT_EQ(8, f({}));
+  }
 
-  TEST_FIXTURE(MinskyFixture, arguments)
-    {
-      UserFunction f("test","x+y");
-      f.argNames={"x","y"};
-      f.compile();
-      CHECK_EQUAL(7, f({3,4}));
-    }  
+TEST_F(UserFunctionSuite, arguments)
+  {
+    UserFunction f("test","x+y");
+    f.argNames={"x","y"};
+    f.compile();
+    EXPECT_EQ(7, f({3,4}));
+  }  
 
-  TEST_FIXTURE(MinskyFixture, error)
-    {
-      UserFunction f("test","x+");
-      f.argNames={"x","y"};
-      CHECK_THROW(f.compile(), std::exception);
-    }  
+TEST_F(UserFunctionSuite, error)
+  {
+    UserFunction f("test","x+");
+    f.argNames={"x","y"};
+    EXPECT_THROW(f.compile(), std::exception);
+  }  
 
-  TEST_FIXTURE(MinskyFixture, stringProcessing)
-    {
-       UserFunction f("test(x)","x:='foo\\'s bar'[]");
-       f.compile(); // checks this is syntactically valid
-       auto sn=f.symbolNames();
-       CHECK_EQUAL(1,sn.size());
-       CHECK_EQUAL("x",sn[0]);
-    }
+TEST_F(UserFunctionSuite, stringProcessing)
+  {
+     UserFunction f("test(x)","x:='foo\\'s bar'[]");
+     f.compile(); // checks this is syntactically valid
+     auto sn=f.symbolNames();
+     EXPECT_EQ(1,sn.size());
+     EXPECT_EQ("x",sn[0]);
+  }
 
-  TEST_FIXTURE(MinskyFixture, units)
-    {
-      variableValues.emplace(":foo", VariableType::flow);
-      variableValues.emplace(":bar", VariableType::flow);
-      variableValues[":foo"]->allocValue()=3.0;
-      variableValues[":bar"]->allocValue()=5.0;
-      variableValues[":foo"]->setUnits("m");
-      variableValues[":bar"]->setUnits("s");
-      timeUnit="s";
-      UserFunction f("test","foo+bar");
-      CHECK_THROW(f.units(true),std::exception);
-      f.expression="bar+time";
-      CHECK_EQUAL("s",f.units(true).str());
-      f.expression="foo*bar";
-      CHECK_EQUAL("m s",f.units(true).str());
-      f.expression="exp(foo)";
-      CHECK_THROW(f.units(true),std::exception);
-    }
-
-}
+TEST_F(UserFunctionSuite, units)
+  {
+    variableValues.emplace(":foo", VariableType::flow);
+    variableValues.emplace(":bar", VariableType::flow);
+    variableValues[":foo"]->allocValue()=3.0;
+    variableValues[":bar"]->allocValue()=5.0;
+    variableValues[":foo"]->setUnits("m");
+    variableValues[":bar"]->setUnits("s");
+    timeUnit="s";
+    UserFunction f("test","foo+bar");
+    EXPECT_THROW(f.units(true),std::exception);
+    f.expression="bar+time";
+    EXPECT_EQ("s",f.units(true).str());
+    f.expression="foo*bar";
+    EXPECT_EQ("m s",f.units(true).str());
+    f.expression="exp(foo)";
+    EXPECT_THROW(f.units(true),std::exception);
+  }
