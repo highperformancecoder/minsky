@@ -78,6 +78,8 @@ mkdir -p $MAC_DIST_DIR
 
 rewrite_dylibs $MAC_DIST_DIR/minskyRESTService.node
 rewrite_dylibs $MAC_DIST_DIR/pyminsky.so
+# copy libravel.so into the app bundle: special for Conway
+cp ~/ravel/libravel.so $MAC_DIST_DIR/
 cp /opt/local//lib/libsoci_core.4.0.dylib $MAC_DIST_DIR/
 rewrite_dylibs $MAC_DIST_DIR/libsoci_core.4.0.dylib
 
