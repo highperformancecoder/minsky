@@ -31,18 +31,12 @@
 #include <gsl/gsl_odeiv2.h>
 #include <vector>
 
-//#include <thread>
-// std::thread apparently not supported on MXE for now...
-#include <boost/thread.hpp>
+#include <thread>
 
 using namespace std;
 
 namespace minsky
 {
-  /// checks if any GUI events are waiting, and proces an event if so
-  /// TODO - make this a virtual method of RungeKutta?
-  //  void doOneEvent(bool idleTasksOnly);
-
   /*
     For using GSL Runge-Kutta routines
   */
@@ -139,7 +133,7 @@ namespace minsky
     RKThreadRunning=true;
     int err=GSL_SUCCESS;
     // run RK algorithm on a separate worker thread so as to not block UI. See ticket #6
-    boost::thread rkThread([&]() {
+    thread rkThread([&]() {
       try
         { 
           double tp=reverse? -t: t;

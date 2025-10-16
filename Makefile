@@ -286,19 +286,19 @@ PYMINSKY=gui-js/dynamic_libraries/pyminsky.pyd
 PYTHONCAPI=ecolab/classdesc/pythonCAPI.o # extra python.lib shims required on Windows
 FLAGS+=-D_WIN32 -DUSE_UNROLLED -Wa,-mbig-obj
 # DLLS that need to be copied into the binary directory
-MXE_DLLS=libboost_filesystem-mt-x64 libboost_thread-mt-x64 \
-libbrotlidec libbrotlicommon libbz2 libcairo-2 libcroco-0 libcrypto-3-x64 \
+MXE_DLLS=libboost_thread-mt-x64 libbrotlidec libbrotlicommon libbz2 libcairo-2 \
+libcroco-0 libcrypto-3-x64 \
 libexpat-1 libffi libfontconfig-1 libfreetype-6 libfribidi-0 libgcc_s_seh-1 \
 libgdk_pixbuf-2 libgio-2 libglib-2 libgmodule-2 \
-libgobject-2 libgsl-25 libgslcblas-0 libharfbuzz-0 libiconv-2 libintl-8 \
+libgobject-2 libgsl-27 libgslcblas-0 libharfbuzz-0 libiconv-2 libintl-8 \
 libjpeg-9 liblzma-5 libpango-1 libpangocairo-1 libpangoft2-1 libpangowin32-1 \
-libpcre-1 libpixman-1-0 libpng16-16 libreadline8 librsvg-2-2 libssl-3-x64 \
-libstdc++-6 libtermcap libwinpthread-1 libxml2-2 tcl86 zlib1
+libpcre2-8-0 libpixman-1-0 libpng16-16 libreadline8 librsvg-2-2 libssl-3-x64 \
+libstdc++-6 libtermcap libwinpthread-1 libxml2-16 tcl86 zlib1
 BINDIR=$(subst bin,$(MXE_PREFIX)/bin,$(dir $(shell which $(CPLUSPLUS))))
 $(warning $(BINDIR))
 DLLS=$(wildcard $(MXE_DLLS:%=$(BINDIR)/%*.dll))
 # Add soci support for RAVELPRO
-DLLS+=$(wildcard $(BINDIR)/libsoci*.dll) $(BINDIR)/libpq.dll
+DLLS+=$(wildcard $(BINDIR)/libsoci*.dll) $(BINDIR)/libpq.dll $(BINDIR)/libsqlite3-0.dll
 else
 EXE=
 DL=so
@@ -315,7 +315,7 @@ LIBS+=-LRavelCAPI -lravelCAPI -LRavelCAPI/civita -lcivita  -lboost_date_time$(BO
 LIBS+=$(if $(call search,lib*/libboost_system.so),-lboost_system$(BOOST_EXT))
 
 ifdef MXE
-LIBS+=-lcrypt32 -lbcrypt -lshcore
+LIBS+=-lgdi32 -lcrypt32 -lbcrypt -lshcore
 else
 LIBS+=-lclipboard -lxcb -lX11 -ldl
 endif
