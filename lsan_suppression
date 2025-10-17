@@ -1,5 +1,3 @@
 # suppress leak reports from 3rd party libraries
 leak:libfontconfig.so
 leak:clipboard_text
-# unknown leak
-leak:minsky::InflateZStream::~InflateZStream()
