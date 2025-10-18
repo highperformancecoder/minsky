@@ -1,5 +1,5 @@
 /*
-  @copyright Steve Keen 2020
+  @copyright Steve Keen 2025
   @author Russell Standish
   This file is part of Minsky.
 
@@ -27,7 +27,7 @@ using namespace classdesc;
 TEST(ZStream, EncodeDecodeRoundTrip)
 {
   // Create some test data
-  pack_t originalData(100);
+  pack_t originalData(400);
   for (size_t i = 0; i < 100; ++i)
     originalData.append(Basic_Type<char>('A' + (i % 26)));
 
@@ -57,7 +57,7 @@ TEST(ZStream, EncodeDecodeEmpty)
 TEST(ZStream, EncodeDecodeLargeData)
 {
   // Test with larger data that will require buffer resizing during inflation
-  pack_t largeData(1000);
+  pack_t largeData(4000);
   for (size_t i = 0; i < 1000; ++i)
     largeData.append(Basic_Type<int>(i));
 
@@ -71,7 +71,7 @@ TEST(ZStream, EncodeDecodeLargeData)
 TEST(ZStream, MultipleInflateOperations)
 {
   // Test multiple inflate operations to ensure no memory leaks
-  pack_t testData(50);
+  pack_t testData(200);
   for (size_t i = 0; i < 50; ++i)
     testData.append(Basic_Type<int>(i));
 

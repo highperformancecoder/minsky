@@ -21,7 +21,6 @@
 #ifndef ZSTREAM_H
 #define ZSTREAM_H
 #include <zlib.h>
-#include <cstring>
 
 namespace minsky
 {
@@ -30,8 +29,6 @@ namespace minsky
   {
     ZStream(Bytef* input, std::size_t inputSize, Bytef* output, std::size_t outputSize)
     {
-      // Zero-initialize the entire z_stream structure to avoid uninitialized fields
-      memset(static_cast<z_stream*>(this), 0, sizeof(z_stream));
       next_in=input;
       avail_in=inputSize;
       next_out=output;
