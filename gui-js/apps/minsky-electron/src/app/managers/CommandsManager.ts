@@ -224,7 +224,6 @@ export class CommandsManager {
     let title = await godley.table.title();
     let godleyId = await godley.id();
 
-    minsky.nameCurrentItem(godleyId); // name current item
     WindowManager.createPopupWindowWithRouting({
       title: `Edit godley title`,
       url: `#/headless/edit-godley-title?title=${encodeURIComponent(title) || ''}&itemId=${godleyId}`,
