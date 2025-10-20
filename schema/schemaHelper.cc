@@ -33,6 +33,7 @@ namespace minsky
 {
   classdesc::pack_t decode(const classdesc::CDATA& data)
   {
+    if (data.empty()) return {};
     string trimmed; //trim whitespace
     for (auto c: data)
       if (!isspace(c)) trimmed+=c;
@@ -50,6 +51,7 @@ namespace minsky
 
   CDATA encode(const pack_t& buf)
   {
+    if (!buf.size()) return CDATA();
     vector<unsigned char> zbuf(buf.size());
     DeflateZStream zs(buf, zbuf);
     zs.deflate();
