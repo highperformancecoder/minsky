@@ -1517,6 +1517,8 @@ namespace minsky
   {
     const Ravel& ravel;
     mutable vector<TensorPtr> chain;
+    mutable atomic<bool> chainChecked=false;
+    mutable recursive_mutex chainMutex;
     TensorPtr arg;
     mutable Timestamp m_timestamp;
     
@@ -1529,33 +1531,31 @@ namespace minsky
       arg=a;
       const_cast<Ravel&>(ravel).populateHypercube(a->hypercube());
       chain=ravel::createRavelChain(ravel.getState(), a);
+      m_timestamp=Timestamp::clock::now();
+      chainChecked=false;
     }
 
     double operator[](size_t i) const override {
-      double v=0;
-      bool redoCalc=false;
-      do
-        {
+      if (chainChecked)
+        return chain.empty()? nan(""): (*chain.back())[i];
+      else
+        { // first time through since reset, check the chain doesn't change
+          lock_guard lock(chainMutex); // mutex rather than critical, for possible rescursion
+          double v=nan("");
           if (!chain.empty())
             {
               v=(*chain.back())[i];
-#ifdef _OPENMP
-#pragma omp barrier
-#pragma omp single copyprivate(redoCalc)
-#endif
-              {
-                redoCalc=m_timestamp<chain.back()->timestamp();
-                if (redoCalc)
-                  { // update hypercube if argument has changed
-                    const_cast<Ravel&>(ravel).populateHypercube(arg->hypercube());
-                    chain=ravel::createRavelChain(ravel.getState(), arg);
-                    m_timestamp=Timestamp::clock::now();
-                  }
-              }
+              if (m_timestamp<chain.back()->timestamp())
+                {
+                  const_cast<Ravel&>(ravel).populateHypercube(arg->hypercube());
+                  chain=ravel::createRavelChain(ravel.getState(), arg);
+                  m_timestamp=Timestamp::clock::now();
+                  chainChecked=true;
+                  v=(*chain.back())[i];
+                }
             }
+          return v;
         }
-      while (redoCalc);
-      return v;
     }
     size_t size() const override {return chain.empty()? 1: chain.back()->size();}
     const Index& index() const override
