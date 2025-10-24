@@ -29,8 +29,6 @@
 #include "schema3.h"
 
 #include <thread>
-// std::thread apparently not supported on MXE for now...
-//#include <boost/thread.hpp>
 
 #include "minskyVersion.h"
 
