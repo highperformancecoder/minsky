@@ -25,7 +25,7 @@ for i in examples/*.mky; do
             #not available
             if [ $order -eq 1 -a $implicit -eq 0 ]; then continue; fi
             # Octave cumsum does not respect window parameter, so
-            # scans are only basically supported in Octave
+            # scans are only partially supported in Octave
             if [ $i = "examples/runningAv.mky" ]; then continue; fi
             # This example needs higher order solvers
             if [ $i = "examples/4MonetaryMinskyModelLessUnstableStart.mky" -a \
