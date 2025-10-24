@@ -1356,11 +1356,14 @@ export class CommandsManager {
       state={system: 'linux', distro: '', version: '',arch:'', previous: ''};
       // figure out distro and version from /etc/os-release
       let aexec=promisify(exec);
-      let distroInfo=await aexec('grep ^ID= /etc/os-release');
+      let osRelease='/etc/os-release';
+      if (existsSync(process.resourcesPath+'/os-release'))
+        osRelease=process.resourcesPath+'/os-release';
+      let distroInfo=await aexec(`grep ^ID= ${osRelease}`);
       // value may or may not be quoted
       let extractor=/.*=['"]?([^'"\n]*)['"]?/;
       state.distro=extractor.exec(distroInfo.stdout)[1];
-      distroInfo=await aexec('grep ^VERSION_ID= /etc/os-release');
+      distroInfo=await aexec(`grep ^VERSION_ID= ${osRelease}`);
       state.version=extractor.exec(distroInfo.stdout)[1];
       break;
     default:
@@ -1375,6 +1378,7 @@ export class CommandsManager {
     if (await minsky.ravelAvailable() && installCase===InstallCase.previousRavel) 
       state.previous=/[^:]*/.exec(await minsky.ravelVersion())[0];
     let encodedState=encodeURI(JSON.stringify(state));
+    console.log(encodedState);
     // load patreon's login page
     window.loadURL(`https://www.patreon.com/oauth2/authorize?response_type=code&client_id=${clientId}&redirect_uri=https://ravelation.net/ravel-downloader.cgi&scope=identity%20identity%5Bemail%5D&state=${encodedState}`);
   }
