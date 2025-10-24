@@ -375,6 +375,8 @@ namespace minsky
 #endif
       x+=y;
     }) {}
+    // Computes running average. When argVal > 0, implements windowed average with fixed window size.
+    // Divisor is min(idx+1, argVal) to handle the window build-up phase.
     double operator[](size_t i) const override {
       if (!arg) return nan("");
       auto idx=arg->index()[i];
