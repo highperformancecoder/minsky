@@ -1215,6 +1215,15 @@ namespace minsky
     cachedPango->show();
   }
 
+  template <> void Operation<OperationType::runningAv>::iconDraw(cairo_t* cairo) const
+  {
+    const double sf = scaleFactor(); 	     
+    cairo_move_to(cairo,-7,-7);
+    setCachedText(cairo, "av+",7);
+    cairo_scale(cairo,sf,sf);	  
+    cachedPango->show();
+  }
+
   template <> void Operation<OperationType::runningProduct>::iconDraw(cairo_t* cairo) const
   {
     const double sf = scaleFactor(); 	     

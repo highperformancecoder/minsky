@@ -243,14 +243,14 @@ export class GodleyMenuManager {
               label: 'CSV',
               click: async () => {
                 const command = (filePath: string) => godley.table.exportToCSV(filePath);
-                await CommandsManager.exportGodleyAs('csv', command, window);
+                await CommandsManager.exportGodleyAs('csv', command);
               },
             },
             {
               label: 'LaTeX',
               click: async () => {
                 const command = (filePath: string) => godley.table.exportToLaTeX(filePath);
-                await CommandsManager.exportGodleyAs('tex', command, window);
+                await CommandsManager.exportGodleyAs('tex', command);
               },
             },
           ],

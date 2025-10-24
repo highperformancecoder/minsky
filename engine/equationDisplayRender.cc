@@ -762,6 +762,17 @@ namespace MathDAG
   }
 
   template <>
+  void OperationDAG<OperationType::runningAv>::render(Surface& surf) const
+  {
+    print(surf.cairo(),"(1/i)∑<sub>j=0</sub><sup>i</sup>",Anchor::nw);
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
+      {
+        parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
+        print(surf.cairo(),"<sub>i</sub>",Anchor::nw);
+      }
+  }
+
+  template <>
   void OperationDAG<OperationType::runningProduct>::render(Surface& surf) const
   {
     print(surf.cairo(),"∏<sub>j=0</sub><sup>i</sup>",Anchor::nw);

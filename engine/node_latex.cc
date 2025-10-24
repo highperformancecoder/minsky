@@ -757,6 +757,13 @@ namespace MathDAG
     checkArg(0,0);
     return o<<"\\left[\\sum_{j=0}^i\\left("<<arguments[0][0]->latex()<<"\\right)_i\\right])";
   }
+  
+  template <>
+  ostream& OperationDAG<OperationType::runningAv>::latex(ostream& o) const
+  {
+    checkArg(0,0);
+    return o<<"\\left[\\frac1i\\sum_{j=0}^i\\left("<<arguments[0][0]->latex()<<"\\right)_i\\right])";
+  }
 
   template <>
   ostream& OperationDAG<OperationType::runningProduct>::latex(ostream& o) const
