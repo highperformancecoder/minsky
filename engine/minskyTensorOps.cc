@@ -367,6 +367,26 @@ namespace minsky
   };
 
   template <>
+  struct GeneralTensorOp<OperationType::runningAv>: public civita::Scan
+  {
+    GeneralTensorOp(): civita::Scan([](double& x,double y,size_t){
+#ifdef _OPENMP
+#pragma omp atomic
+#endif
+      x+=y;
+    }) {}
+    // Computes running average. When argVal > 0, implements windowed average with fixed window size.
+    // Divisor is min(idx+1, argVal) to handle the window build-up phase.
+    double operator[](size_t i) const override {
+      if (!arg) return nan("");
+      auto idx=arg->index()[i];
+      if (dimension<arg->rank())
+        idx=arg->hypercube().splitIndex(idx)[dimension];
+      return civita::Scan::operator[](i)/((argVal<=0 || idx<argVal-1)? idx+1: argVal);
+    }
+  };
+
+  template <>
   struct GeneralTensorOp<OperationType::runningProduct>: public civita::Scan
   {
     GeneralTensorOp(): civita::Scan([](double& x,double y,size_t){

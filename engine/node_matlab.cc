@@ -713,6 +713,13 @@ namespace MathDAG
     return o<<"cumsum("<<arguments[0][0]->matlab()<<")";
   }
   template <>
+  ostream& OperationDAG<OperationType::runningAv>::matlab(ostream& o) const
+  {
+    checkArg(0,0);
+    return o<<"cumsum("<<arguments[0][0]->matlab()<<")./cumsum(ones(size("<<
+      arguments[0][0]->matlab()<<")))";
+  }
+  template <>
   ostream& OperationDAG<OperationType::runningProduct>::matlab(ostream& o) const
   {
     checkArg(0,0);
