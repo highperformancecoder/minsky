@@ -11,7 +11,7 @@ iconDir=here+'/gui-js/apps/minsky-web/src/assets/images/icons/'
 minsky.histogramResource.setResource(iconDir+'histogram.svg')
 # make the background transparent
 minsky.canvas.backgroundColour({'a':0})
-ops=minsky.availableOperations()
+ops=minsky.availableOperations()()
 ops.append("switch")
 for op in ops:
     # ignore some operations
@@ -21,6 +21,6 @@ for op in ops:
     else: minsky.canvas.addOperation(op)
     if op=="userFunction":
         #default label too large for a button label
-        minsky.canvas.itemFocus().description('f(x,y)')
+        minsky.canvas.itemFocus.description('f(x,y)')
     minsky.renderCanvasToPNG(iconDir+op+'.png')
     minsky.clearAllMaps()

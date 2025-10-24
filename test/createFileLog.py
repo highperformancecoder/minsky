@@ -26,7 +26,7 @@ for step in range(nSteps):
     minsky.step()
     print(minsky.t(),end='')
 
-    for name in minsky.variableValues._keys():
+    for name in minsky.variableValues.keys():
         if re.search("^constant:",name) != None: continue
         value=minsky.variableValues[name]
         if value.temp(): continue

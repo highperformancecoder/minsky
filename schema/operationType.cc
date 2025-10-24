@@ -109,6 +109,7 @@ namespace minsky
     template <> int numArguments<OperationType::any>() {return 1;}
     template <> int numArguments<OperationType::all>() {return 1;}
     template <> int numArguments<OperationType::runningSum>() {return 1;}
+    template <> int numArguments<OperationType::runningAv>() {return 1;}
     template <> int numArguments<OperationType::runningProduct>() {return 1;}
     template <> int numArguments<OperationType::difference>() {return 1;}
     template <> int numArguments<OperationType::differencePlus>() {return 1;}

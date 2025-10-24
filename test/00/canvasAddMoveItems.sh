@@ -13,20 +13,17 @@ minsky.model().clear()
 # Step 1: Check the canvas background context menu
 def canvasContextBackground(x, y, X, Y):
     # First, check if any item exists at (x, y)
-    item = minsky.canvas.getItemAt(x, y)
-    
-    if item is not None:
-        item = minsky.canvas.itemFocus()
-        if item is not None:
+    if minsky.canvas.getItemAt(x, y):
+        item = minsky.canvas.itemFocus
+        if item() is not None:
             minsky.canvas.deleteItem()
         else:
             pass
     
     # Verify the item has been fully removed
-    item = minsky.canvas.getItemAt(x, y)
-    if item is not None:
-        item = minsky.canvas.itemFocus()
-        if item is not None:
+    if minsky.canvas.getItemAt(x, y):
+        item = minsky.canvas.itemFocus
+        if item() is not None:
             assert not item.classType().startswith("Variable"), "Canvas should not have an interactive item selected on background right-click."
             minsky.canvas.deleteItem()
 
@@ -45,8 +42,8 @@ x, y = item.x(), item.y()
 def canvasContextOnItem(x, y, X, Y):
     # Try to get the item at these coordinates
     assert minsky.canvas.getItemAt(x, y), "Item not found at expected position."
-    item = minsky.canvas.itemFocus()  # Use itemFocus to get the currently focused item
-    assert item is not None, "An item should be selected when right-clicking on it."
+    item = minsky.canvas.itemFocus  # Use itemFocus to get the currently focused item
+    assert item() is not None, "An item should be selected when right-clicking on it."
     minsky.canvas.deleteItem()
 
 canvasContextOnItem(x, y, int(x), int(y))
