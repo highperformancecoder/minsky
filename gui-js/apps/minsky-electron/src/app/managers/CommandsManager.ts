@@ -1383,7 +1383,6 @@ export class CommandsManager {
     if (await minsky.ravelAvailable() && installCase===InstallCase.previousRavel) 
       state.previous=/[^:]*/.exec(await minsky.ravelVersion())[0];
     let encodedState=encodeURI(JSON.stringify(state));
-    console.log(encodedState);
     // load patreon's login page
     window.loadURL(`https://www.patreon.com/oauth2/authorize?response_type=code&client_id=${clientId}&redirect_uri=https://ravelation.net/ravel-downloader.cgi&scope=identity%20identity%5Bemail%5D&state=${encodedState}`);
   }
