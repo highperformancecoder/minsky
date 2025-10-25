@@ -228,15 +228,15 @@ export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
       // remove markers if changed
       let markers=await plot.horizontalMarkers.$properties();
       let markersUpdated=false;
-      for (let i in this.horizontalMarkers)
-        if (!markers.includes(i)) {
+      for (let marker of this.horizontalMarkers)
+        if (!markers.includes(marker)) {
           markersUpdated=true;
           break;
         }
       if (!markersUpdated) {
         markers=await plot.verticalMarkers.$properties();
-        for (let i in this.verticalMarkers)
-          if (!markers.includes(i)) {
+        for (let marker of this.verticalMarkers)
+          if (!markers.includes(marker)) {
             markersUpdated=true;
             break;
           }
