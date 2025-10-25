@@ -524,6 +524,7 @@ namespace minsky
               assignSide(pen,marker);
               labelPen(pen++,v->tooltip);
             }
+        removePensFrom(pen);
       }
 
     
