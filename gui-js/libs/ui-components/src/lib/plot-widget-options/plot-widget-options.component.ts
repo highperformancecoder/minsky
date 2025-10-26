@@ -181,7 +181,8 @@ export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
     let markers=[];
     let selectedOptions=(document.getElementById(id) as HTMLSelectElement).selectedOptions;
     for (let i=0; i<selectedOptions.length; ++i)
-      markers.push(selectedOptions[i].value);
+      if (selectedOptions[i].value!=="[clear selection]")
+        markers.push(selectedOptions[i].value);
     return markers;
   }
 
@@ -224,6 +225,24 @@ export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
       plot.y1max(+this.y1max.value);
       plot.horizontalMarkers.$properties(this.getMarkersSelection("horizontalMarkers"));
       plot.verticalMarkers.$properties(this.getMarkersSelection("verticalMarkers"));
+      // remove markers if changed
+      let markers=await plot.horizontalMarkers.$properties();
+      let markersUpdated=false;
+      for (let marker of this.horizontalMarkers)
+        if (!markers.includes(marker)) {
+          markersUpdated=true;
+          break;
+        }
+      if (!markersUpdated) {
+        markers=await plot.verticalMarkers.$properties();
+        for (let marker of this.verticalMarkers)
+          if (!markers.includes(marker)) {
+            markersUpdated=true;
+            break;
+          }
+      }
+      if (markersUpdated)
+        plot.addPlotPt(await this.electronService.minsky.t());
       plot.requestRedraw();
       this.electronService.minsky.canvas.requestRedraw();
     }

@@ -1654,6 +1654,7 @@ export class PlotWidget extends Item {
   async redraw(): Promise<boolean> {return this.$callMethod('redraw');}
   async redrawWithBounds(): Promise<void> {return this.$callMethod('redrawWithBounds');}
   async registerImage(): Promise<void> {return this.$callMethod('registerImage');}
+  async removePensFrom(a1: number): Promise<void> {return this.$callMethod('removePensFrom',a1);}
   async renderFrame(a1: minsky__RenderNativeWindow__RenderFrameArgs): Promise<void> {return this.$callMethod('renderFrame',a1);}
   async renderToEMF(a1: string): Promise<void> {return this.$callMethod('renderToEMF',a1);}
   async renderToPDF(a1: string): Promise<void> {return this.$callMethod('renderToPDF',a1);}
