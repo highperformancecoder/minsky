@@ -129,7 +129,7 @@
         <option *ngFor="let m of availableMarkers" [selected]="verticalMarkers.includes(m)">{{m}}</option>
       </select>
       <select id="horizontalMarkers" multiple size="5">
-        <option  class="selectTitle" title="Click to clear selection"
+        <option class="selectTitle" title="Click to clear selection"
         value="[clear selection]">Horizontal Markers</option>
         <option *ngFor="let m of availableMarkers" [selected]="horizontalMarkers.includes(m)">{{m}}</option>
       </select>
