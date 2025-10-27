@@ -652,19 +652,22 @@ export class ContextMenuManager {
     const rowColButtonsChecked = await godley.buttonDisplay();
     const editorModeChecked = await godley.editorMode();
 
-    // Check if mouse is over a stock column header (row0)
-    let importEnabled = false;
-    let importCol: number | null = null;
-    try {
-      const editorClickType = await godley.popup.clickTypeZoomed(this.x, this.y);
-      if (editorClickType === 'row0') {
-        importEnabled = true;
-        importCol = await godley.popup.colXZoomed(this.x);
-      }
-    } catch (error) {
-      log.debug('Unable to determine column for import stock variables:', error);
-    }
+    // build stock import menu for this column
 
+    const stockImportMenuItems=[];
+    {
+      let x=this.x-await godley.x()+0.5*await godley.width();
+      let col=await godley.editor.colXZoomed(x);
+      let importOptions=await godley.editor.matchingTableColumnsByCol(col);
+      for (let v of importOptions) 
+        stockImportMenuItems.push({
+          label: v,
+          click: (item) => {
+            godley.editor.importStockVarByCol(item.label, col);
+          },
+        });
+    }
+    
     const menuItems = [
       new MenuItem({
         label: 'Open Godley Table',
@@ -712,15 +715,8 @@ export class ContextMenuManager {
       }),
       new MenuItem({
         label: 'Import stock variables',
-        enabled: importEnabled,
-        click: async () => {
-          try {
-            if (!importEnabled || importCol === null) return;
-            await GodleyMenuManager.importStock(godley.popup, importCol);
-          } catch (error) {
-            log.error('Error importing stock variables:', error);
-          }
-        }
+        enabled: stockImportMenuItems.length>0,
+        submenu: Menu.buildFromTemplate(stockImportMenuItems),
       }),
       new MenuItem({
         label: 'Export as',

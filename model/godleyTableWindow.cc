@@ -203,12 +203,12 @@ namespace minsky
             colWidgets[col].draw(cairo);   
           }
       
-        if (col>1)
-          {
-            cairo_move_to(cairo,x-pulldownHot,topTableOffset);
-            pango.setMarkup("▼");
-            pango.show();
-          }
+//        if (col>1)
+//          {
+//            cairo_move_to(cairo,x-pulldownHot,topTableOffset);
+//            pango.setMarkup("▼");
+//            pango.show();
+//          }
       
         double y=topTableOffset;
         double colWidth=minColumnWidth;
@@ -285,7 +285,7 @@ namespace minsky
                 pango.setMarkup(text);
               }
             // allow extra space for the ▼ in row 0
-            colWidth=max(colWidth,pango.width() + (row==0? pulldownHot:0));
+            colWidth=max(colWidth,pango.width() /* + (row==0? pulldownHot:0)*/);
             cairo_move_to(cairo,x+3,y);
             pango.show();
             y+=rowHeight;
@@ -302,9 +302,9 @@ namespace minsky
       }
 
     // display pulldown for last column
-    cairo_move_to(cairo,x-pulldownHot,topTableOffset);
-    pango.setMarkup("▼");
-    pango.show();
+//    cairo_move_to(cairo,x-pulldownHot,topTableOffset);
+//    pango.setMarkup("▼");
+//    pango.show();
 
   
     pango.setMarkup
