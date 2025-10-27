@@ -84,10 +84,11 @@ namespace minsky
       init();
 #ifdef MAC_OSX_TK
       // On MacOSX, drawInternal() is called with minskyCmdMutex already held, so we must not try to acquire drawMutex
-      winInfoPtr = std::make_shared<WindowInformation>(stoull(args.parentWindowId), args.offsetLeft, args.offsetTop, args.childWidth, args.childHeight, args.scalingFactor, hasScrollBars(), [this](){drawInternal();});
+      auto drawCallback = [this](){drawInternal();};
 #else
-      winInfoPtr = std::make_shared<WindowInformation>(stoull(args.parentWindowId), args.offsetLeft, args.offsetTop, args.childWidth, args.childHeight, args.scalingFactor, hasScrollBars(), [this](){draw();});
+      auto drawCallback = [this](){draw();};
 #endif
+      winInfoPtr = std::make_shared<WindowInformation>(stoull(args.parentWindowId), args.offsetLeft, args.offsetTop, args.childWidth, args.childHeight, args.scalingFactor, hasScrollBars(), drawCallback);
       surface.reset(new NativeSurface(*this)); // ensure callback on requestRedraw works
     }
     draw();
