@@ -6,7 +6,6 @@ import {
 import { BrowserWindow, Menu, MenuItem, IpcMainEvent } from 'electron';
 import { BookmarkManager } from './BookmarkManager';
 import { CommandsManager } from './CommandsManager';
-import { GodleyMenuManager } from './GodleyMenuManager';
 import { WindowManager } from './WindowManager';
 import log from 'electron-log';
 import JSON5 from 'json5';
