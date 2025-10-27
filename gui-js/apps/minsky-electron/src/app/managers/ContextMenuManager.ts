@@ -651,6 +651,22 @@ export class ContextMenuManager {
     const rowColButtonsChecked = await godley.buttonDisplay();
     const editorModeChecked = await godley.editorMode();
 
+    // build stock import menu for this column
+
+    const stockImportMenuItems=[];
+    {
+      let x=this.x-await godley.x()+0.5*await godley.width();
+      let col=await godley.editor.colXZoomed(x);
+      let importOptions=await godley.editor.matchingTableColumnsByCol(col);
+      for (let v of importOptions) 
+        stockImportMenuItems.push({
+          label: v,
+          click: (item) => {
+            godley.editor.importStockVarByCol(item.label, col);
+          },
+        });
+    }
+    
     const menuItems = [
       new MenuItem({
         label: 'Open Godley Table',
@@ -695,6 +711,11 @@ export class ContextMenuManager {
       new MenuItem({
         label: 'Copy stock variables',
         click: async () => {minsky.canvas.copyAllStockVars();}
+      }),
+      new MenuItem({
+        label: 'Import stock variables',
+        enabled: stockImportMenuItems.length>0,
+        submenu: Menu.buildFromTemplate(stockImportMenuItems),
       }),
       new MenuItem({
         label: 'Export as',
