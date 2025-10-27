@@ -276,13 +276,11 @@ namespace minsky
 
       void macOSXDrawNativeWindows()
       {
-        // On MacOSX, all windows are drawn on a single thread, so we don't need to hold
-        // minskyCmdMutex across the async drawing callback to prevent concurrent draws.
-        // Not holding the lock prevents deadlock when backend commands try to execute
-        // while the drawing callback is pending.
+        // share the lock with all window redraw routines - when all windows redrawn, lock is released
+        auto lock=make_shared<lock_guard<mutex>>(minskyCmdMutex);
         const Timer timer(timers["draw"]);
         for (auto i: nativeWindowsToRedraw)
-          macOSXRedraw(*i,nullptr);
+          macOSXRedraw(*i,lock);
         nativeWindowsToRedraw.clear();
         drawLaunched=false;
        }
@@ -290,7 +288,12 @@ namespace minsky
       void macOSXLaunchDrawNativeWindows()
       {
         drawLaunched=true;
-        tsDrawNativeWindows_.BlockingCall(this);
+        // Use NonBlockingCall instead of BlockingCall to prevent deadlock.
+        // BlockingCall would block the Minsky thread waiting for JS thread to complete,
+        // but JS thread needs to acquire minskyCmdMutex which could be held, causing deadlock.
+        // NonBlockingCall allows Minsky thread to continue, and JS thread will acquire
+        // the mutex when it's ready to run macOSXDrawNativeWindows().
+        tsDrawNativeWindows_.NonBlockingCall(this);
       }
       
       void run()

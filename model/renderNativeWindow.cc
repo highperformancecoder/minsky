@@ -97,8 +97,7 @@ void macOSXRedraw(RenderNativeWindow& window,const std::shared_ptr<std::lock_gua
   {
 #ifdef MAC_OSX_TK
     if (!window.winInfoPtr.get()) return;
-    // Don't pass the lock to prevent it from being held across the async callback boundary
-    // window.winInfoPtr->lock=lock;
+    window.winInfoPtr->lock=lock;
     window.winInfoPtr->requestRedraw();
 #endif
   }
