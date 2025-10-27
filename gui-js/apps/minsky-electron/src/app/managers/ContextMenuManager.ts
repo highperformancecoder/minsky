@@ -715,7 +715,7 @@ export class ContextMenuManager {
         enabled: importEnabled,
         click: async () => {
           try {
-            if (!importEnabled || importCol === null) return;
+            if (importCol === null) return;
             await GodleyMenuManager.importStock(godley.popup, importCol);
           } catch (error) {
             log.error('Error importing stock variables:', error);
