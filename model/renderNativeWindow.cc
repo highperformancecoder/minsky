@@ -82,13 +82,7 @@ namespace minsky
       const lock_guard lock(drawMutex);
       m_frameArgs=args;
       init();
-#ifdef MAC_OSX_TK
-      // On MacOSX, drawInternal() is called with minskyCmdMutex already held, so we must not try to acquire drawMutex
-      auto drawCallback = [this](){drawInternal();};
-#else
-      auto drawCallback = [this](){draw();};
-#endif
-      winInfoPtr = std::make_shared<WindowInformation>(stoull(args.parentWindowId), args.offsetLeft, args.offsetTop, args.childWidth, args.childHeight, args.scalingFactor, hasScrollBars(), drawCallback);
+      winInfoPtr = std::make_shared<WindowInformation>(stoull(args.parentWindowId), args.offsetLeft, args.offsetTop, args.childWidth, args.childHeight, args.scalingFactor, hasScrollBars(), [this](){draw();});
       surface.reset(new NativeSurface(*this)); // ensure callback on requestRedraw works
     }
     draw();
@@ -103,7 +97,8 @@ void macOSXRedraw(RenderNativeWindow& window,const std::shared_ptr<std::lock_gua
   {
 #ifdef MAC_OSX_TK
     if (!window.winInfoPtr.get()) return;
-    window.winInfoPtr->lock=lock;
+    // Don't pass the lock to prevent it from being held across the async callback boundary
+    // window.winInfoPtr->lock=lock;
     window.winInfoPtr->requestRedraw();
 #endif
   }
@@ -119,11 +114,6 @@ void macOSXRedraw(RenderNativeWindow& window,const std::shared_ptr<std::lock_gua
   void RenderNativeWindow::draw()
   {
     const lock_guard lock(drawMutex);
-    drawInternal();
-  }
-
-  void RenderNativeWindow::drawInternal()
-  {
     if (!winInfoPtr.get())
       {
         return;

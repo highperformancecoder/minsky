@@ -79,9 +79,6 @@ namespace minsky
     classdesc::Exclude<std::shared_ptr<WindowInformation>> winInfoPtr;
     RenderFrameArgs m_frameArgs;
 
-    /// drawing implementation without mutex locking (for MacOSX to avoid deadlock)
-    void drawInternal();
-
     /// a copiable mutex where each copy has a distinct mutex
     struct CopiableMutux: public std::mutex
     {

@@ -276,11 +276,13 @@ namespace minsky
 
       void macOSXDrawNativeWindows()
       {
-        // share the lock with all window redraw routines - when all windows redrawn, lock is released
-        auto lock=make_shared<lock_guard<mutex>>(minskyCmdMutex);
+        // On MacOSX, all windows are drawn on a single thread, so we don't need to hold
+        // minskyCmdMutex across the async drawing callback to prevent concurrent draws.
+        // Not holding the lock prevents deadlock when backend commands try to execute
+        // while the drawing callback is pending.
         const Timer timer(timers["draw"]);
         for (auto i: nativeWindowsToRedraw)
-          macOSXRedraw(*i,lock);
+          macOSXRedraw(*i,nullptr);
         nativeWindowsToRedraw.clear();
         drawLaunched=false;
        }
