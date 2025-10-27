@@ -186,7 +186,10 @@ namespace minsky
   {
     // ensure access to only one global Minsky object at a time,
     // particular needed for jest tests, which run in parallel
-    mutex minskyCmdMutex; 
+    // Use recursive_mutex to allow the same thread to acquire it multiple times
+    // (e.g., JS thread may hold it in doCommand() and then macOSXDrawNativeWindows()
+    // may also be scheduled on the same thread)
+    recursive_mutex minskyCmdMutex; 
 
     struct AddOnMinsky: public RESTMinsky
     {
@@ -235,7 +238,7 @@ namespace minsky
 
       string doCommand(const string& command, const json_pack_t& arguments)
       {
-        const lock_guard<mutex> lock(minskyCmdMutex);
+        const lock_guard<recursive_mutex> lock(minskyCmdMutex);
         const Timer timer(timers[command]);
 
         // if reset requested, postpone it
@@ -250,7 +253,7 @@ namespace minsky
 
       void drawNativeWindows()
       {
-        const lock_guard<mutex> lock(minskyCmdMutex);
+        const lock_guard<recursive_mutex> lock(minskyCmdMutex);
         const Timer timer(timers["draw"]);
         for (auto i: nativeWindowsToRedraw)
           try
@@ -277,7 +280,7 @@ namespace minsky
       void macOSXDrawNativeWindows()
       {
         // share the lock with all window redraw routines - when all windows redrawn, lock is released
-        auto lock=make_shared<lock_guard<mutex>>(minskyCmdMutex);
+        auto lock=make_shared<lock_guard<recursive_mutex>>(minskyCmdMutex);
         const Timer timer(timers["draw"]);
         for (auto i: nativeWindowsToRedraw)
           macOSXRedraw(*i,lock);
@@ -318,7 +321,7 @@ namespace minsky
                 if (reset_flag() && resetDuration<resetPostponedThreshold && resetAt<std::chrono::system_clock::now())
                   try
                     {
-                      const lock_guard<mutex> lock(minskyCmdMutex);
+                      const lock_guard<recursive_mutex> lock(minskyCmdMutex);
                       if (reset_flag()) // check again, in case another thread got there first
                         {
                           const Timer timer(timers["minsky.reset"]);
