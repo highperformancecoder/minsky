@@ -66,6 +66,9 @@ namespace minsky
     void requestRedraw();
     // implemented as a free function to avoid Classdesc exposing this to Typescript
     friend void macOSXRedraw(RenderNativeWindow&,const std::shared_ptr<std::lock_guard<std::mutex>>&);
+  private:
+    void drawInternal(); // drawing implementation without mutex locking
+  public:
     // do not clobber winInfoPtr on load of model
     RenderNativeWindow& operator=(const RenderNativeWindow& x) {ecolab::CairoSurface::operator=(x); return *this;}
     RenderNativeWindow()=default;
