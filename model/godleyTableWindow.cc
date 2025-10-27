@@ -203,13 +203,6 @@ namespace minsky
             colWidgets[col].draw(cairo);   
           }
       
-//        if (col>1)
-//          {
-//            cairo_move_to(cairo,x-pulldownHot,topTableOffset);
-//            pango.setMarkup("▼");
-//            pango.show();
-//          }
-      
         double y=topTableOffset;
         double colWidth=minColumnWidth;
         for (unsigned row=0; row<m_godleyIcon.table.rows(); ++row)
@@ -284,8 +277,7 @@ namespace minsky
                   }
                 pango.setMarkup(text);
               }
-            // allow extra space for the ▼ in row 0
-            colWidth=max(colWidth,pango.width() /* + (row==0? pulldownHot:0)*/);
+            colWidth=max(colWidth,pango.width());
             cairo_move_to(cairo,x+3,y);
             pango.show();
             y+=rowHeight;
@@ -301,12 +293,6 @@ namespace minsky
           x=colLeftMargin[col+1];
       }
 
-    // display pulldown for last column
-//    cairo_move_to(cairo,x-pulldownHot,topTableOffset);
-//    pango.setMarkup("▼");
-//    pango.show();
-
-  
     pango.setMarkup
       (capitalise(enumKey<GodleyAssetClass::AssetClass>(assetClass)));
     // increase column by enough to fit asset class label
