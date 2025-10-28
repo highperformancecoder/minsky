@@ -50,8 +50,8 @@ namespace minsky
     HANDLE hOld;    // 
 #elif defined(MAC_OSX_TK)
     NSContext nsContext;
-    std::shared_ptr<std::lock_guard<std::recursive_mutex>> lock;
-    Winfo(NSContext&& nsContext): nsContext(std::move(nsContext)) {}
+    std::recursive_mutex* cmdMutex; // pointer to minskyCmdMutex for locking during draw
+    Winfo(NSContext&& nsContext): nsContext(std::move(nsContext)), cmdMutex(nullptr) {}
 #elif defined(USE_X11)
     Window parentWindowId;
     Window childWindowId, bufferWindowId;

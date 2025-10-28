@@ -93,11 +93,11 @@ namespace minsky
     winInfoPtr.reset();
   }
 
-void macOSXRedraw(RenderNativeWindow& window,const std::shared_ptr<std::lock_guard<std::recursive_mutex>>& lock)
+void macOSXRedraw(RenderNativeWindow& window,std::recursive_mutex* cmdMutex)
   {
 #ifdef MAC_OSX_TK
     if (!window.winInfoPtr.get()) return;
-    window.winInfoPtr->lock=lock;
+    window.winInfoPtr->cmdMutex=cmdMutex;
     window.winInfoPtr->requestRedraw();
 #endif
   }

@@ -107,6 +107,11 @@ namespace minsky
 @implementation CairoView
 -(void) drawRect: (NSRect)rect
 {
+  // Lock the mutex when actually drawing, not before
+  std::unique_ptr<std::lock_guard<std::recursive_mutex>> lock;
+  if (winfo->cmdMutex)
+    lock.reset(new std::lock_guard<std::recursive_mutex>(*winfo->cmdMutex));
+    
   auto context = [[NSGraphicsContext currentContext] CGContext];
   auto frame=[self frame];
   CGContextTranslateCTM(context,winfo->offsetLeft,winfo->childHeight+(winfo->hasScrollBars?20:0)); 
@@ -116,7 +121,7 @@ namespace minsky
     cairo_surface_set_device_offset(winfo->bufferSurface->surface(), 0, 20);
   winfo->draw();
   winfo->bufferSurface.reset();
-  winfo->lock.reset(); // unlock any mutex attached to this window
+  // lock will be automatically released when it goes out of scope
 }
 - (NSView *) hitTest: (NSPoint) aPoint
 {

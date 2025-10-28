@@ -279,11 +279,10 @@ namespace minsky
 
       void macOSXDrawNativeWindows()
       {
-        // share the lock with all window redraw routines - when all windows redrawn, lock is released
-        auto lock=make_shared<lock_guard<recursive_mutex>>(minskyCmdMutex);
+        // Don't hold the lock here - pass mutex pointer to windows so drawRect can lock when called
         const Timer timer(timers["draw"]);
         for (auto i: nativeWindowsToRedraw)
-          macOSXRedraw(*i,lock);
+          macOSXRedraw(*i,&minskyCmdMutex);
         nativeWindowsToRedraw.clear();
         drawLaunched=false;
        }
