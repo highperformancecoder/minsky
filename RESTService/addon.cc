@@ -281,7 +281,12 @@ namespace minsky
       {
         // Don't hold the lock here - pass mutex reference to windows so drawRect can lock when called
         const Timer timer(timers["draw"]);
-        for (auto i: nativeWindowsToRedraw)
+        decltype(nativeWindowsToRedraw) windows;
+        {
+          const lock_guard<recursive_mutex> lock(minskyCmdMutex);
+          windows.swap(nativeWindowsToRedraw);
+        }
+        for (auto i: windows)
           macOSXRedraw(*i,minskyCmdMutex);
         nativeWindowsToRedraw.clear();
         drawLaunched=false;
