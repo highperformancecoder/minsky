@@ -100,6 +100,8 @@ namespace minsky
   void NSContext::requestRedraw()
   {
    [impl->cairoView setNeedsDisplay: true];
+   // Force the view to display immediately instead of waiting for the next event loop
+   [impl->cairoView displayIfNeeded];
   }
 
 }
