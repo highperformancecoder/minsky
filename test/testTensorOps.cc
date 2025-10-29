@@ -995,7 +995,7 @@ TEST_F(MinskyTensorOpSuite, tensorBinOpMultiples)
     (0, [](double x,double y){return x+y;}, [](double x){return -x;});
   multiWireTest<OperationType::multiply>(1, [](double x,double y){return x*y;}, id);
   multiWireTest<OperationType::divide>
-    (1, [](double x,double y){return x*y;}, [](double x){return 1/x;});
+    (1, [](double x,double y){return 1.0/x/y;}, [](double x){return 1/x;});
   multiWireTest<OperationType::min>
     (std::numeric_limits<double>::max(), [](double x,double y){return x<y? x: y;}, id);
   multiWireTest<OperationType::max>
