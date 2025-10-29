@@ -715,7 +715,7 @@ export class ContextMenuManager {
       new MenuItem({
         label: 'Import stock variables',
         enabled: stockImportMenuItems.length>0,
-        submenu: Menu.buildFromTemplate(stockImportMenuItems),
+        ...(stockImportMenuItems.length>0 && { submenu: Menu.buildFromTemplate(stockImportMenuItems) }),
       }),
       new MenuItem({
         label: 'Export as',
