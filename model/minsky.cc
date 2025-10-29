@@ -1504,6 +1504,11 @@ namespace minsky
       }
 
     // convert all references
+    // Update the VariableValue's type first, before retyping the variables. For ticket 1473.
+    auto init=i->second->init();
+    i->second=VariableValuePtr(type,i->second->name);
+    i->second->init(init);
+    
     model->recursiveDo(&Group::items,
                        [&](Items&, Items::iterator i) {
                          if (auto v=VariablePtr(*i))
@@ -1516,9 +1521,6 @@ namespace minsky
                              }
                          return false;
                        });
-    auto init=i->second->init();
-    i->second=VariableValuePtr(type,i->second->name);
-    i->second->init(init);
   }
 
   void Minsky::addIntegral()

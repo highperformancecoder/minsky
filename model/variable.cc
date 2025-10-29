@@ -255,7 +255,8 @@ void VariableBase::ensureValueExists(VariableValue* vv, const std::string&/* nm*
       if (existingVar != minsky().variableValues.end())
         {
           // Variable exists - check if types match. For ticket 1473.
-          if (existingVar->second->type() != type())
+          // Allow if vv points to the existing variable (same variable being updated)
+          if (existingVar->second.get() != vv && existingVar->second->type() != type())
             throw error("Variable '%s' already exists with type %s, cannot create with type %s",
                        m_name.c_str(), 
                        VariableType::typeName(existingVar->second->type()).c_str(),
