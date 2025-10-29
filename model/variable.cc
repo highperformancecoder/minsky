@@ -248,22 +248,35 @@ void VariableBase::ensureValueExists(VariableValue* vv, const std::string&/* nm*
 {	
   string valueId=this->valueId();
   // disallow blank names
-  if (valueId.length()>1 && valueId.substr(valueId.length()-2)!=":_" && 
-      minsky().variableValues.count(valueId)==0)
+  if (valueId.length()>1 && valueId.substr(valueId.length()-2)!=":_")
     {
-      assert(isValueId(valueId));
-      // Ensure value of variable is preserved after rename. 	      
-      if (vv==nullptr)
-        minsky().variableValues.emplace(valueId,VariableValuePtr(type(), m_name)).
-          first->second->m_scope=minsky::scope(group.lock(),m_name);
-      // Ensure variable names are updated correctly everywhere they appear. 
+      // Check if a variable with this valueId already exists
+      auto existingVar = minsky().variableValues.find(valueId);
+      if (existingVar != minsky().variableValues.end())
+        {
+          // Variable exists - check if types match. For ticket 1473.
+          if (existingVar->second->type() != type())
+            throw error("Variable '%s' already exists with type %s, cannot create with type %s",
+                       m_name.c_str(), 
+                       VariableType::typeName(existingVar->second->type()).c_str(),
+                       VariableType::typeName(type()).c_str());
+        }
       else
         {
-          auto iter=minsky().variableValues.emplace(valueId,VariableValuePtr(type(),*vv)).first->second;
-          iter->name=m_name;
-          iter->m_scope=minsky::scope(group.lock(),m_name);
+          // Variable doesn't exist - create it
+          assert(isValueId(valueId));
+          // Ensure value of variable is preserved after rename. 	      
+          if (vv==nullptr)
+            minsky().variableValues.emplace(valueId,VariableValuePtr(type(), m_name)).
+              first->second->m_scope=minsky::scope(group.lock(),m_name);
+          // Ensure variable names are updated correctly everywhere they appear. 
+          else
+            {
+              auto iter=minsky().variableValues.emplace(valueId,VariableValuePtr(type(),*vv)).first->second;
+              iter->name=m_name;
+              iter->m_scope=minsky::scope(group.lock(),m_name);
+            }
         }
-          
     }
 }
 
