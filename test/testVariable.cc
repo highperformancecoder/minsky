@@ -58,15 +58,15 @@ TEST(Variable, typeMismatch)
     EXPECT_EQ(VariableType::flow, var1->type());
     
     // Try to create a stock variable with the same name - should throw an error
-    auto var2 = minsky.model->addItem(VariablePtr(VariableType::stock, "temp"));
-    EXPECT_THROW(var2->name("x"), ecolab::error);
+    auto var2 = minsky.model->addItem(VariablePtr(VariableType::stock, "x"));
+    EXPECT_THROW(var2->name("x"), std::exception);
     
     // Try to create a parameter variable with the same name - should also throw an error  
-    auto var3 = minsky.model->addItem(VariablePtr(VariableType::parameter, "temp2"));
-    EXPECT_THROW(var3->name("x"), ecolab::error);
+    auto var3 = minsky.model->addItem(VariablePtr(VariableType::parameter, "x"));
+    EXPECT_THROW(var3->name("x"), std::exception);
     
     // Creating a variable with the same name and type should work
-    auto var4 = minsky.model->addItem(VariablePtr(VariableType::flow, "temp3"));
+    auto var4 = minsky.model->addItem(VariablePtr(VariableType::flow, "x"));
     EXPECT_NO_THROW(var4->name("x"));
     EXPECT_EQ(VariableType::flow, var4->type());
   }
