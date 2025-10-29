@@ -65,7 +65,7 @@ namespace minsky
     void draw();
     void requestRedraw();
     // implemented as a free function to avoid Classdesc exposing this to Typescript
-    friend void macOSXRedraw(RenderNativeWindow&,std::recursive_mutex*);
+    friend void macOSXRedraw(RenderNativeWindow&,std::recursive_mutex&);
     // do not clobber winInfoPtr on load of model
     RenderNativeWindow& operator=(const RenderNativeWindow& x) {ecolab::CairoSurface::operator=(x); return *this;}
     RenderNativeWindow()=default;

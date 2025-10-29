@@ -279,10 +279,10 @@ namespace minsky
 
       void macOSXDrawNativeWindows()
       {
-        // Don't hold the lock here - pass mutex pointer to windows so drawRect can lock when called
+        // Don't hold the lock here - pass mutex reference to windows so drawRect can lock when called
         const Timer timer(timers["draw"]);
         for (auto i: nativeWindowsToRedraw)
-          macOSXRedraw(*i,&minskyCmdMutex);
+          macOSXRedraw(*i,minskyCmdMutex);
         nativeWindowsToRedraw.clear();
         drawLaunched=false;
        }

@@ -26,6 +26,7 @@
 #include <cairo/cairo-quartz.h>
 #include <iostream>
 #include <exception>
+#include <mutex>
 #include "minsky_epilogue.h"
 
 using namespace std;
@@ -110,9 +111,9 @@ namespace minsky
 -(void) drawRect: (NSRect)rect
 {
   // Lock the mutex when actually drawing, not before
-  std::unique_ptr<std::lock_guard<std::recursive_mutex>> lock;
+  std::optional<std::lock_guard<std::recursive_mutex>> lock;
   if (winfo->cmdMutex)
-    lock.reset(new std::lock_guard<std::recursive_mutex>(*winfo->cmdMutex));
+    lock.emplace(*winfo->cmdMutex);
     
   auto context = [[NSGraphicsContext currentContext] CGContext];
   auto frame=[self frame];
