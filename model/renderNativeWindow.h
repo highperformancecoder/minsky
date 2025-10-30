@@ -25,6 +25,8 @@
 #include <cairoSurfaceImage.h>
 #include <plot.h>
 
+#include <mutex>
+
 #ifndef CLASSDESC_TYPENAME___std__lock_guard__recursive_mutex___
 #define CLASSDESC_TYPENAME___std__lock_guard__recursive_mutex___
 namespace classdesc
