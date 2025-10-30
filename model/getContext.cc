@@ -26,6 +26,7 @@
 #include <cairo/cairo-quartz.h>
 #include <iostream>
 #include <exception>
+#include <mutex>
 #include "minsky_epilogue.h"
 
 using namespace std;
@@ -100,6 +101,8 @@ namespace minsky
   void NSContext::requestRedraw()
   {
    [impl->cairoView setNeedsDisplay: true];
+   // Force the view to display immediately instead of waiting for the next event loop
+   [impl->cairoView displayIfNeeded];
   }
 
 }
@@ -107,6 +110,11 @@ namespace minsky
 @implementation CairoView
 -(void) drawRect: (NSRect)rect
 {
+  // Lock the mutex when actually drawing, not before
+  std::optional<std::lock_guard<std::recursive_mutex>> lock;
+  if (winfo->cmdMutex)
+    lock.emplace(*winfo->cmdMutex);
+    
   auto context = [[NSGraphicsContext currentContext] CGContext];
   auto frame=[self frame];
   CGContextTranslateCTM(context,winfo->offsetLeft,winfo->childHeight+(winfo->hasScrollBars?20:0)); 
@@ -116,7 +124,7 @@ namespace minsky
     cairo_surface_set_device_offset(winfo->bufferSurface->surface(), 0, 20);
   winfo->draw();
   winfo->bufferSurface.reset();
-  winfo->lock.reset(); // unlock any mutex attached to this window
+  // lock will be automatically released when it goes out of scope
 }
 - (NSView *) hitTest: (NSPoint) aPoint
 {
