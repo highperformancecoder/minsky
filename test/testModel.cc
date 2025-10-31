@@ -449,7 +449,7 @@ TEST_F(CanvasFixture,findVariableDefinition)
   EXPECT_TRUE(findVariableDefinition());
   EXPECT_TRUE(itemIndicator==godley);
 
-  // on a non-variable, findVariableDefinition should returns false
+  // on a non-variable, findVariableDefinition should return false
   item=godley;
   EXPECT_TRUE(!findVariableDefinition());
 

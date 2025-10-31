@@ -23,6 +23,7 @@
 #include "selection.h"
 #include "lasso.h"
 #include "valueId.h"
+#include "minsky.h"
 #include "minsky_epilogue.h"
 #include <gtest/gtest.h>
 
@@ -54,19 +55,22 @@ TEST(Variable, typeMismatch)
     minsky.model->clear();
     
     // Create a flow variable with name "x"
-    auto var1 = minsky.model->addItem(VariablePtr(VariableType::flow, "x"));
+    auto var1 = minsky.model->addItem(VariablePtr(VariableType::flow, "x"))->variableCast();
     EXPECT_EQ(VariableType::flow, var1->type());
     
     // Try to create a stock variable with the same name - should throw an error
-    auto var2 = minsky.model->addItem(VariablePtr(VariableType::stock, "x"));
+    auto var2=minsky.model->addItem(VariablePtr(VariableType::stock, "var2"))->variableCast();
     EXPECT_THROW(var2->name("x"), std::exception);
+    EXPECT_THROW(minsky.model->addItem(VariablePtr(VariableType::stock, "x")), std::exception);
     
     // Try to create a parameter variable with the same name - should also throw an error  
-    auto var3 = minsky.model->addItem(VariablePtr(VariableType::parameter, "x"));
+    auto var3 = minsky.model->addItem(VariablePtr(VariableType::parameter, "var3"))->variableCast();
     EXPECT_THROW(var3->name("x"), std::exception);
+    EXPECT_THROW(minsky.model->addItem(VariablePtr(VariableType::parameter, "x")), std::exception);
     
     // Creating a variable with the same name and type should work
-    auto var4 = minsky.model->addItem(VariablePtr(VariableType::flow, "x"));
+    auto var4 = minsky.model->addItem(VariablePtr(VariableType::flow, "x"))->variableCast();
     EXPECT_NO_THROW(var4->name("x"));
     EXPECT_EQ(VariableType::flow, var4->type());
+    EXPECT_NO_THROW(minsky.model->addItem(VariablePtr(VariableType::flow, "x")));
   }
