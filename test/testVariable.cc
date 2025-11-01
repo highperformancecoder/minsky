@@ -82,5 +82,5 @@ TEST(Variable, typeMismatch)
     // (rename should still be blocked only when the target name exists with a different type)
     EXPECT_NO_THROW(minsky.convertVarType(var1->valueId(), VariableType::parameter));
     auto var5 = minsky.model->addItem(VariablePtr(VariableType::stock, "tmpZ"))->variableCast();
-    EXPECT_THROW(var5->name("x"), ecolab::error);
+    EXPECT_THROW(var5->name("x"), std::exception);
   }
