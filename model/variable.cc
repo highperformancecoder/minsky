@@ -230,7 +230,7 @@ string VariableBase::name(const std::string& name)
   auto tmpVV=vValue();
   m_name=name;
   m_canonicalName=minsky::canonicalName(name);
-  ensureValueExists(tmpVV.get(),name);
+  ensureValueExists(tmpVV.get());
   assert(vValue() && vValue()->valueId()==valueId());
   cachedNameRender.reset();
   bb.update(*this); // adjust bounding box for new name - see ticket #704
@@ -244,7 +244,7 @@ bool VariableBase::ioVar() const
 {return dynamic_cast<Group*>(controller.lock().get());}
 
 
-void VariableBase::ensureValueExists(VariableValue* vv, const std::string&/* nm*/) const
+void VariableBase::ensureValueExists(VariableValue* vv) const
 {	
   string valueId=this->valueId();
   // disallow blank names
@@ -314,7 +314,7 @@ string VariableBase::init() const
 
 string VariableBase::init(const string& x)
 {
-  ensureValueExists(nullptr,""); 
+  ensureValueExists(nullptr); 
   if (isValueId(valueId()))
     {
       VariableValue& val=*minsky().variableValues[valueId()];
@@ -544,7 +544,7 @@ void VariablePtr::retype(VariableBase::Type type)
             else
               w->moveToPorts(get()->ports(i).lock(), w->to());
           }
-      get()->ensureValueExists(nullptr,"");
+      get()->ensureValueExists(nullptr);
     }
 }
 
