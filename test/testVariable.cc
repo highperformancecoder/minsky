@@ -51,7 +51,7 @@ TEST(Variable, scoping)
 TEST(Variable, typeMismatch)
   {
     // Test for ticket 1473 - prevent creating variables of different types with the same name
-    auto& minsky=cminsky();
+    auto& minsky=minsky::minsky();
     minsky.model->clear();
     
     // Create a flow variable with name "x"
@@ -73,4 +73,14 @@ TEST(Variable, typeMismatch)
     EXPECT_NO_THROW(var4->name("x"));
     EXPECT_EQ(VariableType::flow, var4->type());
     EXPECT_NO_THROW(minsky.model->addItem(VariablePtr(VariableType::flow, "x")));
+
+    // They should share the same valueId and VariableValue instance
+    EXPECT_EQ(var1->valueId(), var4->valueId());
+    EXPECT_EQ(var1->vValue().get(), var4->vValue().get());
+
+    // Conversion sequencing: converting the shared VariableValue's type should not trip the interlock
+    // (rename should still be blocked only when the target name exists with a different type)
+    EXPECT_NO_THROW(minsky.convertVarType(var1->valueId(), VariableType::parameter));
+    auto var5 = minsky.model->addItem(VariablePtr(VariableType::stock, "tmpZ"))->variableCast();
+    EXPECT_THROW(var5->name("x"), ecolab::error);
   }
