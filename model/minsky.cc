@@ -265,9 +265,9 @@ namespace minsky
                                          // need to do this var explicitly, as not currently part of model structure
                                          if (auto vp=VariablePtr(*i))
                                            {
+                                             convertVarType(vp->valueId(), VariableType::flow);
                                              vp.retype(VariableType::flow);
                                              *i=vp;
-                                             convertVarType(vp->valueId(), VariableType::flow);
                                            }
                                        }
                                    }

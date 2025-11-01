@@ -103,7 +103,13 @@ namespace
   };
 
   // gtest requires all fixtures to be derived from Test, alas!
-  class CanvasFixture: public Canvas, public ::testing::Test {};
+  class CanvasFixture: public Canvas, public ::testing::Test
+  {
+    Minsky lminsky;
+    LocalMinsky lm;
+  public:
+    CanvasFixture(): lm(lminsky) {}
+  };
   class GodleyIconFixture: public GodleyIcon, public ::testing::Test {};
   class GroupFixture: public Group, public ::testing::Test {};
 }
@@ -436,16 +442,15 @@ TEST_F(CanvasFixture,findVariableDefinition)
   item=var1;
   EXPECT_TRUE(findVariableDefinition());
   EXPECT_TRUE(itemIndicator==integ);
-  model->removeItem(*integ);
-  integ->removeControlledItems();
-      
+
+  model->items.clear();
   shared_ptr<GodleyIcon> godley(new GodleyIcon);
   model->addItem(godley);
   godley->table.resize(3,2);
   godley->table.cell(0,1)="foo";
   godley->table.cell(0,2)="bar";
   godley->update();
-  item=var1;
+  item=VariablePtr(VariableType::stock,"foo");
   EXPECT_TRUE(findVariableDefinition());
   EXPECT_TRUE(itemIndicator==godley);
 
