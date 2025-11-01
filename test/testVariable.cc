@@ -23,6 +23,7 @@
 #include "selection.h"
 #include "lasso.h"
 #include "valueId.h"
+#include "minsky.h"
 #include "minsky_epilogue.h"
 #include <gtest/gtest.h>
 
@@ -45,4 +46,41 @@ TEST(Variable, scoping)
     EXPECT_EQ(":foo",minsky::valueId(":foo"));
     EXPECT_THROW(minsky::valueId("foo"), ecolab::error);
 
+  }
+
+TEST(Variable, typeMismatch)
+  {
+    // Test for ticket 1473 - prevent creating variables of different types with the same name
+    auto& minsky=minsky::minsky();
+    minsky.model->clear();
+    
+    // Create a flow variable with name "x"
+    auto var1 = minsky.model->addItem(VariablePtr(VariableType::flow, "x"))->variableCast();
+    EXPECT_EQ(VariableType::flow, var1->type());
+    
+    // Try to create a stock variable with the same name - should throw an error
+    auto var2=minsky.model->addItem(VariablePtr(VariableType::stock, "var2"))->variableCast();
+    EXPECT_THROW(var2->name("x"), std::exception);
+    EXPECT_THROW(minsky.model->addItem(VariablePtr(VariableType::stock, "x")), std::exception);
+    
+    // Try to create a parameter variable with the same name - should also throw an error  
+    auto var3 = minsky.model->addItem(VariablePtr(VariableType::parameter, "var3"))->variableCast();
+    EXPECT_THROW(var3->name("x"), std::exception);
+    EXPECT_THROW(minsky.model->addItem(VariablePtr(VariableType::parameter, "x")), std::exception);
+    
+    // Creating a variable with the same name and type should work
+    auto var4 = minsky.model->addItem(VariablePtr(VariableType::flow, "x"))->variableCast();
+    EXPECT_NO_THROW(var4->name("x"));
+    EXPECT_EQ(VariableType::flow, var4->type());
+    EXPECT_NO_THROW(minsky.model->addItem(VariablePtr(VariableType::flow, "x")));
+
+    // They should share the same valueId and VariableValue instance
+    EXPECT_EQ(var1->valueId(), var4->valueId());
+    EXPECT_EQ(var1->vValue().get(), var4->vValue().get());
+
+    // Conversion sequencing: converting the shared VariableValue's type should not trip the interlock
+    // (rename should still be blocked only when the target name exists with a different type)
+    EXPECT_NO_THROW(minsky.convertVarType(var1->valueId(), VariableType::parameter));
+    auto var5 = minsky.model->addItem(VariablePtr(VariableType::stock, "tmpZ"))->variableCast();
+    EXPECT_THROW(var5->name("x"), std::exception);
   }
