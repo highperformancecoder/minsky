@@ -108,48 +108,46 @@
         <td colspan="3">Bounds Control</td>
         <tr><td></td><td>Min</td><td>Max</td></tr>
         <tr><td>X</td>
-        <td><input formControlName="xmin" type="text" value="NaN"/></td>
-        <td><input formControlName="xmax" type="text" value="NaN"/></td>
-      </tr>
-      <tr><td>Y (LHS)</td>
-      <td><input formControlName="ymin" type="text" value="NaN"/></td>
-      <td><input formControlName="ymax" type="text" value="NaN"/></td>
-    </tr>
-    <tr><td>Y (RHS)</td>
-    <td><input formControlName="y1min" type="text" value="NaN"/></td>
-    <td><input formControlName="y1max" type="text" value="NaN"/></td>
-  </tr>
-</table>
-</div>
+          <td><input formControlName="xmin" type="text" value="NaN"/></td>
+          <td><input formControlName="xmax" type="text" value="NaN"/></td>
+        </tr>
+        <tr><td>Y (LHS)</td>
+          <td><input formControlName="ymin" type="text" value="NaN"/></td>
+          <td><input formControlName="ymax" type="text" value="NaN"/></td>
+        </tr>
+        <tr><td>Y (RHS)</td>
+          <td><input formControlName="y1min" type="text" value="NaN"/></td>
+          <td><input formControlName="y1max" type="text" value="NaN"/></td>
+        </tr>
+      </table>
+    </div>
+    
+    <div class="markers">
+      <select id="verticalMarkers" multiple size="5">
+        <option class="selectTitle" title="Click to clear selection"
+                value="[clear selection]">Vertical Markers</option>
+        <option *ngFor="let m of availableMarkers" [selected]="verticalMarkers.includes(m)">{{m}}</option>
+      </select>
+      <select id="horizontalMarkers" multiple size="5">
+        <option class="selectTitle" title="Click to clear selection"
+        value="[clear selection]">Horizontal Markers</option>
+        <option *ngFor="let m of availableMarkers" [selected]="horizontalMarkers.includes(m)">{{m}}</option>
+      </select>
+    </div>
+    
+    <div class="form-buttons">
+      <button mat-raised-button class="btn cancel-btn" (click)="closeWindow()">
+        Cancel
+      </button>
 
-<div class="markers">
-  <select id="verticalMarkers" multiple size="5">
-    <option disabled>Vertical Markers</option>
-    @for (m of availableMarkers; track m) {
-      <option [selected]="verticalMarkers.includes(m)">{{m}}</option>
-    }
-  </select>
-  <select id="horizontalMarkers" multiple size="5">
-    <option disabled>Horizontal Markers</option>
-    @for (m of availableMarkers; track m) {
-      <option [selected]="horizontalMarkers.includes(m)">{{m}}</option>
-    }
-  </select>
-</div>
-
-<div class="form-buttons">
-  <button mat-raised-button class="btn cancel-btn" (click)="closeWindow()">
-    Cancel
-  </button>
-
-  <button
-    mat-raised-button
-    class="btn ok-btn submit"
-    type="submit"
-    (click)="handleSave()"
-    >
-    OK
-  </button>
-</div>
-</form>
+      <button
+        mat-raised-button
+        class="btn ok-btn submit"
+        type="submit"
+        (click)="handleSave()"
+      >
+        OK
+      </button>
+    </div>
+  </form>
 </div>

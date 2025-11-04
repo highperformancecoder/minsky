@@ -231,8 +231,8 @@ string VariableBase::name(const std::string& name)
   auto tmpVV=vValue();
   m_name=name;
   m_canonicalName=minsky::canonicalName(name);
-  ensureValueExists(tmpVV.get(),name);
-  assert(vValue()->valueId()==valueId());
+  ensureValueExists(tmpVV.get());
+  assert(vValue() && vValue()->valueId()==valueId());
   cachedNameRender.reset();
   bb.update(*this); // adjust bounding box for new name - see ticket #704
   if (auto controllingItem=controller.lock())
@@ -245,13 +245,36 @@ bool VariableBase::ioVar() const
 {return dynamic_cast<Group*>(controller.lock().get());}
 
 
-void VariableBase::ensureValueExists(VariableValue* vv, const std::string&/* nm*/) const
+void VariableBase::ensureValueExists(VariableValue* vv) const
 {	
   string valueId=this->valueId();
   // disallow blank names
-  if (valueId.length()>1 && valueId.substr(valueId.length()-2)!=":_" && 
-      minsky().variableValues.count(valueId)==0)
+  if (valueId.length()>1 && valueId.substr(valueId.length()-2)!=":_")
     {
+      // Check if a variable with this valueId already exists
+      auto existingVar = minsky().variableValues.find(valueId);
+      if (existingVar != minsky().variableValues.end())
+        {
+          // Variable exists - check if types match. For ticket 1473.
+          // Allow if vv points to the existing variable (same variable being updated)
+          if (existingVar->second.get() == vv || existingVar->second->type() == type())
+            return; // already existing, and type matches, so nothing further to do
+
+          // check if there are any variables associated with this variableValue
+          auto v=cminsky().model->findAny
+            (&GroupItems::items, [&valueId,type=type()](const ItemPtr& i){
+              if (auto var=i->variableCast())
+                return var->valueId()==valueId && var->type()!=type;
+              return false;});
+          if (v)  
+            throw error("Variable '%s' already exists with type %s, cannot create with type %s",
+                        m_name.c_str(), 
+                        VariableType::typeName(existingVar->second->type()).c_str(),
+                        VariableType::typeName(type()).c_str());
+          // no variables associated with this variableValue - remove and recreate
+          minsky().variableValues.erase(existingVar);
+        }
+      // Variable doesn't exist - create it
       assert(isValueId(valueId));
       // Ensure value of variable is preserved after rename. 	      
       if (vv==nullptr)
@@ -264,7 +287,6 @@ void VariableBase::ensureValueExists(VariableValue* vv, const std::string&/* nm*
           iter->name=m_name;
           iter->m_scope=minsky::scope(group.lock(),m_name);
         }
-          
     }
 }
 
@@ -293,7 +315,7 @@ string VariableBase::init() const
 
 string VariableBase::init(const string& x)
 {
-  ensureValueExists(nullptr,""); 
+  ensureValueExists(nullptr); 
   if (isValueId(valueId()))
     {
       VariableValue& val=*minsky().variableValues[valueId()];
@@ -511,7 +533,7 @@ void VariablePtr::retype(VariableBase::Type type)
             else
               w->moveToPorts(get()->ports(i).lock(), w->to());
           }
-      get()->ensureValueExists(nullptr,"");
+      get()->ensureValueExists(nullptr);
     }
 }
 

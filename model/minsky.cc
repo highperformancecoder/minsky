@@ -278,9 +278,9 @@ namespace minsky
                                          // need to do this var explicitly, as not currently part of model structure
                                          if (auto vp=VariablePtr(*i))
                                            {
+                                             convertVarType(vp->valueId(), VariableType::flow);
                                              vp.retype(VariableType::flow);
                                              *i=vp;
-                                             convertVarType(vp->valueId(), VariableType::flow);
                                            }
                                        }
                                    }
@@ -1517,6 +1517,11 @@ namespace minsky
       }
 
     // convert all references
+    // Update the VariableValue's type first, before retyping the variables. For ticket 1473.
+    auto init=i->second->init();
+    i->second=VariableValuePtr(type,i->second->name);
+    i->second->init(init);
+    
     model->recursiveDo(&Group::items,
                        [&](Items&, Items::iterator i) {
                          if (auto v=VariablePtr(*i))
@@ -1529,9 +1534,6 @@ namespace minsky
                              }
                          return false;
                        });
-    auto init=i->second->init();
-    i->second=VariableValuePtr(type,i->second->name);
-    i->second->init(init);
   }
 
   void Minsky::addIntegral()

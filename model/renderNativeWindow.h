@@ -25,13 +25,15 @@
 #include <cairoSurfaceImage.h>
 #include <plot.h>
 
-#ifndef CLASSDESC_TYPENAME___std__lock_guard__mutex___
-#define CLASSDESC_TYPENAME___std__lock_guard__mutex___
+#include <mutex>
+
+#ifndef CLASSDESC_TYPENAME___std__lock_guard__recursive_mutex___
+#define CLASSDESC_TYPENAME___std__lock_guard__recursive_mutex___
 namespace classdesc
 {
-  template <> struct tn<std::lock_guard<std::mutex>>
+  template <> struct tn<std::lock_guard<std::recursive_mutex>>
   {
-    static string name() {return "std::lock_guard<std::mutex>";}
+    static string name() {return "std::lock_guard<std::recursive_mutex>";}
   };
 }
 #endif
@@ -65,7 +67,7 @@ namespace minsky
     void draw();
     void requestRedraw();
     // implemented as a free function to avoid Classdesc exposing this to Typescript
-    friend void macOSXRedraw(RenderNativeWindow&,const std::shared_ptr<std::lock_guard<std::mutex>>&);
+    friend void macOSXRedraw(RenderNativeWindow&,std::recursive_mutex&);
     // do not clobber winInfoPtr on load of model
     RenderNativeWindow& operator=(const RenderNativeWindow& x) {ecolab::CairoSurface::operator=(x); return *this;}
     RenderNativeWindow()=default;
