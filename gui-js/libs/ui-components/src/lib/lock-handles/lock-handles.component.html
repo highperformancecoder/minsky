@@ -14,7 +14,6 @@
           @for (ravelName of ravelNames; track ravelName; let i = $index) {
             <td class="form-cell">
               <select [(ngModel)]="handle.handleNames[i]">
-                <option value="">
                   @for (lockHandle of lockHandles; track lockHandle) {
                     <option [value]="lockHandle">{{lockHandle}}</option>
                   }
