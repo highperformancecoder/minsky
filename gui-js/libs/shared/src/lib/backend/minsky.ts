@@ -230,7 +230,7 @@ export class VariableBase extends Item {
   async enableSlider(...args: any[]): Promise<boolean> {return this.$callMethod('enableSlider',...args);}
   async engExp(): Promise<object> {return this.$callMethod('engExp');}
   async ensureBBValid(): Promise<void> {return this.$callMethod('ensureBBValid');}
-  async ensureValueExists(a1: VariableValue,a2: string): Promise<void> {return this.$callMethod('ensureValueExists',a1,a2);}
+  async ensureValueExists(a1: VariableValue): Promise<void> {return this.$callMethod('ensureValueExists',a1);}
   async exportAsCSV(a1: string,a2: boolean): Promise<void> {return this.$callMethod('exportAsCSV',a1,a2);}
   async flip(): Promise<void> {return this.$callMethod('flip');}
   async getDimLabelsPicked(): Promise<object> {return this.$callMethod('getDimLabelsPicked');}
