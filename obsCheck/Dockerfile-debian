@@ -4,13 +4,11 @@ ARG project=minsky
 ARG version
 ADD . /root
 RUN apt-get update -qq -y
-RUN apt-get install -y wget gnupg
-RUN wget -nv https://download.opensuse.org/repositories/home:hpcoder1/Debian_${version}/Release.key -O Release.key
-RUN apt-key add - < Release.key
+RUN apt-get install -y gnupg2 curl wget python3
+RUN curl -fsSL https://download.opensuse.org/repositories/home:hpcoder1/Debian_${version}/Release.key | gpg --dearmor | tee /etc/apt/trusted.gpg.d/home_hpcoder1.gpg > /dev/null
 RUN echo "deb http://download.opensuse.org/repositories/home:/hpcoder1/Debian_${version}/ /" > /etc/apt/sources.list.d/home:hpcoder1.list
 RUN apt-get update
 RUN apt-get install -y --allow-unauthenticated $project
 RUN useradd -m minsky
 RUN su - minsky -c minsky --version
-RUN apt install -y python3
 RUN python3 -c "import pyminsky"
