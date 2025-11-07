@@ -647,6 +647,7 @@ export class ContextMenuManager {
     itemInfo: CanvasItem
   ): Promise<MenuItem[]> {
     let godley=new GodleyIcon(minsky.canvas.item);
+    minsky.nameCurrentItem(await godley.id());
     const displayVariableChecked = await godley.variableDisplay();
     const rowColButtonsChecked = await godley.buttonDisplay();
     const editorModeChecked = await godley.editorMode();
