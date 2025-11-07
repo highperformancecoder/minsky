@@ -57,6 +57,8 @@ At the time of writing, Minsky requires Node 22, and npm 10:
 - sudo n install 22
 - sudo npm install -g npm@10
 - cd gui-js; npm install
+- on Ventura (Intel builds) electron-builder needs to be 24.13.3 or older:
+  `cd gui-js; npm install electron-builder@24.13.3`
   
 # compile Minsky
 By default, Minsky builds in Aqua mode. This may cause build errors if the prerequisites are built for X11. To disable Aqua, specify MAC_OSX_TK= on the make command line.

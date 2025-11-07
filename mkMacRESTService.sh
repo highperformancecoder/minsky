@@ -97,6 +97,7 @@ export NX_DAEMON=false # prevent hangs in the following steps
 #npm run export:package:mac
 npm run build:web
 npm run build:electron
+# NB on ventura, electron-builder needs to be 24.13.3 or older
 npx electron-builder
 popd
 
