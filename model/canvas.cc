@@ -824,7 +824,7 @@ namespace minsky
   bool Canvas::redraw()
   {
     // nb using maxint here doesn't seem to work
-    return redraw(-1e9,-1e9,2e9,2e9);
+    return redraw(-1e6,-1e6,2e6,2e6);
   }
 
   bool Canvas::redrawUpdateRegion()
