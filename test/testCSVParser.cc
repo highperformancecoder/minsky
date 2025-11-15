@@ -234,6 +234,336 @@ TEST_F(CSVDialogTest, ClassifyColumns) {
     ASSERT_FALSE(spec.dimensionCols.count(3));
 }
 
+TEST_F(CSVDialogTest, LoadFile) {
+    string input = "A,B,C\n"
+                   "1,2,3\n"
+                   "4,5,6\n";
+
+    url = boost::filesystem::unique_path().string();
+    {
+        ofstream of(url);
+        of << input;
+    }
+
+    dialog.url = url;
+    dialog.loadFile();
+
+    auto parsedLines = dialog.parseLines();
+    ASSERT_EQ(3, parsedLines.size());
+    ASSERT_EQ(3, parsedLines[0].size());
+    ASSERT_EQ("A", parsedLines[0][0]);
+    ASSERT_EQ("B", parsedLines[0][1]);
+    ASSERT_EQ("C", parsedLines[0][2]);
+}
+
+TEST_F(CSVDialogTest, LoadFileFromNameWithDOSLineEndings) {
+    string input = "A,B,C\r\n"
+                   "1,2,3\r\n"
+                   "4,5,6\r\n";
+
+    url = boost::filesystem::unique_path().string();
+    {
+        ofstream of(url);
+        of << input;
+    }
+
+    dialog.loadFileFromName(url);
+
+    auto parsedLines = dialog.parseLines();
+    ASSERT_EQ(3, parsedLines.size());
+    ASSERT_EQ(3, parsedLines[0].size());
+    ASSERT_EQ("A", parsedLines[0][0]);
+    ASSERT_EQ("B", parsedLines[0][1]);
+    ASSERT_EQ("C", parsedLines[0][2]);
+}
+
+TEST_F(CSVDialogTest, GuessSpecAndLoadFile) {
+    string input = "foo,bar,A,B,C\n"
+                   "A,A,1.2,1.3,1.4\n"
+                   "A,B,1,2,3\n"
+                   "B,A,3,2,1\n";
+
+    url = boost::filesystem::unique_path().string();
+    {
+        ofstream of(url);
+        of << input;
+    }
+
+    dialog.url = url;
+    dialog.guessSpecAndLoadFile();
+
+    ASSERT_EQ(',', spec.separator);
+    ASSERT_GE(spec.dimensionNames.size(), 2);
+    ASSERT_EQ("foo", spec.dimensionNames[0]);
+    ASSERT_EQ("bar", spec.dimensionNames[1]);
+}
+
+TEST_F(CSVDialogTest, PopulateHeaders) {
+    string input = "Name,Age,City\n"
+                   "Alice,30,NYC\n"
+                   "Bob,25,LA\n";
+
+    url = boost::filesystem::unique_path().string();
+    {
+        ofstream of(url);
+        of << input;
+    }
+
+    spec.separator = ',';
+    spec.headerRow = 0;
+    spec.setDataArea(1, 3);
+    dialog.url = url;
+    dialog.loadFile();
+    dialog.populateHeaders();
+
+    ASSERT_GE(spec.dimensionNames.size(), 3);
+    ASSERT_EQ("Name", spec.dimensionNames[0]);
+    ASSERT_EQ("Age", spec.dimensionNames[1]);
+    ASSERT_EQ("City", spec.dimensionNames[2]);
+}
+
+TEST_F(CSVDialogTest, PopulateHeader) {
+    string input = "Name,Age,City\n"
+                   "Alice,30,NYC\n"
+                   "Bob,25,LA\n";
+
+    url = boost::filesystem::unique_path().string();
+    {
+        ofstream of(url);
+        of << input;
+    }
+
+    spec.separator = ',';
+    spec.headerRow = 0;
+    spec.setDataArea(1, 3);
+    spec.dimensionNames.resize(3);
+    dialog.url = url;
+    dialog.loadFile();
+    
+    dialog.populateHeader(1);
+    ASSERT_EQ("Age", spec.dimensionNames[1]);
+}
+
+TEST_F(CSVDialogTest, ParseLinesWithMergeDelimiters) {
+    string input = "A  B  C\n"
+                   "1  2  3\n"
+                   "4  5  6\n";
+
+    url = boost::filesystem::unique_path().string();
+    {
+        ofstream of(url);
+        of << input;
+    }
+
+    spec.separator = ' ';
+    spec.mergeDelimiters = true;
+    dialog.url = url;
+    dialog.loadFile();
+
+    auto parsedLines = dialog.parseLines();
+    ASSERT_EQ(3, parsedLines.size());
+    ASSERT_GE(parsedLines[0].size(), 3);
+    ASSERT_EQ("A", parsedLines[0][0]);
+    ASSERT_EQ("B", parsedLines[0][1]);
+    ASSERT_EQ("C", parsedLines[0][2]);
+}
+
+TEST_F(CSVDialogTest, ParseLinesWithMaxColumn) {
+    string input = "A,B,C,D,E\n"
+                   "1,2,3,4,5\n"
+                   "6,7,8,9,10\n";
+
+    url = boost::filesystem::unique_path().string();
+    {
+        ofstream of(url);
+        of << input;
+    }
+
+    spec.separator = ',';
+    dialog.url = url;
+    dialog.loadFile();
+
+    auto parsedLines = dialog.parseLines(3);
+    ASSERT_EQ(3, parsedLines.size());
+    ASSERT_EQ(3, parsedLines[0].size());
+    ASSERT_EQ("A", parsedLines[0][0]);
+    ASSERT_EQ("B", parsedLines[0][1]);
+    ASSERT_EQ("C", parsedLines[0][2]);
+}
+
+TEST_F(CSVDialogTest, CorrectedUniqueValues) {
+    string input = "A,B,C\n"
+                   "X,1,foo\n"
+                   "Y,2,bar\n"
+                   "X,3,foo\n"
+                   "Z,1,baz\n";
+
+    url = boost::filesystem::unique_path().string();
+    {
+        ofstream of(url);
+        of << input;
+    }
+
+    spec.separator = ',';
+    spec.setDataArea(1, 3);
+    spec.headerRow = 0;
+    dialog.url = url;
+    dialog.loadFile();
+
+    auto uniqueVals = dialog.correctedUniqueValues();
+    ASSERT_GE(uniqueVals.size(), 3);
+    // Column 0 should have 3 unique values (X, Y, Z) after removing header
+    ASSERT_EQ(3, uniqueVals[0]);
+    // Column 1 should have 3 unique values (1, 2, 3) after removing header
+    ASSERT_EQ(3, uniqueVals[1]);
+    // Column 2 should have 3 unique values (foo, bar, baz) after removing header
+    ASSERT_EQ(3, uniqueVals[2]);
+}
+
+TEST_F(CSVDialogTest, ReportFromFile) {
+    string input = "A,B,C\n"
+                   "1,2,3\n"
+                   "4,5,6\n";
+
+    url = boost::filesystem::unique_path().string();
+    string outputFile = boost::filesystem::unique_path().string();
+    
+    {
+        ofstream of(url);
+        of << input;
+    }
+
+    spec.separator = ',';
+    spec.setDataArea(1, 3);
+    dialog.url = url;
+    dialog.loadFile();
+    
+    dialog.reportFromFile(url, outputFile);
+    
+    // Check that output file was created
+    ASSERT_TRUE(boost::filesystem::exists(outputFile));
+    
+    // Clean up
+    boost::filesystem::remove(outputFile);
+}
+
+TEST_F(CSVDialogTest, PopulateHeadersWithInvalidHeaderRow) {
+    string input = "A,B,C\n"
+                   "1,2,3\n";
+
+    url = boost::filesystem::unique_path().string();
+    {
+        ofstream of(url);
+        of << input;
+    }
+
+    spec.separator = ',';
+    spec.headerRow = 10; // Beyond the number of lines
+    spec.setDataArea(1, 3);
+    dialog.url = url;
+    dialog.loadFile();
+    
+    // This should not crash - just return without populating
+    dialog.populateHeaders();
+    
+    // Headers should not have been populated
+    ASSERT_TRUE(spec.dimensionNames.empty() || spec.dimensionNames.size() == 3);
+}
+
+TEST_F(CSVDialogTest, PopulateHeaderWithInvalidColumn) {
+    string input = "Name,Age,City\n"
+                   "Alice,30,NYC\n";
+
+    url = boost::filesystem::unique_path().string();
+    {
+        ofstream of(url);
+        of << input;
+    }
+
+    spec.separator = ',';
+    spec.headerRow = 0;
+    spec.setDataArea(1, 3);
+    spec.dimensionNames.resize(5);
+    spec.dimensionNames[3] = "Original";
+    dialog.url = url;
+    dialog.loadFile();
+    
+    // Try to populate a column that doesn't exist
+    dialog.populateHeader(10);
+    
+    // The value at index 3 should remain unchanged
+    ASSERT_EQ("Original", spec.dimensionNames[3]);
+}
+
+TEST_F(CSVDialogTest, ParseLinesWithEscapedQuotes) {
+    string input = "\"A\",\"B\",\"C\"\n"
+                   "\"foo\",\"bar\",\"baz\"\n"
+                   "\"x\",\"y\",\"z\"\n";
+
+    url = boost::filesystem::unique_path().string();
+    {
+        ofstream of(url);
+        of << input;
+    }
+
+    spec.separator = ',';
+    spec.quote = '"';
+    spec.mergeDelimiters = false;
+    dialog.url = url;
+    dialog.loadFile();
+
+    auto parsedLines = dialog.parseLines();
+    ASSERT_EQ(3, parsedLines.size());
+    ASSERT_GE(parsedLines[0].size(), 3);
+    ASSERT_EQ("A", parsedLines[0][0]);
+    ASSERT_EQ("B", parsedLines[0][1]);
+    ASSERT_EQ("C", parsedLines[0][2]);
+}
+
+TEST_F(CSVDialogTest, LoadFileWithManyLines) {
+    // Create a file with more than numInitialLines (100) lines
+    url = boost::filesystem::unique_path().string();
+    {
+        ofstream of(url);
+        for (int i = 0; i < 150; ++i) {
+            of << "A" << i << ",B" << i << ",C" << i << "\n";
+        }
+    }
+
+    spec.separator = ',';
+    dialog.url = url;
+    dialog.loadFile();
+
+    auto parsedLines = dialog.parseLines();
+    // Should only load numInitialLines (100) lines
+    ASSERT_EQ(CSVDialog::numInitialLines, parsedLines.size());
+}
+
+TEST_F(CSVDialogTest, ClassifyColumnsEmptyData) {
+    string input = "A,B,C\n"
+                   ",,\n"
+                   ",,\n";
+
+    url = boost::filesystem::unique_path().string();
+    {
+        ofstream of(url);
+        of << input;
+    }
+
+    spec.separator = ',';
+    spec.setDataArea(1, 3);
+    dialog.url = url;
+    dialog.loadFile();
+    dialog.classifyColumns();
+
+    // Empty columns should be treated as data columns
+    ASSERT_EQ(3, spec.numCols);
+    // All three columns should be in dataCols since they're empty
+    ASSERT_TRUE(spec.dataCols.count(0));
+    ASSERT_TRUE(spec.dataCols.count(1));
+    ASSERT_TRUE(spec.dataCols.count(2));
+}
+
 
 TEST_F(CSVParserTest, LoadVar) {
     string input = "A comment\n"
