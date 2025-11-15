@@ -23,6 +23,9 @@
 #undef True
 #include <gtest/gtest.h>
 #include <gsl/gsl_integration.h>
+#include <fstream>
+#include <cstdio>
+#include <algorithm>
 using namespace minsky;
 
 namespace
