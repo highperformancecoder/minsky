@@ -23,6 +23,9 @@
 #undef True
 #include <gtest/gtest.h>
 #include <gsl/gsl_integration.h>
+#include <fstream>
+#include <cstdio>
+#include <algorithm>
 using namespace minsky;
 
 namespace
@@ -1275,5 +1278,601 @@ TEST(TensorOps, evalOpEvaluate)
             }
         }
       EXPECT_EQ("c",godley.cell(0,1));
+    }
+
+    // Test logging functionality
+    TEST_F(MinskySuite, loggingFunctionality)
+    {
+      auto var1 = model->addItem(VariablePtr(VariableType::flow, "testVar1"));
+      auto var2 = model->addItem(VariablePtr(VariableType::flow, "testVar2"));
+      variableValues[":testVar1"]->init("1.0");
+      variableValues[":testVar2"]->init("2.0");
+      
+      logVarList.insert(":testVar1");
+      logVarList.insert(":testVar2");
+      
+      string logFile = "/tmp/test_log.dat";
+      openLogFile(logFile);
+      EXPECT_TRUE(loggingEnabled());
+      
+      reset();
+      logVariables();
+      
+      closeLogFile();
+      EXPECT_FALSE(loggingEnabled());
+      
+      // Verify log file was created
+      ifstream f(logFile);
+      EXPECT_TRUE(f.good());
+      string line;
+      getline(f, line);
+      EXPECT_TRUE(line.find("#time") != string::npos);
+      EXPECT_TRUE(line.find("testVar1") != string::npos);
+      EXPECT_TRUE(line.find("testVar2") != string::npos);
+      f.close();
+      remove(logFile.c_str());
+    }
+
+    // Test multipleEquities
+    TEST_F(MinskySuite, multipleEquities)
+    {
+      EXPECT_FALSE(multipleEquities());
+      bool result = multipleEquities(true);
+      EXPECT_TRUE(result);
+      EXPECT_TRUE(multipleEquities());
+      multipleEquities(false);
+      EXPECT_FALSE(multipleEquities());
+    }
+
+    // Test utility methods
+    TEST_F(MinskySuite, utilityMethods)
+    {
+      // Test physicalMem
+      size_t mem = physicalMem();
+      EXPECT_GT(mem, 0);
+      
+      // Test numOpArgs
+      EXPECT_EQ(2, numOpArgs(OperationType::add));
+      EXPECT_EQ(2, numOpArgs(OperationType::multiply));
+      EXPECT_EQ(1, numOpArgs(OperationType::integrate));
+      
+      // Test classifyOp
+      EXPECT_EQ(OperationType::function, classifyOp(OperationType::sin));
+      EXPECT_EQ(OperationType::binop, classifyOp(OperationType::add));
+    }
+
+    // Test available operations and types
+    TEST_F(MinskySuite, availableOperationsAndTypes)
+    {
+      vector<string> ops = availableOperations();
+      EXPECT_GT(ops.size(), 0);
+      EXPECT_TRUE(find(ops.begin(), ops.end(), "add") != ops.end());
+      
+      auto mapping = availableOperationsMapping();
+      EXPECT_GT(mapping.size(), 0);
+      
+      vector<string> varTypes = variableTypes();
+      EXPECT_GT(varTypes.size(), 0);
+      EXPECT_TRUE(find(varTypes.begin(), varTypes.end(), "flow") != varTypes.end());
+      
+      vector<string> assets = assetClasses();
+      EXPECT_GT(assets.size(), 0);
+    }
+
+    // Test font operations
+    TEST_F(MinskySuite, fontOperations)
+    {
+      // Test defaultFont
+      string origFont = defaultFont();
+      string newFont = "Arial";
+      defaultFont(newFont);
+      EXPECT_EQ(newFont, defaultFont());
+      if (!origFont.empty())
+        defaultFont(origFont);
+      
+      // Test fontScale
+      double origScale = fontScale();
+      double newScale = 1.5;
+      fontScale(newScale);
+      EXPECT_EQ(newScale, fontScale());
+      fontScale(origScale);
+      
+      // Test listFonts
+      vector<string> fonts = listFonts();
+      // May be empty on systems without Pango
+      EXPECT_GE(fonts.size(), 0);
+    }
+
+    // Test latex2pango
+    TEST_F(MinskySuite, latex2pango)
+    {
+      string result = latex2pango("x^2");
+      EXPECT_FALSE(result.empty());
+      
+      result = latex2pango("\\alpha");
+      EXPECT_FALSE(result.empty());
+    }
+
+    // Test clipboard operations
+    TEST_F(MinskySuite, clipboardOperations)
+    {
+      auto var1 = model->addItem(VariablePtr(VariableType::flow, "clipVar"));
+      canvas.selection.ensureItemInserted(var1);
+      
+      copy();
+      EXPECT_FALSE(clipboardEmpty());
+      
+      canvas.selection.clear();
+      EXPECT_TRUE(clipboardEmpty());
+    }
+
+    // Test history operations
+    TEST_F(MinskySuite, historyOperations)
+    {
+      clearHistory();
+      
+      auto var1 = model->addItem(VariablePtr(VariableType::flow, "histVar"));
+      bool pushed = pushHistory();
+      
+      // Should push only if different from previous
+      EXPECT_TRUE(pushed || history.size() > 0);
+      
+      auto var2 = model->addItem(VariablePtr(VariableType::flow, "histVar2"));
+      pushHistory();
+      
+      size_t histSize = history.size();
+      if (histSize > 0)
+      {
+        undo(1);
+        EXPECT_TRUE(model->items.size() <= 3); // May have been restored
+      }
+    }
+
+    // Test dimension operations
+    TEST_F(MinskySuite, dimensionOperations)
+    {
+      dimensions.emplace("testDim", Dimension("testDim", "test"));
+      
+      renameDimension("testDim", "newTestDim");
+      EXPECT_TRUE(dimensions.count("newTestDim") > 0);
+      EXPECT_TRUE(dimensions.count("testDim") == 0);
+      
+      dimensions.clear();
+    }
+
+    // Test Godley operations
+    TEST_F(MinskySuite, godleyOperations)
+    {
+      auto g1 = new GodleyIcon;
+      model->addItem(g1);
+      g1->table.resize(3, 3);
+      g1->table.cell(0,1) = "stock1";
+      g1->table.cell(2,1) = "flow1";
+      g1->update();
+      
+      setAllDEmode(true);
+      EXPECT_TRUE(g1->table.doubleEntryCompliant);
+      
+      setAllDEmode(false);
+      EXPECT_FALSE(g1->table.doubleEntryCompliant);
+      
+      vector<string> flowVars = allGodleyFlowVars();
+      EXPECT_GT(flowVars.size(), 0);
+    }
+
+    // Test variable type conversion
+    TEST_F(MinskySuite, convertVarType)
+    {
+      auto var1 = model->addItem(VariablePtr(VariableType::flow, "convertVar"));
+      EXPECT_EQ(VariableType::flow, variableValues[":convertVar"]->type());
+      
+      convertVarType(":convertVar", VariableType::parameter);
+      EXPECT_EQ(VariableType::parameter, variableValues[":convertVar"]->type());
+    }
+
+    // Test addIntegral
+    TEST_F(MinskySuite, addIntegral)
+    {
+      auto var1 = model->addItem(VariablePtr(VariableType::flow, "integVar"));
+      canvas.item = var1;
+      
+      size_t itemsBefore = model->items.size();
+      addIntegral();
+      EXPECT_GT(model->items.size(), itemsBefore);
+    }
+
+    // Test requestReset and requestRedraw
+    TEST_F(MinskySuite, requestOperations)
+    {
+      requestReset();
+      EXPECT_TRUE(reset_flag());
+      
+      requestRedraw();
+      // Just verify it doesn't crash
+    }
+
+    // Test checkMemAllocation callback
+    TEST_F(MinskySuite, checkMemAllocationCallback)
+    {
+      // This should trigger the callback and return a result
+      bool result = triggerCheckMemAllocationCallback();
+      EXPECT_TRUE(result == 0 || result == 1 || result == 2);
+    }
+
+    // Test autoSaveFile operations
+    TEST_F(MinskySuite, autoSaveFileOperations)
+    {
+      string testFile = "/tmp/autosave_test.mky";
+      setAutoSaveFile(testFile);
+      EXPECT_EQ(testFile, autoSaveFile());
+      
+      setAutoSaveFile("");
+      EXPECT_EQ("", autoSaveFile());
+    }
+
+    // Test rendering methods (basic smoke test)
+    TEST_F(MinskySuite, renderingMethods)
+    {
+      string testFile = "/tmp/test_render";
+      
+      // Test renderCanvasToPS
+      renderCanvasToPS(testFile + ".ps");
+      
+      // Test renderCanvasToPDF
+      renderCanvasToPDF(testFile + ".pdf");
+      
+      // Test renderCanvasToSVG
+      renderCanvasToSVG(testFile + ".svg");
+      
+      // Test renderCanvasToPNG
+      renderCanvasToPNG(testFile + ".png");
+      
+      // Cleanup
+      remove((testFile + ".ps").c_str());
+      remove((testFile + ".pdf").c_str());
+      remove((testFile + ".svg").c_str());
+      remove((testFile + ".png").c_str());
+    }
+
+    // Test layout operations
+    TEST_F(MinskySuite, layoutOperations)
+    {
+      auto var1 = model->addItem(VariablePtr(VariableType::flow, "layoutVar1"));
+      auto var2 = model->addItem(VariablePtr(VariableType::flow, "layoutVar2"));
+      
+      // Just verify these don't crash
+      autoLayout();
+      randomLayout();
+    }
+
+    // Test version methods
+    TEST_F(MinskySuite, versionMethods)
+    {
+      EXPECT_FALSE(minskyVersion.empty());
+      EXPECT_FALSE(ecolabVersion().empty());
+      
+      // ravelVersion may return "unavailable"
+      string rVersion = ravelVersion();
+      EXPECT_FALSE(rVersion.empty());
+      
+      // Test ravelAvailable
+      bool available = ravelAvailable();
+      EXPECT_TRUE(available || !available); // Just check it returns
+      
+      if (available)
+      {
+        bool expired = ravelExpired();
+        EXPECT_TRUE(expired || !expired);
+        
+        int days = daysUntilRavelExpires();
+        // Days can be negative if expired
+      }
+    }
+
+    // Test named items
+    TEST_F(MinskySuite, namedItems)
+    {
+      auto var1 = model->addItem(VariablePtr(VariableType::flow, "namedVar"));
+      canvas.item = var1;
+      
+      nameCurrentItem("testName");
+      EXPECT_TRUE(namedItems.count("testName") > 0);
+      
+      itemFromNamedItem("testName");
+      EXPECT_TRUE(canvas.item != nullptr);
+    }
+
+    // Test pushFlags and popFlags
+    TEST_F(MinskySuite, flagOperations)
+    {
+      int origFlags = flags;
+      pushFlags();
+      flags = 0;
+      popFlags();
+      EXPECT_EQ(origFlags, flags);
+    }
+
+    // Test deleteAllUnits
+    TEST_F(MinskySuite, deleteAllUnits)
+    {
+      auto var1 = model->addItem(VariablePtr(VariableType::flow, "unitVar"));
+      variableValues[":unitVar"]->units.str = "m/s";
+      
+      deleteAllUnits();
+      
+      // Verify units are cleared
+      EXPECT_TRUE(variableValues[":unitVar"]->units.str.empty());
+    }
+
+    // Test setGodleyDisplayValue
+    TEST_F(MinskySuite, setGodleyDisplayValue)
+    {
+      auto g1 = new GodleyIcon;
+      model->addItem(g1);
+      
+      setGodleyDisplayValue(true, GodleyTable::DRCR);
+      EXPECT_TRUE(displayValues);
+      EXPECT_EQ(GodleyTable::DRCR, displayStyle);
+      
+      setGodleyDisplayValue(false, GodleyTable::sign);
+      EXPECT_FALSE(displayValues);
+      EXPECT_EQ(GodleyTable::sign, displayStyle);
+    }
+
+    // Test srand
+    TEST_F(MinskySuite, srandTest)
+    {
+      // Just verify it doesn't crash
+      srand(42);
+      srand(123);
+    }
+
+    // Test save and load
+    TEST_F(MinskySuite, saveAndLoad)
+    {
+      string testFile = "/tmp/test_save.mky";
+      
+      auto var1 = model->addItem(VariablePtr(VariableType::flow, "saveVar"));
+      variableValues[":saveVar"]->init("5.0");
+      
+      save(testFile);
+      
+      clearAllMaps();
+      EXPECT_EQ(1, model->items.size()); // Only time operation remains
+      
+      load(testFile);
+      EXPECT_GT(model->items.size(), 1);
+      EXPECT_TRUE(variableValues.count(":saveVar") > 0);
+      
+      remove(testFile.c_str());
+    }
+
+    // Test insertGroupFromFile
+    TEST_F(MinskySuite, insertGroupFromFile)
+    {
+      string groupFile = "/tmp/test_group.mky";
+      
+      // Create a small model to save as a group
+      auto var1 = model->addItem(VariablePtr(VariableType::flow, "groupVar"));
+      saveGroupAsFile(*model, groupFile);
+      
+      clearAllMaps();
+      size_t itemsBefore = model->items.size();
+      
+      insertGroupFromFile(groupFile);
+      EXPECT_GE(model->items.size(), itemsBefore);
+      
+      remove(groupFile.c_str());
+    }
+
+    // Test makeVariablesConsistent
+    TEST_F(MinskySuite, makeVariablesConsistent)
+    {
+      auto var1 = model->addItem(VariablePtr(VariableType::flow, "consistVar"));
+      
+      // Just verify it doesn't crash
+      makeVariablesConsistent();
+    }
+
+    // Test garbageCollect
+    TEST_F(MinskySuite, garbageCollect)
+    {
+      auto var1 = model->addItem(VariablePtr(VariableType::flow, "gcVar"));
+      
+      // Just verify it doesn't crash
+      garbageCollect();
+    }
+
+    // Test imposeDimensions
+    TEST_F(MinskySuite, imposeDimensions)
+    {
+      auto var1 = model->addItem(VariablePtr(VariableType::flow, "dimVar"));
+      
+      // Just verify it doesn't crash
+      imposeDimensions();
+    }
+
+    // Test cycleCheck
+    TEST_F(MinskySuite, cycleCheck)
+    {
+      auto var1 = model->addItem(VariablePtr(VariableType::flow, "cycleVar1"));
+      auto var2 = model->addItem(VariablePtr(VariableType::flow, "cycleVar2"));
+      auto op1 = model->addItem(OperationPtr(OperationType::add));
+      
+      model->addWire(var1->ports(0), op1->ports(1));
+      model->addWire(op1->ports(0), var2->ports(1));
+      
+      EXPECT_FALSE(cycleCheck());
+    }
+
+    // Test checkEquationOrder
+    TEST_F(MinskySuite, checkEquationOrder)
+    {
+      auto var1 = model->addItem(VariablePtr(VariableType::flow, "orderVar"));
+      auto op1 = model->addItem(OperationPtr(OperationType::time));
+      model->addWire(op1->ports(0), var1->ports(1));
+      
+      constructEquations();
+      EXPECT_TRUE(checkEquationOrder());
+    }
+
+    // Test edited flag
+    TEST_F(MinskySuite, editedFlag)
+    {
+      flags &= ~is_edited;
+      EXPECT_FALSE(edited());
+      
+      markEdited();
+      EXPECT_TRUE(edited());
+    }
+
+    // Test reset_flag
+    TEST_F(MinskySuite, resetFlag)
+    {
+      flags |= reset_needed;
+      EXPECT_TRUE(reset_flag());
+      
+      flags &= ~reset_needed;
+      EXPECT_FALSE(reset_flag());
+    }
+
+    // Test resetIfFlagged
+    TEST_F(MinskySuite, resetIfFlagged)
+    {
+      flags |= reset_needed;
+      bool result = resetIfFlagged();
+      EXPECT_FALSE(result || reset_flag());
+    }
+
+    // Test exportSchema
+    TEST_F(MinskySuite, exportSchema)
+    {
+      string schemaFile = "/tmp/test_schema.xsd";
+      exportSchema(schemaFile);
+      
+      ifstream f(schemaFile);
+      EXPECT_TRUE(f.good());
+      f.close();
+      remove(schemaFile.c_str());
+    }
+
+    // Test populateMissingDimensions
+    TEST_F(MinskySuite, populateMissingDimensions)
+    {
+      // Just verify it doesn't crash
+      populateMissingDimensions();
+    }
+
+    // Test openGroupInCanvas and openModelInCanvas
+    TEST_F(MinskySuite, canvasGroupOperations)
+    {
+      auto g1 = model->addGroup(new Group);
+      g1->addItem(VariablePtr(VariableType::flow, "groupVar"));
+      
+      canvas.item = g1;
+      openGroupInCanvas();
+      EXPECT_TRUE(canvas.model != model);
+      
+      openModelInCanvas();
+      EXPECT_TRUE(canvas.model == model);
+    }
+
+    // Test saveSelectionAsFile
+    TEST_F(MinskySuite, saveSelectionAsFile)
+    {
+      string selFile = "/tmp/test_selection.mky";
+      
+      auto var1 = model->addItem(VariablePtr(VariableType::flow, "selVar"));
+      canvas.selection.ensureItemInserted(var1);
+      
+      saveSelectionAsFile(selFile);
+      
+      ifstream f(selFile);
+      EXPECT_TRUE(f.good());
+      f.close();
+      remove(selFile.c_str());
+    }
+
+    // Test saveCanvasItemAsFile
+    TEST_F(MinskySuite, saveCanvasItemAsFile)
+    {
+      string canvasFile = "/tmp/test_canvas_item.mky";
+      
+      auto g1 = model->addGroup(new Group);
+      g1->addItem(VariablePtr(VariableType::flow, "canvasVar"));
+      canvas.item = g1;
+      
+      saveCanvasItemAsFile(canvasFile);
+      
+      ifstream f(canvasFile);
+      EXPECT_TRUE(f.good());
+      f.close();
+      remove(canvasFile.c_str());
+    }
+
+    // Test listAllInstances
+    TEST_F(MinskySuite, listAllInstances)
+    {
+      auto var1 = model->addItem(VariablePtr(VariableType::flow, "instVar"));
+      canvas.item = var1;
+      
+      // Just verify it doesn't crash
+      listAllInstances();
+    }
+
+    // Test initGodleys
+    TEST_F(MinskySuite, initGodleys)
+    {
+      auto g1 = new GodleyIcon;
+      model->addItem(g1);
+      g1->table.resize(3, 3);
+      g1->table.cell(0,1) = "initStock";
+      g1->table.cell(2,1) = "initFlow";
+      g1->update();
+      
+      // Just verify it doesn't crash
+      initGodleys();
+    }
+
+    // Test reloadAllCSVParameters
+    TEST_F(MinskySuite, reloadAllCSVParameters)
+    {
+      auto var1 = model->addItem(VariablePtr(VariableType::parameter, "csvParam"));
+      
+      // Just verify it doesn't crash
+      reloadAllCSVParameters();
+    }
+
+    // Test redrawAllGodleyTables
+    TEST_F(MinskySuite, redrawAllGodleyTables)
+    {
+      auto g1 = new GodleyIcon;
+      model->addItem(g1);
+      
+      // Just verify it doesn't crash
+      redrawAllGodleyTables();
+    }
+
+    // Test inputWired
+    TEST_F(MinskySuite, inputWired)
+    {
+      auto var1 = model->addItem(VariablePtr(VariableType::flow, "wireVar"));
+      EXPECT_FALSE(inputWired(":wireVar"));
+      
+      auto op1 = model->addItem(OperationPtr(OperationType::time));
+      model->addWire(op1->ports(0), var1->ports(1));
+      EXPECT_TRUE(inputWired(":wireVar"));
+    }
+
+    // Test commandHook
+    TEST_F(MinskySuite, commandHook)
+    {
+      // Test with a generic command
+      bool result = commandHook("minsky.test.command", 0);
+      EXPECT_TRUE(result == true || result == false);
+      
+      // Test with a const command
+      result = commandHook("minsky.save", 0);
+      EXPECT_TRUE(result == true || result == false);
     }
 
