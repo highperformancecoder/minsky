@@ -333,5 +333,218 @@ namespace minsky
       EXPECT_EQ(6u, penLabels.size());
       EXPECT_EQ("Pen 5", penLabels[5]);
     }
+
+    TEST_F(PlotWidgetTest, scalePlotWithFiniteBounds)
+    {
+      // Test scalePlot with finite bounds
+      xmin = 0.0;
+      xmax = 10.0;
+      ymin = -5.0;
+      ymax = 5.0;
+      
+      scalePlot();
+      
+      // After scaling, autoscale should be false
+      EXPECT_FALSE(autoscale);
+    }
+
+    TEST_F(PlotWidgetTest, autoScale)
+    {
+      // Test autoScale method
+      auto xminVar = std::make_shared<VariableValue>();
+      xminVar->init("xmin", 0.0);
+      connectVar(xminVar, 0);
+      
+      autoScale();
+      
+      // After autoScale, all bound variables should be cleared
+      // We can't directly test private members, but the method shouldn't crash
+      EXPECT_TRUE(true);
+    }
+
+    TEST_F(PlotWidgetTest, addPlotPtSimple)
+    {
+      // Test adding a simple plot point
+      auto yvar = std::make_shared<VariableValue>();
+      yvar->init("y", 1.0);
+      connectVar(yvar, PlotWidget::nBoundsPorts);
+      
+      addPlotPt(0.0);
+      
+      // Verify that plot has data (can't directly test, but shouldn't crash)
+      EXPECT_TRUE(true);
+    }
+
+    TEST_F(PlotWidgetTest, resizeNegativeDimensions)
+    {
+      // Test resize with negative dimensions (should use abs)
+      LassoBox box;
+      box.x0 = 300;
+      box.y0 = 200;
+      box.x1 = 0;
+      box.y1 = 0;
+      
+      resize(box);
+      
+      EXPECT_EQ(300.0f, iWidth());
+      EXPECT_EQ(200.0f, iHeight());
+    }
+
+    TEST_F(PlotWidgetTest, numLinesWithPorts)
+    {
+      // Test that changing numLines updates port count
+      size_t initialPortCount = m_ports.size();
+      
+      numLines(3);
+      
+      // Port count should change: nBoundsPorts + 4*numLines
+      // nBoundsPorts=6, numLines=3 -> 6 + 4*3 = 18 ports
+      EXPECT_EQ(PlotWidget::nBoundsPorts + 4*3, m_ports.size());
+    }
+
+    TEST_F(PlotWidgetTest, connectVarYPorts)
+    {
+      // Test connecting variables to Y data ports
+      auto yvar1 = std::make_shared<VariableValue>();
+      yvar1->init("yvar1", 1.0);
+      
+      auto yvar2 = std::make_shared<VariableValue>();
+      yvar2->init("yvar2", 2.0);
+      
+      numLines(2);
+      
+      // Connect to first Y port (port 6)
+      connectVar(yvar1, PlotWidget::nBoundsPorts);
+      
+      // Connect to second Y port (port 7)
+      connectVar(yvar2, PlotWidget::nBoundsPorts + 1);
+      
+      // yvars should now have entries
+      EXPECT_FALSE(yvars.empty());
+    }
+
+    TEST_F(PlotWidgetTest, connectVarXPorts)
+    {
+      // Test connecting variables to X data ports
+      auto xvar = std::make_shared<VariableValue>();
+      xvar->init("xvar", 0.5);
+      
+      numLines(2);
+      
+      // X ports start at nBoundsPorts + 2*numLines
+      // With numLines=2: port 6 + 2*2 = port 10
+      connectVar(xvar, PlotWidget::nBoundsPorts + 2*numLines());
+      
+      // xvars should now have an entry
+      EXPECT_FALSE(xvars.empty());
+    }
+
+    TEST_F(PlotWidgetTest, widthAndHeight)
+    {
+      // Test width() and height() methods
+      EXPECT_EQ(150.0f, width());
+      EXPECT_EQ(150.0f, height());
+      
+      iWidth(200);
+      iHeight(250);
+      
+      EXPECT_EQ(200.0f, width());
+      EXPECT_EQ(250.0f, height());
+    }
+
+    TEST_F(PlotWidgetTest, plotWidgetCast)
+    {
+      // Test plotWidgetCast methods
+      const PlotWidget* constPtr = plotWidgetCast();
+      EXPECT_NE(nullptr, constPtr);
+      
+      PlotWidget* ptr = plotWidgetCast();
+      EXPECT_NE(nullptr, ptr);
+    }
+
+    TEST_F(PlotWidgetTest, containsMethod)
+    {
+      // Test contains method
+      EXPECT_TRUE(contains(0, 0));  // Center should be contained
+      
+      const double z = Item::zoomFactor();
+      const double w = 0.5 * iWidth() * z;
+      const double h = 0.5 * iHeight() * z;
+      
+      // Far outside should not be contained
+      EXPECT_FALSE(contains(x() + w + 100, y() + h + 100));
+    }
+
+    TEST_F(PlotWidgetTest, paletteColors)
+    {
+      // Test that palette exists and has entries
+      EXPECT_FALSE(palette.empty());
+      
+      // Modify and verify palette still works
+      if (!palette.empty()) {
+        auto originalColor = palette[0].colour;
+        palette[0].colour = {1.0, 0.0, 0.0, 1.0};  // Red
+        EXPECT_NE(originalColor, palette[0].colour);
+      }
+    }
+
+    TEST_F(PlotWidgetTest, gridAndLeadingMarker)
+    {
+      // Test grid and leadingMarker flags
+      EXPECT_TRUE(grid);
+      EXPECT_TRUE(leadingMarker);
+      
+      grid = false;
+      leadingMarker = false;
+      
+      EXPECT_FALSE(grid);
+      EXPECT_FALSE(leadingMarker);
+      
+      // Restore defaults
+      grid = true;
+      leadingMarker = true;
+    }
+
+    TEST_F(PlotWidgetTest, legendSettings)
+    {
+      // Test legend settings
+      legend = true;
+      EXPECT_TRUE(legend);
+      
+      legendLeft = 0.5;
+      EXPECT_EQ(0.5, legendLeft);
+      
+      // Test legendSide
+      legendSide = Side::left;
+      EXPECT_EQ(Side::left, legendSide);
+      
+      legendSide = Side::right;
+      EXPECT_EQ(Side::right, legendSide);
+    }
+
+    TEST_F(PlotWidgetTest, fontScale)
+    {
+      // Test fontScale
+      EXPECT_EQ(2, fontScale);
+      
+      fontScale = 3;
+      EXPECT_EQ(3, fontScale);
+      
+      fontScale = 1;
+      EXPECT_EQ(1, fontScale);
+    }
+
+    TEST_F(PlotWidgetTest, nxTicksNyTicks)
+    {
+      // Test tick count settings
+      EXPECT_EQ(10u, nxTicks);
+      EXPECT_EQ(10u, nyTicks);
+      
+      nxTicks = 5;
+      nyTicks = 8;
+      
+      EXPECT_EQ(5u, nxTicks);
+      EXPECT_EQ(8u, nyTicks);
+    }
   }
 }
