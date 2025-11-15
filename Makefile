@@ -33,7 +33,9 @@ MAKEOVERRIDES+=DEBUG=$(DEBUG)
 # some Linux distros
 ifeq ($(HAVE_CLANG),1)
 ifndef MXE
+ifndef GCC
 MAKEOVERRIDES+=CPLUSPLUS="clang++ -std=c++20"
+endif
 endif
 endif
 

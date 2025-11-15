@@ -20,6 +20,7 @@
 #include "lasso.h"
 #include "plotWidget.h"
 #include "plot.xcd"
+#include "CSVTools.xcd"
 #include "tensorInterface.xcd"
 #include "tensorVal.xcd"
 #include "minsky_epilogue.h"
