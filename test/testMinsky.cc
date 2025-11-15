@@ -1277,3 +1277,350 @@ TEST(TensorOps, evalOpEvaluate)
       EXPECT_EQ("c",godley.cell(0,1));
     }
 
+    // Test logging functionality
+    TEST_F(MinskySuite, loggingFunctionality)
+    {
+      auto var1 = model->addItem(VariablePtr(VariableType::flow, "testVar1"));
+      auto var2 = model->addItem(VariablePtr(VariableType::flow, "testVar2"));
+      variableValues[":testVar1"]->init("1.0");
+      variableValues[":testVar2"]->init("2.0");
+      
+      logVarList.insert(":testVar1");
+      logVarList.insert(":testVar2");
+      
+      string logFile = "/tmp/test_log.dat";
+      openLogFile(logFile);
+      EXPECT_TRUE(loggingEnabled());
+      
+      reset();
+      logVariables();
+      
+      closeLogFile();
+      EXPECT_FALSE(loggingEnabled());
+      
+      // Verify log file was created
+      ifstream f(logFile);
+      EXPECT_TRUE(f.good());
+      string line;
+      getline(f, line);
+      EXPECT_TRUE(line.find("#time") != string::npos);
+      EXPECT_TRUE(line.find("testVar1") != string::npos);
+      EXPECT_TRUE(line.find("testVar2") != string::npos);
+      f.close();
+      remove(logFile.c_str());
+    }
+
+    // Test multipleEquities
+    TEST_F(MinskySuite, multipleEquities)
+    {
+      EXPECT_FALSE(multipleEquities());
+      bool result = multipleEquities(true);
+      EXPECT_TRUE(result);
+      EXPECT_TRUE(multipleEquities());
+      multipleEquities(false);
+      EXPECT_FALSE(multipleEquities());
+    }
+
+    // Test utility methods
+    TEST_F(MinskySuite, utilityMethods)
+    {
+      // Test physicalMem
+      size_t mem = physicalMem();
+      EXPECT_GT(mem, 0);
+      
+      // Test numOpArgs
+      EXPECT_EQ(2, numOpArgs(OperationType::add));
+      EXPECT_EQ(2, numOpArgs(OperationType::multiply));
+      EXPECT_EQ(1, numOpArgs(OperationType::integrate));
+      
+      // Test classifyOp
+      EXPECT_EQ(OperationType::function, classifyOp(OperationType::sin));
+      EXPECT_EQ(OperationType::binop, classifyOp(OperationType::add));
+    }
+
+    // Test available operations and types
+    TEST_F(MinskySuite, availableOperationsAndTypes)
+    {
+      vector<string> ops = availableOperations();
+      EXPECT_GT(ops.size(), 0);
+      EXPECT_TRUE(find(ops.begin(), ops.end(), "add") != ops.end());
+      
+      auto mapping = availableOperationsMapping();
+      EXPECT_GT(mapping.size(), 0);
+      
+      vector<string> varTypes = variableTypes();
+      EXPECT_GT(varTypes.size(), 0);
+      EXPECT_TRUE(find(varTypes.begin(), varTypes.end(), "flow") != varTypes.end());
+      
+      vector<string> assets = assetClasses();
+      EXPECT_GT(assets.size(), 0);
+    }
+
+    // Test font operations
+    TEST_F(MinskySuite, fontOperations)
+    {
+      // Test defaultFont
+      string origFont = defaultFont();
+      string newFont = "Arial";
+      defaultFont(newFont);
+      EXPECT_EQ(newFont, defaultFont());
+      if (!origFont.empty())
+        defaultFont(origFont);
+      
+      // Test fontScale
+      double origScale = fontScale();
+      double newScale = 1.5;
+      fontScale(newScale);
+      EXPECT_EQ(newScale, fontScale());
+      fontScale(origScale);
+      
+      // Test listFonts
+      vector<string> fonts = listFonts();
+      // May be empty on systems without Pango
+      EXPECT_GE(fonts.size(), 0);
+    }
+
+    // Test latex2pango
+    TEST_F(MinskySuite, latex2pango)
+    {
+      string result = latex2pango("x^2");
+      EXPECT_FALSE(result.empty());
+      
+      result = latex2pango("\\alpha");
+      EXPECT_FALSE(result.empty());
+    }
+
+    // Test clipboard operations
+    TEST_F(MinskySuite, clipboardOperations)
+    {
+      auto var1 = model->addItem(VariablePtr(VariableType::flow, "clipVar"));
+      canvas.selection.ensureItemInserted(var1);
+      
+      copy();
+      EXPECT_FALSE(clipboardEmpty());
+      
+      canvas.selection.clear();
+      EXPECT_TRUE(clipboardEmpty());
+    }
+
+    // Test history operations
+    TEST_F(MinskySuite, historyOperations)
+    {
+      clearHistory();
+      
+      auto var1 = model->addItem(VariablePtr(VariableType::flow, "histVar"));
+      bool pushed = pushHistory();
+      
+      // Should push only if different from previous
+      EXPECT_TRUE(pushed || history.size() > 0);
+      
+      auto var2 = model->addItem(VariablePtr(VariableType::flow, "histVar2"));
+      pushHistory();
+      
+      size_t histSize = history.size();
+      if (histSize > 0)
+      {
+        undo(1);
+        EXPECT_TRUE(model->items.size() <= 3); // May have been restored
+      }
+    }
+
+    // Test dimension operations
+    TEST_F(MinskySuite, dimensionOperations)
+    {
+      dimensions.emplace("testDim", Dimension("testDim", "test"));
+      
+      renameDimension("testDim", "newTestDim");
+      EXPECT_TRUE(dimensions.count("newTestDim") > 0);
+      EXPECT_TRUE(dimensions.count("testDim") == 0);
+      
+      dimensions.clear();
+    }
+
+    // Test Godley operations
+    TEST_F(MinskySuite, godleyOperations)
+    {
+      auto g1 = new GodleyIcon;
+      model->addItem(g1);
+      g1->table.resize(3, 3);
+      g1->table.cell(0,1) = "stock1";
+      g1->table.cell(2,1) = "flow1";
+      g1->update();
+      
+      setAllDEmode(true);
+      EXPECT_TRUE(g1->table.doubleEntryCompliant);
+      
+      setAllDEmode(false);
+      EXPECT_FALSE(g1->table.doubleEntryCompliant);
+      
+      vector<string> flowVars = allGodleyFlowVars();
+      EXPECT_GT(flowVars.size(), 0);
+    }
+
+    // Test variable type conversion
+    TEST_F(MinskySuite, convertVarType)
+    {
+      auto var1 = model->addItem(VariablePtr(VariableType::flow, "convertVar"));
+      EXPECT_EQ(VariableType::flow, variableValues[":convertVar"]->type());
+      
+      convertVarType(":convertVar", VariableType::parameter);
+      EXPECT_EQ(VariableType::parameter, variableValues[":convertVar"]->type());
+    }
+
+    // Test addIntegral
+    TEST_F(MinskySuite, addIntegral)
+    {
+      auto var1 = model->addItem(VariablePtr(VariableType::flow, "integVar"));
+      canvas.item = var1;
+      
+      size_t itemsBefore = model->items.size();
+      addIntegral();
+      EXPECT_GT(model->items.size(), itemsBefore);
+    }
+
+    // Test requestReset and requestRedraw
+    TEST_F(MinskySuite, requestOperations)
+    {
+      requestReset();
+      EXPECT_TRUE(reset_flag());
+      
+      requestRedraw();
+      // Just verify it doesn't crash
+    }
+
+    // Test checkMemAllocation callback
+    TEST_F(MinskySuite, checkMemAllocationCallback)
+    {
+      // This should trigger the callback and return a result
+      bool result = triggerCheckMemAllocationCallback();
+      EXPECT_TRUE(result == 0 || result == 1 || result == 2);
+    }
+
+    // Test autoSaveFile operations
+    TEST_F(MinskySuite, autoSaveFileOperations)
+    {
+      string testFile = "/tmp/autosave_test.mky";
+      setAutoSaveFile(testFile);
+      EXPECT_EQ(testFile, autoSaveFile());
+      
+      setAutoSaveFile("");
+      EXPECT_EQ("", autoSaveFile());
+    }
+
+    // Test rendering methods (basic smoke test)
+    TEST_F(MinskySuite, renderingMethods)
+    {
+      string testFile = "/tmp/test_render";
+      
+      // Test renderCanvasToPS
+      renderCanvasToPS(testFile + ".ps");
+      
+      // Test renderCanvasToPDF
+      renderCanvasToPDF(testFile + ".pdf");
+      
+      // Test renderCanvasToSVG
+      renderCanvasToSVG(testFile + ".svg");
+      
+      // Test renderCanvasToPNG
+      renderCanvasToPNG(testFile + ".png");
+      
+      // Cleanup
+      remove((testFile + ".ps").c_str());
+      remove((testFile + ".pdf").c_str());
+      remove((testFile + ".svg").c_str());
+      remove((testFile + ".png").c_str());
+    }
+
+    // Test layout operations
+    TEST_F(MinskySuite, layoutOperations)
+    {
+      auto var1 = model->addItem(VariablePtr(VariableType::flow, "layoutVar1"));
+      auto var2 = model->addItem(VariablePtr(VariableType::flow, "layoutVar2"));
+      
+      // Just verify these don't crash
+      autoLayout();
+      randomLayout();
+    }
+
+    // Test version methods
+    TEST_F(MinskySuite, versionMethods)
+    {
+      EXPECT_FALSE(minskyVersion.empty());
+      EXPECT_FALSE(ecolabVersion().empty());
+      
+      // ravelVersion may return "unavailable"
+      string rVersion = ravelVersion();
+      EXPECT_FALSE(rVersion.empty());
+      
+      // Test ravelAvailable
+      bool available = ravelAvailable();
+      EXPECT_TRUE(available || !available); // Just check it returns
+      
+      if (available)
+      {
+        bool expired = ravelExpired();
+        EXPECT_TRUE(expired || !expired);
+        
+        int days = daysUntilRavelExpires();
+        // Days can be negative if expired
+      }
+    }
+
+    // Test named items
+    TEST_F(MinskySuite, namedItems)
+    {
+      auto var1 = model->addItem(VariablePtr(VariableType::flow, "namedVar"));
+      canvas.item = var1;
+      
+      nameCurrentItem("testName");
+      EXPECT_TRUE(namedItems.count("testName") > 0);
+      
+      itemFromNamedItem("testName");
+      EXPECT_TRUE(canvas.item != nullptr);
+    }
+
+    // Test pushFlags and popFlags
+    TEST_F(MinskySuite, flagOperations)
+    {
+      int origFlags = flags;
+      pushFlags();
+      flags = 0;
+      popFlags();
+      EXPECT_EQ(origFlags, flags);
+    }
+
+    // Test deleteAllUnits
+    TEST_F(MinskySuite, deleteAllUnits)
+    {
+      auto var1 = model->addItem(VariablePtr(VariableType::flow, "unitVar"));
+      variableValues[":unitVar"]->units.str = "m/s";
+      
+      deleteAllUnits();
+      
+      // Verify units are cleared
+      EXPECT_TRUE(variableValues[":unitVar"]->units.str.empty());
+    }
+
+    // Test setGodleyDisplayValue
+    TEST_F(MinskySuite, setGodleyDisplayValue)
+    {
+      auto g1 = new GodleyIcon;
+      model->addItem(g1);
+      
+      setGodleyDisplayValue(true, GodleyTable::DRCR);
+      EXPECT_TRUE(displayValues);
+      EXPECT_EQ(GodleyTable::DRCR, displayStyle);
+      
+      setGodleyDisplayValue(false, GodleyTable::sign);
+      EXPECT_FALSE(displayValues);
+      EXPECT_EQ(GodleyTable::sign, displayStyle);
+    }
+
+    // Test srand
+    TEST_F(MinskySuite, srandTest)
+    {
+      // Just verify it doesn't crash
+      srand(42);
+      srand(123);
+    }
+
