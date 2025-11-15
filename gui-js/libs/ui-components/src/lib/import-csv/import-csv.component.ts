@@ -6,7 +6,6 @@ import {
   CSVDialog,
   dateTimeFormats,
   events,
-  importCSVvariableName,
   VariableBase,
   VariableValue,
   Zoomable,
@@ -18,7 +17,6 @@ import { NgStyle } from '@angular/common';
 import { MatOptionModule } from '@angular/material/core';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
-import JSON5 from 'json5';
 
 enum ColType {
   axis = "axis",
