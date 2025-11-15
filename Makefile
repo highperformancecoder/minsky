@@ -444,13 +444,13 @@ ifeq ($(OS),Darwin)
 	cp pyminsky.so gui-js/build/
 else
   ifndef MXE
-	$(LINK) -shared -o $@ $^ libminsky.a $(RPATH) $(LIBS)
+	$(LINK) -shared $(FLAGS) -o $@ $^ libminsky.a $(RPATH) $(LIBS)
   endif
 endif
 
 # used to find undefined symbols in pyminsky.so
 pyminsky-test: test/testmain.o pyminsky.o libminsky.a
-	$(LINK) -o $@ $^ $(LIBS) -lpthread -ltirpc
+	$(LINK) $(FLAGS) -o $@ $^ $(LIBS) -lpthread -ltirpc
 
 RESTService/dummy-addon.node: dummy-addon.o $(NODE_API)
 ifdef MXE
@@ -547,14 +547,15 @@ dist:
 js-dist:
 	sh makeJsDist.sh
 
+LCOV_FLAGS=--no-external --ignore-errors gcov,mismatch,wrap,version
 lcov:
 	$(MAKE) clean
-	-$(MAKE) GCC=1 GCOV=1 tests
-	lcov -i -c -d . --no-external -o lcovi.info
+	-$(MAKE) GCC=1 GCOV=1 tests python3
+	lcov -i -c -d . $(LCOV_FLAGS) -o lcovi.info
 # ensure schema export code is exercised
 	-$(MAKE) GCOV=1 minsky.xsd
 	-$(MAKE) GCOV=1 sure
-	lcov -c -d .  --no-external -o lcovt.info
+	lcov -c -d .  $(LCOV_FLAGS) -o lcovt.info
 	lcov -a lcovi.info -a lcovt.info -o lcov.info
 	lcov -r lcov.info */ecolab/* "*.cd" "*.xcd" "*.rcd" "*.tcd" -o lcovr.info 
 	genhtml -o coverage lcovr.info
