@@ -81,8 +81,9 @@ void CSVDialog::loadFileFromName(const std::string& fname)
   initialLines.clear();
   for (size_t i=0; i<numInitialLines && is; ++i)
     {
-      initialLines.emplace_back();
-      getline(is, initialLines.back());
+      string buf;
+      if (getline(is, buf))
+        initialLines.emplace_back(std::move(buf));
       // chomp any final '\r' character (DOS files)
       if (!initialLines.back().empty() && initialLines.back().back()=='\r')
         initialLines.back().erase(initialLines.back().end()-1);
