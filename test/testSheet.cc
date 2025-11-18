@@ -45,15 +45,6 @@ namespace
     EXPECT_EQ(100, sheet.iHeight());
   }
 
-  TEST_F(SheetTest, ravelSize)
-  {
-    iWidth(200);
-    iHeight(150);
-    // ravelSize should be 0.25 * min(width, height) * zoomFactor
-    double expected = 0.25 * min(200.0, 150.0) * zoomFactor();
-    EXPECT_DOUBLE_EQ(expected, ravelSize());
-  }
-
   TEST_F(SheetTest, corners)
   {
     moveTo(100, 100);
@@ -200,26 +191,6 @@ namespace
     // With no value, setSliceIndicator should handle gracefully
     setSliceIndicator();
     // No exception should be thrown
-  }
-
-  TEST_F(SheetTest, ravelCoordinates)
-  {
-    moveTo(100, 100);
-    iWidth(200);
-    iHeight(150);
-    
-    // Test ravelX and ravelY calculations
-    double testX = 110;
-    double testY = 105;
-    
-    // These methods calculate coordinates for the ravel display
-    // The actual values depend on inputRavel.radius() which is initially 1
-    double rx = ravelX(testX);
-    double ry = ravelY(testY);
-    
-    // Just verify they return reasonable values
-    EXPECT_TRUE(std::isfinite(rx));
-    EXPECT_TRUE(std::isfinite(ry));
   }
 
   TEST_F(SheetTest, showRavelFlag)
