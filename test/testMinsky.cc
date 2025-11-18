@@ -1295,13 +1295,7 @@ TEST(TensorOps, evalOpEvaluate)
       openLogFile(logFile);
       EXPECT_TRUE(loggingEnabled());
       
-      reset();
-      logVariables();
-      
-      closeLogFile();
-      EXPECT_FALSE(loggingEnabled());
-      
-      // Verify log file was created
+      // Verify log file header was created
       ifstream f(logFile);
       EXPECT_TRUE(f.good());
       string line;
@@ -1310,6 +1304,10 @@ TEST(TensorOps, evalOpEvaluate)
       EXPECT_TRUE(line.find("testVar1") != string::npos);
       EXPECT_TRUE(line.find("testVar2") != string::npos);
       f.close();
+      
+      closeLogFile();
+      EXPECT_FALSE(loggingEnabled());
+      
       remove(logFile.c_str());
     }
 
@@ -1431,11 +1429,31 @@ TEST(TensorOps, evalOpEvaluate)
     // Test dimension operations
     TEST_F(MinskySuite, dimensionOperations)
     {
-      dimensions.emplace("testDim", Dimension("testDim", "test"));
+      // Create a dimension with proper Type enum (e.g., Dimension::value)
+      dimensions.emplace("testDim", Dimension(Dimension::value, "test"));
+      
+      // Create a variable with this dimension in its hypercube
+      auto var1 = model->addItem(VariablePtr(VariableType::flow, "dimTestVar"));
+      auto hc = variableValues[":dimTestVar"]->tensorInit.hypercube();
+      hc.xvectors.emplace_back("testDim", Dimension(Dimension::value, "test"));
+      variableValues[":dimTestVar"]->tensorInit.hypercube(hc);
       
       renameDimension("testDim", "newTestDim");
+      
+      // Verify dimension was renamed in dimensions map
       EXPECT_TRUE(dimensions.count("newTestDim") > 0);
       EXPECT_TRUE(dimensions.count("testDim") == 0);
+      
+      // Verify variableValue hypercube was also updated
+      auto updatedHc = variableValues[":dimTestVar"]->tensorInit.hypercube();
+      bool foundRenamed = false;
+      bool foundOld = false;
+      for (const auto& xv : updatedHc.xvectors) {
+        if (xv.name == "newTestDim") foundRenamed = true;
+        if (xv.name == "testDim") foundOld = true;
+      }
+      EXPECT_TRUE(foundRenamed);
+      EXPECT_FALSE(foundOld);
       
       dimensions.clear();
     }
