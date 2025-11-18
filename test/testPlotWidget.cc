@@ -191,7 +191,8 @@ namespace minsky
     {
       // Test disconnectAllVars clears all variable connections
       auto var = std::make_shared<VariableValue>();
-      var->init("test", 1.0);
+      var->name = "test";
+      var->init("1.0");
       
       connectVar(var, PlotWidget::nBoundsPorts);  // Connect to first y port
       EXPECT_FALSE(yvars.empty());
@@ -208,9 +209,11 @@ namespace minsky
       
       // Add some variables to yvars
       auto var1 = std::make_shared<VariableValue>();
-      var1->init("var1", 1.0);
+      var1->name = "var1";
+      var1->init("1.0");
       auto var2 = std::make_shared<VariableValue>();
-      var2->init("var2", 2.0);
+      var2->name = "var2";
+      var2->init("2.0");
       
       connectVar(var1, PlotWidget::nBoundsPorts);  // port 6, first y port
       connectVar(var2, PlotWidget::nBoundsPorts);  // port 6, first y port
@@ -225,27 +228,33 @@ namespace minsky
     {
       // Test connecting variables to bound ports
       auto xminVar = std::make_shared<VariableValue>();
-      xminVar->init("xmin", 0.0);
+      xminVar->name = "xmin";
+      xminVar->init("0.0");
       connectVar(xminVar, 0);
       
       auto xmaxVar = std::make_shared<VariableValue>();
-      xmaxVar->init("xmax", 10.0);
+      xmaxVar->name = "xmax";
+      xmaxVar->init("10.0");
       connectVar(xmaxVar, 1);
       
       auto yminVar = std::make_shared<VariableValue>();
-      yminVar->init("ymin", -1.0);
+      yminVar->name = "ymin";
+      yminVar->init("-1.0");
       connectVar(yminVar, 2);
       
       auto ymaxVar = std::make_shared<VariableValue>();
-      ymaxVar->init("ymax", 1.0);
+      ymaxVar->name = "ymax";
+      ymaxVar->init("1.0");
       connectVar(ymaxVar, 3);
       
       auto y1minVar = std::make_shared<VariableValue>();
-      y1minVar->init("y1min", -2.0);
+      y1minVar->name = "y1min";
+      y1minVar->init("-2.0");
       connectVar(y1minVar, 4);
       
       auto y1maxVar = std::make_shared<VariableValue>();
-      y1maxVar->init("y1max", 2.0);
+      y1maxVar->name = "y1max";
+      y1maxVar->init("2.0");
       connectVar(y1maxVar, 5);
       
       // Verify the variables are connected (can't directly test private members, 
@@ -352,7 +361,8 @@ namespace minsky
     {
       // Test autoScale method
       auto xminVar = std::make_shared<VariableValue>();
-      xminVar->init("xmin", 0.0);
+      xminVar->name = "xmin";
+      xminVar->init("0.0");
       connectVar(xminVar, 0);
       
       autoScale();
@@ -366,7 +376,8 @@ namespace minsky
     {
       // Test adding a simple plot point
       auto yvar = std::make_shared<VariableValue>();
-      yvar->init("y", 1.0);
+      yvar->name = "y";
+      yvar->init("1.0");
       connectVar(yvar, PlotWidget::nBoundsPorts);
       
       addPlotPt(0.0);
@@ -406,10 +417,12 @@ namespace minsky
     {
       // Test connecting variables to Y data ports
       auto yvar1 = std::make_shared<VariableValue>();
-      yvar1->init("yvar1", 1.0);
+      yvar1->name = "yvar1";
+      yvar1->init("1.0");
       
       auto yvar2 = std::make_shared<VariableValue>();
-      yvar2->init("yvar2", 2.0);
+      yvar2->name = "yvar2";
+      yvar2->init("2.0");
       
       numLines(2);
       
@@ -427,7 +440,8 @@ namespace minsky
     {
       // Test connecting variables to X data ports
       auto xvar = std::make_shared<VariableValue>();
-      xvar->init("xvar", 0.5);
+      xvar->name = "xvar";
+      xvar->init("0.5");
       
       numLines(2);
       
@@ -571,7 +585,8 @@ namespace minsky
     {
       // Test that updateIcon delegates to addPlotPt
       auto yvar = std::make_shared<VariableValue>();
-      yvar->init("y", 1.0);
+      yvar->name = "y";
+      yvar->init("1.0");
       connectVar(yvar, PlotWidget::nBoundsPorts);
       
       updateIcon(1.0);
@@ -688,10 +703,12 @@ namespace minsky
       numLines(2);
       
       auto yvar1 = std::make_shared<VariableValue>();
-      yvar1->init("yvar1", 1.0);
+      yvar1->name = "yvar1";
+      yvar1->init("1.0");
       
       auto yvar2 = std::make_shared<VariableValue>();
-      yvar2->init("yvar2", 2.0);
+      yvar2->name = "yvar2";
+      yvar2->init("2.0");
       
       // Connect both to the same port
       connectVar(yvar1, PlotWidget::nBoundsPorts);
