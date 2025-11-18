@@ -11,8 +11,7 @@ import {
   Utility,
 } from '@minsky/shared';
 import { StoreManager } from './StoreManager';
-import { BrowserWindow, dialog, Menu, OpenDialogOptions, OpenDialogReturnValue, SaveDialogOptions,
-         SaveDialogReturnValue, screen } from 'electron';
+import { BrowserWindow, dialog, Menu, OpenDialogOptions, SaveDialogOptions, screen } from 'electron';
 import log from 'electron-log';
 import os from 'os';
 import { join, dirname } from 'path';

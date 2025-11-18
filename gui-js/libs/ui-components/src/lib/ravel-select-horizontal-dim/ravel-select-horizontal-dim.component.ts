@@ -1,13 +1,11 @@
-import { ChangeDetectorRef, Component, OnInit, SimpleChanges } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormsModule, } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
-import { events, Ravel} from '@minsky/shared';
+import { Ravel} from '@minsky/shared';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
-import { OpenDialogOptions, SaveDialogOptions } from 'electron';
-import JSON5 from 'json5';
 
 @Component({
     selector: 'ravel-select-horizontal-dim',
