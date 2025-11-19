@@ -519,10 +519,6 @@ namespace minsky
     void nameCurrentItem(const std::string& name) {namedItems[name]=canvas.item;}
     void itemFromNamedItem(const std::string& name) {canvas.item=namedItems[name].lock();}
 
-    /// trigger checkMem callback for testing purposes
-    bool triggerCheckMemAllocationCallback() const
-    {return checkMemAllocation(std::numeric_limits<size_t>::max());}
-
     VariablePane variablePane;
 
     /// Used to implement a pause until return pressed for attaching debugger purposes

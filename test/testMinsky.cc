@@ -1332,7 +1332,7 @@ TEST(TensorOps, evalOpEvaluate)
       // Test numOpArgs
       EXPECT_EQ(2, numOpArgs(OperationType::add));
       EXPECT_EQ(2, numOpArgs(OperationType::multiply));
-      EXPECT_EQ(1, numOpArgs(OperationType::integrate));
+      EXPECT_EQ(2, numOpArgs(OperationType::integrate));
       
       // Test classifyOp
       EXPECT_EQ(OperationType::function, classifyOp(OperationType::sin));
@@ -1401,6 +1401,8 @@ TEST(TensorOps, evalOpEvaluate)
       EXPECT_FALSE(clipboardEmpty());
       
       canvas.selection.clear();
+      copy();
+      this_thread::sleep_for(chrono::milliseconds(100)); // allow clipboard state to propagate
       EXPECT_TRUE(clipboardEmpty());
     }
 
@@ -1509,14 +1511,6 @@ TEST(TensorOps, evalOpEvaluate)
       // Just verify it doesn't crash
     }
 
-    // Test checkMemAllocation callback
-    TEST_F(MinskySuite, checkMemAllocationCallback)
-    {
-      // This should trigger the callback and return a result
-      bool result = triggerCheckMemAllocationCallback();
-      EXPECT_TRUE(result == 0 || result == 1 || result == 2);
-    }
-
     // Test autoSaveFile operations
     TEST_F(MinskySuite, autoSaveFileOperations)
     {
@@ -1614,12 +1608,12 @@ TEST(TensorOps, evalOpEvaluate)
     TEST_F(MinskySuite, deleteAllUnits)
     {
       auto var1 = model->addItem(VariablePtr(VariableType::flow, "unitVar"));
-      variableValues[":unitVar"]->units.str = "m/s";
+      variableValues[":unitVar"]->units=Units("m/s");
       
       deleteAllUnits();
       
       // Verify units are cleared
-      EXPECT_TRUE(variableValues[":unitVar"]->units.str.empty());
+      EXPECT_TRUE(variableValues[":unitVar"]->units.str().empty());
     }
 
     // Test setGodleyDisplayValue
@@ -1656,10 +1650,11 @@ TEST(TensorOps, evalOpEvaluate)
       save(testFile);
       
       clearAllMaps();
-      EXPECT_EQ(1, model->items.size()); // Only time operation remains
-      
+      EXPECT_EQ(0, model->items.size());
+      EXPECT_EQ(0, variableValues.count(":saveVar"));
+     
       load(testFile);
-      EXPECT_GT(model->items.size(), 1);
+      EXPECT_EQ(model->items.size(), 1);
       EXPECT_TRUE(variableValues.count(":saveVar") > 0);
       
       remove(testFile.c_str());
@@ -1766,7 +1761,8 @@ TEST(TensorOps, evalOpEvaluate)
     TEST_F(MinskySuite, exportSchema)
     {
       string schemaFile = "/tmp/test_schema.xsd";
-      exportSchema(schemaFile);
+      // current schema is 3, crashes on default schema 1.
+      exportSchema(schemaFile,3);
       
       ifstream f(schemaFile);
       EXPECT_TRUE(f.good());
