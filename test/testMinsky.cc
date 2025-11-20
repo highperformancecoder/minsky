@@ -26,7 +26,9 @@
 #include <fstream>
 #include <cstdio>
 #include <algorithm>
+#include <boost/filesystem.hpp>
 using namespace minsky;
+using namespace boost::filesystem;
 
 namespace
 {
@@ -1291,7 +1293,7 @@ TEST(TensorOps, evalOpEvaluate)
       logVarList.insert(":testVar1");
       logVarList.insert(":testVar2");
       
-      string logFile = "/tmp/test_log.dat";
+      string logFile = (temp_directory_path() / unique_path("test_log_%%%%-%%%%.dat")).string();
       openLogFile(logFile);
       EXPECT_TRUE(loggingEnabled());
       
@@ -1443,8 +1445,8 @@ TEST(TensorOps, evalOpEvaluate)
       renameDimension("testDim", "newTestDim");
       
       // Verify dimension was renamed in dimensions map
-      EXPECT_TRUE(dimensions.count("newTestDim") > 0);
-      EXPECT_TRUE(dimensions.count("testDim") == 0);
+      EXPECT_GT(dimensions.count("newTestDim"), 0);
+      EXPECT_EQ(dimensions.count("testDim"), 0);
       
       // Verify variableValue hypercube was also updated
       auto updatedHc = variableValues[":dimTestVar"]->tensorInit.hypercube();
