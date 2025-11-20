@@ -1514,14 +1514,12 @@ TEST(TensorOps, evalOpEvaluate)
       
       // Check that var1 is attached to an integral by checking controller attribute
       auto varItem = dynamic_pointer_cast<VariableBase>(var1);
-      EXPECT_TRUE(varItem);
-      if (varItem) {
-        auto controller = varItem->controller.lock();
-        EXPECT_TRUE(controller != nullptr);
-        if (controller) {
-          EXPECT_EQ(OperationType::integrate, controller->type());
-        }
-      }
+      ASSERT_TRUE(varItem);
+      auto controller = varItem->controller.lock();
+      ASSERT_TRUE(controller != nullptr);
+      auto opBase = dynamic_pointer_cast<OperationBase>(controller);
+      ASSERT_TRUE(opBase);
+      EXPECT_EQ(OperationType::integrate, opBase->type());
     }
 
     // Test requestReset and requestRedraw
@@ -1694,19 +1692,28 @@ TEST(TensorOps, evalOpEvaluate)
     // Test makeVariablesConsistent
     TEST_F(MinskySuite, makeVariablesConsistent)
     {
-      // Set up variables inconsistently - create duplicate variables with same name
-      auto var1 = model->addItem(VariablePtr(VariableType::flow, "consistVar"));
-      auto var2 = model->addItem(VariablePtr(VariableType::flow, "consistVar"));
+      // makeVariablesConsistent calls update on GodleyIcons
+      // Add a GodleyIcon with flow & stock variables in the table
+      auto godley = new GodleyIcon;
+      model->addItem(godley);
+      godley->table.resize(3, 3);
+      godley->table.cell(0, 1) = "stock1";
+      godley->table.cell(0, 2) = "stock2";
+      godley->table.cell(2, 1) = "flow1";
+      godley->table.cell(2, 2) = "flow2";
       
-      // Before makeVariablesConsistent, both should exist in items
-      EXPECT_EQ(3, model->items.size()); // time + 2 consistVar
+      // Before makeVariablesConsistent, flowVars and stockVars may not be populated
+      size_t flowVarsBefore = godley->flowVars().size();
+      size_t stockVarsBefore = godley->stockVars().size();
       
-      // Make variables consistent
+      // Make variables consistent - this should call update on the GodleyIcon
       makeVariablesConsistent();
       
-      // After makeVariablesConsistent, variables should be properly managed
-      // (implementation may vary, but it should not crash)
-      EXPECT_GE(model->items.size(), 2); // At least time + 1 consistVar
+      // Check that GodleyIcon's flowVars and stockVars have been populated
+      EXPECT_GT(godley->flowVars().size(), flowVarsBefore);
+      EXPECT_GT(godley->stockVars().size(), stockVarsBefore);
+      EXPECT_EQ(2, godley->flowVars().size());
+      EXPECT_EQ(2, godley->stockVars().size());
     }
 
     // Test garbageCollect
@@ -1722,15 +1729,20 @@ TEST(TensorOps, evalOpEvaluate)
       try {
         constructEquations();
         
-        // After constructing equations, there should be some flowVars
-        size_t flowVarsBefore = flowVars.size();
-        size_t stockVarsBefore = stockVars.size();
+        // After constructing equations, there should be some flowVars, stockVars, equations, integrals
+        EXPECT_GT(flowVars.size(), 0);
+        EXPECT_GT(stockVars.size(), 0);
+        EXPECT_GT(equations.size(), 0);
+        EXPECT_GT(integrals.size(), 0);
         
         // GarbageCollect should clean things up
         garbageCollect();
         
-        // Variables should still exist but temporary structures may be cleared
-        EXPECT_GE(model->items.size(), 1);
+        // Check that flowVars, stockVars, equations, integrals are empty
+        EXPECT_EQ(flowVars.size(), 0);
+        EXPECT_EQ(stockVars.size(), 0);
+        EXPECT_EQ(equations.size(), 0);
+        EXPECT_EQ(integrals.size(), 0);
       } catch (...) {
         // If constructEquations fails, garbageCollect should still work
         garbageCollect();
@@ -1869,12 +1881,8 @@ TEST(TensorOps, evalOpEvaluate)
       EXPECT_TRUE(dimensions.count("newDim2") > 0);
       
       // Verify the dimension types match
-      if (dimensions.count("newDim1") > 0) {
-        EXPECT_EQ(Dimension::time, dimensions["newDim1"].type);
-      }
-      if (dimensions.count("newDim2") > 0) {
-        EXPECT_EQ(Dimension::value, dimensions["newDim2"].type);
-      }
+      EXPECT_EQ(Dimension::time, dimensions["newDim1"].type);
+      EXPECT_EQ(Dimension::value, dimensions["newDim2"].type);
     }
 
     // Test openGroupInCanvas and openModelInCanvas
