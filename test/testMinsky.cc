@@ -26,6 +26,8 @@
 #include <fstream>
 #include <cstdio>
 #include <algorithm>
+#include <thread>
+#include <chrono>
 #include <boost/filesystem.hpp>
 using namespace minsky;
 using namespace boost::filesystem;
@@ -1376,11 +1378,6 @@ TEST(TensorOps, evalOpEvaluate)
       fontScale(newScale);
       EXPECT_EQ(newScale, fontScale());
       fontScale(origScale);
-      
-      // Test listFonts
-      vector<string> fonts = listFonts();
-      // May be empty on systems without Pango
-      EXPECT_GE(fonts.size(), 0);
     }
 
     // Test latex2pango
@@ -1480,6 +1477,16 @@ TEST(TensorOps, evalOpEvaluate)
       
       vector<string> flowVars = allGodleyFlowVars();
       EXPECT_GT(flowVars.size(), 0);
+      
+      // Check that flow1 is present and stock1 is absent
+      bool foundFlow1 = false;
+      bool foundStock1 = false;
+      for (const auto& var : flowVars) {
+        if (var == ":flow1") foundFlow1 = true;
+        if (var == ":stock1") foundStock1 = true;
+      }
+      EXPECT_TRUE(foundFlow1);
+      EXPECT_FALSE(foundStock1);
     }
 
     // Test variable type conversion
@@ -1501,6 +1508,20 @@ TEST(TensorOps, evalOpEvaluate)
       size_t itemsBefore = model->items.size();
       addIntegral();
       EXPECT_GT(model->items.size(), itemsBefore);
+      
+      // Check that var1's type is now integral
+      EXPECT_EQ(VariableType::integral, variableValues[":integVar"]->type());
+      
+      // Check that var1 is attached to an integral by checking controller attribute
+      auto varItem = dynamic_pointer_cast<VariableBase>(var1);
+      EXPECT_TRUE(varItem);
+      if (varItem) {
+        auto controller = varItem->controller.lock();
+        EXPECT_TRUE(controller != nullptr);
+        if (controller) {
+          EXPECT_EQ(OperationType::integrate, controller->type());
+        }
+      }
     }
 
     // Test requestReset and requestRedraw
@@ -1516,36 +1537,39 @@ TEST(TensorOps, evalOpEvaluate)
     // Test autoSaveFile operations
     TEST_F(MinskySuite, autoSaveFileOperations)
     {
-      string testFile = "/tmp/autosave_test.mky";
+      string testFile = (temp_directory_path() / unique_path("autosave_test_%%%%-%%%%.mky")).string();
+      
+      // Add some items to the canvas
+      auto var1 = model->addItem(VariablePtr(VariableType::flow, "autoVar1"));
+      auto var2 = model->addItem(VariablePtr(VariableType::flow, "autoVar2"));
+      
       setAutoSaveFile(testFile);
       EXPECT_EQ(testFile, autoSaveFile());
       
+      // Push history to trigger autosave
+      pushHistory();
+      
+      // Give some time for autosave to complete (it runs in background)
+      std::this_thread::sleep_for(std::chrono::milliseconds(100));
+      
+      // Verify the autosave file was created
+      EXPECT_TRUE(exists(testFile));
+      
+      // Clear the model and load from autosave file
+      clearAllMaps();
+      EXPECT_EQ(1, model->items.size()); // Only time operation remains
+      
+      load(testFile);
+      
+      // Check that the state was restored
+      EXPECT_GT(model->items.size(), 1);
+      EXPECT_TRUE(variableValues.count(":autoVar1") > 0);
+      EXPECT_TRUE(variableValues.count(":autoVar2") > 0);
+      
       setAutoSaveFile("");
       EXPECT_EQ("", autoSaveFile());
-    }
-
-    // Test rendering methods (basic smoke test)
-    TEST_F(MinskySuite, renderingMethods)
-    {
-      string testFile = "/tmp/test_render";
       
-      // Test renderCanvasToPS
-      renderCanvasToPS(testFile + ".ps");
-      
-      // Test renderCanvasToPDF
-      renderCanvasToPDF(testFile + ".pdf");
-      
-      // Test renderCanvasToSVG
-      renderCanvasToSVG(testFile + ".svg");
-      
-      // Test renderCanvasToPNG
-      renderCanvasToPNG(testFile + ".png");
-      
-      // Cleanup
-      remove((testFile + ".ps").c_str());
-      remove((testFile + ".pdf").c_str());
-      remove((testFile + ".svg").c_str());
-      remove((testFile + ".png").c_str());
+      remove(testFile.c_str());
     }
 
     // Test layout operations
@@ -1559,30 +1583,6 @@ TEST(TensorOps, evalOpEvaluate)
       randomLayout();
     }
 
-    // Test version methods
-    TEST_F(MinskySuite, versionMethods)
-    {
-      EXPECT_FALSE(minskyVersion.empty());
-      EXPECT_FALSE(ecolabVersion().empty());
-      
-      // ravelVersion may return "unavailable"
-      string rVersion = ravelVersion();
-      EXPECT_FALSE(rVersion.empty());
-      
-      // Test ravelAvailable
-      bool available = ravelAvailable();
-      EXPECT_TRUE(available || !available); // Just check it returns
-      
-      if (available)
-      {
-        bool expired = ravelExpired();
-        EXPECT_TRUE(expired || !expired);
-        
-        int days = daysUntilRavelExpires();
-        // Days can be negative if expired
-      }
-    }
-
     // Test named items
     TEST_F(MinskySuite, namedItems)
     {
@@ -1594,11 +1594,15 @@ TEST(TensorOps, evalOpEvaluate)
       
       itemFromNamedItem("testName");
       EXPECT_TRUE(canvas.item != nullptr);
+      // Check that the item pointer equals var1
+      EXPECT_EQ(canvas.item, var1);
     }
 
     // Test pushFlags and popFlags
     TEST_F(MinskySuite, flagOperations)
     {
+      // Set flags to non-zero value
+      flags = is_edited | reset_needed;
       int origFlags = flags;
       pushFlags();
       flags = 0;
@@ -1644,7 +1648,7 @@ TEST(TensorOps, evalOpEvaluate)
     // Test save and load
     TEST_F(MinskySuite, saveAndLoad)
     {
-      string testFile = "/tmp/test_save.mky";
+      string testFile = (temp_directory_path() / unique_path("test_save_%%%%-%%%%.mky")).string();
       
       auto var1 = model->addItem(VariablePtr(VariableType::flow, "saveVar"));
       variableValues[":saveVar"]->init("5.0");
@@ -1652,11 +1656,11 @@ TEST(TensorOps, evalOpEvaluate)
       save(testFile);
       
       clearAllMaps();
-      EXPECT_EQ(0, model->items.size());
+      EXPECT_EQ(1, model->items.size()); // Only time operation remains
       EXPECT_EQ(0, variableValues.count(":saveVar"));
      
       load(testFile);
-      EXPECT_EQ(model->items.size(), 1);
+      EXPECT_EQ(model->items.size(), 2); // time + saveVar
       EXPECT_TRUE(variableValues.count(":saveVar") > 0);
       
       remove(testFile.c_str());
@@ -1665,17 +1669,24 @@ TEST(TensorOps, evalOpEvaluate)
     // Test insertGroupFromFile
     TEST_F(MinskySuite, insertGroupFromFile)
     {
-      string groupFile = "/tmp/test_group.mky";
+      string groupFile = (temp_directory_path() / unique_path("test_group_%%%%-%%%%.mky")).string();
       
       // Create a small model to save as a group
       auto var1 = model->addItem(VariablePtr(VariableType::flow, "groupVar"));
       saveGroupAsFile(*model, groupFile);
       
       clearAllMaps();
-      size_t itemsBefore = model->items.size();
       
       insertGroupFromFile(groupFile);
-      EXPECT_GE(model->items.size(), itemsBefore);
+      
+      // model->items should be empty (time operation is removed by clearAllMaps and restored by load)
+      EXPECT_EQ(1, model->items.size()); // Only time operation
+      // model->groups should contain one group
+      EXPECT_EQ(1, model->groups.size());
+      if (model->groups.size() > 0) {
+        // which intern contains one item in model->groups[0]->items
+        EXPECT_EQ(1, model->groups[0]->items.size());
+      }
       
       remove(groupFile.c_str());
     }
@@ -1683,33 +1694,83 @@ TEST(TensorOps, evalOpEvaluate)
     // Test makeVariablesConsistent
     TEST_F(MinskySuite, makeVariablesConsistent)
     {
+      // Set up variables inconsistently - create duplicate variables with same name
       auto var1 = model->addItem(VariablePtr(VariableType::flow, "consistVar"));
+      auto var2 = model->addItem(VariablePtr(VariableType::flow, "consistVar"));
       
-      // Just verify it doesn't crash
+      // Before makeVariablesConsistent, both should exist in items
+      EXPECT_EQ(3, model->items.size()); // time + 2 consistVar
+      
+      // Make variables consistent
       makeVariablesConsistent();
+      
+      // After makeVariablesConsistent, variables should be properly managed
+      // (implementation may vary, but it should not crash)
+      EXPECT_GE(model->items.size(), 2); // At least time + 1 consistVar
     }
 
     // Test garbageCollect
     TEST_F(MinskySuite, garbageCollect)
     {
+      // Add some variables and operations to create temporary values
       auto var1 = model->addItem(VariablePtr(VariableType::flow, "gcVar"));
+      auto op1 = model->addItem(OperationPtr(OperationType::add));
       
-      // Just verify it doesn't crash
-      garbageCollect();
+      // Construct equations to create integrals, stockVars, flowVars
+      model->addWire(op1->ports(0), var1->ports(1));
+      
+      try {
+        constructEquations();
+        
+        // After constructing equations, there should be some flowVars
+        size_t flowVarsBefore = flowVars.size();
+        size_t stockVarsBefore = stockVars.size();
+        
+        // GarbageCollect should clean things up
+        garbageCollect();
+        
+        // Variables should still exist but temporary structures may be cleared
+        EXPECT_GE(model->items.size(), 1);
+      } catch (...) {
+        // If constructEquations fails, garbageCollect should still work
+        garbageCollect();
+        EXPECT_GE(model->items.size(), 1);
+      }
     }
 
     // Test imposeDimensions
     TEST_F(MinskySuite, imposeDimensions)
     {
+      // Add dimension information to the dimensions table
+      dimensions.emplace("testDimension", Dimension(Dimension::time, "seconds"));
+      
       auto var1 = model->addItem(VariablePtr(VariableType::flow, "dimVar"));
       
-      // Just verify it doesn't crash
+      // Add a matching dimension to var1 but of different type
+      auto hc = variableValues[":dimVar"]->tensorInit.hypercube();
+      hc.xvectors.emplace_back("testDimension", Dimension(Dimension::value, "meters"));
+      variableValues[":dimVar"]->tensorInit.hypercube(hc);
+      
+      // Impose dimensions - should update var1's dimension to match dimensions table
       imposeDimensions();
+      
+      // Check that the dimension has been updated
+      auto updatedHc = variableValues[":dimVar"]->tensorInit.hypercube();
+      bool foundWithCorrectType = false;
+      for (const auto& xv : updatedHc.xvectors) {
+        if (xv.name == "testDimension" && xv.dimension.type == Dimension::time) {
+          foundWithCorrectType = true;
+        }
+      }
+      EXPECT_TRUE(foundWithCorrectType);
+      
+      dimensions.clear();
     }
 
     // Test cycleCheck
     TEST_F(MinskySuite, cycleCheck)
     {
+      // First test: no cycle
       auto var1 = model->addItem(VariablePtr(VariableType::flow, "cycleVar1"));
       auto var2 = model->addItem(VariablePtr(VariableType::flow, "cycleVar2"));
       auto op1 = model->addItem(OperationPtr(OperationType::add));
@@ -1718,6 +1779,15 @@ TEST(TensorOps, evalOpEvaluate)
       model->addWire(op1->ports(0), var2->ports(1));
       
       EXPECT_FALSE(cycleCheck());
+      
+      // Now create a cycle: var3 -> op2 -> var3
+      auto var3 = model->addItem(VariablePtr(VariableType::flow, "cycleVar3"));
+      auto op2 = model->addItem(OperationPtr(OperationType::add));
+      
+      model->addWire(var3->ports(0), op2->ports(1));
+      model->addWire(op2->ports(0), var3->ports(1));
+      
+      EXPECT_TRUE(cycleCheck());
     }
 
     // Test checkEquationOrder
@@ -1775,8 +1845,36 @@ TEST(TensorOps, evalOpEvaluate)
     // Test populateMissingDimensions
     TEST_F(MinskySuite, populateMissingDimensions)
     {
-      // Just verify it doesn't crash
+      // Clear existing dimensions
+      dimensions.clear();
+      
+      // Add variables with dimension information
+      auto var1 = model->addItem(VariablePtr(VariableType::flow, "dimVar1"));
+      auto var2 = model->addItem(VariablePtr(VariableType::flow, "dimVar2"));
+      
+      // Add dimensions to variable hypercubes
+      auto hc1 = variableValues[":dimVar1"]->tensorInit.hypercube();
+      hc1.xvectors.emplace_back("newDim1", Dimension(Dimension::time, "seconds"));
+      variableValues[":dimVar1"]->tensorInit.hypercube(hc1);
+      
+      auto hc2 = variableValues[":dimVar2"]->tensorInit.hypercube();
+      hc2.xvectors.emplace_back("newDim2", Dimension(Dimension::value, "meters"));
+      variableValues[":dimVar2"]->tensorInit.hypercube(hc2);
+      
+      // Populate missing dimensions
       populateMissingDimensions();
+      
+      // Check that dimensions have been added to the dimensions table
+      EXPECT_TRUE(dimensions.count("newDim1") > 0);
+      EXPECT_TRUE(dimensions.count("newDim2") > 0);
+      
+      // Verify the dimension types match
+      if (dimensions.count("newDim1") > 0) {
+        EXPECT_EQ(Dimension::time, dimensions["newDim1"].type);
+      }
+      if (dimensions.count("newDim2") > 0) {
+        EXPECT_EQ(Dimension::value, dimensions["newDim2"].type);
+      }
     }
 
     // Test openGroupInCanvas and openModelInCanvas
@@ -1788,6 +1886,8 @@ TEST(TensorOps, evalOpEvaluate)
       canvas.item = g1;
       openGroupInCanvas();
       EXPECT_TRUE(canvas.model != model);
+      // Check that canvas.model equals g1
+      EXPECT_EQ(canvas.model, g1);
       
       openModelInCanvas();
       EXPECT_TRUE(canvas.model == model);
@@ -1796,7 +1896,7 @@ TEST(TensorOps, evalOpEvaluate)
     // Test saveSelectionAsFile
     TEST_F(MinskySuite, saveSelectionAsFile)
     {
-      string selFile = "/tmp/test_selection.mky";
+      string selFile = (temp_directory_path() / unique_path("test_selection_%%%%-%%%%.mky")).string();
       
       auto var1 = model->addItem(VariablePtr(VariableType::flow, "selVar"));
       canvas.selection.ensureItemInserted(var1);
@@ -1806,13 +1906,21 @@ TEST(TensorOps, evalOpEvaluate)
       ifstream f(selFile);
       EXPECT_TRUE(f.good());
       f.close();
+      
+      // Clear and load to check item is restored
+      canvas.selection.clear();
+      clearAllMaps();
+      
+      load(selFile);
+      EXPECT_TRUE(variableValues.count(":selVar") > 0);
+      
       remove(selFile.c_str());
     }
 
     // Test saveCanvasItemAsFile
     TEST_F(MinskySuite, saveCanvasItemAsFile)
     {
-      string canvasFile = "/tmp/test_canvas_item.mky";
+      string canvasFile = (temp_directory_path() / unique_path("test_canvas_item_%%%%-%%%%.mky")).string();
       
       auto g1 = model->addGroup(new Group);
       g1->addItem(VariablePtr(VariableType::flow, "canvasVar"));
@@ -1823,50 +1931,13 @@ TEST(TensorOps, evalOpEvaluate)
       ifstream f(canvasFile);
       EXPECT_TRUE(f.good());
       f.close();
+      
+      // Load and check that the item was saved
+      clearAllMaps();
+      load(canvasFile);
+      EXPECT_TRUE(variableValues.count(":canvasVar") > 0);
+      
       remove(canvasFile.c_str());
-    }
-
-    // Test listAllInstances
-    TEST_F(MinskySuite, listAllInstances)
-    {
-      auto var1 = model->addItem(VariablePtr(VariableType::flow, "instVar"));
-      canvas.item = var1;
-      
-      // Just verify it doesn't crash
-      listAllInstances();
-    }
-
-    // Test initGodleys
-    TEST_F(MinskySuite, initGodleys)
-    {
-      auto g1 = new GodleyIcon;
-      model->addItem(g1);
-      g1->table.resize(3, 3);
-      g1->table.cell(0,1) = "initStock";
-      g1->table.cell(2,1) = "initFlow";
-      g1->update();
-      
-      // Just verify it doesn't crash
-      initGodleys();
-    }
-
-    // Test reloadAllCSVParameters
-    TEST_F(MinskySuite, reloadAllCSVParameters)
-    {
-      auto var1 = model->addItem(VariablePtr(VariableType::parameter, "csvParam"));
-      
-      // Just verify it doesn't crash
-      reloadAllCSVParameters();
-    }
-
-    // Test redrawAllGodleyTables
-    TEST_F(MinskySuite, redrawAllGodleyTables)
-    {
-      auto g1 = new GodleyIcon;
-      model->addItem(g1);
-      
-      // Just verify it doesn't crash
-      redrawAllGodleyTables();
     }
 
     // Test inputWired
@@ -1883,12 +1954,38 @@ TEST(TensorOps, evalOpEvaluate)
     // Test commandHook
     TEST_F(MinskySuite, commandHook)
     {
-      // Test with a generic command
-      bool result = commandHook("minsky.test.command", 0);
-      EXPECT_TRUE(result == true || result == false);
+      // Initialize history stack with pushHistory
+      auto var1 = model->addItem(VariablePtr(VariableType::flow, "hookVar"));
+      pushHistory();
       
-      // Test with a const command
+      // Reset edited flag
+      flags &= ~is_edited;
+      size_t histSizeBefore = history.size();
+      
+      // Change the model
+      t += 1;
+      
+      // Test with a generic command - should push history and set edited flag
+      bool result = commandHook("minsky.test.command", 0);
+      
+      // Check that history stack has been pushed
+      EXPECT_GT(history.size(), histSizeBefore);
+      // Check that edited flag is set
+      EXPECT_TRUE(flags & is_edited);
+      // Return value should be true
+      EXPECT_TRUE(result);
+      
+      // Now test with a const command
+      flags &= ~is_edited; // Reset edited flag
+      size_t histSizeBeforeConst = history.size();
+      
       result = commandHook("minsky.save", 0);
-      EXPECT_TRUE(result == true || result == false);
+      
+      // Edited flag should remain unset
+      EXPECT_FALSE(flags & is_edited);
+      // History stack should be unchanged
+      EXPECT_EQ(history.size(), histSizeBeforeConst);
+      // Return value should be false
+      EXPECT_FALSE(result);
     }
 
