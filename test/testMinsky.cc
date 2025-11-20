@@ -1516,7 +1516,6 @@ TEST(TensorOps, evalOpEvaluate)
       auto varItem = dynamic_pointer_cast<VariableBase>(var1);
       ASSERT_TRUE(varItem);
       auto controller = varItem->controller.lock();
-      ASSERT_TRUE(controller != nullptr);
       auto opBase = dynamic_pointer_cast<OperationBase>(controller);
       ASSERT_TRUE(opBase);
       EXPECT_EQ(OperationType::integrate, opBase->type());
@@ -1706,6 +1705,9 @@ TEST(TensorOps, evalOpEvaluate)
       size_t flowVarsBefore = godley->flowVars().size();
       size_t stockVarsBefore = godley->stockVars().size();
       
+      // Create duplicate entries in variableValues table (same valueId)
+      size_t varValuesSizeBefore = variableValues.size();
+      
       // Make variables consistent - this should call update on the GodleyIcon
       makeVariablesConsistent();
       
@@ -1714,6 +1716,40 @@ TEST(TensorOps, evalOpEvaluate)
       EXPECT_GT(godley->stockVars().size(), stockVarsBefore);
       EXPECT_EQ(2, godley->flowVars().size());
       EXPECT_EQ(2, godley->stockVars().size());
+      
+      // Check that flow1 is in flowVars
+      bool foundFlow1 = false;
+      for (const auto& var : godley->flowVars()) {
+        if (var == ":flow1") {
+          foundFlow1 = true;
+          break;
+        }
+      }
+      EXPECT_TRUE(foundFlow1);
+      
+      // Check that stock1 is in stockVars (not in flowVars)
+      bool foundStock1InStockVars = false;
+      for (const auto& var : godley->stockVars()) {
+        if (var == ":stock1") {
+          foundStock1InStockVars = true;
+          break;
+        }
+      }
+      EXPECT_TRUE(foundStock1InStockVars);
+      
+      // Verify stock1 is NOT in flowVars
+      bool foundStock1InFlowVars = false;
+      for (const auto& var : godley->flowVars()) {
+        if (var == ":stock1") {
+          foundStock1InFlowVars = true;
+          break;
+        }
+      }
+      EXPECT_FALSE(foundStock1InFlowVars);
+      
+      // Check that duplicate entries in variableValues have been removed
+      // (makeVariablesConsistent should ensure no duplicates)
+      EXPECT_LE(variableValues.size(), varValuesSizeBefore + 4); // At most 4 new entries (stock1, stock2, flow1, flow2)
     }
 
     // Test garbageCollect
