@@ -1300,7 +1300,7 @@ TEST(TensorOps, evalOpEvaluate)
       EXPECT_TRUE(loggingEnabled());
       
       // Verify log file header was created
-      ifstream f(logFile);
+      std::ifstream f(logFile);
       EXPECT_TRUE(f.good());
       string line;
       getline(f, line);
@@ -1482,8 +1482,8 @@ TEST(TensorOps, evalOpEvaluate)
       bool foundFlow1 = false;
       bool foundStock1 = false;
       for (const auto& var : flowVars) {
-        if (var == ":flow1") foundFlow1 = true;
-        if (var == ":stock1") foundStock1 = true;
+        if (var == "flow1") foundFlow1 = true;
+        if (var == "stock1") foundStock1 = true;
       }
       EXPECT_TRUE(foundFlow1);
       EXPECT_FALSE(foundStock1);
@@ -1512,13 +1512,12 @@ TEST(TensorOps, evalOpEvaluate)
       // Check that var1's type is now integral
       EXPECT_EQ(VariableType::integral, variableValues[":integVar"]->type());
       
-      // Check that var1 is attached to an integral by checking controller attribute
-      auto varItem = dynamic_pointer_cast<VariableBase>(var1);
-      ASSERT_TRUE(varItem);
-      auto controller = varItem->controller.lock();
-      auto opBase = dynamic_pointer_cast<OperationBase>(controller);
-      ASSERT_TRUE(opBase);
-      EXPECT_EQ(OperationType::integrate, opBase->type());
+      ASSERT_EQ(model->items.size(),2);
+
+      // assume integral is placed at end
+      auto integ=dynamic_cast<IntOp*>(model->items[1].get());
+      ASSERT_TRUE(integ);
+      EXPECT_EQ(integ->intVar, model->items[0]);
     }
 
     // Test requestReset and requestRedraw
@@ -1544,22 +1543,22 @@ TEST(TensorOps, evalOpEvaluate)
       EXPECT_EQ(testFile, autoSaveFile());
       
       // Push history to trigger autosave
-      pushHistory();
+      EXPECT_TRUE(pushHistory());
       
       // Give some time for autosave to complete (it runs in background)
-      std::this_thread::sleep_for(std::chrono::milliseconds(100));
+      std::this_thread::sleep_for(std::chrono::milliseconds(200));
       
       // Verify the autosave file was created
       EXPECT_TRUE(exists(testFile));
       
       // Clear the model and load from autosave file
       clearAllMaps();
-      EXPECT_EQ(1, model->items.size()); // Only time operation remains
+      EXPECT_EQ(0, model->items.size());
       
       load(testFile);
       
       // Check that the state was restored
-      EXPECT_GT(model->items.size(), 1);
+      EXPECT_EQ(model->items.size(), 2);
       EXPECT_TRUE(variableValues.count(":autoVar1") > 0);
       EXPECT_TRUE(variableValues.count(":autoVar2") > 0);
       
@@ -1653,11 +1652,11 @@ TEST(TensorOps, evalOpEvaluate)
       save(testFile);
       
       clearAllMaps();
-      EXPECT_EQ(1, model->items.size()); // Only time operation remains
+      EXPECT_EQ(0, model->items.size());
       EXPECT_EQ(0, variableValues.count(":saveVar"));
      
       load(testFile);
-      EXPECT_EQ(model->items.size(), 2); // time + saveVar
+      EXPECT_EQ(model->items.size(), 1); // time + saveVar
       EXPECT_TRUE(variableValues.count(":saveVar") > 0);
       
       remove(testFile.c_str());
@@ -1676,8 +1675,8 @@ TEST(TensorOps, evalOpEvaluate)
       
       insertGroupFromFile(groupFile);
       
-      // model->items should be empty (time operation is removed by clearAllMaps and restored by load)
-      EXPECT_EQ(1, model->items.size()); // Only time operation
+      // model->items should be empty 
+      EXPECT_EQ(0, model->items.size()); 
       // model->groups should contain one group
       EXPECT_EQ(1, model->groups.size());
       if (model->groups.size() > 0) {
@@ -1702,8 +1701,10 @@ TEST(TensorOps, evalOpEvaluate)
       godley->table.cell(2, 2) = "flow2";
       
       // Before makeVariablesConsistent, flowVars and stockVars may not be populated
-      size_t flowVarsBefore = godley->flowVars().size();
-      size_t stockVarsBefore = godley->stockVars().size();
+      EXPECT_EQ(0, godley->flowVars().size());
+      EXPECT_EQ(0, godley->stockVars().size());
+
+      variableValues.emplace("temp to be removed",VariableValuePtr());
       
       // Create duplicate entries in variableValues table (same valueId)
       size_t varValuesSizeBefore = variableValues.size();
@@ -1712,44 +1713,20 @@ TEST(TensorOps, evalOpEvaluate)
       makeVariablesConsistent();
       
       // Check that GodleyIcon's flowVars and stockVars have been populated
-      EXPECT_GT(godley->flowVars().size(), flowVarsBefore);
-      EXPECT_GT(godley->stockVars().size(), stockVarsBefore);
-      EXPECT_EQ(2, godley->flowVars().size());
-      EXPECT_EQ(2, godley->stockVars().size());
-      
-      // Check that flow1 is in flowVars
-      bool foundFlow1 = false;
-      for (const auto& var : godley->flowVars()) {
-        if (var == ":flow1") {
-          foundFlow1 = true;
-          break;
-        }
-      }
-      EXPECT_TRUE(foundFlow1);
-      
-      // Check that stock1 is in stockVars (not in flowVars)
-      bool foundStock1InStockVars = false;
-      for (const auto& var : godley->stockVars()) {
-        if (var == ":stock1") {
-          foundStock1InStockVars = true;
-          break;
-        }
-      }
-      EXPECT_TRUE(foundStock1InStockVars);
-      
-      // Verify stock1 is NOT in flowVars
-      bool foundStock1InFlowVars = false;
-      for (const auto& var : godley->flowVars()) {
-        if (var == ":stock1") {
-          foundStock1InFlowVars = true;
-          break;
-        }
-      }
-      EXPECT_FALSE(foundStock1InFlowVars);
-      
-      // Check that duplicate entries in variableValues have been removed
-      // (makeVariablesConsistent should ensure no duplicates)
-      EXPECT_LE(variableValues.size(), varValuesSizeBefore + 4); // At most 4 new entries (stock1, stock2, flow1, flow2)
+      auto fv=godley->flowVars(), sv=godley->stockVars();
+      EXPECT_EQ(2, fv.size());
+      EXPECT_EQ(2, sv.size());
+      EXPECT_FALSE(find_if(fv.begin(),fv.end(),[](auto& i){return i->name()=="flow1";})==fv.end());
+      EXPECT_FALSE(find_if(fv.begin(),fv.end(),[](auto& i){return i->name()=="flow2";})==fv.end());
+      EXPECT_TRUE(find_if(fv.begin(),fv.end(),[](auto& i){return i->name()=="stock1";})==fv.end());
+      EXPECT_TRUE(find_if(fv.begin(),fv.end(),[](auto& i){return i->name()=="stock2";})==fv.end());
+      EXPECT_TRUE(find_if(sv.begin(),sv.end(),[](auto& i){return i->name()=="flow1";})==sv.end());
+      EXPECT_TRUE(find_if(sv.begin(),sv.end(),[](auto& i){return i->name()=="flow2";})==sv.end());
+      EXPECT_FALSE(find_if(sv.begin(),sv.end(),[](auto& i){return i->name()=="stock1";})==sv.end());
+      EXPECT_FALSE(find_if(sv.begin(),sv.end(),[](auto& i){return i->name()=="stock2";})==sv.end());
+     
+      // Check that inconsistent entries in variableValues have been removed
+      EXPECT_EQ(0, variableValues.count("temp to be removed"));
     }
 
     // Test garbageCollect
@@ -1758,32 +1735,40 @@ TEST(TensorOps, evalOpEvaluate)
       // Add some variables and operations to create temporary values
       auto var1 = model->addItem(VariablePtr(VariableType::flow, "gcVar"));
       auto op1 = model->addItem(OperationPtr(OperationType::add));
+      auto integ=model->addItem(OperationPtr(OperationType::integrate));
       
       // Construct equations to create integrals, stockVars, flowVars
       model->addWire(op1->ports(0), var1->ports(1));
+      model->addWire(var1->ports(0), integ->ports(1));
       
-      try {
-        constructEquations();
+      constructEquations();
         
-        // After constructing equations, there should be some flowVars, stockVars, equations, integrals
-        EXPECT_GT(flowVars.size(), 0);
-        EXPECT_GT(stockVars.size(), 0);
-        EXPECT_GT(equations.size(), 0);
-        EXPECT_GT(integrals.size(), 0);
+      // After constructing equations, there should be some flowVars, stockVars, equations, integrals
+      EXPECT_GT(flowVars.size(), 0);
+      EXPECT_GT(stockVars.size(), 0);
+      EXPECT_GT(equations.size(), 0);
+      EXPECT_GT(integrals.size(), 0);
+
+      // stash the correct sizes
+      auto fvSz=flowVars.size(), stSz=stockVars.size(), eqSz=stockVars.size(), intSz=integrals.size();
+      // add some rubbish at the end of all of these
+      flowVars.resize(fvSz+5);
+      stockVars.resize(stSz+5);
+      equations.resize(eqSz+5);
+      integrals.resize(intSz+5);
+
+      // add some temporary variables
+      variableValues["temp"]=VariableValuePtr(VariableType::tempFlow);
+      
+      // GarbageCollect should clean things up
+      garbageCollect();
         
-        // GarbageCollect should clean things up
-        garbageCollect();
-        
-        // Check that flowVars, stockVars, equations, integrals are empty
-        EXPECT_EQ(flowVars.size(), 0);
-        EXPECT_EQ(stockVars.size(), 0);
-        EXPECT_EQ(equations.size(), 0);
-        EXPECT_EQ(integrals.size(), 0);
-      } catch (...) {
-        // If constructEquations fails, garbageCollect should still work
-        garbageCollect();
-        EXPECT_GE(model->items.size(), 1);
-      }
+      // Check that flowVars, stockVars, equations, integrals are empty
+      EXPECT_EQ(flowVars.size(), 3); // zero, one and gcVar
+      EXPECT_EQ(stockVars.size(), 1); // integral variable
+      EXPECT_EQ(equations.size(), 0);
+      EXPECT_EQ(integrals.size(), 0);
+      EXPECT_EQ(variableValues.count("temp"), 0);
     }
 
     // Test imposeDimensions
@@ -1884,7 +1869,7 @@ TEST(TensorOps, evalOpEvaluate)
       // current schema is 3, crashes on default schema 1.
       exportSchema(schemaFile,3);
       
-      ifstream f(schemaFile);
+      std::ifstream f(schemaFile);
       EXPECT_TRUE(f.good());
       f.close();
       remove(schemaFile.c_str());
@@ -1903,10 +1888,12 @@ TEST(TensorOps, evalOpEvaluate)
       // Add dimensions to variable hypercubes
       auto hc1 = variableValues[":dimVar1"]->tensorInit.hypercube();
       hc1.xvectors.emplace_back("newDim1", Dimension(Dimension::time, "seconds"));
+      hc1.xvectors[0].emplace_back();
       variableValues[":dimVar1"]->tensorInit.hypercube(hc1);
       
       auto hc2 = variableValues[":dimVar2"]->tensorInit.hypercube();
       hc2.xvectors.emplace_back("newDim2", Dimension(Dimension::value, "meters"));
+      hc2.xvectors[0].emplace_back();
       variableValues[":dimVar2"]->tensorInit.hypercube(hc2);
       
       // Populate missing dimensions
@@ -1947,7 +1934,7 @@ TEST(TensorOps, evalOpEvaluate)
       
       saveSelectionAsFile(selFile);
       
-      ifstream f(selFile);
+      std::ifstream f(selFile);
       EXPECT_TRUE(f.good());
       f.close();
       
@@ -1972,7 +1959,7 @@ TEST(TensorOps, evalOpEvaluate)
       
       saveCanvasItemAsFile(canvasFile);
       
-      ifstream f(canvasFile);
+      std::ifstream f(canvasFile);
       EXPECT_TRUE(f.good());
       f.close();
       
@@ -2007,10 +1994,10 @@ TEST(TensorOps, evalOpEvaluate)
       size_t histSizeBefore = history.size();
       
       // Change the model
-      t += 1;
+      var1->moveTo(500,500);
       
       // Test with a generic command - should push history and set edited flag
-      bool result = commandHook("minsky.test.command", 0);
+      bool result = commandHook("minsky.test.command", 1);
       
       // Check that history stack has been pushed
       EXPECT_GT(history.size(), histSizeBefore);

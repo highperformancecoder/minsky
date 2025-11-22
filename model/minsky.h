@@ -169,7 +169,7 @@ namespace minsky
       canvas.model.updateTimestamp();
     }
     void requestReset();
-    /// requests a redraw of the curren active tab
+    /// requests a redraw of the current active tab
     void requestRedraw();
     
     /// @{ push and pop state of the flags
