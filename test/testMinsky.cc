@@ -1633,14 +1633,6 @@ TEST(TensorOps, evalOpEvaluate)
       EXPECT_EQ(GodleyTable::sign, displayStyle);
     }
 
-    // Test srand
-    TEST_F(MinskySuite, srandTest)
-    {
-      // Just verify it doesn't crash
-      srand(42);
-      srand(123);
-    }
-
     // Test save and load
     TEST_F(MinskySuite, saveAndLoad)
     {
@@ -1865,7 +1857,7 @@ TEST(TensorOps, evalOpEvaluate)
     // Test exportSchema
     TEST_F(MinskySuite, exportSchema)
     {
-      string schemaFile = "/tmp/test_schema.xsd";
+      string schemaFile = (temp_directory_path() / unique_path("test_schema%%%%-%%%%.xsd")).string();
       // current schema is 3, crashes on default schema 1.
       exportSchema(schemaFile,3);
       

@@ -182,6 +182,8 @@ namespace minsky
     }
     /// @}
 
+    /// calls reset() if the reset_flag is set.
+    /// @return value of the reset_flag (ie true if reset was postponed)
     bool resetIfFlagged() override {
       if (reset_flag())
         reset();
