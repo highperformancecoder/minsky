@@ -182,8 +182,10 @@ namespace minsky
     }
     /// @}
 
-    /// calls reset() if the reset_flag is set.
-    /// @return value of the reset_flag (ie true if reset was postponed)
+    /// calls reset() if the reset_flag is set, and the simulation
+    /// thread is not running
+    /// @return value of the reset_flag (ie true if reset was rejected
+    /// by the integrator because the simulation thread is running)
     bool resetIfFlagged() override {
       if (reset_flag())
         reset();

@@ -1409,22 +1409,25 @@ TEST(TensorOps, evalOpEvaluate)
     TEST_F(MinskySuite, historyOperations)
     {
       clearHistory();
+      EXPECT_EQ(history.size(), 0);
       
       auto var1 = model->addItem(VariablePtr(VariableType::flow, "histVar"));
       bool pushed = pushHistory();
       
       // Should push only if different from previous
-      EXPECT_TRUE(pushed || history.size() > 0);
+      EXPECT_TRUE(pushed);
+      EXPECT_EQ(history.size(), 1);
       
       auto var2 = model->addItem(VariablePtr(VariableType::flow, "histVar2"));
       pushHistory();
+
+      EXPECT_EQ(history.size(), 2);
       
       size_t histSize = history.size();
-      if (histSize > 0)
-      {
-        undo(1);
-        EXPECT_TRUE(model->items.size() <= 3); // May have been restored
-      }
+      undo(1);
+      EXPECT_EQ(history.size(), 2);
+      EXPECT_EQ(historyPtr, 1);
+      EXPECT_EQ(model->items.size(), 1);
     }
 
     // Test dimension operations
@@ -1523,8 +1526,15 @@ TEST(TensorOps, evalOpEvaluate)
     // Test requestReset and requestRedraw
     TEST_F(MinskySuite, requestOperations)
     {
+      resetDuration=resetNowThreshold/2;
+      requestReset();
+      EXPECT_FALSE(reset_flag());
+
+      resetDuration+=resetNowThreshold;
+      auto then=chrono::system_clock::now();
       requestReset();
       EXPECT_TRUE(reset_flag());
+      EXPECT_GE(resetAt, then+resetPostponedThreshold);
       
       requestRedraw();
       // Just verify it doesn't crash
@@ -1755,7 +1765,6 @@ TEST(TensorOps, evalOpEvaluate)
       // GarbageCollect should clean things up
       garbageCollect();
         
-      // Check that flowVars, stockVars, equations, integrals are empty
       EXPECT_EQ(flowVars.size(), 3); // zero, one and gcVar
       EXPECT_EQ(stockVars.size(), 1); // integral variable
       EXPECT_EQ(equations.size(), 0);
@@ -1850,8 +1859,8 @@ TEST(TensorOps, evalOpEvaluate)
     TEST_F(MinskySuite, resetIfFlagged)
     {
       flags |= reset_needed;
-      bool result = resetIfFlagged();
-      EXPECT_FALSE(result || reset_flag());
+      EXPECT_FALSE(resetIfFlagged());
+      // TODO: start a simulation, and test that the reset is blocked
     }
 
     // Test exportSchema
