@@ -1658,7 +1658,7 @@ TEST(TensorOps, evalOpEvaluate)
       EXPECT_EQ(0, variableValues.count(":saveVar"));
      
       load(testFile);
-      EXPECT_EQ(model->items.size(), 1); // time + saveVar
+      EXPECT_EQ(model->items.size(), 1);
       EXPECT_TRUE(variableValues.count(":saveVar") > 0);
       
       remove(testFile.c_str());
@@ -1677,12 +1677,12 @@ TEST(TensorOps, evalOpEvaluate)
       
       insertGroupFromFile(groupFile);
       
-      // model->items should be empty 
+      // model->items should be empty, as the model has been cleared
       EXPECT_EQ(0, model->items.size()); 
-      // model->groups should contain one group
+      // model->groups should contain the one group that has been imported from the file
       EXPECT_EQ(1, model->groups.size());
       if (model->groups.size() > 0) {
-        // which intern contains one item in model->groups[0]->items
+        // which in turn contains one item in model->groups[0]->items
         EXPECT_EQ(1, model->groups[0]->items.size());
       }
       
@@ -1752,7 +1752,7 @@ TEST(TensorOps, evalOpEvaluate)
       EXPECT_GT(integrals.size(), 0);
 
       // stash the correct sizes
-      auto fvSz=flowVars.size(), stSz=stockVars.size(), eqSz=stockVars.size(), intSz=integrals.size();
+      auto fvSz=flowVars.size(), stSz=stockVars.size(), eqSz=equations.size(), intSz=integrals.size();
       // add some rubbish at the end of all of these
       flowVars.resize(fvSz+5);
       stockVars.resize(stSz+5);
