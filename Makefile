@@ -557,7 +557,7 @@ lcov:
 	-$(MAKE) GCOV=1 sure
 	lcov -c -d .  $(LCOV_FLAGS) -o lcovt.info
 	lcov -a lcovi.info -a lcovt.info -o lcov.info
-	lcov -r --ignore-errors unused lcov.info */ecolab/* "*.cd" "*.xcd" "*.rcd" "*.tcd" -o lcovr.info 
+	lcov -r lcov.info --ignore-errors unused */ecolab/* "*.cd" "*.xcd" "*.rcd" "*.tcd" -o lcovr.info 
 	genhtml -o coverage lcovr.info
 
 compile_commands.json: Makefile
