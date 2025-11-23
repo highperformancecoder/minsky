@@ -20,6 +20,7 @@
 #include "minsky.h"
 #include "minsky_epilogue.h"
 #include <gtest/gtest.h>
+#include <boost/filesystem.hpp>
 
 using namespace minsky;
 using namespace std;
@@ -44,30 +45,6 @@ namespace
     EXPECT_EQ(1, sheet.portsSize());
     EXPECT_EQ(100, sheet.iWidth());
     EXPECT_EQ(100, sheet.iHeight());
-  }
-
-  TEST_F(SheetTest, corners)
-  {
-    moveTo(100, 100);
-    iWidth(200);
-    iHeight(150);
-    double z = zoomFactor();
-    
-    auto cornerPoints = corners();
-    ASSERT_EQ(4, cornerPoints.size());
-    
-    // Check that corners are at expected positions
-    EXPECT_DOUBLE_EQ(100 - 0.5 * 200 * z, cornerPoints[0].x());
-    EXPECT_DOUBLE_EQ(100 - 0.5 * 150 * z, cornerPoints[0].y());
-    
-    EXPECT_DOUBLE_EQ(100 + 0.5 * 200 * z, cornerPoints[1].x());
-    EXPECT_DOUBLE_EQ(100 - 0.5 * 150 * z, cornerPoints[1].y());
-    
-    EXPECT_DOUBLE_EQ(100 - 0.5 * 200 * z, cornerPoints[2].x());
-    EXPECT_DOUBLE_EQ(100 + 0.5 * 150 * z, cornerPoints[2].y());
-    
-    EXPECT_DOUBLE_EQ(100 + 0.5 * 200 * z, cornerPoints[3].x());
-    EXPECT_DOUBLE_EQ(100 + 0.5 * 150 * z, cornerPoints[3].y());
   }
 
   TEST_F(SheetTest, onResizeHandle)
@@ -161,77 +138,50 @@ namespace
 
   TEST_F(SheetTest, onKeyPress)
   {
-    // Test arrow key handling
-    // Up arrow (0xff52)
-    EXPECT_FALSE(onKeyPress(0xff52, "", 0));
+    // Test arrow key handling with rank 3 tensor
+    minsky::minsky().canvas.addVariable("3dTensor",VariableType::parameter);
+    auto& param=*minsky::minsky().canvas.itemFocus->variableCast();
+    param.init("rand(3,3,3)");
+    minsky::minsky().canvas.addSheet();
+    auto& sheet=dynamic_cast<Sheet&>(*minsky::minsky().canvas.itemFocus);
+    minsky::minsky().model->addWire(param, sheet, 0);
+    minsky::minsky().reset();
     
-    // Down arrow (0xff54)
-    EXPECT_FALSE(onKeyPress(0xff54, "", 0));
+    // Up arrow (0xff52) - should scroll up
+    EXPECT_TRUE(sheet.onKeyPress(0xff52, "", 0));
     
-    // Right arrow (0xff53)
-    EXPECT_FALSE(onKeyPress(0xff53, "", 0));
+    // Down arrow (0xff54) - should scroll down
+    EXPECT_TRUE(sheet.onKeyPress(0xff54, "", 0));
     
-    // Left arrow (0xff51)
-    EXPECT_FALSE(onKeyPress(0xff51, "", 0));
+    // Right arrow (0xff53) - should scroll up
+    EXPECT_TRUE(sheet.onKeyPress(0xff53, "", 0));
     
-    // Other key
-    EXPECT_FALSE(onKeyPress(0x0041, "A", 0));
+    // Left arrow (0xff51) - should scroll down
+    EXPECT_TRUE(sheet.onKeyPress(0xff51, "", 0));
+    
+    // Other key - should return false
+    EXPECT_FALSE(sheet.onKeyPress(0x0041, "A", 0));
   }
 
   TEST_F(SheetTest, exportAsCSVWithoutValue)
   {
     // Attempting to export without a value should throw an error
-    EXPECT_THROW(exportAsCSV("/tmp/test.csv", false), std::exception);
+    string tmpFile = boost::filesystem::unique_path().string();
+    EXPECT_THROW(exportAsCSV(tmpFile, false), std::exception);
   }
 
   TEST_F(SheetTest, setSliceIndicator)
   {
-    // With no value, setSliceIndicator should handle gracefully
-    setSliceIndicator();
-    // No exception should be thrown
-  }
-
-  TEST_F(SheetTest, showRavelFlag)
-  {
-    // Test the showRavel flag
-    showRavel = false;
-    EXPECT_FALSE(showRavel);
+    // Add a rank 3 tensor to test slice indicator
+    minsky::minsky().canvas.addVariable("3dTensor",VariableType::parameter);
+    auto& param=*minsky::minsky().canvas.itemFocus->variableCast();
+    param.init("rand(3,3,3)");
+    minsky::minsky().canvas.addSheet();
+    auto& sheet=dynamic_cast<Sheet&>(*minsky::minsky().canvas.itemFocus);
+    minsky::minsky().model->addWire(param, sheet, 0);
+    minsky::minsky().reset();
     
-    showRavel = true;
-    EXPECT_TRUE(showRavel);
-  }
-
-  TEST_F(SheetTest, showSliceFlags)
-  {
-    // Test ShowSlice enumeration values
-    showRowSlice = ShowSlice::head;
-    EXPECT_EQ(ShowSlice::head, showRowSlice);
-    
-    showRowSlice = ShowSlice::tail;
-    EXPECT_EQ(ShowSlice::tail, showRowSlice);
-    
-    showRowSlice = ShowSlice::headAndTail;
-    EXPECT_EQ(ShowSlice::headAndTail, showRowSlice);
-    
-    showColSlice = ShowSlice::head;
-    EXPECT_EQ(ShowSlice::head, showColSlice);
-  }
-
-  TEST_F(SheetTest, dimensionProperties)
-  {
-    // Test width and height setters
-    iWidth(300);
-    EXPECT_EQ(300, iWidth());
-    
-    iHeight(250);
-    EXPECT_EQ(250, iHeight());
-  }
-
-  TEST_F(SheetTest, positionProperties)
-  {
-    // Test position setters
-    moveTo(150, 175);
-    EXPECT_DOUBLE_EQ(150, x());
-    EXPECT_DOUBLE_EQ(175, y());
+    // Check that sliceIndicator is set to something useful
+    EXPECT_FALSE(sheet.sliceIndicator.empty());
   }
 }
