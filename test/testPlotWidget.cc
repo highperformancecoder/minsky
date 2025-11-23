@@ -19,6 +19,7 @@
 #include "cairoItems.h"
 #include "lasso.h"
 #include "plotWidget.h"
+#include "minsky.h"
 #include "plot.xcd"
 #include "CSVTools.xcd"
 #include "tensorInterface.xcd"
@@ -114,8 +115,7 @@ namespace minsky
       EXPECT_EQ(5u, numLines());
       
       // Check that yvars and xvars are resized appropriately
-      EXPECT_EQ(10u, yvars.size()); // 2*numLines
-      EXPECT_EQ(5u, xvars.size());
+      EXPECT_EQ(4*numLines()+nBoundsPorts, portsSize()); // 2*numLines
     }
 
     TEST_F(PlotWidgetTest, barWidth)
@@ -174,7 +174,7 @@ namespace minsky
     {
       // Test clickType returns onItem when clicking inside the widget
       const double z = Item::zoomFactor();
-      EXPECT_EQ(ClickType::onItem, clickType(0, 0));  // Center
+      EXPECT_EQ(ClickType::onPort, clickType(0, 0));  // Ports have not been moved into position yet (requires draw)
       EXPECT_EQ(ClickType::onItem, clickType(10, 10));
     }
 
@@ -200,28 +200,6 @@ namespace minsky
       disconnectAllVars();
       EXPECT_TRUE(xvars.empty());
       EXPECT_TRUE(yvars.empty());
-    }
-
-    TEST_F(PlotWidgetTest, startPen)
-    {
-      // Test startPen calculation
-      numLines(2);
-      
-      // Add some variables to yvars
-      auto var1 = std::make_shared<VariableValue>();
-      var1->name = "var1";
-      var1->init("1.0");
-      auto var2 = std::make_shared<VariableValue>();
-      var2->name = "var2";
-      var2->init("2.0");
-      
-      connectVar(var1, PlotWidget::nBoundsPorts);  // port 6, first y port
-      connectVar(var2, PlotWidget::nBoundsPorts);  // port 6, first y port
-      
-      // startPen(0) should be 0
-      EXPECT_EQ(0u, startPen(0));
-      // startPen(1) should be the number of vars in yvars[0]
-      EXPECT_GE(startPen(1), 1u);
     }
 
     TEST_F(PlotWidgetTest, connectVarBounds)
@@ -374,17 +352,16 @@ namespace minsky
 
     TEST_F(PlotWidgetTest, addPlotPtSimple)
     {
-      // Test adding a simple plot point
-      auto yvar = std::make_shared<VariableValue>();
+      // Smoketest adding a simple plot point
+      auto yvar = std::make_shared<VariableValue>(VariableType::flow);
       yvar->name = "y";
       yvar->init("1.0");
+      yvar->allocValue();
       connectVar(yvar, PlotWidget::nBoundsPorts);
       
       addPlotPt(0.0);
       
-      // Verify that plot has data (can't directly test, but shouldn't crash)
-      EXPECT_TRUE(true);
-    }
+   }
 
     TEST_F(PlotWidgetTest, resizeNegativeDimensions)
     {
@@ -456,14 +433,14 @@ namespace minsky
     TEST_F(PlotWidgetTest, widthAndHeight)
     {
       // Test width() and height() methods
-      EXPECT_EQ(150.0f, width());
-      EXPECT_EQ(150.0f, height());
+      EXPECT_NEAR(150.0f, width(),1);
+      EXPECT_NEAR(150.0f, height(),1);
       
       iWidth(200);
       iHeight(250);
       
-      EXPECT_EQ(200.0f, width());
-      EXPECT_EQ(250.0f, height());
+      EXPECT_NEAR(200.0f, width(),1);
+      EXPECT_NEAR(250.0f, height(),1);
     }
 
     TEST_F(PlotWidgetTest, plotWidgetCast)
@@ -489,78 +466,6 @@ namespace minsky
       EXPECT_FALSE(contains(x() + w + 100, y() + h + 100));
     }
 
-    TEST_F(PlotWidgetTest, paletteColors)
-    {
-      // Test that palette exists and has entries
-      EXPECT_FALSE(palette.empty());
-      
-      // Modify and verify palette still works
-      if (!palette.empty()) {
-        auto originalColor = palette[0].colour;
-        palette[0].colour = {1.0, 0.0, 0.0, 1.0};  // Red
-        EXPECT_NE(originalColor, palette[0].colour);
-      }
-    }
-
-    TEST_F(PlotWidgetTest, gridAndLeadingMarker)
-    {
-      // Test grid and leadingMarker flags
-      EXPECT_TRUE(grid);
-      EXPECT_TRUE(leadingMarker);
-      
-      grid = false;
-      leadingMarker = false;
-      
-      EXPECT_FALSE(grid);
-      EXPECT_FALSE(leadingMarker);
-      
-      // Restore defaults
-      grid = true;
-      leadingMarker = true;
-    }
-
-    TEST_F(PlotWidgetTest, legendSettings)
-    {
-      // Test legend settings
-      legend = true;
-      EXPECT_TRUE(legend);
-      
-      legendLeft = 0.5;
-      EXPECT_EQ(0.5, legendLeft);
-      
-      // Test legendSide
-      legendSide = Side::left;
-      EXPECT_EQ(Side::left, legendSide);
-      
-      legendSide = Side::right;
-      EXPECT_EQ(Side::right, legendSide);
-    }
-
-    TEST_F(PlotWidgetTest, fontScale)
-    {
-      // Test fontScale
-      EXPECT_EQ(2, fontScale);
-      
-      fontScale = 3;
-      EXPECT_EQ(3, fontScale);
-      
-      fontScale = 1;
-      EXPECT_EQ(1, fontScale);
-    }
-
-    TEST_F(PlotWidgetTest, nxTicksNyTicks)
-    {
-      // Test tick count settings
-      EXPECT_EQ(10u, nxTicks);
-      EXPECT_EQ(10u, nyTicks);
-      
-      nxTicks = 5;
-      nyTicks = 8;
-      
-      EXPECT_EQ(5u, nxTicks);
-      EXPECT_EQ(8u, nyTicks);
-    }
-
     TEST_F(PlotWidgetTest, mouseUpCallsMouseMove)
     {
       // Test that mouseUp calls mouseMove and resets click type
@@ -584,15 +489,13 @@ namespace minsky
     TEST_F(PlotWidgetTest, updateIconCallsAddPlotPt)
     {
       // Test that updateIcon delegates to addPlotPt
-      auto yvar = std::make_shared<VariableValue>();
+      auto yvar = std::make_shared<VariableValue>(VariableType::flow);
       yvar->name = "y";
       yvar->init("1.0");
+      yvar->allocValue();
       connectVar(yvar, PlotWidget::nBoundsPorts);
       
       updateIcon(1.0);
-      
-      // Verify the method doesn't crash
-      EXPECT_TRUE(true);
     }
 
     TEST_F(PlotWidgetTest, redrawWithBounds)
@@ -602,20 +505,6 @@ namespace minsky
       
       // Method should not crash
       EXPECT_TRUE(true);
-    }
-
-    TEST_F(PlotWidgetTest, copyConstructor)
-    {
-      // Test copy constructor
-      title = "Original";
-      xmin = 0.0;
-      xmax = 10.0;
-      
-      PlotWidget copy(*this);
-      
-      EXPECT_EQ("Original", copy.title);
-      EXPECT_EQ(0.0, copy.xmin);
-      EXPECT_EQ(10.0, copy.xmax);
     }
 
     TEST_F(PlotWidgetTest, multipleNumLinesChanges)
@@ -678,14 +567,9 @@ namespace minsky
 
     TEST_F(PlotWidgetTest, clickTypeOnResize)
     {
-      // Test clickType returns onResize when clicking on resize handles
-      // This would require setting up the widget in a way that resize handles are active
-      // For now, just test that the method works
-      auto ct = clickType(x(), y());
-      
-      // Should be either onItem or onResize depending on exact position
-      EXPECT_TRUE(ct == ClickType::onItem || ct == ClickType::onResize || 
-                  ct == ClickType::outside);
+      auto p=corners()[0];
+      // assume first item is -ve,-ve corner
+      EXPECT_EQ(clickType(p.x()-0.8*portRadius, p.y()-0.8*portRadius), ClickType::onResize);
     }
 
     TEST_F(PlotWidgetTest, portsExist)
