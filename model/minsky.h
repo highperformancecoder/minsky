@@ -169,7 +169,7 @@ namespace minsky
       canvas.model.updateTimestamp();
     }
     void requestReset();
-    /// requests a redraw of the curren active tab
+    /// requests a redraw of the current active tab
     void requestRedraw();
     
     /// @{ push and pop state of the flags
@@ -182,6 +182,10 @@ namespace minsky
     }
     /// @}
 
+    /// calls reset() if the reset_flag is set, and the simulation
+    /// thread is not running
+    /// @return value of the reset_flag (ie true if reset was rejected
+    /// by the integrator because the simulation thread is running)
     bool resetIfFlagged() override {
       if (reset_flag())
         reset();
@@ -518,10 +522,6 @@ namespace minsky
     std::map<std::string,std::weak_ptr<Item>> namedItems;
     void nameCurrentItem(const std::string& name) {namedItems[name]=canvas.item;}
     void itemFromNamedItem(const std::string& name) {canvas.item=namedItems[name].lock();}
-
-    /// trigger checkMem callback for testing purposes
-    bool triggerCheckMemAllocationCallback() const
-    {return checkMemAllocation(std::numeric_limits<size_t>::max());}
 
     VariablePane variablePane;
 

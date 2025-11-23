@@ -234,6 +234,336 @@ TEST_F(CSVDialogTest, ClassifyColumns) {
     ASSERT_FALSE(spec.dimensionCols.count(3));
 }
 
+TEST_F(CSVDialogTest, LoadFile) {
+    string input = "A,B,C\n"
+                   "1,2,3\n"
+                   "4,5,6\n";
+
+    url = boost::filesystem::unique_path().string();
+    {
+        ofstream of(url);
+        of << input;
+    }
+
+    dialog.url = url;
+    dialog.loadFile();
+
+    auto parsedLines = dialog.parseLines();
+    ASSERT_EQ(3, parsedLines.size());
+    ASSERT_EQ(3, parsedLines[0].size());
+    EXPECT_EQ("A", parsedLines[0][0]);
+    EXPECT_EQ("B", parsedLines[0][1]);
+    EXPECT_EQ("C", parsedLines[0][2]);
+}
+
+TEST_F(CSVDialogTest, LoadFileFromNameWithDOSLineEndings) {
+    string input = "A,B,C\r\n"
+                   "1,2,3\r\n"
+                   "4,5,6\r\n";
+
+    url = boost::filesystem::unique_path().string();
+    {
+        ofstream of(url);
+        of << input;
+    }
+
+    dialog.loadFileFromName(url);
+
+    auto parsedLines = dialog.parseLines();
+    ASSERT_EQ(3, parsedLines.size());
+    ASSERT_EQ(3, parsedLines[0].size());
+    EXPECT_EQ("A", parsedLines[0][0]);
+    EXPECT_EQ("B", parsedLines[0][1]);
+    EXPECT_EQ("C", parsedLines[0][2]);
+}
+
+TEST_F(CSVDialogTest, GuessSpecAndLoadFile) {
+    string input = "foo,bar,A,B,C\n"
+                   "A,A,1.2,1.3,1.4\n"
+                   "A,B,1,2,3\n"
+                   "B,A,3,2,1\n";
+
+    url = boost::filesystem::unique_path().string();
+    {
+        ofstream of(url);
+        of << input;
+    }
+
+    dialog.url = url;
+    dialog.guessSpecAndLoadFile();
+
+    EXPECT_EQ(',', spec.separator);
+    ASSERT_GE(spec.dimensionNames.size(), 2);
+    EXPECT_EQ("foo", spec.dimensionNames[0]);
+    EXPECT_EQ("bar", spec.dimensionNames[1]);
+}
+
+TEST_F(CSVDialogTest, PopulateHeaders) {
+    string input = "Name,Age,City\n"
+                   "Alice,30,NYC\n"
+                   "Bob,25,LA\n";
+
+    url = boost::filesystem::unique_path().string();
+    {
+        ofstream of(url);
+        of << input;
+    }
+
+    spec.separator = ',';
+    spec.headerRow = 0;
+    spec.setDataArea(1, 3);
+    dialog.url = url;
+    dialog.loadFile();
+    dialog.populateHeaders();
+
+    ASSERT_GE(spec.dimensionNames.size(), 3);
+    EXPECT_EQ("Name", spec.dimensionNames[0]);
+    EXPECT_EQ("Age", spec.dimensionNames[1]);
+    EXPECT_EQ("City", spec.dimensionNames[2]);
+}
+
+TEST_F(CSVDialogTest, PopulateHeader) {
+    string input = "Name,Age,City\n"
+                   "Alice,30,NYC\n"
+                   "Bob,25,LA\n";
+
+    url = boost::filesystem::unique_path().string();
+    {
+        ofstream of(url);
+        of << input;
+    }
+
+    spec.separator = ',';
+    spec.headerRow = 0;
+    spec.setDataArea(1, 3);
+    spec.dimensionNames.resize(3);
+    dialog.url = url;
+    dialog.loadFile();
+    
+    dialog.populateHeader(1);
+    EXPECT_EQ("Age", spec.dimensionNames[1]);
+}
+
+TEST_F(CSVDialogTest, ParseLinesWithMergeDelimiters) {
+    string input = "A  B  C\n"
+                   "1  2  3\n"
+                   "4  5  6\n";
+
+    url = boost::filesystem::unique_path().string();
+    {
+        ofstream of(url);
+        of << input;
+    }
+
+    spec.separator = ' ';
+    spec.mergeDelimiters = true;
+    dialog.url = url;
+    dialog.loadFile();
+
+    auto parsedLines = dialog.parseLines();
+    ASSERT_EQ(3, parsedLines.size());
+    ASSERT_GE(parsedLines[0].size(), 3);
+    EXPECT_EQ("A", parsedLines[0][0]);
+    EXPECT_EQ("B", parsedLines[0][1]);
+    EXPECT_EQ("C", parsedLines[0][2]);
+}
+
+TEST_F(CSVDialogTest, ParseLinesWithMaxColumn) {
+    string input = "A,B,C,D,E\n"
+                   "1,2,3,4,5\n"
+                   "6,7,8,9,10\n";
+
+    url = boost::filesystem::unique_path().string();
+    {
+        ofstream of(url);
+        of << input;
+    }
+
+    spec.separator = ',';
+    dialog.url = url;
+    dialog.loadFile();
+
+    auto parsedLines = dialog.parseLines(3);
+    ASSERT_EQ(3, parsedLines.size());
+    ASSERT_EQ(3, parsedLines[0].size());
+    EXPECT_EQ("A", parsedLines[0][0]);
+    EXPECT_EQ("B", parsedLines[0][1]);
+    EXPECT_EQ("C", parsedLines[0][2]);
+}
+
+TEST_F(CSVDialogTest, CorrectedUniqueValues) {
+    string input = "A,B,C\n"
+                   "X,1,foo\n"
+                   "Y,2,bar\n"
+                   "X,3,foo\n"
+                   "Z,1,baz\n";
+
+    url = boost::filesystem::unique_path().string();
+    {
+        ofstream of(url);
+        of << input;
+    }
+
+    dialog.url = url;
+    dialog.guessSpecAndLoadFile();
+
+    auto uniqueVals = dialog.correctedUniqueValues();
+    ASSERT_GE(uniqueVals.size(), 3);
+    // Column 0 should have 3 unique values (X, Y, Z) after removing header
+    EXPECT_EQ(3, uniqueVals[0]);
+    // Column 1 should have 3 unique values (1, 2, 3) after removing header
+    EXPECT_EQ(3, uniqueVals[1]);
+    // Column 2 should have 3 unique values (foo, bar, baz) after removing header
+    EXPECT_EQ(3, uniqueVals[2]);
+}
+
+TEST_F(CSVDialogTest, ReportFromFile) {
+    string input = "A,B,C\n"
+                   "1,2,3\n"
+                   "4,5,6\n";
+
+    url = boost::filesystem::unique_path().string();
+    string outputFile = boost::filesystem::unique_path().string();
+    
+    {
+        ofstream of(url);
+        of << input;
+    }
+
+    spec.separator = ',';
+    spec.setDataArea(1, 3);
+    dialog.url = url;
+    dialog.loadFile();
+    
+    dialog.reportFromFile(url, outputFile);
+    
+    // Check that output file was created
+    EXPECT_TRUE(boost::filesystem::exists(outputFile));
+    
+    // Clean up
+    boost::filesystem::remove(outputFile);
+}
+
+TEST_F(CSVDialogTest, PopulateHeadersWithInvalidHeaderRow) {
+    string input = "A,B,C\n"
+                   "1,2,3\n";
+
+    url = boost::filesystem::unique_path().string();
+    {
+        ofstream of(url);
+        of << input;
+    }
+
+    spec.separator = ',';
+    spec.headerRow = 10; // Beyond the number of lines
+    spec.setDataArea(1, 3);
+    dialog.url = url;
+    dialog.loadFile();
+    
+    // This should not crash - just return without populating
+    dialog.populateHeaders();
+    
+    // Headers should not have been populated
+    EXPECT_TRUE(spec.dimensionNames.empty() || spec.dimensionNames.size() == 3);
+}
+
+TEST_F(CSVDialogTest, PopulateHeaderWithInvalidColumn) {
+    string input = "Name,Age,City\n"
+                   "Alice,30,NYC\n";
+
+    url = boost::filesystem::unique_path().string();
+    {
+        ofstream of(url);
+        of << input;
+    }
+
+    spec.separator = ',';
+    spec.headerRow = 0;
+    spec.setDataArea(1, 3);
+    spec.dimensionNames.resize(5);
+    spec.dimensionNames[3] = "Original";
+    dialog.url = url;
+    dialog.loadFile();
+    
+    // Try to populate a column that doesn't exist
+    dialog.populateHeader(10);
+    
+    // The value at index 3 should remain unchanged
+    EXPECT_EQ("Original", spec.dimensionNames[3]);
+}
+
+TEST_F(CSVDialogTest, ParseLinesWithEscapedQuotes) {
+    string input = "\"A\",\"B\",\"C\"\n"
+                   "\"foo\",\"bar\",\"baz\"\n"
+                   "\"x\",\"y\",\"z\"\n";
+
+    url = boost::filesystem::unique_path().string();
+    {
+        ofstream of(url);
+        of << input;
+    }
+
+    spec.separator = ',';
+    spec.quote = '"';
+    spec.mergeDelimiters = false;
+    dialog.url = url;
+    dialog.loadFile();
+
+    auto parsedLines = dialog.parseLines();
+    ASSERT_EQ(3, parsedLines.size());
+    ASSERT_GE(parsedLines[0].size(), 3);
+    EXPECT_EQ("A", parsedLines[0][0]);
+    EXPECT_EQ("B", parsedLines[0][1]);
+    EXPECT_EQ("C", parsedLines[0][2]);
+}
+
+TEST_F(CSVDialogTest, LoadFileWithManyLines) {
+    // Create a file with more than numInitialLines (100) lines
+    url = boost::filesystem::unique_path().string();
+    {
+        ofstream of(url);
+        for (int i = 0; i < 150; ++i) {
+            of << "A" << i << ",B" << i << ",C" << i << "\n";
+        }
+    }
+
+    spec.separator = ',';
+    dialog.url = url;
+    dialog.loadFile();
+
+    auto parsedLines = dialog.parseLines();
+    // Should only load numInitialLines (100) lines
+    EXPECT_EQ(CSVDialog::numInitialLines, parsedLines.size());
+}
+
+TEST_F(CSVDialogTest, ClassifyColumnsEmptyData) {
+    string input = "A,B,C\n"
+                   ",,\n"
+                   ",,\n";
+
+    url = boost::filesystem::unique_path().string();
+    {
+        ofstream of(url);
+        of << input;
+    }
+
+    spec.separator = ',';
+    spec.setDataArea(1, 3);
+    dialog.url = url;
+    dialog.loadFile();
+    dialog.classifyColumns();
+
+    // Empty columns should be treated as 'ignore'
+    ASSERT_EQ(3, spec.numCols);
+    // None of the  three columns should be in dataCols, nor dimensionCols since they're empty
+    EXPECT_FALSE(spec.dataCols.count(0));
+    EXPECT_FALSE(spec.dataCols.count(1));
+    EXPECT_FALSE(spec.dataCols.count(2));
+    EXPECT_FALSE(spec.dimensionCols.count(0));
+    EXPECT_FALSE(spec.dimensionCols.count(1));
+    EXPECT_FALSE(spec.dimensionCols.count(2));
+}
+
 
 TEST_F(CSVParserTest, LoadVar) {
     string input = "A comment\n"
@@ -259,22 +589,22 @@ TEST_F(CSVParserTest, LoadVar) {
 
     ASSERT_EQ(3, v.rank());
     ASSERT_EQ((vector<unsigned>({2, 2, 3})), v.hypercube().dims());
-    ASSERT_EQ("foo", v.hypercube().xvectors[0].name);
-    ASSERT_EQ("A", str(v.hypercube().xvectors[0][0]));
-    ASSERT_EQ("B", str(v.hypercube().xvectors[0][1]));
-    ASSERT_EQ("bar", v.hypercube().xvectors[1].name);
-    ASSERT_EQ("A", str(v.hypercube().xvectors[1][0]));
-    ASSERT_EQ("B", str(v.hypercube().xvectors[1][1]));
-    ASSERT_EQ("foobar", v.hypercube().xvectors[2].name);
-    ASSERT_EQ("A", str(v.hypercube().xvectors[2][0]));
-    ASSERT_EQ("B", str(v.hypercube().xvectors[2][1]));
-    ASSERT_EQ("C", str(v.hypercube().xvectors[2][2]));
+    EXPECT_EQ("foo", v.hypercube().xvectors[0].name);
+    EXPECT_EQ("A", str(v.hypercube().xvectors[0][0]));
+    EXPECT_EQ("B", str(v.hypercube().xvectors[0][1]));
+    EXPECT_EQ("bar", v.hypercube().xvectors[1].name);
+    EXPECT_EQ("A", str(v.hypercube().xvectors[1][0]));
+    EXPECT_EQ("B", str(v.hypercube().xvectors[1][1]));
+    EXPECT_EQ("foobar", v.hypercube().xvectors[2].name);
+    EXPECT_EQ("A", str(v.hypercube().xvectors[2][0]));
+    EXPECT_EQ("B", str(v.hypercube().xvectors[2][1]));
+    EXPECT_EQ("C", str(v.hypercube().xvectors[2][2]));
     ASSERT_EQ(v.hypercube().dims(), v.tensorInit.hypercube().dims());
     ASSERT_EQ(12, v.tensorInit.size());
     // Using a loop for array comparison with tolerance
     vector<double> expected = {1.2, -3.1, 1, -1, 1.3, .2, 2, -1, -1.4, -5, 3, -1};
     for (size_t i = 0; i < expected.size(); ++i) {
-        ASSERT_NEAR(expected[i], v.tensorInit[i], 1e-4);
+        EXPECT_NEAR(expected[i], v.tensorInit[i], 1e-4);
     }
 }
 
@@ -303,21 +633,21 @@ TEST_F(CSVParserTest, EmbeddedNewline) {
 
     ASSERT_EQ(3, v.rank());
     ASSERT_EQ((vector<unsigned>({2, 2, 3})), v.hypercube().dims());
-    ASSERT_EQ("foo", v.hypercube().xvectors[0].name);
-    ASSERT_EQ("A", str(v.hypercube().xvectors[0][0]));
-    ASSERT_EQ("B", str(v.hypercube().xvectors[0][1]));
-    ASSERT_EQ("bar", v.hypercube().xvectors[1].name);
-    ASSERT_EQ("AB", str(v.hypercube().xvectors[1][0]));
-    ASSERT_EQ("B", str(v.hypercube().xvectors[1][1]));
-    ASSERT_EQ("foobar", v.hypercube().xvectors[2].name);
-    ASSERT_EQ("A", str(v.hypercube().xvectors[2][0]));
-    ASSERT_EQ("B", str(v.hypercube().xvectors[2][1]));
-    ASSERT_EQ("C", str(v.hypercube().xvectors[2][2]));
-    ASSERT_EQ(v.hypercube().dims(), v.tensorInit.hypercube().dims());
-    ASSERT_EQ(12, v.tensorInit.size());
+    EXPECT_EQ("foo", v.hypercube().xvectors[0].name);
+    EXPECT_EQ("A", str(v.hypercube().xvectors[0][0]));
+    EXPECT_EQ("B", str(v.hypercube().xvectors[0][1]));
+    EXPECT_EQ("bar", v.hypercube().xvectors[1].name);
+    EXPECT_EQ("AB", str(v.hypercube().xvectors[1][0]));
+    EXPECT_EQ("B", str(v.hypercube().xvectors[1][1]));
+    EXPECT_EQ("foobar", v.hypercube().xvectors[2].name);
+    EXPECT_EQ("A", str(v.hypercube().xvectors[2][0]));
+    EXPECT_EQ("B", str(v.hypercube().xvectors[2][1]));
+    EXPECT_EQ("C", str(v.hypercube().xvectors[2][2]));
+    EXPECT_EQ(v.hypercube().dims(), v.tensorInit.hypercube().dims());
+    EXPECT_EQ(12, v.tensorInit.size());
     vector<double> expected = {1.2, 3, 1, -1, 1.3, 2, 2, -1, 1000, 1, 3, -1};
     for (size_t i = 0; i < expected.size(); ++i) {
-        ASSERT_NEAR(expected[i], v.tensorInit[i], 1e-4);
+        EXPECT_NEAR(expected[i], v.tensorInit[i], 1e-4);
     }
 }
 
@@ -344,14 +674,14 @@ TEST_F(CSVParserTest, JanuaryDoubleDip) {
 
     ASSERT_EQ(2, v.rank());
     ASSERT_EQ((vector<unsigned>({2, 2})), v.hypercube().dims());
-    ASSERT_EQ("country", v.hypercube().xvectors[0].name);
-    ASSERT_EQ("Aus", str(v.hypercube().xvectors[0][0]));
-    ASSERT_EQ("UK", str(v.hypercube().xvectors[0][1]));
-    ASSERT_EQ("date", v.hypercube().xvectors[1].name);
-    ASSERT_EQ("2014-01-01T00:00:00", str(v.hypercube().xvectors[1][0]));
-    ASSERT_EQ("2014-02-01T00:00:00", str(v.hypercube().xvectors[1][1]));
-    ASSERT_EQ(v.hypercube().dims(), v.tensorInit.hypercube().dims());
-    ASSERT_EQ(4, v.tensorInit.size());
+    EXPECT_EQ("country", v.hypercube().xvectors[0].name);
+    EXPECT_EQ("Aus", str(v.hypercube().xvectors[0][0]));
+    EXPECT_EQ("UK", str(v.hypercube().xvectors[0][1]));
+    EXPECT_EQ("date", v.hypercube().xvectors[1].name);
+    EXPECT_EQ("2014-01-01T00:00:00", str(v.hypercube().xvectors[1][0]));
+    EXPECT_EQ("2014-02-01T00:00:00", str(v.hypercube().xvectors[1][1]));
+    EXPECT_EQ(v.hypercube().dims(), v.tensorInit.hypercube().dims());
+    EXPECT_EQ(4, v.tensorInit.size());
     vector<double> expected = {10, 10, -1, 20};
     for (size_t i = 0; i < expected.size(); ++i) {
         ASSERT_NEAR(expected[i], v.tensorInit[i], 1e-4);
@@ -381,13 +711,13 @@ TEST_F(CSVParserTest, DotTimeSep) {
 
     ASSERT_EQ(2, v.rank());
     ASSERT_EQ((vector<unsigned>({2, 3})), v.hypercube().dims());
-    ASSERT_EQ("country", v.hypercube().xvectors[0].name);
-    ASSERT_EQ("Aus", str(v.hypercube().xvectors[0][0]));
-    ASSERT_EQ("UK", str(v.hypercube().xvectors[0][1]));
-    ASSERT_EQ("date", v.hypercube().xvectors[1].name);
-    ASSERT_EQ("2014-01-01T00:00:00", str(v.hypercube().xvectors[1][0]));
-    ASSERT_EQ("2014-02-01T00:00:00", str(v.hypercube().xvectors[1][1]));
-    ASSERT_EQ("2014-10-01T00:00:00", str(v.hypercube().xvectors[1][2]));
+    EXPECT_EQ("country", v.hypercube().xvectors[0].name);
+    EXPECT_EQ("Aus", str(v.hypercube().xvectors[0][0]));
+    EXPECT_EQ("UK", str(v.hypercube().xvectors[0][1]));
+    EXPECT_EQ("date", v.hypercube().xvectors[1].name);
+    EXPECT_EQ("2014-01-01T00:00:00", str(v.hypercube().xvectors[1][0]));
+    EXPECT_EQ("2014-02-01T00:00:00", str(v.hypercube().xvectors[1][1]));
+    EXPECT_EQ("2014-10-01T00:00:00", str(v.hypercube().xvectors[1][2]));
     ASSERT_EQ(v.hypercube().dims(), v.tensorInit.hypercube().dims());
     ASSERT_EQ(6, v.tensorInit.size());
     vector<double> expected = {10, -1, -1, 10, -1, 20};
@@ -419,21 +749,21 @@ TEST_F(CSVParserTest, LoadVarSpace) {
 
     ASSERT_EQ(3, v.rank());
     ASSERT_EQ((vector<unsigned>({2, 2, 3})), v.hypercube().dims());
-    ASSERT_EQ("foo", v.hypercube().xvectors[0].name);
-    ASSERT_EQ("A", str(v.hypercube().xvectors[0][0]));
-    ASSERT_EQ("B", str(v.hypercube().xvectors[0][1]));
-    ASSERT_EQ("bar", v.hypercube().xvectors[1].name);
-    ASSERT_EQ("A", str(v.hypercube().xvectors[1][0]));
-    ASSERT_EQ("B", str(v.hypercube().xvectors[1][1]));
-    ASSERT_EQ("foobar", v.hypercube().xvectors[2].name);
-    ASSERT_EQ("A", str(v.hypercube().xvectors[2][0]));
-    ASSERT_EQ("B", str(v.hypercube().xvectors[2][1]));
-    ASSERT_EQ("C", str(v.hypercube().xvectors[2][2]));
+    EXPECT_EQ("foo", v.hypercube().xvectors[0].name);
+    EXPECT_EQ("A", str(v.hypercube().xvectors[0][0]));
+    EXPECT_EQ("B", str(v.hypercube().xvectors[0][1]));
+    EXPECT_EQ("bar", v.hypercube().xvectors[1].name);
+    EXPECT_EQ("A", str(v.hypercube().xvectors[1][0]));
+    EXPECT_EQ("B", str(v.hypercube().xvectors[1][1]));
+    EXPECT_EQ("foobar", v.hypercube().xvectors[2].name);
+    EXPECT_EQ("A", str(v.hypercube().xvectors[2][0]));
+    EXPECT_EQ("B", str(v.hypercube().xvectors[2][1]));
+    EXPECT_EQ("C", str(v.hypercube().xvectors[2][2]));
     ASSERT_EQ(v.hypercube().dims(), v.tensorInit.hypercube().dims());
     ASSERT_EQ(12, v.tensorInit.size());
     vector<double> expected = {1.2, 3, 1, -1, 1.3, 2, 2, -1, 1.4, 1, 3, -1};
     for (size_t i = 0; i < expected.size(); ++i) {
-        ASSERT_NEAR(expected[i], v.tensorInit[i], 1e-4);
+        EXPECT_NEAR(expected[i], v.tensorInit[i], 1e-4);
     }
 }
 
@@ -457,50 +787,50 @@ TEST_F(CSVParserTest, DuplicateActions) {
     VariableValue v(VariableType::parameter);
     {
         istringstream is(input);
-        ASSERT_THROW(loadValueFromCSVFile(v, is, spec), std::exception);
+        EXPECT_THROW(loadValueFromCSVFile(v, is, spec), std::exception);
     }
 
     {
         istringstream is(input);
         spec.duplicateKeyAction = DataSpec::sum; // Use enum value
         loadValueFromCSVFile(v, is, spec);
-        ASSERT_NEAR(2.2, v.tensorInit[0], 1e-9);
+        EXPECT_NEAR(2.2, v.tensorInit[0], 1e-9);
     }
 
     {
         istringstream is(input);
         spec.duplicateKeyAction = DataSpec::product; // Use enum value
         loadValueFromCSVFile(v, is, spec);
-        ASSERT_NEAR(1.2, v.tensorInit[0], 1e-9);
+        EXPECT_NEAR(1.2, v.tensorInit[0], 1e-9);
     }
 
     {
         istringstream is(input);
         spec.duplicateKeyAction = DataSpec::min; // Use enum value
         loadValueFromCSVFile(v, is, spec);
-        ASSERT_NEAR(1, v.tensorInit[0], 1e-9);
+        EXPECT_NEAR(1, v.tensorInit[0], 1e-9);
     }
 
     {
         istringstream is(input);
         spec.duplicateKeyAction = DataSpec::max; // Use enum value
         loadValueFromCSVFile(v, is, spec);
-        ASSERT_NEAR(1.2, v.tensorInit[0], 1e-9);
+        EXPECT_NEAR(1.2, v.tensorInit[0], 1e-9);
     }
 
     {
         istringstream is(input);
         spec.duplicateKeyAction = DataSpec::av; // Use enum value
         loadValueFromCSVFile(v, is, spec);
-        ASSERT_NEAR(1.1, v.tensorInit[0], 1e-9);
+        EXPECT_NEAR(1.1, v.tensorInit[0], 1e-9);
     }
 }
 
 TEST_F(CSVParserTest, ToggleDimensions) {
     spec.toggleDimension(2);
-    ASSERT_EQ(1, spec.dimensionCols.count(2));
+    EXPECT_EQ(1, spec.dimensionCols.count(2));
     spec.toggleDimension(2);
-    ASSERT_EQ(0, spec.dimensionCols.count(2));
+    EXPECT_EQ(0, spec.dimensionCols.count(2));
 }
 
 TEST(CSVParserIndependentTest, GuessFromVariableExport) {
@@ -534,7 +864,7 @@ TEST(CSVParserIndependentTest, GuessFromVariableExport) {
     ASSERT_EQ(newV.hypercube().xvectors, v.hypercube().xvectors);
     ASSERT_EQ(v.size(), newV.size());
     for (size_t i = 0; i < v.size(); ++i)
-        ASSERT_NEAR(v[i], newV.tensorInit[i], 0.001 * v[1]); // Assuming v[1] is representative and non-zero
+        EXPECT_NEAR(v[i], newV.tensorInit[i], 0.001 * v[1]); // Assuming v[1] is representative and non-zero
 
     // Clean up the created file
     boost::filesystem::remove(filename);
@@ -550,32 +880,32 @@ string testEscapeDoubledQuotes(string x) {
 }
 
 TEST(CSVParserIndependentTest, EscapeDoubledQuotes) {
-    ASSERT_EQ("foo", testEscapeDoubledQuotes("foo"));
-    ASSERT_EQ("'foo'", testEscapeDoubledQuotes("'foo'"));
-    ASSERT_EQ("&'foo&'", testEscapeDoubledQuotes("''foo''"));                 // not strictly CSV standard
-    ASSERT_EQ("'&'foo&''", testEscapeDoubledQuotes("'''foo'''"));
-    ASSERT_EQ("'&'&''", testEscapeDoubledQuotes("''''''"));
-    ASSERT_EQ("'fo&'o'", testEscapeDoubledQuotes("'fo''o'"));
-    ASSERT_EQ("foo,bar", testEscapeDoubledQuotes("foo,bar"));
-    ASSERT_EQ("'foo','bar'", testEscapeDoubledQuotes("'foo','bar'"));
-    ASSERT_EQ("&'foo&',&'bar&'", testEscapeDoubledQuotes("''foo'',''bar''")); // not strictly CSV standard
-    ASSERT_EQ("'&'foo&'','&'bar&''", testEscapeDoubledQuotes("'''foo''','''bar'''"));
-    ASSERT_EQ("'fo&'o','b&'ar'", testEscapeDoubledQuotes("'fo''o','b''ar'"));
+    EXPECT_EQ("foo", testEscapeDoubledQuotes("foo"));
+    EXPECT_EQ("'foo'", testEscapeDoubledQuotes("'foo'"));
+    EXPECT_EQ("&'foo&'", testEscapeDoubledQuotes("''foo''"));                 // not strictly CSV standard
+    EXPECT_EQ("'&'foo&''", testEscapeDoubledQuotes("'''foo'''"));
+    EXPECT_EQ("'&'&''", testEscapeDoubledQuotes("''''''"));
+    EXPECT_EQ("'fo&'o'", testEscapeDoubledQuotes("'fo''o'"));
+    EXPECT_EQ("foo,bar", testEscapeDoubledQuotes("foo,bar"));
+    EXPECT_EQ("'foo','bar'", testEscapeDoubledQuotes("'foo','bar'"));
+    EXPECT_EQ("&'foo&',&'bar&'", testEscapeDoubledQuotes("''foo'',''bar''")); // not strictly CSV standard
+    EXPECT_EQ("'&'foo&'','&'bar&''", testEscapeDoubledQuotes("'''foo''','''bar'''"));
+    EXPECT_EQ("'fo&'o','b&'ar'", testEscapeDoubledQuotes("'fo''o','b''ar'"));
 }
 
 TEST(CSVParserIndependentTest, IsNumerical) {
-    ASSERT_TRUE(isNumerical(""));
-    ASSERT_TRUE(isNumerical("1.2"));
-    ASSERT_TRUE(isNumerical("'1.2'"));
-    ASSERT_TRUE(isNumerical("-1.2"));
-    ASSERT_TRUE(isNumerical("1e2"));
-    ASSERT_TRUE(isNumerical("NaN"));
-    ASSERT_TRUE(isNumerical("nan"));
-    ASSERT_TRUE(isNumerical("inf"));
-    ASSERT_TRUE(isNumerical("inf"));
+    EXPECT_TRUE(isNumerical(""));
+    EXPECT_TRUE(isNumerical("1.2"));
+    EXPECT_TRUE(isNumerical("'1.2'"));
+    EXPECT_TRUE(isNumerical("-1.2"));
+    EXPECT_TRUE(isNumerical("1e2"));
+    EXPECT_TRUE(isNumerical("NaN"));
+    EXPECT_TRUE(isNumerical("nan"));
+    EXPECT_TRUE(isNumerical("inf"));
+    EXPECT_TRUE(isNumerical("inf"));
     // leading nonumerical strings are considered non-numerical, but
     // will be parsed as numbers anyway if in data column
-    ASSERT_FALSE(isNumerical("$100"));
-    ASSERT_FALSE(isNumerical("£100"));
-    ASSERT_FALSE(isNumerical("hello"));
+    EXPECT_FALSE(isNumerical("$100"));
+    EXPECT_FALSE(isNumerical("£100"));
+    EXPECT_FALSE(isNumerical("hello"));
 }
