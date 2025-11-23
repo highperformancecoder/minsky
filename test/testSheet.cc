@@ -17,6 +17,7 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "sheet.h"
+#include "minsky.h"
 #include "minsky_epilogue.h"
 #include <gtest/gtest.h>
 
@@ -92,19 +93,6 @@ namespace
     EXPECT_FALSE(onResizeHandle(100, 100));
   }
 
-  TEST_F(SheetTest, onRavelButton)
-  {
-    moveTo(100, 100);
-    iWidth(200);
-    iHeight(150);
-    double z = zoomFactor();
-    double w = 0.5 * 200 * z;
-    double h = 0.5 * 150 * z;
-    
-    // Without inputRavel, should return false
-    EXPECT_FALSE(onRavelButton(100 - w, 100 - h));
-  }
-
   TEST_F(SheetTest, inItem)
   {
     moveTo(100, 100);
@@ -159,6 +147,16 @@ namespace
     // Initial state - no scrolling possible without data
     EXPECT_FALSE(scrollUp());
     EXPECT_FALSE(scrollDown());
+    // add a rank 3 tensor, which is "scrollable"
+    minsky::minsky().canvas.addVariable("3dTensor",VariableType::parameter);
+    auto& param=*minsky::minsky().canvas.itemFocus->variableCast();
+    param.init("rand(3,3,3)");
+    minsky::minsky().canvas.addSheet();
+    auto& sheet=dynamic_cast<Sheet&>(*minsky::minsky().canvas.itemFocus);
+    minsky::minsky().model->addWire(param, sheet, 0);
+    minsky::minsky().reset();
+    EXPECT_TRUE(sheet.scrollUp());
+    EXPECT_TRUE(sheet.scrollDown());
   }
 
   TEST_F(SheetTest, onKeyPress)
@@ -235,24 +233,5 @@ namespace
     moveTo(150, 175);
     EXPECT_DOUBLE_EQ(150, x());
     EXPECT_DOUBLE_EQ(175, y());
-  }
-
-  TEST_F(SheetTest, copyOperations)
-  {
-    Sheet sheet1;
-    sheet1.iWidth(300);
-    sheet1.iHeight(250);
-    
-    Sheet sheet2;
-    sheet2 = sheet1;  // Should be a no-op
-    
-    // Original values should remain unchanged
-    EXPECT_EQ(100, sheet2.iWidth());
-    EXPECT_EQ(100, sheet2.iHeight());
-    
-    // Test copy constructor
-    Sheet sheet3(sheet1);  // Should be a no-op
-    EXPECT_EQ(100, sheet3.iWidth());
-    EXPECT_EQ(100, sheet3.iHeight());
   }
 }

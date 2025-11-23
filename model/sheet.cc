@@ -132,7 +132,7 @@ bool Sheet::contains(float x, float y) const
 
 bool Sheet::scrollUp()
 {
-  if (scrollOffset+scrollDelta<scrollMax)
+  if (scrollDelta && scrollOffset+scrollDelta<scrollMax)
     {
       scrollOffset+=scrollDelta;
       setSliceIndicator();
@@ -143,7 +143,7 @@ bool Sheet::scrollUp()
 
 bool Sheet::scrollDown()
 {
-  if (scrollOffset>scrollDelta)
+  if (scrollDelta && scrollOffset>=scrollDelta)
     {
       scrollOffset-=scrollDelta;
       setSliceIndicator();
