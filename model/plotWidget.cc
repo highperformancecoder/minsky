@@ -74,9 +74,6 @@ namespace minsky
     legendLeft=0.1; // override ecolab's default value
     legendSide=boundingBox;
     addPorts();
-    
-    yvars.resize(2*m_numLines);
-    xvars.resize(m_numLines);
   }
 
   void PlotWidget::addPorts()
