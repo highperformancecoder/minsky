@@ -37,6 +37,12 @@ namespace
       iHeight(150);
       moveTo(100, 100);
     }
+    
+    void TearDown() override
+    {
+      // Clean up global minsky state after each test
+      minsky::minsky().clearAllMaps();
+    }
   };
 
   TEST_F(SheetTest, construction)
