@@ -102,7 +102,7 @@ namespace minsky
       EXPECT_EQ(5u, numLines());
       
       // Check that yvars and xvars are resized appropriately
-      EXPECT_EQ(4*numLines()+nBoundsPorts, portsSize()); // 2*numLines
+      EXPECT_EQ(4*numLines()+nBoundsPorts, portsSize());
     }
 
     TEST_F(PlotWidgetTest, barWidth)
@@ -154,7 +154,6 @@ namespace minsky
     TEST_F(PlotWidgetTest, clickTypeOnItem)
     {
       // Test clickType returns onItem when clicking inside the widget
-      const double z = Item::zoomFactor();
       EXPECT_EQ(ClickType::onPort, clickType(0, 0));  // Ports have not been moved into position yet (requires draw)
       EXPECT_EQ(ClickType::onItem, clickType(10, 10));
     }
@@ -318,8 +317,6 @@ namespace minsky
     TEST_F(PlotWidgetTest, numLinesWithPorts)
     {
       // Test that changing numLines updates port count
-      size_t initialPortCount = m_ports.size();
-      
       numLines(3);
       
       // Port count should change: nBoundsPorts + 4*numLines
