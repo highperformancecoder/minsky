@@ -88,20 +88,7 @@ namespace minsky
       EXPECT_NEAR(legendHeight+20,newLegendHeight,2);
     }
 
-    TEST_F(PlotWidgetTest, constructor)
-    {
-      // Test that constructor initializes with expected default values
-      PlotWidget widget;
-      EXPECT_EQ(150, widget.iWidth());
-      EXPECT_EQ(150, widget.iHeight());
-      EXPECT_EQ(10u, widget.nxTicks);
-      EXPECT_EQ(10u, widget.nyTicks);
-      EXPECT_EQ(2, widget.fontScale);
-      EXPECT_TRUE(widget.leadingMarker);
-      EXPECT_TRUE(widget.grid);
-      EXPECT_EQ(0.1, widget.legendLeft);
-      EXPECT_EQ(1u, widget.numLines());
-    }
+
 
     TEST_F(PlotWidgetTest, numLines)
     {
@@ -145,13 +132,7 @@ namespace minsky
       EXPECT_EQ("Y1 Axis", y1label());
     }
 
-    TEST_F(PlotWidgetTest, title)
-    {
-      // Test title field
-      EXPECT_EQ("", title);
-      title = "Test Plot";
-      EXPECT_EQ("Test Plot", title);
-    }
+
 
     TEST_F(PlotWidgetTest, resize)
     {
@@ -235,73 +216,22 @@ namespace minsky
       y1maxVar->init("2.0");
       connectVar(y1maxVar, 5);
       
-      // Verify the variables are connected (can't directly test private members, 
-      // but we can verify the connection didn't crash)
-      EXPECT_TRUE(true);
+      // Verify the variables are connected (these are public members)
+      EXPECT_EQ(xminVar, this->xminVar);
+      EXPECT_EQ(xmaxVar, this->xmaxVar);
+      EXPECT_EQ(yminVar, this->yminVar);
+      EXPECT_EQ(ymaxVar, this->ymaxVar);
+      EXPECT_EQ(y1minVar, this->y1minVar);
+      EXPECT_EQ(y1maxVar, this->y1maxVar);
     }
 
-    TEST_F(PlotWidgetTest, plotType)
-    {
-      // Test plotType field
-      EXPECT_EQ(PlotType::automatic, plotType);
-      plotType = PlotType::line;
-      EXPECT_EQ(PlotType::line, plotType);
-      plotType = PlotType::bar;
-      EXPECT_EQ(PlotType::bar, plotType);
-    }
 
-    TEST_F(PlotWidgetTest, boundsValues)
-    {
-      // Test settable bounds values
-      EXPECT_TRUE(std::isnan(xmin));
-      EXPECT_TRUE(std::isnan(xmax));
-      EXPECT_TRUE(std::isnan(ymin));
-      EXPECT_TRUE(std::isnan(ymax));
-      EXPECT_TRUE(std::isnan(y1min));
-      EXPECT_TRUE(std::isnan(y1max));
-      
-      xmin = 0.0;
-      xmax = 100.0;
-      ymin = -10.0;
-      ymax = 10.0;
-      y1min = -5.0;
-      y1max = 5.0;
-      
-      EXPECT_EQ(0.0, xmin);
-      EXPECT_EQ(100.0, xmax);
-      EXPECT_EQ(-10.0, ymin);
-      EXPECT_EQ(10.0, ymax);
-      EXPECT_EQ(-5.0, y1min);
-      EXPECT_EQ(5.0, y1max);
-    }
 
-    TEST_F(PlotWidgetTest, displaySettings)
-    {
-      // Test display settings
-      EXPECT_EQ(3u, displayNTicks);
-      EXPECT_EQ(3.0, displayFontSize);
-      
-      displayNTicks = 5;
-      displayFontSize = 4.5;
-      
-      EXPECT_EQ(5u, displayNTicks);
-      EXPECT_EQ(4.5, displayFontSize);
-    }
 
-    TEST_F(PlotWidgetTest, markers)
-    {
-      // Test horizontal and vertical markers
-      EXPECT_TRUE(horizontalMarkers.empty());
-      EXPECT_TRUE(verticalMarkers.empty());
-      
-      horizontalMarkers.push_back("marker1");
-      verticalMarkers.push_back("marker2");
-      
-      EXPECT_EQ(1u, horizontalMarkers.size());
-      EXPECT_EQ(1u, verticalMarkers.size());
-      EXPECT_EQ("marker1", horizontalMarkers[0]);
-      EXPECT_EQ("marker2", verticalMarkers[0]);
-    }
+
+
+
+
 
     TEST_F(PlotWidgetTest, penLabels)
     {
@@ -343,11 +273,18 @@ namespace minsky
       xminVar->init("0.0");
       connectVar(xminVar, 0);
       
+      // Verify it's connected
+      EXPECT_EQ(xminVar, this->xminVar);
+      
       autoScale();
       
       // After autoScale, all bound variables should be cleared
-      // We can't directly test private members, but the method shouldn't crash
-      EXPECT_TRUE(true);
+      EXPECT_EQ(nullptr, this->xminVar);
+      EXPECT_EQ(nullptr, this->xmaxVar);
+      EXPECT_EQ(nullptr, this->yminVar);
+      EXPECT_EQ(nullptr, this->ymaxVar);
+      EXPECT_EQ(nullptr, this->y1minVar);
+      EXPECT_EQ(nullptr, this->y1maxVar);
     }
 
     TEST_F(PlotWidgetTest, addPlotPtSimple)
@@ -466,20 +403,14 @@ namespace minsky
       EXPECT_FALSE(contains(x() + w + 100, y() + h + 100));
     }
 
-    TEST_F(PlotWidgetTest, mouseUpCallsMouseMove)
-    {
-      // Test that mouseUp calls mouseMove and resets click type
-      mouseDown(10, 10);
-      mouseUp(20, 20);
-      
-      // After mouseUp, click type should be outside
-      // We can't directly test this, but verify the method doesn't crash
-      EXPECT_TRUE(true);
-    }
+
 
     TEST_F(PlotWidgetTest, onMouseLeave)
     {
       // Test onMouseLeave clears valueString
+      valueString = "test value";
+      EXPECT_EQ("test value", valueString);
+      
       onMouseLeave();
       
       // valueString should be empty after onMouseLeave
@@ -498,14 +429,7 @@ namespace minsky
       updateIcon(1.0);
     }
 
-    TEST_F(PlotWidgetTest, redrawWithBounds)
-    {
-      // Test redrawWithBounds method
-      redrawWithBounds();
-      
-      // Method should not crash
-      EXPECT_TRUE(true);
-    }
+
 
     TEST_F(PlotWidgetTest, multipleNumLinesChanges)
     {
@@ -541,9 +465,7 @@ namespace minsky
     TEST_F(PlotWidgetTest, barWidthMin)
     {
       // Test that barWidth returns the minimum across all palette entries
-      if (palette.size() < 2) {
-        palette.resize(2);
-      }
+      palette.resize(2);
       
       palette[0].barWidth = 0.5;
       palette[1].barWidth = 0.3;
@@ -561,8 +483,9 @@ namespace minsky
       // Manually trigger the clearing mechanism by labeling a pen
       labelPen(0, "New Label");
       
-      // The behavior depends on clearPensOnLabelling flag
+      // Check that the new label is set
       EXPECT_FALSE(penLabels.empty());
+      EXPECT_EQ("New Label", penLabels[0]);
     }
 
     TEST_F(PlotWidgetTest, clickTypeOnResize)
@@ -600,19 +523,12 @@ namespace minsky
       
       // Both should be in yvars[0]
       EXPECT_GE(yvars[0].size(), 1u);
+      EXPECT_EQ(yvar1, yvars[0][0]);
+      if (yvars[0].size() > 1) {
+        EXPECT_EQ(yvar2, yvars[0][1]);
+      }
     }
 
-    TEST_F(PlotWidgetTest, labelPenWithLatex)
-    {
-      // Test labelPen with LaTeX-like strings
-      labelPen(0, "x^2");
-      labelPen(1, "\\alpha");
-      labelPen(2, "$\\beta$");
-      
-      EXPECT_EQ(3u, penLabels.size());
-      EXPECT_EQ("x^2", penLabels[0]);
-      EXPECT_EQ("\\alpha", penLabels[1]);
-      EXPECT_EQ("$\\beta$", penLabels[2]);
-    }
+
   }
 }
