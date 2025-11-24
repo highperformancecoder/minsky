@@ -484,7 +484,7 @@ namespace minsky
       labelPen(0, "New Label");
       
       // Check that the new label is set
-      EXPECT_FALSE(penLabels.empty());
+      ASSERT_FALSE(penLabels.empty());
       EXPECT_EQ("New Label", penLabels[0]);
     }
 
@@ -522,11 +522,10 @@ namespace minsky
       connectVar(yvar2, PlotWidget::nBoundsPorts);
       
       // Both should be in yvars[0]
-      EXPECT_GE(yvars[0].size(), 1u);
+      ASSERT_FALSE(yvars.empty());
+      ASSERT_GE(yvars[0].size(), 2u);
       EXPECT_EQ(yvar1, yvars[0][0]);
-      if (yvars[0].size() > 1) {
-        EXPECT_EQ(yvar2, yvars[0][1]);
-      }
+      EXPECT_EQ(yvar2, yvars[0][1]);
     }
 
 
