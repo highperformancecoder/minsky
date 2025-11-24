@@ -188,6 +188,6 @@ namespace
     minsky::minsky().reset();
     
     // Check that sliceIndicator is set to something useful
-    EXPECT_FALSE(sheet.sliceIndicator.empty());
+    EXPECT_FALSE(sheet.setSliceIndicator().empty());
   }
 }

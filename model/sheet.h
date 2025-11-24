@@ -67,7 +67,8 @@ namespace minsky
     bool scrollUp();
     bool scrollDown();
     bool onKeyPress(int keySym, const std::string& utf8, int state) override;
-    void setSliceIndicator();
+    /// @return sliceIndicator
+    const std::string& setSliceIndicator();
     
     void draw(cairo_t* cairo) const override;
     
