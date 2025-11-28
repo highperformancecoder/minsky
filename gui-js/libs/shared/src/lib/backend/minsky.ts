@@ -2084,7 +2084,7 @@ export class Sheet extends Item {
   async onResizeHandle(a1: number,a2: number): Promise<boolean> {return this.$callMethod('onResizeHandle',a1,a2);}
   async scrollDown(): Promise<boolean> {return this.$callMethod('scrollDown');}
   async scrollUp(): Promise<boolean> {return this.$callMethod('scrollUp');}
-  async setSliceIndicator(): Promise<void> {return this.$callMethod('setSliceIndicator');}
+  async setSliceIndicator(): Promise<string> {return this.$callMethod('setSliceIndicator');}
   async showColSlice(...args: string[]): Promise<string> {return this.$callMethod('showColSlice',...args);}
   async showRavel(...args: boolean[]): Promise<boolean> {return this.$callMethod('showRavel',...args);}
   async showRowSlice(...args: string[]): Promise<string> {return this.$callMethod('showRowSlice',...args);}
