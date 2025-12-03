@@ -96,7 +96,6 @@ export class ApplicationMenuManager {
               url: `#/headless/menu/file/about`,
               modal: false,
             });
-            shell.beep();
           },
         },
         {
