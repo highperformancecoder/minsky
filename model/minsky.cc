@@ -1110,7 +1110,10 @@ namespace minsky
                          (*i)->updateBoundingBox();
                          return false;
                        });
+    // disable autosaving on loading a model from storage
+    auto stashedAutoSaver=std::move(autoSaver);
     pushHistory();
+    autoSaver=std::move(stashedAutoSaver);
   }
 
   void Minsky::exportSchema(const string& filename, int schemaLevel)
@@ -1275,7 +1278,7 @@ namespace minsky
   bool Minsky::pushHistory()
   {
     // do not pushHistory after undo or redo
-    if (undone)
+    if (undone || !doPushHistory)
       return undone=false;
 
     // go via a schema object, as serialising minsky::Minsky has
@@ -1283,16 +1286,12 @@ namespace minsky
     schema3::Minsky m(*this, false /* don't pack tensor data */);
     pack_t buf;
     buf<<m;
-    if (history.empty())
-      {
-        history.emplace_back();
-        buf.swap(history.back());
-        historyPtr=history.size();
-        return true;
-      }
     while (history.size()>maxHistory)
       history.pop_front();
-    if (history.empty() || history.back().size()!=buf.size() || memcmp(buf.data(), history.back().data(), buf.size())!=0)
+    bool stashState=history.empty();
+    if (!stashState &&
+        (history.back().size()!=buf.size() ||
+         memcmp(buf.data(), history.back().data(), buf.size())!=0))
       {
         // check XML versions differ (slower)
         ostringstream prev, curr;
@@ -1301,33 +1300,34 @@ namespace minsky
         schema3::Minsky previousMinsky;
         history.back().reseto()>>previousMinsky;
         xml_pack(prevXbuf,"Minsky",previousMinsky);
-
-        if (curr.str()!=prev.str())
-          {
-            // This bit of code outputs an XML representation that can be
-            //        used for debugging issues related to unnecessary
-            //        history pushes.
-            //buf.reseto()>>m;
-            //xml_pack_t tb(cout);
-            //tb.prettyPrint=true;
-            //xml_pack(tb,"Minsky",m); 
-            //cout<<"------"<<endl;
-            history.emplace_back();
-            buf.swap(history.back());
-            historyPtr=history.size();
-            if (autoSaver && doPushHistory)
-              try
-                {
-                  //autoSaver->packer.prettyPrint=true;
-                  autoSaver->save(m);
-                }
-              catch (...)
-                {
-                  autoSaver.reset();
-                  throw;
-                }
-            return true;
-          }
+        stashState|=curr.str()!=prev.str();
+      }
+        
+    if (stashState)
+      {
+        // This bit of code outputs an XML representation that can be
+        //        used for debugging issues related to unnecessary
+        //        history pushes.
+        //buf.reseto()>>m;
+        //xml_pack_t tb(cout);
+        //tb.prettyPrint=true;
+        //xml_pack(tb,"Minsky",m); 
+        //cout<<"------"<<endl;
+        history.emplace_back();
+        buf.swap(history.back());
+        historyPtr=history.size();
+        if (autoSaver)
+          try
+            {
+              //autoSaver->packer.prettyPrint=true;
+              autoSaver->save(m);
+            }
+          catch (...)
+            {
+              autoSaver.reset();
+              throw;
+            }
+        return true;
       }
     historyPtr=history.size();
     return false;

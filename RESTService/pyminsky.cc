@@ -20,6 +20,7 @@
 // TODO figure out how to switch buffer types... For now, use JSON
 //#define REST_PROCESS_BUFFER classdesc::PythonBuffer
 #include "minsky.h"
+#include "CSVTools.xcd"
 #include "minsky_epilogue.h"
 #include "pythonBuffer.h"
 

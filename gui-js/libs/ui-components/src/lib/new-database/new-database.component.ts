@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, SimpleChanges } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { FormsModule, } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
@@ -6,8 +6,8 @@ import { events, Functions} from '@minsky/shared';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatButtonModule } from '@angular/material/button';
 import { MatOptionModule } from '@angular/material/core';
-import { OpenDialogOptions, SaveDialogOptions } from 'electron';
-
+import { OpenDialogOptions } from 'electron';
+ 
 @Component({
     selector: 'new-database',
     templateUrl: './new-database.html',

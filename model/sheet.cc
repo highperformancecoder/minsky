@@ -132,7 +132,7 @@ bool Sheet::contains(float x, float y) const
 
 bool Sheet::scrollUp()
 {
-  if (scrollOffset+scrollDelta<scrollMax)
+  if (scrollDelta && scrollOffset+scrollDelta<scrollMax)
     {
       scrollOffset+=scrollDelta;
       setSliceIndicator();
@@ -143,7 +143,7 @@ bool Sheet::scrollUp()
 
 bool Sheet::scrollDown()
 {
-  if (scrollOffset>scrollDelta)
+  if (scrollDelta && scrollOffset>=scrollDelta)
     {
       scrollOffset-=scrollDelta;
       setSliceIndicator();
@@ -172,13 +172,14 @@ namespace {
   }
 }
 
-void Sheet::setSliceIndicator()
+const string& Sheet::setSliceIndicator()
 {
-  if (!value || value->rank()<=2) return;
+  if (!value || value->rank()<=2) return sliceIndicator="";
   auto idx=value->hypercube().splitIndex(scrollOffset);
   sliceIndicator=formattedStr(value->hypercube().xvectors[2], idx[2]);
   for (size_t i=3; i<idx.size(); ++i)
     sliceIndicator+=" | "+formattedStr(value->hypercube().xvectors[i], idx[i]);
+  return sliceIndicator;
 }
 
 namespace
