@@ -17,7 +17,7 @@ NB unfortunately, the XCode command line tools package is out of date, so you wi
      
 - Currently, Mac builds are done on a High Sierra virtual machine, and the binary packages for High Sierra are used, so that is the mininum OS version for the MacOSX Minsky release. Arm64 builds are done on Ventura for the same reason.
 - Ports installs of Python do not create a python3 package for pkg-config, rather they are a more specific name like python-3.12.pc. Use find to find the location of the specific .pc file, and link it to python3.pc in the same place, which will allow python builds to work.
-- If you have HomeBrew installed, it's utilities may conflict with that of MacPorts. To avoid problems in that case, iit is useful to add the MacPorts bin directory to the front of the PATH variable:
+- If you have HomeBrew installed, its utilities may conflict with that of MacPorts. To avoid problems in that case, it is useful to add the MacPorts bin directory to the front of the PATH variable:
 ~~~~
 export PATH=/opt/local/bin:$PATH
 ~~~~
