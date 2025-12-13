@@ -81,7 +81,13 @@ LINK=$(CPLUSPLUS)
 endif
 endif
 
-MAKEOVERRIDES+=FPIC=1 CLASSDESC=$(shell pwd)/ecolab/classdesc/classdesc EXTRA_FLAGS="-I$(shell pwd)/ecolab/include -DCIVITA_ALLOCATOR=civita::LibCAllocator" CPLUSPLUS="$(CPLUSPLUS)" GCOV=$(GCOV)
+EXTRA_FLAGS=-I$(shell pwd)/ecolab/include -DCIVITA_ALLOCATOR=civita::LibCAllocator
+ifdef CPUPROFILE
+EXTRA_FLAGS+=-g
+endif
+
+MAKEOVERRIDES+=FPIC=1 CLASSDESC=$(shell pwd)/ecolab/classdesc/classdesc EXTRA_FLAGS="$(EXTRA_FLAGS)" CPLUSPLUS="$(CPLUSPLUS)" GCOV=$(GCOV)
+$(warning $(MAKEOVERRIDES))
 ifneq ($(MAKECMDGOALS),clean)
 build_ravelcapi:=$(shell cd RavelCAPI; if  $(MAKE) $(JOBS) $(MAKEOVERRIDES)  >build.log 2>&1; then echo "ravelcapi built"; fi) 
 $(warning $(build_ravelcapi))
