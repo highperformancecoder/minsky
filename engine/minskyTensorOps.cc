@@ -1560,24 +1560,24 @@ namespace minsky
     double operator[](size_t i) const override {
       if (chainChecked)
         return chain.empty()? nan(""): (*chain.back())[i];
-      else
-        { // first time through since reset, check the chain doesn't change
-          lock_guard lock(chainMutex); // mutex rather than critical, for possible rescursion
-          double v=nan("");
-          if (!chain.empty())
+      // first time through since reset, check the chain doesn't change
+      lock_guard lock(chainMutex); // mutex rather than critical, for possible rescursion
+      if (chainChecked) // in case we were waiting on another thread at the mutex
+        return chain.empty()? nan(""): (*chain.back())[i];
+      double v=nan("");
+      if (!chain.empty())
+        {
+          v=(*chain.back())[i];
+          if (m_timestamp<chain.back()->timestamp())
             {
+              const_cast<Ravel&>(ravel).populateHypercube(arg->hypercube());
+              chain=ravel::createRavelChain(ravel.getState(), arg);
+              m_timestamp=Timestamp::clock::now();
+              chainChecked=true;
               v=(*chain.back())[i];
-              if (m_timestamp<chain.back()->timestamp())
-                {
-                  const_cast<Ravel&>(ravel).populateHypercube(arg->hypercube());
-                  chain=ravel::createRavelChain(ravel.getState(), arg);
-                  m_timestamp=Timestamp::clock::now();
-                  chainChecked=true;
-                  v=(*chain.back())[i];
-                }
             }
-          return v;
         }
+      return v;
     }
     size_t size() const override {return chain.empty()? 1: chain.back()->size();}
     const Index& index() const override
