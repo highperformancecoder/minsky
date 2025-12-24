@@ -2,6 +2,8 @@
 
 SF_WEB=hpcoder@web.sourceforge.net:/home/project-web/minsky/htdocs
 
+OPENMP=1
+
 # location of TCL and TK libraries 
 TCL_PREFIX=$(shell grep TCL_PREFIX $(call search,lib*/tclConfig.sh) | cut -f2 -d\')
 TCL_VERSION=$(shell grep TCL_VERSION $(call search,lib*/tclConfig.sh) | cut -f2 -d\')
