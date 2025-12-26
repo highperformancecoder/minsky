@@ -189,31 +189,38 @@ export class ContextMenuManager {
   }
 
   private static async leftMouseGodley(mainWindow: BrowserWindow) {
-    const itemInfo = await CommandsManager.getItemInfo(this.x, this.y);
-    if(itemInfo?.classType === ClassType.GodleyIcon) {
-      let godley=new GodleyIcon(minsky.canvas.item);
-      minsky.nameCurrentItem(await godley.id());
-      const editorModeChecked = await godley.editorMode();
+    try {
+      const itemInfo = await CommandsManager.getItemInfo(this.x, this.y);
+      if(itemInfo?.classType === ClassType.GodleyIcon) {
+        let godley=new GodleyIcon(minsky.canvas.item);
+        minsky.nameCurrentItem(await godley.id());
+        const editorModeChecked = await godley.editorMode();
 
-      const editorX = await godley.toEditorX(this.x) / await godley.editor.zoomFactor();
-      const editorY = await godley.toEditorY(this.y) / await godley.editor.zoomFactor();
-      const col=await godley.editor.colX(editorX);
-      const clickType = await godley.editor.clickType(editorX, editorY);
+        const editorX = await godley.toEditorX(this.x) / await godley.editor.zoomFactor();
+        const editorY = await godley.toEditorY(this.y) / await godley.editor.zoomFactor();
+        const col=await godley.editor.colX(editorX);
+        const clickType = await godley.editor.clickType(editorX, editorY);
 
-      if(editorModeChecked && clickType === 'importStock') {
-        const stockImportMenuItems=[];
-        let importOptions=await godley.editor.matchingTableColumnsByCol(col);
-        for (let v of importOptions) {
-          stockImportMenuItems.push({
-            label: v,
-            click: (item) => godley.editor.importStockVarByCol(item.label, col)
-          });
+        if(editorModeChecked && clickType === 'importStock') {
+          const stockImportMenuItems=[];
+          let importOptions=await godley.editor.matchingTableColumnsByCol(col);
+          for (let v of importOptions) {
+            stockImportMenuItems.push({
+              label: v,
+              click: (item) => godley.editor.importStockVarByCol(item.label, col)
+            });
+          }
+          ContextMenuManager.buildAndDisplayContextMenu(
+            stockImportMenuItems,
+            mainWindow
+          );  
         }
-        ContextMenuManager.buildAndDisplayContextMenu(
-          stockImportMenuItems,
-          mainWindow
-        );  
       }
+    } catch (error) {
+      console.error(
+        '🚀 ~ file: contextMenuManager.ts ~ line 221 ~ ContextMenuManager ~ mainWindow.webContents.on ~ error',
+        error
+      );
     }
   }
 
