@@ -2,8 +2,6 @@
 
 SF_WEB=hpcoder@web.sourceforge.net:/home/project-web/minsky/htdocs
 
-OPENMP=1
-
 # location of TCL and TK libraries 
 TCL_PREFIX=$(shell grep TCL_PREFIX $(call search,lib*/tclConfig.sh) | cut -f2 -d\')
 TCL_VERSION=$(shell grep TCL_VERSION $(call search,lib*/tclConfig.sh) | cut -f2 -d\')
@@ -88,7 +86,7 @@ ifdef CPUPROFILE
 EXTRA_FLAGS+=-g
 endif
 
-MAKEOVERRIDES+=FPIC=1 CLASSDESC=$(shell pwd)/ecolab/classdesc/classdesc EXTRA_FLAGS="$(EXTRA_FLAGS)" CPLUSPLUS="$(CPLUSPLUS)" GCOV=$(GCOV)
+MAKEOVERRIDES+=FPIC=1 CLASSDESC=$(shell pwd)/ecolab/classdesc/classdesc EXTRA_FLAGS="$(EXTRA_FLAGS)" CPLUSPLUS="$(CPLUSPLUS)" GCOV=$(GCOV) OPENMP=1
 $(warning $(MAKEOVERRIDES))
 ifneq ($(MAKECMDGOALS),clean)
 build_ravelcapi:=$(shell cd RavelCAPI; if  $(MAKE) $(JOBS) $(MAKEOVERRIDES)  >build.log 2>&1; then echo "ravelcapi built"; fi) 
@@ -225,10 +223,11 @@ ifeq ($(CPLUSPLUS),clang++)
 FLAGS+=-Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-defaulted-function-deleted -Wno-uninitialized
 endif
 
-ifdef OPENMP
+# enable OPENMP by default
+#ifdef OPENMP
 FLAGS+=-fopenmp
 LIBS+=-fopenmp
-endif
+#endif
 
 ifeq ($(DEBUG), 1)
 FLAGS+=-Wp,-D_GLIBCXX_ASSERTIONS
