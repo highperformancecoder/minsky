@@ -225,9 +225,11 @@ endif
 
 # enable OPENMP by default
 #ifdef OPENMP
+# Default compiler on MacOSX does not support OpenMP. Sigh!
+ifneq ($(OS),Darwin)
 FLAGS+=-fopenmp
 LIBS+=-fopenmp
-#endif
+endif
 
 ifeq ($(DEBUG), 1)
 FLAGS+=-Wp,-D_GLIBCXX_ASSERTIONS
