@@ -202,6 +202,13 @@ namespace minsky
             cairo_move_to(cairo, x, columnButtonsOffset);
             colWidgets[col].draw(cairo);   
           }
+
+        if (col>1)
+          {
+            cairo_move_to(cairo,x-pulldownHot,topTableOffset);
+            pango.setMarkup("▼");
+            pango.show();
+          }
       
         double y=topTableOffset;
         double colWidth=minColumnWidth;
@@ -505,6 +512,8 @@ namespace minsky
       case background:
         selectIdx=insertIdx=0;
         selectedCol=selectedRow=-1;
+        break;
+      case importStock:
         break;
       default:
         if (selectedRow>=0 && selectedCol>=0)

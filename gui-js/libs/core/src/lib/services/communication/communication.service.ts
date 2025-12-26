@@ -332,6 +332,7 @@ export class CommunicationService {
         x: this.mouseX,
         y: this.mouseY,
         type: "canvas",
+        leftClick: false
       });
       return;
     }
@@ -393,8 +394,16 @@ export class CommunicationService {
       case 'mousedown':
         if (message.ctrlKey || message.metaKey)
           canvas.controlMouseDown(this.mouseX, this.mouseY);
-        else
+        else {
+          this.electronService.send(events.CONTEXT_MENU, {
+          x: this.mouseX,
+          y: this.mouseY,
+          type: "canvas",
+          leftClick: true
+        });
+
           canvas.mouseDown(this.mouseX, this.mouseY);
+        }
         break;
       case 'mouseup':
         canvas.mouseUp(this.mouseX, this.mouseY);

@@ -229,7 +229,7 @@ export class CommandsManager {
       title: `Edit godley title`,
       url: `#/headless/edit-godley-title?title=${encodeURIComponent(title) || ''}&itemId=${godleyId}`,
       useContentSize: true,
-      height: 100,
+      height: 80,
       width: 400,
     });
   }
@@ -239,7 +239,7 @@ export class CommandsManager {
       title: `Edit godley currency`,
       url: `#/headless/edit-godley-currency`,
       useContentSize: true,
-      height: 100,
+      height: 80,
       width: 400,
     });
   }
