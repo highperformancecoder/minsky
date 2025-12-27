@@ -16,48 +16,52 @@ export class ContextMenuManager {
 
   private static showAllPlotsOnTabChecked = false;
   
-  public static async initContextMenu(event: IpcMainEvent, x: number, y: number, type: string, command: string, leftClick: boolean) {
+  public static async initContextMenu(event: IpcMainEvent, x: number, y: number, type: string, command: string) {
     const mainWindow = WindowManager.getMainWindow();
     this.x = x;
     this.y = y;
 
-    if(leftClick) {
-      if(type === 'canvas' && WindowManager.currentTab.$equal(minsky.canvas)) {
-        this.leftMouseGodley(mainWindow);
-      }
-    } else {
-      switch (type)
+    switch (type)
+    {
+      case "canvas":
       {
-        case "canvas":
-        {
-          const currentTab = WindowManager.currentTab;
-          if (currentTab.$equal(minsky.canvas))
-            this.initContextMenuForWiring(mainWindow);
-          else if (currentTab.$equal(minsky.phillipsDiagram))
-            this.initContextMenuForPhillipsDiagram(mainWindow);
-          else
-            this.initContextMenuForPublication(event, mainWindow,currentTab);
-        }
-        break;
-        case 'publication-button':
-        this.initContextMenuForPublicationTabButton(event,command);
-        break;
-        case "godley":
-        this.initContextMenuForGodleyPopup(command,x,y);
-        break;
-        case "html-godley":
-        this.initContextMenuForGodleyHTMLPopup(event, command,x,y);
-        break;
-        case "ravel":
-        this.initContextMenuForRavelPopup(command,x,y);
-        break;
-        case "csv-import":
-        this.initContextMenuForCSVImport(event, command,x,y);
-        break;
-        default:
-        log.warn("Unknown context menu for ",type);
-        break;
+        const currentTab = WindowManager.currentTab;
+        if (currentTab.$equal(minsky.canvas))
+          this.initContextMenuForWiring(mainWindow);
+        else if (currentTab.$equal(minsky.phillipsDiagram))
+          this.initContextMenuForPhillipsDiagram(mainWindow);
+        else
+          this.initContextMenuForPublication(event, mainWindow,currentTab);
       }
+      break;
+      case 'publication-button':
+      this.initContextMenuForPublicationTabButton(event,command);
+      break;
+      case "godley":
+      this.initContextMenuForGodleyPopup(command,x,y);
+      break;
+      case "html-godley":
+      this.initContextMenuForGodleyHTMLPopup(event, command,x,y);
+      break;
+      case "ravel":
+      this.initContextMenuForRavelPopup(command,x,y);
+      break;
+      case "csv-import":
+      this.initContextMenuForCSVImport(event, command,x,y);
+      break;
+      default:
+      log.warn("Unknown context menu for ",type);
+      break;
+    }
+  }
+
+  public static async initClickMenu(event: IpcMainEvent, x: number, y: number, type: string, command: string) {
+    const mainWindow = WindowManager.getMainWindow();
+    this.x = x;
+    this.y = y;
+
+    if(type === 'canvas' && WindowManager.currentTab.$equal(minsky.canvas)) {
+      this.leftMouseGodley(mainWindow);
     }
   }
 
@@ -131,96 +135,84 @@ export class ContextMenuManager {
   }
 
   private static async initContextMenuForWiring(mainWindow: BrowserWindow) {
-    try {
-      const isWirePresent = await minsky.canvas.getWireAt(this.x, this.y);
+    const isWirePresent = await minsky.canvas.getWireAt(this.x, this.y);
 
-      const isWireVisible = await minsky.canvas.wire.visible();
-      const itemInfo = await CommandsManager.getItemInfo(this.x, this.y);
+    const isWireVisible = await minsky.canvas.wire.visible();
+    const itemInfo = await CommandsManager.getItemInfo(this.x, this.y);
 
-      if (isWirePresent && isWireVisible && (itemInfo?.classType != ClassType.Group || itemInfo?.displayContents)) {
-        ContextMenuManager.buildAndDisplayContextMenu(
-          ContextMenuManager.wireContextMenu(),
-          mainWindow
-        );
-        return;
-      }
-
-
-      if (itemInfo?.classType) {
-        switch (itemInfo?.classType) {
-          case ClassType.GodleyIcon:
-            ContextMenuManager.buildAndDisplayContextMenu(
-              await ContextMenuManager.rightMouseGodley(itemInfo),
-              mainWindow
-            );
-            break;
-
-          case ClassType.Group:
-            ContextMenuManager.buildAndDisplayContextMenu(
-              await ContextMenuManager.rightMouseGroup(itemInfo),
-              mainWindow
-            );
-            break;
-
-          default:
-            ContextMenuManager.buildAndDisplayContextMenu(
-              await ContextMenuManager.contextMenu(itemInfo),
-              mainWindow
-            );
-
-            break;
-        }
-
-        return;
-      }
-      
+    if (isWirePresent && isWireVisible && (itemInfo?.classType != ClassType.Group || itemInfo?.displayContents)) {
       ContextMenuManager.buildAndDisplayContextMenu(
-        await ContextMenuManager.canvasContext(),
+        ContextMenuManager.wireContextMenu(),
         mainWindow
       );
+      return;
+    }
+
+
+    if (itemInfo?.classType) {
+      switch (itemInfo?.classType) {
+        case ClassType.GodleyIcon:
+          ContextMenuManager.buildAndDisplayContextMenu(
+            await ContextMenuManager.rightMouseGodley(itemInfo),
+            mainWindow
+          );
+          break;
+
+        case ClassType.Group:
+          ContextMenuManager.buildAndDisplayContextMenu(
+            await ContextMenuManager.rightMouseGroup(itemInfo),
+            mainWindow
+          );
+          break;
+
+        default:
+          ContextMenuManager.buildAndDisplayContextMenu(
+            await ContextMenuManager.contextMenu(itemInfo),
+            mainWindow
+          );
+
+          break;
+      }
 
       return;
-    } catch (error) {
-      console.error(
-        '🚀 ~ file: contextMenuManager.ts ~ line 117 ~ ContextMenuManager ~ mainWindow.webContents.on ~ error',
-        error
-      );
     }
+    
+    ContextMenuManager.buildAndDisplayContextMenu(
+      await ContextMenuManager.canvasContext(),
+      mainWindow
+    );
+
+    return;
   }
 
   private static async leftMouseGodley(mainWindow: BrowserWindow) {
-    try {
-      const itemInfo = await CommandsManager.getItemInfo(this.x, this.y);
-      if(itemInfo?.classType === ClassType.GodleyIcon) {
-        let godley=new GodleyIcon(minsky.canvas.item);
-        minsky.nameCurrentItem(await godley.id());
-        const editorModeChecked = await godley.editorMode();
+    const itemInfo = await CommandsManager.getItemInfo(this.x, this.y);
+    if(itemInfo?.classType === ClassType.GodleyIcon) {
+      let godley=new GodleyIcon(minsky.canvas.item);
+      minsky.nameCurrentItem(await godley.id());
+      const editorModeChecked = await godley.editorMode();
 
-        const editorX = await godley.toEditorX(this.x) / await godley.editor.zoomFactor();
-        const editorY = await godley.toEditorY(this.y) / await godley.editor.zoomFactor();
-        const col=await godley.editor.colX(editorX);
-        const clickType = await godley.editor.clickType(editorX, editorY);
+      const zoomFactor = await godley.editor.zoomFactor();
+      const editorX = await godley.toEditorX(this.x) / zoomFactor;
+      const editorY = await godley.toEditorY(this.y) / zoomFactor;
+      const col = await godley.editor.colX(editorX);
+      const clickType = await godley.editor.clickType(editorX, editorY);
 
-        if(editorModeChecked && clickType === 'importStock') {
-          const stockImportMenuItems=[];
-          let importOptions=await godley.editor.matchingTableColumnsByCol(col);
-          for (let v of importOptions) {
-            stockImportMenuItems.push({
-              label: v,
-              click: (item) => godley.editor.importStockVarByCol(item.label, col)
-            });
-          }
-          ContextMenuManager.buildAndDisplayContextMenu(
-            stockImportMenuItems,
-            mainWindow
-          );  
+      if(editorModeChecked && clickType === 'importStock') {
+        const stockImportMenuItems=[];
+        let importOptions=await godley.editor.matchingTableColumnsByCol(col);
+        for (let v of importOptions) {
+          stockImportMenuItems.push({
+            label: v,
+            click: (item) => godley.editor.importStockVarByCol(item.label, col)
+          });
         }
+        ContextMenuManager.buildAndDisplayContextMenu(
+          stockImportMenuItems,
+          mainWindow,
+          false
+        );  
       }
-    } catch (error) {
-      console.error(
-        '🚀 ~ file: contextMenuManager.ts ~ line 221 ~ ContextMenuManager ~ mainWindow.webContents.on ~ error',
-        error
-      );
     }
   }
 
@@ -348,18 +340,18 @@ export class ContextMenuManager {
 
   private static buildAndDisplayContextMenu(
     menuItems: MenuItem[],
-    mainWindow: Electron.BrowserWindow
+    mainWindow: Electron.BrowserWindow,
+    withHelp = true
   ) {
     if (menuItems.length) {
-      const menu = Menu.buildFromTemplate([
+      const menu = Menu.buildFromTemplate((withHelp ? [
         new MenuItem({
           label: 'Help',
           visible:
           WindowManager.currentTab.$equal(minsky.canvas),
           click: () => CommandsManager.help(this.x, this.y),
-        }),
-        ...menuItems,
-      ]);
+        })] : []).concat(menuItems),
+      );
 
       menu.popup({
         window: mainWindow,
@@ -639,8 +631,9 @@ export class ContextMenuManager {
     const rowColButtonsChecked = await godley.buttonDisplay();
     const editorModeChecked = await godley.editorMode();
 
-    const editorX = await godley.toEditorX(this.x) / await godley.editor.zoomFactor();
-    const editorY = await godley.toEditorY(this.y) / await godley.editor.zoomFactor();
+    const zoomFactor = await godley.editor.zoomFactor();
+    const editorX = await godley.toEditorX(this.x) / zoomFactor;
+    const editorY = await godley.toEditorY(this.y) / zoomFactor;
     const row=await godley.editor.rowY(editorY);
     const col=await godley.editor.colX(editorX);
     const clickType = await godley.editor.clickType(editorX, editorY);
@@ -768,7 +761,7 @@ export class ContextMenuManager {
       menuItems.push(
         new MenuItem({
           label: 'Rename all instances',
-          click: async () => CommandsManager.renameAllInstances(itemInfo),
+          click: () => CommandsManager.renameAllInstances(itemInfo),
         })
       );
     }
@@ -1176,9 +1169,9 @@ export class ContextMenuManager {
     const parsed = JSON5.parse(command);
     const godley=new GodleyIcon(parsed[0]);
 
-    const refreshFunction = () => event.sender.send(events.GODLEY_POPUP_REFRESH);
+    const refreshFunction = async () => event.sender.send(events.GODLEY_POPUP_REFRESH);
       
-    this.initContextMenuForGodley(godley, r, c, parsed[1], async () => refreshFunction());
+    this.initContextMenuForGodley(godley, r, c, parsed[1], refreshFunction);
   }
 
   private static async initContextMenuForGodleyPopup(namedItemSubCommand: string, x: number, y: number)
@@ -1187,7 +1180,7 @@ export class ContextMenuManager {
     const r=await godley.popup.rowYZoomed(y);
     const c=await godley.popup.colXZoomed(x);
     const clickType = await godley.popup.clickTypeZoomed(x, y);
-    this.initContextMenuForGodley(godley, r, c, clickType, () => CommandsManager.requestRedraw());
+    this.initContextMenuForGodley(godley, r, c, clickType, CommandsManager.requestRedraw);
   }
 
   private static async initContextMenuForGodley(godley: GodleyIcon, r: number, c: number, clickType: string, refreshFunction: () => Promise<void>)
@@ -1262,12 +1255,10 @@ export class ContextMenuManager {
       case "internal": break;
     } // switch clickType
     
-    if (r!=await godley.popup.selectedRow() || c!=await godley.popup.selectedCol())
+    const selecteds = await Promise.all([godley.popup.selectedRow(),godley.popup.selectedCol()]);
+    if (r!=selecteds[0] || c!=selecteds[1])
     {
-      await godley.popup.selectedRow(r);
-      await godley.popup.selectedCol(c);
-      await godley.popup.insertIdx(0);
-      await godley.popup.selectIdx(0);
+      await Promise.all([godley.popup.selectedRow(r), godley.popup.selectedCol(c), godley.popup.insertIdx(0), godley.popup.selectIdx(0)]);
     }
     var cell=await godley.table.getCell(r,c);
     if (cell.length>0 && (r!=1 || c!=0))

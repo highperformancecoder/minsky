@@ -230,8 +230,12 @@ ipcMain.handle(
   }
 );
 
-ipcMain.on(events.CONTEXT_MENU, async (event, { x, y, type, command, leftClick}) => {
-  await ContextMenuManager.initContextMenu(event, x, y, type, command, leftClick);
+ipcMain.on(events.CONTEXT_MENU, async (event, { x, y, type, command}) => {
+  await ContextMenuManager.initContextMenu(event, x, y, type, command);
+});
+
+ipcMain.on(events.CLICK_MENU, async (event, { x, y, type, command}) => {
+  await ContextMenuManager.initClickMenu(event, x, y, type, command);
 });
 
 ipcMain.on(
