@@ -143,7 +143,7 @@
     "@ngx-translate/http-loader": "^16.0.1",
     "@nx/jest": "21.2.1",
     "@types/jest": "^29.0.0",
-    "electron": "^39.0.0",
+    "electron": "^34.5.8",
     "electron-builder": "^26.0.12",
     "exitzero": "^1.0.1",
     "is-electron": "^2.2.2",
