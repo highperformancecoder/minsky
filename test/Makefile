@@ -26,10 +26,10 @@ else
 LIBS+=-lxcb
 endif
 
-ifdef OPENMP
+#ifdef OPENMP
 FLAGS+=-fopenmp
 LIBS+=-fopenmp
-endif
+#endif
 
 # RSVG dependencies calculated here
 FLAGS+=$(shell pkg-config --cflags librsvg-2.0)
