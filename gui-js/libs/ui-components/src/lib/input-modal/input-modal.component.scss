@@ -4,12 +4,13 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 1rem;
+  margin-top: 5px;
 }
 
 button {
   margin-right: $margin;
 }
 input {
-  width: 100%;
+  width: calc(100% - 10px);
+  margin: 5px;
 }

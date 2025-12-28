@@ -737,6 +737,8 @@ export class GodleyIcon extends Item {
   async stockVarUnits(a1: string,a2: boolean): Promise<object> {return this.$callMethod('stockVarUnits',a1,a2);}
   async stockVars(): Promise<Sequence<VariableBase>> {return this.$callMethod('stockVars');}
   async summarise(): Promise<object[]> {return this.$callMethod('summarise');}
+  async toEditorX(a1: number): Promise<number> {return this.$callMethod('toEditorX',a1);}
+  async toEditorY(a1: number): Promise<number> {return this.$callMethod('toEditorY',a1);}
   async toggleButtons(): Promise<void> {return this.$callMethod('toggleButtons');}
   async toggleEditorMode(): Promise<void> {return this.$callMethod('toggleEditorMode');}
   async toggleVariableDisplay(): Promise<void> {return this.$callMethod('toggleVariableDisplay');}
@@ -805,6 +807,7 @@ export class GodleyTableEditor extends CppClass {
   async adjustWidgets(): Promise<void> {return this.$callMethod('adjustWidgets');}
   async clickType(a1: number,a2: number): Promise<string> {return this.$callMethod('clickType',a1,a2);}
   async clickTypeZoomed(a1: number,a2: number): Promise<string> {return this.$callMethod('clickTypeZoomed',a1,a2);}
+  async colX(a1: number): Promise<number> {return this.$callMethod('colX',a1);}
   async colXZoomed(a1: number): Promise<number> {return this.$callMethod('colXZoomed',a1);}
   async columnButtonsOffset(...args: number[]): Promise<number> {return this.$callMethod('columnButtonsOffset',...args);}
   async copy(): Promise<void> {return this.$callMethod('copy');}
@@ -848,6 +851,7 @@ export class GodleyTableEditor extends CppClass {
   async pulldownHot(...args: number[]): Promise<number> {return this.$callMethod('pulldownHot',...args);}
   async pushHistory(): Promise<void> {return this.$callMethod('pushHistory');}
   async rowHeight(...args: number[]): Promise<number> {return this.$callMethod('rowHeight',...args);}
+  async rowY(a1: number): Promise<number> {return this.$callMethod('rowY',a1);}
   async rowYZoomed(a1: number): Promise<number> {return this.$callMethod('rowYZoomed',a1);}
   async scrollColStart(...args: number[]): Promise<number> {return this.$callMethod('scrollColStart',...args);}
   async scrollRowStart(...args: number[]): Promise<number> {return this.$callMethod('scrollRowStart',...args);}
@@ -885,6 +889,7 @@ export class GodleyTableWindow extends CppClass {
   async adjustWidgets(): Promise<void> {return this.$callMethod('adjustWidgets');}
   async clickType(a1: number,a2: number): Promise<string> {return this.$callMethod('clickType',a1,a2);}
   async clickTypeZoomed(a1: number,a2: number): Promise<string> {return this.$callMethod('clickTypeZoomed',a1,a2);}
+  async colX(a1: number): Promise<number> {return this.$callMethod('colX',a1);}
   async colXZoomed(a1: number): Promise<number> {return this.$callMethod('colXZoomed',a1);}
   async columnButtonsOffset(...args: number[]): Promise<number> {return this.$callMethod('columnButtonsOffset',...args);}
   async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
@@ -948,6 +953,7 @@ export class GodleyTableWindow extends CppClass {
   async requestRedrawCanvas(): Promise<void> {return this.$callMethod('requestRedrawCanvas');}
   async resolutionScaleFactor(...args: any[]): Promise<number> {return this.$callMethod('resolutionScaleFactor',...args);}
   async rowHeight(...args: number[]): Promise<number> {return this.$callMethod('rowHeight',...args);}
+  async rowY(a1: number): Promise<number> {return this.$callMethod('rowY',a1);}
   async rowYZoomed(a1: number): Promise<number> {return this.$callMethod('rowYZoomed',a1);}
   async scaleFactor(): Promise<number> {return this.$callMethod('scaleFactor');}
   async scrollColStart(...args: number[]): Promise<number> {return this.$callMethod('scrollColStart',...args);}
