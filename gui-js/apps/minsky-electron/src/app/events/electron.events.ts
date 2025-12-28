@@ -234,6 +234,10 @@ ipcMain.on(events.CONTEXT_MENU, async (event, { x, y, type, command}) => {
   await ContextMenuManager.initContextMenu(event, x, y, type, command);
 });
 
+ipcMain.on(events.CLICK_MENU, async (event, { x, y, type, command}) => {
+  await ContextMenuManager.initClickMenu(event, x, y, type, command);
+});
+
 ipcMain.on(
   events.DISPLAY_MOUSE_COORDINATES,
   async (event, { mouseX, mouseY }) => {

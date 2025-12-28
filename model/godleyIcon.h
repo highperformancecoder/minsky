@@ -167,6 +167,10 @@ namespace minsky
     const GodleyIcon* godleyIconCast() const override {return this;}
     GodleyIcon* godleyIconCast() override {return this;}
 
+    /// @{ convert mouse coordinates into editor coords
+    float toEditorX(float) const;
+    float toEditorY(float) const;
+
   private:
     void updateVars(Variables& vars, 
                     const vector<string>& varNames, 
@@ -174,10 +178,6 @@ namespace minsky
     /// move contained variables to correct locations within icon
     void positionVariables() const;
     Variables m_flowVars, m_stockVars;
-
-    /// @{ convert mouse coordinates into editor coords
-    float toEditorX(float) const;
-    float toEditorY(float) const;
   };
 }
 

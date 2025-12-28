@@ -23,6 +23,7 @@ export const events = {
   CHANGE_MAIN_TAB: 'change-main-tab',
   CLOSE_WINDOW: 'close-window',
   CONTEXT_MENU: 'context-menu',
+  CLICK_MENU: 'click-menu',
   CREATE_MENU_POPUP: 'create-menu-popup',
   CURRENT_TAB_MOVE_TO: 'current-tab-move-to',
   CURRENT_TAB_POSITION: 'current-tab-position',

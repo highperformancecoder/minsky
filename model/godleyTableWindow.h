@@ -88,7 +88,7 @@ namespace minsky
     /// offset of the table within the window
     double leftTableOffset=4*ButtonWidget<col>::buttonSpacing;
     double topTableOffset=30;
-    static constexpr double pulldownHot=12; ///< space for ▼ in stackVar cells
+    static constexpr double pulldownHot=16; ///< space for ▼ in stackVar cells
     /// minimum column width (for eg empty columns)
     static constexpr double minColumnWidth=4*ButtonWidget<col>::buttonSpacing;
 
@@ -151,6 +151,11 @@ namespace minsky
     
     int colXZoomed(double x) const {return colX(x/zoomFactor);}
     int rowYZoomed(double y) const {return rowY(y/zoomFactor);}
+
+    /// column at \a x in unzoomed coordinates
+    int colX(double x) const;
+    /// row at \a y in unzoomed coordinates
+    int rowY(double y) const;
     
     // warn user when a stock variable column is going to be moved to a different asset class on pressing a column button widget. For ticket 1072.
     std::string moveAssetClass(double x, double y);
@@ -198,10 +203,6 @@ namespace minsky
   protected:
     std::vector<ButtonWidget<row>> rowWidgets;
     std::vector<ButtonWidget<col>> colWidgets;
-    /// column at \a x in unzoomed coordinates
-    int colX(double x) const;
-    /// row at \a y in unzoomed coordinates
-    int rowY(double y) const;
     int motionRow=-1, motionCol=-1; ///< current cell under mouse motion
     // Perform deep comparison of Godley tables in history to avoid spurious noAssetClass columns from arising during undo. For ticket 1118.
     std::deque<GodleyTable> history;
