@@ -70,13 +70,9 @@ namespace civita
       if (!arg2) return (*arg1)[i];
       assert(index().size()==0 || i<index().size());
       auto hcIndex=index().size()? index()[i]: i;
-      // Helper to check if tensor should be broadcast (rank 0 or size 1)
-      auto shouldBroadcast = [](const TensorPtr& arg) {
-        return !arg->rank() || arg->size() == 1;
-      };
-      // scalars are broadcast (rank 0 or size 1)
-      return f(shouldBroadcast(arg1)? (*arg1)[0]: arg1->atHCIndex(hcIndex),
-               shouldBroadcast(arg2)? (*arg2)[0]: arg2->atHCIndex(hcIndex));
+      // scalars are broadcast
+      return f(arg1->rank()? arg1->atHCIndex(hcIndex): (*arg1)[0],
+               arg2->rank()? arg2->atHCIndex(hcIndex): (*arg2)[0]);
     }
     Timestamp timestamp() const override
     {return max(arg1->timestamp(), arg2->timestamp());}
