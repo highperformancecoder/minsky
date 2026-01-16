@@ -70,9 +70,9 @@ namespace civita
       if (!arg2) return (*arg1)[i];
       assert(index().size()==0 || i<index().size());
       auto hcIndex=index().size()? index()[i]: i;
-      // scalars are broadcast
-      return f(arg1->rank()? arg1->atHCIndex(hcIndex): (*arg1)[0],
-               arg2->rank()? arg2->atHCIndex(hcIndex): (*arg2)[0]);
+      // scalars are broadcast (rank 0 or size 1)
+      return f(arg1->rank() && arg1->size()>1? arg1->atHCIndex(hcIndex): (*arg1)[0],
+               arg2->rank() && arg2->size()>1? arg2->atHCIndex(hcIndex): (*arg2)[0]);
     }
     Timestamp timestamp() const override
     {return max(arg1->timestamp(), arg2->timestamp());}
