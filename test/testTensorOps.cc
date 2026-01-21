@@ -1205,7 +1205,7 @@ TEST_F(TensorValFixture, reduction2dswapped)
   expected={0,54,180,4,70,208,10,88,238};
   index=chain.back()->index();
   sortedIdx=vector<size_t>(index.begin(),index.end()); sort(sortedIdx.begin(),sortedIdx.end());
-   for (size_t _i=0; _i<9; ++_i) EXPECT_EQ(expected[_i], chain.back()->atHCIndex(sortedIdx[_i]));
+  for (size_t _i=0; _i<9; ++_i) EXPECT_EQ(expected[_i], chain.back()->atHCIndex(sortedIdx[_i]));
 
   sex->reductionOp=ravel::Op::av;
   chain=createRavelChain(state, arg);
@@ -1282,7 +1282,7 @@ TEST_F(TensorValFixture, sparseSlicedRavel)
   expectedf={0,3,1,4,2};
   index=chain.back()->index();
   sortedIdx=vector<size_t>(index.begin(),index.end()); sort(sortedIdx.begin(),sortedIdx.end());
-  for (size_t _i=0; _i<5; ++_i) EXPECT_EQ(expectedf[_i], chain.back()->atHCIndex(sortedIdx[_i])); 
+  for (size_t _i=0; _i<5; ++_i) EXPECT_EQ(expectedf[_i], chain.back()->atHCIndex(sortedIdx[_i]));
 }
     
 TEST_F(TensorValFixture, calipered)
