@@ -84,8 +84,6 @@ namespace minsky
     civita::TensorPtr cachedDbResult; ///< cache of database query result
     ravel::Op::ReductionOp m_nextReduction=ravel::Op::sum;
 
-    /// manage thread safety on this object
-    mutable std::shared_mutex updateMutex;
   public:
     static SVGRenderer svgRenderer; ///< SVG icon to display when not in editor mode
     RavelPopup popup; ///< popup Ravel control window

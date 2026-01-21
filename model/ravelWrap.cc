@@ -130,7 +130,6 @@ namespace minsky
         {
           cairo_scale(cairo,z,z);
           CairoRenderer cr(cairo);
-          shared_lock lock(updateMutex);
           wrappedRavel.render(cr);
         }
       else
@@ -144,7 +143,6 @@ namespace minsky
 
   void Ravel::resize(const LassoBox& b)
   {
-    lock_guard lock(updateMutex);
     wrappedRavel.rescale(0.5*std::max(fabs(b.x0-b.x1),fabs(b.y0-b.y1))/(1.21*zoomFactor()));
     moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
     bb.update(*this);
@@ -154,7 +152,6 @@ namespace minsky
   {
     if (m_editorMode)
       {
-        shared_lock lock(updateMutex);
         const float r=1.1*zoomFactor()*wrappedRavel.radius();
         return std::abs(xx-x())<=r && std::abs(yy-y())<=r;
       }
@@ -164,17 +161,13 @@ namespace minsky
   void Ravel::onMouseDown(float xx, float yy)
   {
     const double invZ=1/zoomFactor();
-    lock_guard lock(updateMutex);
     wrappedRavel.onMouseDown((xx-x())*invZ,(yy-y())*invZ);
   }
   
   bool Ravel::onMouseUp(float xx, float yy)
   {
     const double invZ=1/zoomFactor();
-    {
-      lock_guard lock(updateMutex);
-      wrappedRavel.onMouseUp((xx-x())*invZ,(yy-y())*invZ);
-    }
+    wrappedRavel.onMouseUp((xx-x())*invZ,(yy-y())*invZ);
     resortHandleIfDynamic();
     broadcastStateToLockGroup();
     return m_ports[1]->numWires(); // only reset if input port connected. Don't if sourced from database
@@ -182,20 +175,17 @@ namespace minsky
   bool Ravel::onMouseMotion(float xx, float yy)
   {
     const double invZ=1/zoomFactor();
-    shared_lock lock(updateMutex);
     return wrappedRavel.onMouseMotion((xx-x())*invZ,(yy-y())*invZ);
   }
   
   bool Ravel::onMouseOver(float xx, float yy)
   {
     const double invZ=1/zoomFactor();
-    shared_lock lock(updateMutex);
     return wrappedRavel.onMouseOver((xx-x())*invZ,(yy-y())*invZ);
   }
 
   Hypercube Ravel::hypercube() const
   {
-    shared_lock lock(updateMutex);
     auto outHandles=wrappedRavel.outputHandleIds();
     Hypercube hc;
     auto& xv=hc.xvectors;
@@ -219,7 +209,6 @@ namespace minsky
   void Ravel::populateHypercube(const Hypercube& hc)
   {
     if (!wrappedRavel) return;
-    lock_guard lock(updateMutex);
     auto state=initState.empty()? getState(): initState;
     const bool redistribute=!initState.empty();
     initState.clear();
@@ -250,13 +239,11 @@ namespace minsky
   {
     vector<size_t> ids;
     for (size_t i=0; i<rank; ++i) ids.push_back(i);
-    lock_guard lock(updateMutex);
     wrappedRavel.setOutputHandleIds(ids);
   }
   
   void Ravel::adjustSlicer(int n)
   {
-    lock_guard lock(updateMutex);
     wrappedRavel.adjustSlicer(n);
     resortHandleIfDynamic();
     broadcastStateToLockGroup();
@@ -299,7 +286,6 @@ namespace minsky
     if (db && m_ports[1]->wires().empty())
       {
         minsky().flags&=~Minsky::reset_needed; //disable resetting until user gets a chance to manipulate ravel
-        lock_guard lock(updateMutex);
         db.fullHypercube(wrappedRavel);
       }
   }
@@ -315,7 +301,6 @@ namespace minsky
     if (buf.cmp(lastState)!=0)
       {
         lastState.swap(buf);
-        shared_lock lock(updateMutex);
         cachedDbResult=db.hyperSlice(wrappedRavel);
       }
     return {cachedDbResult};
@@ -323,7 +308,6 @@ namespace minsky
   
   bool Ravel::displayFilterCaliper() const
   {
-    shared_lock lock(updateMutex);
     const int h=wrappedRavel.selectedHandle();
     if (h>=0)
       {
@@ -335,7 +319,6 @@ namespace minsky
     
   bool Ravel::setDisplayFilterCaliper(bool x)
   {
-    lock_guard lock(updateMutex);
     const int h=wrappedRavel.selectedHandle();
     if (h>=0)
       wrappedRavel.displayFilterCaliper(h,x);
@@ -344,31 +327,26 @@ namespace minsky
 
   vector<string> Ravel::allSliceLabels() const
   {
-    shared_lock lock(updateMutex);
     return wrappedRavel.allSliceLabels(wrappedRavel.selectedHandle(),ravel::HandleSort::forward);
   }
   
   vector<string> Ravel::allSliceLabelsAxis(int axis) const
   {
-    shared_lock lock(updateMutex);
     return wrappedRavel.allSliceLabels(axis,ravel::HandleSort::forward);
   }  
 
   vector<string> Ravel::pickedSliceLabels(int axis) const
   {
-    shared_lock lock(updateMutex);
     return wrappedRavel.sliceLabels(axis);
   }
   
   vector<string> Ravel::pickedSliceLabels() const
   {
-    shared_lock lock(updateMutex);
     return pickedSliceLabels(wrappedRavel.selectedHandle());
   }
 
   void Ravel::pickSliceLabels(int axis, const vector<string>& pick) 
   {
-    lock_guard lock(updateMutex);
     if (axis>=0 && axis<int(numHandles()))
       {
         vector<size_t> customOrder, currentOrder=wrappedRavel.currentPermutation(axis);
@@ -400,7 +378,6 @@ namespace minsky
 
   Dimension Ravel::dimension(int handle) const
   {
-    shared_lock lock(updateMutex);
     Dimension dim;
     auto dimitr=cminsky().dimensions.find(handleDescription(handle));
     if (dimitr!=cminsky().dimensions.end())
@@ -410,7 +387,6 @@ namespace minsky
   
   ravel::HandleSort::Order Ravel::sortOrder() const
   {
-    shared_lock lock(updateMutex);
     const int h=wrappedRavel.selectedHandle();
     if (h>=0)
       {
@@ -422,14 +398,12 @@ namespace minsky
  
   ravel::HandleSort::Order Ravel::setSortOrder(ravel::HandleSort::Order x)
   {
-    lock_guard lock(updateMutex);
     setHandleSortOrder(x, wrappedRavel.selectedHandle());
     return x;
   }
 
   void Ravel::resortHandleIfDynamic()
   {
-    lock_guard lock(updateMutex);
     if (wrappedRavel.rank()==1)
       {
         const int outputHandleId=wrappedRavel.outputHandleIds()[0];
@@ -457,7 +431,6 @@ namespace minsky
   {
     if (handle>=0)
       {
-        lock_guard lock(updateMutex);
         const Dimension dim=dimension(handle);
         wrappedRavel.orderLabels(handle,order);
       }
@@ -466,7 +439,6 @@ namespace minsky
 
   bool Ravel::handleSortableByValue() const
   {
-    shared_lock lock(updateMutex);
     if (wrappedRavel.rank()!=1) return false;
     auto ids=wrappedRavel.outputHandleIds();
     return size_t(wrappedRavel.selectedHandle())==ids[0];
@@ -474,7 +446,6 @@ namespace minsky
 
   void Ravel::sortByValue(ravel::HandleSort::Order dir)
   {
-    lock_guard lock(updateMutex);
     if (wrappedRavel.rank()!=1) return;
     try {minsky().requestReset();} catch (...) {throw runtime_error("Cannot sort handle at the moment");}
     auto vv=m_ports[1]->getVariableValue();
@@ -486,25 +457,21 @@ namespace minsky
   
   string Ravel::description() const
   {
-    shared_lock lock(updateMutex);
     return handleDescription(wrappedRavel.selectedHandle());
   }
 
   void Ravel::setDescription(const string& description)
   {
-    lock_guard lock(updateMutex);
     wrappedRavel.setHandleDescription(wrappedRavel.selectedHandle(),description);
   }
 
   Dimension::Type Ravel::dimensionType() const
   {
-    shared_lock lock(updateMutex);
     return dimensionType(selectedHandle());
   }
 
   Dimension::Type Ravel::dimensionType(int handleIndex) const
   {
-    shared_lock lock(updateMutex);
     auto descr=handleDescription(handleIndex);
     
     if (auto i=axisDimensions.find(descr); i!=axisDimensions.end())
@@ -518,13 +485,11 @@ namespace minsky
   
   std::string Ravel::dimensionUnitsFormat() const
   {
-    shared_lock lock(updateMutex);
     return dimensionUnitsFormat(selectedHandle());
   }
 
   std::string Ravel::dimensionUnitsFormat(int handleIndex) const
   {
-    shared_lock lock(updateMutex);
     auto descr=handleDescription(handleIndex);
     if (descr.empty()) return "";
     auto i=axisDimensions.find(descr);
@@ -539,14 +504,12 @@ namespace minsky
   /// @throw if type does not match global dimension type
   void Ravel::setDimension(Dimension::Type type,const std::string& units)
   {
-    lock_guard lock(updateMutex);
     return setDimension(selectedHandle(), type, units);
   }
 
   /// @throw if type does not match global dimension type
   void Ravel::setDimension(int handleIndex, Dimension::Type type,const std::string& units)
   {
-    lock_guard lock(updateMutex);
     auto descr=handleDescription(handleIndex);
     if (descr.empty()) return;
     auto i=cminsky().dimensions.find(descr);
@@ -575,7 +538,6 @@ namespace minsky
         }
 
     // if no variable value attached, create one
-    lock_guard lock(updateMutex);
     VariableValue v(VariableType::flow); v.hypercube(hypercube());
     const TensorsFromPort tp(make_shared<EvalCommon>());
     tp.ev->update(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());
@@ -593,8 +555,7 @@ namespace minsky
     // reduced by product handles
     for (size_t h=0; h<numHandles(); ++h)
       {
-        shared_lock lock(updateMutex);
-         auto state=wrappedRavel.getHandleState(h);
+        auto state=wrappedRavel.getHandleState(h);
         if (state.collapsed && state.reductionOp==ravel::Op::prod)
           multiplier*=numSliceLabels(h);
       }
@@ -611,7 +572,6 @@ namespace minsky
      return;
    }
    auto r=wrappedRavel.radius();
-   lock_guard lock(updateMutex);
    wrappedRavel.setRavelState(state);
    if (state.radius!=r) // only need to update bounding box if radius changes
      updateBoundingBox();
@@ -624,7 +584,6 @@ namespace minsky
       explanation="load CSV data from\ncontext menu";
     else
       {
-        shared_lock lock(updateMutex);
         explanation=wrappedRavel.explain(xx-x(),yy-y());
         // line break every 5 words
         int spCnt=0;
