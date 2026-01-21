@@ -10,7 +10,7 @@ TK_LIB=$(dir $(shell find $(TCL_PREFIX) -name tk.tcl -path "*/tk$(TCL_VERSION)*"
 
 # root directory for ecolab include files and libraries
 ECOLAB_HOME=$(shell pwd)/ecolab
-export LD_LIBRARY_PATH:=$(ECOLAB_HOME)/lib:$(LD_LIBRARY_PATH)
+export LD_LIBRARY_PATH:=$(ECOLAB_HOME)/lib:$(LD_LIBRARY_PATH):/usr/local/lib64
 
 ARCH=$(shell arch)
 HAVE_CLANG=$(shell if which clang++>/dev/null; then echo 1; fi)
