@@ -151,7 +151,7 @@ ipcMain.handle(
 );
 
 ipcMain.on(
-  events.REFRESH_ALL_GODLEY_POPUPS,async (event) => {
+  events.REFRESH_ALL_GODLEY_POPUPS, async (event) => {
     WindowManager.refreshAllGodleyPopups();
   }
 );
