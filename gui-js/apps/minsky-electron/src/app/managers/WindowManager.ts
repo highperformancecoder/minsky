@@ -373,7 +373,7 @@ export class WindowManager {
   }
 
   static refreshAllGodleyPopups() {
-    for (const [num, win] of WindowManager.activeWindows)
+    for (const win of WindowManager.activeWindows.values())
       if (win.context!=WindowManager.getMainWindow())
         win.context?.webContents?.send(events.GODLEY_POPUP_REFRESH);
   }
