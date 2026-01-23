@@ -632,6 +632,7 @@ namespace minsky
     if (m_editorMode)
       {
         editor.mouseMove(-1,-1);
+        minsky().balanceDuplicateColumns(*this, editor.selectedCol);
         // May be a bit overzealous, but it solves bug 1273, which is caused by a flow which has not yet fully come into existence....
         editor.selectedCol=-1;
         editor.selectedRow=-1;

@@ -2,6 +2,7 @@ import {
   ActiveWindow,
   AppLayoutPayload,
   CreateWindowPayload,
+  events,
   Functions,
   minsky,
   OPEN_DEV_TOOLS_IN_DEV_BUILD,
@@ -369,5 +370,15 @@ export class WindowManager {
       title: 'Mouse Coordinates',
       type: 'info',
     });
+  }
+
+  static refreshAllGodleyPopups() {
+    for (const win of WindowManager.activeWindows.values())
+      if (win.context!=WindowManager.getMainWindow()) {
+        try {
+          win.context?.webContents?.send(events.GODLEY_POPUP_REFRESH);
+        }
+        catch (err) {} // absorb any exceptions due to windows disappearing
+      }
   }
 }

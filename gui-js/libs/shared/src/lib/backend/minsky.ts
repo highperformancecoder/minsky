@@ -1576,7 +1576,6 @@ export class PlotWidget extends Item {
     this.yvars=new Sequence<Sequence<VariableValue>>(this.$prefix()+'.yvars',Sequence<VariableValue>);
   }
   async AssignSide(a1: number,a2: string): Promise<void> {return this.$callMethod('AssignSide',a1,a2);}
-  async Image(...args: any[]): Promise<string> {return this.$callMethod('Image',...args);}
   async LabelPen(a1: number,a2: ecolab__cairo__Surface): Promise<void> {return this.$callMethod('LabelPen',a1,a2);}
   async addConstantCurves(): Promise<void> {return this.$callMethod('addConstantCurves');}
   async addPlotPt(a1: number): Promise<void> {return this.$callMethod('addPlotPt',a1);}

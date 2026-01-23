@@ -1195,32 +1195,45 @@ TEST_F(TensorValFixture, reduction2dswapped)
   EXPECT_TRUE(chc.xvectors[1]==ahc.xvectors[0]);
   EXPECT_EQ(9,chain.back()->size());
   vector<double> expected={3,15,27,5,17,29,7,19,31};
-  for (size_t _i=0; _i<9; ++_i) EXPECT_EQ(expected[_i], (*chain.back())[_i]);
+  // above expected was in sorted index order
+  auto index=chain.back()->index();
+  vector<size_t> sortedIdx(index.begin(),index.end()); sort(sortedIdx.begin(),sortedIdx.end());
+  for (size_t _i=0; _i<9; ++_i) EXPECT_EQ(expected[_i], chain.back()->atHCIndex(sortedIdx[_i]));
 
   sex->reductionOp=ravel::Op::prod;
   chain=createRavelChain(state, arg);
   expected={0,54,180,4,70,208,10,88,238};
-  for (size_t _i=0; _i<9; ++_i) EXPECT_EQ(expected[_i], (*chain.back())[_i]);
+  index=chain.back()->index();
+  sortedIdx=vector<size_t>(index.begin(),index.end()); sort(sortedIdx.begin(),sortedIdx.end());
+   for (size_t _i=0; _i<9; ++_i) EXPECT_EQ(expected[_i], chain.back()->atHCIndex(sortedIdx[_i]));
 
   sex->reductionOp=ravel::Op::av;
   chain=createRavelChain(state, arg);
   expected={1.5,7.5,13.5,2.5,8.5,14.5,3.5,9.5,15.5};
-  for (size_t _i=0; _i<9; ++_i) EXPECT_EQ(expected[_i], (*chain.back())[_i]);
+  index=chain.back()->index();
+  sortedIdx=vector<size_t>(index.begin(),index.end()); sort(sortedIdx.begin(),sortedIdx.end());
+  for (size_t _i=0; _i<9; ++_i) EXPECT_EQ(expected[_i], chain.back()->atHCIndex(sortedIdx[_i]));
 
   sex->reductionOp=ravel::Op::stddev;
   chain=createRavelChain(state, arg);
   expected={2.12132, 2.12132, 2.12132, 2.12132, 2.12132, 2.12132, 2.12132, 2.12132, 2.12132};
-  for (size_t _i=0; _i<9; ++_i) EXPECT_NEAR(expected[_i], (*chain.back())[_i], 1e-4);
+  index=chain.back()->index();
+  sortedIdx=vector<size_t>(index.begin(),index.end()); sort(sortedIdx.begin(),sortedIdx.end());
+  for (size_t _i=0; _i<9; ++_i) EXPECT_NEAR(expected[_i], chain.back()->atHCIndex(sortedIdx[_i]), 1e-4);
 
   sex->reductionOp=ravel::Op::min;
   chain=createRavelChain(state, arg);
   expected={0,6,12,1,7,13,2,8,14};
-  for (size_t _i=0; _i<9; ++_i) EXPECT_EQ(expected[_i], (*chain.back())[_i]);
+  index=chain.back()->index();
+  sortedIdx=vector<size_t>(index.begin(),index.end()); sort(sortedIdx.begin(),sortedIdx.end());
+  for (size_t _i=0; _i<9; ++_i) EXPECT_EQ(expected[_i], chain.back()->atHCIndex(sortedIdx[_i]));
       
   sex->reductionOp=ravel::Op::max;
   chain=createRavelChain(state, arg);
   expected={3,9,15,4,10,16,5,11,17};
-  for (size_t _i=0; _i<9; ++_i) EXPECT_EQ(expected[_i], (*chain.back())[_i]);
+  index=chain.back()->index();
+  sortedIdx=vector<size_t>(index.begin(),index.end()); sort(sortedIdx.begin(),sortedIdx.end());
+  for (size_t _i=0; _i<9; ++_i) EXPECT_EQ(expected[_i], chain.back()->atHCIndex(sortedIdx[_i]));
      
 }
 
@@ -1234,28 +1247,42 @@ TEST_F(TensorValFixture, sparseSlicedRavel)
   auto chain=createRavelChain(state, arg);
   EXPECT_EQ(2, chain.back()->rank());
   EXPECT_EQ(3, chain.back()->size());
-  vector<size_t> expectedi{0,5,6};
-  for (size_t _i=0; _i<3; ++_i) EXPECT_EQ(expectedi[_i], chain[1]->index()[_i]);
+  set<size_t> expectedi{0,5,6};
+  set<size_t> idx(chain[1]->index().begin(), chain[1]->index().end());
+  EXPECT_TRUE(idx==expectedi);
   expectedi={0,2,7};
-  for (size_t _i=0; _i<3; ++_i) EXPECT_EQ(expectedi[_i], chain.back()->index()[_i]);
+  idx=set<size_t>(chain.back()->index().begin(),chain.back()->index().end());
+  EXPECT_TRUE(idx==expectedi);
+  
   vector<double> expectedf{0,1,2,3,4};
   for (size_t _i=0; _i<3; ++_i) EXPECT_EQ(expectedf[_i], (*arg)[_i]);
   expectedf={0,2,3};
-  for (size_t _i=0; _i<3; ++_i) EXPECT_EQ(expectedf[_i], (*chain[1])[_i]);
+  auto index=chain[1]->index();
+  vector<size_t> sortedIdx(index.begin(),index.end()); sort(sortedIdx.begin(),sortedIdx.end());
+  for (size_t _i=0; _i<3; ++_i) EXPECT_EQ(expectedf[_i], chain[1]->atHCIndex(sortedIdx[_i]));
   expectedf={0,3,2};
-  for (size_t _i=0; _i<3; ++_i) EXPECT_EQ(expectedf[_i], (*chain.back())[_i]);
+  index=chain.back()->index();
+  sortedIdx=vector<size_t>(index.begin(),index.end()); sort(sortedIdx.begin(),sortedIdx.end());
+  for (size_t _i=0; _i<3; ++_i) EXPECT_EQ(expectedf[_i], chain.back()->atHCIndex(sortedIdx[_i]));
 
   sex->collapsed=true;
   chain=createRavelChain(state, arg);
   EXPECT_EQ(5, chain.back()->size());
   expectedi={0,1,5,6,7};
-  for (size_t _i=0; _i<3; ++_i) EXPECT_EQ(expectedi[_i], chain[1]->index()[_i]);
+  idx=set<size_t>(chain[1]->index().begin(),chain[1]->index().end());
+  EXPECT_TRUE(idx==expectedi);
+
   expectedi={0,2,3,5,7};
-  for (size_t _i=0; _i<3; ++_i) EXPECT_EQ(expectedi[_i], chain.back()->index()[_i]);
+  idx=set<size_t>(chain.back()->index().begin(),chain.back()->index().end());
+  EXPECT_TRUE(idx==expectedi);
   expectedf={0,1,2,3,4};
-  for (size_t _i=0; _i<5; ++_i) EXPECT_EQ(expectedf[_i], (*chain[1])[_i]);
+  index=chain[1]->index();
+  sortedIdx=vector<size_t>(index.begin(),index.end()); sort(sortedIdx.begin(),sortedIdx.end());
+  for (size_t _i=0; _i<5; ++_i) EXPECT_EQ(expectedf[_i], chain[1]->atHCIndex(sortedIdx[_i]));
   expectedf={0,3,1,4,2};
-  for (size_t _i=0; _i<5; ++_i) EXPECT_EQ(expectedf[_i], (*chain.back())[_i]);
+  index=chain.back()->index();
+  sortedIdx=vector<size_t>(index.begin(),index.end()); sort(sortedIdx.begin(),sortedIdx.end());
+  for (size_t _i=0; _i<5; ++_i) EXPECT_EQ(expectedf[_i], chain.back()->atHCIndex(sortedIdx[_i])); 
 }
     
 TEST_F(TensorValFixture, calipered)
