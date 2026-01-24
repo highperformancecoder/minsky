@@ -290,10 +290,10 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
     await this.hardRefresh();
   }
 
-  async hardRefresh(update = true) {
+  async hardRefresh() {
     this.multiEquityAllowed = await this.electronService.minsky.multipleEquities();
 
-    if(update) this.godleyIcon.update();
+    this.godleyIcon.update();
 
     const allData: string[][] = <any>await this.godleyIcon.table.getData();
 
@@ -378,7 +378,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
         this.cellEditing[1] = undefined;
       }
 
-      await this.hardRefresh();
+      this.electronService.send(events.REFRESH_ALL_GODLEY_POPUPS);
     }
   }
 
