@@ -24,6 +24,7 @@
 #include <gtest/gtest.h>
 #include <fstream>
 #include <filesystem>
+#include "assert.h"
 
 using namespace minsky;
 using namespace std;
@@ -43,6 +44,7 @@ namespace
     string createTestCSV(const string& filename, const string& content)
     {
       ofstream file(filename);
+      assert(file);
       file << content;
       file.close();
       return filename;

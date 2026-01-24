@@ -188,15 +188,6 @@ TEST_F(DataOpTest, SingleDataPoint)
   EXPECT_EQ(25.0, val);
 }
 
-TEST_F(DataOpTest, Units)
-{
-  DataOp op;
-  
-  // Test units passthrough from output port
-  Units u = op.units(false);
-  // Should return units from connected port or dimensionless
-}
-
 TEST_F(DataOpTest, PackUnpack)
 {
   DataOp op1;
@@ -210,5 +201,5 @@ TEST_F(DataOpTest, PackUnpack)
   DataOp op2;
   EXPECT_NO_THROW(op2.unpack(buf, ""));
   
-  EXPECT_EQ(op1.data.size(), op2.data.size());
+  EXPECT_TRUE(op1.data==op2.data);
 }

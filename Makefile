@@ -566,7 +566,7 @@ lcov:
 	-$(MAKE) minsky.xsd
 	-$(MAKE) sure
 	mkdir -p coverage
-	gcovr -r . --html --html-details coverage/index.html
+	gcovr -r . --html --html-details -o coverage/index.html
 #	lcov -c -d .  $(LCOV_FLAGS) -o lcovt.info
 #	lcov -a lcovi.info -a lcovt.info -o lcov.info
 #	lcov -r lcov.info --ignore-errors unused */ecolab/* "*.cd" "*.xcd" "*.rcd" "*.tcd" -o lcovr.info 
