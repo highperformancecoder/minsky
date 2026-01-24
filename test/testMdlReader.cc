@@ -151,8 +151,16 @@ TEST_F(MdlReaderTest, HandleComments)
   mdl << "  ~ units ~  |" << endl;
   mdl << "\\\\\\---/// sketch information" << endl;
   
+  size_t initialItems = group->items.size();
   // Should parse successfully, ignoring comments
   EXPECT_NO_THROW(readMdl(*group, simParms, mdl));
+  EXPECT_GT(group->items.size(), initialItems);
+  bool foundVar1=false;
+  for (auto& i: group->items)
+    if (auto v=i->variableCast())
+      if (v->name()=="var1")
+        foundVar1=true;
+  EXPECT_TRUE(foundVar1);
 }
 
 TEST_F(MdlReaderTest, ParseSliderSpec)
@@ -173,7 +181,10 @@ TEST_F(MdlReaderTest, ParseSliderSpec)
       if (auto vv = var->vValue()) {
         varFound=true;
         // Slider should be configured (exact values depend on implementation)
-        EXPECT_GE(vv->sliderMax, vv->sliderMin);
+        EXPECT_NEAR(vv->sliderMin, 0, 0.1);
+        EXPECT_NEAR(vv->sliderMax, 100, 0.1);
+        EXPECT_NEAR(vv->sliderStep, 1, 0.1);
+        EXPECT_NEAR(vv->value(), 50, 0.1);
         break;
       }
     }
@@ -201,6 +212,7 @@ TEST_F(MdlReaderTest, EmptyFile)
   
   // Empty file (just header and sketch marker) should parse without error
   EXPECT_NO_THROW(readMdl(*group, simParms, mdl));
+  EXPECT_TRUE(group->empty());
 }
 
 TEST_F(MdlReaderTest, CollapseWhitespace)
@@ -215,4 +227,15 @@ TEST_F(MdlReaderTest, CollapseWhitespace)
   EXPECT_NO_THROW(readMdl(*group, simParms, mdl));
   // Should create variable with collapsed/camelCase name
   EXPECT_GT(group->items.size(), initialItems);
+  bool varFound=false;
+  for (auto& item : group->items) {
+    if (auto var = dynamic_pointer_cast<VariableBase>(item)) {
+      if (var->name()=="multiWordVariable")
+        {
+          varFound=true;
+          break;
+        }
+      }
+  }
+  EXPECT_TRUE(varFound); 
 }

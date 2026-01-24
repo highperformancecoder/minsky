@@ -60,16 +60,6 @@ namespace
   };
 }
 
-TEST_F(DatabaseIngestorTest, Construction)
-{
-  // Test that DatabaseIngestor can be constructed
-  DatabaseIngestor di;
-  EXPECT_NO_THROW({
-    auto& db = di.db;
-    auto& spec = di.spec;
-  });
-}
-
 // NOTE: DatabaseIngestor tests disabled - requires full Ravel database setup
 // These tests were failing because DatabaseIngestor needs proper Ravel
 // initialization which is complex to set up in unit tests
@@ -96,20 +86,3 @@ TEST_F(DatabaseIngestorTest, ImportNonexistentFile)
   EXPECT_THROW(ingestor.importFromCSV(filenames), std::exception);
 }
 
-TEST_F(DatabaseIngestorTest, SpecConfiguration)
-{
-  // Test that the spec member can be configured
-  EXPECT_NO_THROW({
-    ingestor.spec.separator = ',';
-    // spec can be configured before import
-  });
-}
-
-TEST_F(DatabaseIngestorTest, DatabaseAccess)
-{
-  // Test that the database member is accessible
-  EXPECT_NO_THROW({
-    auto& db = ingestor.db;
-    // Database object should be accessible
-  });
-}
