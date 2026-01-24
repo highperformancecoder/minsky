@@ -292,7 +292,7 @@ namespace minsky
         if (name.substr(0,9)==R"(\\\---///)")
           break; // we don't parse the sketch information - not used in Minsky
         string definition;
-        if (nameStr.back()=='=')
+        if (!nameStr.empty() && nameStr.back()=='=')
           // only read definition if this was a variable definition
           definition=collapseWS(trimWS(readToken(mdlFile,'~')));
         switch (definition[0])
