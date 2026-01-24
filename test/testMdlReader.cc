@@ -166,15 +166,19 @@ TEST_F(MdlReaderTest, ParseSliderSpec)
   EXPECT_NO_THROW(readMdl(*group, simParms, mdl));
   
   // Find the variable and check slider bounds were set
+  EXPECT_GT(group->items.size(), 0);
+  bool varFound=false;
   for (auto& item : group->items) {
     if (auto var = dynamic_pointer_cast<VariableBase>(item)) {
       if (auto vv = var->vValue()) {
+        varFound=true;
         // Slider should be configured (exact values depend on implementation)
         EXPECT_GE(vv->sliderMax, vv->sliderMin);
         break;
       }
     }
   }
+  EXPECT_TRUE(varFound); 
 }
 
 TEST_F(MdlReaderTest, ParseVensimBuiltinFunctions)

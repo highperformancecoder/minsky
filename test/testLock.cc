@@ -66,31 +66,24 @@ TEST_F(LockTest, ToggleLocked)
 {
   Lock lock;
   EXPECT_FALSE(lock.locked());
-  
+  EXPECT_TRUE(lock.lockedState.empty());
+  EXPECT_EQ(nullptr, lock.ravelInput());
+
   // Toggle to locked state - throws if Ravel not available
   if (!ravelCAPI::available())
     EXPECT_THROW(lock.toggleLocked(), std::exception);
   else
-    lock.toggleLocked();
-
-  // Note: actual behavior depends on whether lock is connected to a Ravel
-  // If not connected, toggle may not change state or may set empty state
-}
-
-TEST_F(LockTest, LockedState)
-{
-  Lock lock;
-  
-  // Test that locked() reflects the state of lockedState
-  EXPECT_TRUE(lock.lockedState.empty());
-  EXPECT_FALSE(lock.locked());
-}
-
-TEST_F(LockTest, RavelInput)
-{
-  Lock lock;
-  // Initially not connected to any Ravel
-  EXPECT_EQ(nullptr, lock.ravelInput());
+    {
+      Ravel ravel;
+      auto startingState=ravel.getState();
+      Wire wire(ravel.ports(0), lock.ports(1));
+      lock.toggleLocked();
+      ravel.collapseAllHandles(); // change ravel state
+      EXPECT_TRUE(lock.locked());
+      EXPECT_TRUE(startingState==lock.lockedState);
+      EXPECT_FALSE(ravel.getState()==lock.lockedState);
+      EXPECT_EQ(&ravel, lock.ravelInput());
+    }
 }
 
 TEST_F(LockTest, Ports)
@@ -104,8 +97,7 @@ TEST_F(LockTest, Units)
 {
   Lock lock;
   // Test that units can be queried
-  Units u = lock.units(false);
-  // Lock passes through units from connected Ravel or returns dimensionless
+  EXPECT_NO_THROW(lock.units(false));
 }
 
 TEST_F(LockTest, MultipleInstances)
@@ -120,9 +112,20 @@ TEST_F(LockTest, MultipleInstances)
   if (!ravelCAPI::available())
     EXPECT_THROW(lock1.toggleLocked(), std::exception);
   else
-    lock1.toggleLocked();
-
-  EXPECT_EQ(lock2.locked(), false);
+    {
+      Ravel ravel;
+      auto startingState=ravel.getState();
+      Wire wire1(ravel.ports(0), lock1.ports(1));
+      Wire wire2(ravel.ports(0), lock2.ports(1));
+      lock1.toggleLocked();
+      ravel.collapseAllHandles(); // change ravel state
+      EXPECT_TRUE(lock1.locked());
+      EXPECT_FALSE(lock2.locked());
+      EXPECT_TRUE(startingState==lock1.lockedState);
+      EXPECT_FALSE(ravel.getState()==lock1.lockedState);
+      EXPECT_EQ(&ravel, lock1.ravelInput());
+      EXPECT_EQ(&ravel, lock2.ravelInput());
+    }      
 }
 
 TEST_F(LockTest, ApplyLockedState)
@@ -131,6 +134,18 @@ TEST_F(LockTest, ApplyLockedState)
   
   // Should not throw even if not connected to a Ravel
   EXPECT_NO_THROW(lock.applyLockedStateToRavel());
+
+  if (ravelCAPI::available())
+    {
+      Ravel ravel;
+      auto startingState=ravel.getState();
+      Wire wire(ravel.ports(0), lock.ports(1));
+      lock.toggleLocked();
+      ravel.collapseAllHandles(); // change ravel state
+      EXPECT_FALSE(ravel.getState()==startingState);
+      lock.applyLockedStateToRavel();
+      EXPECT_TRUE(ravel.getState()==startingState);
+    }
 }
 
 TEST_F(LockTest, Draw)
@@ -142,12 +157,3 @@ TEST_F(LockTest, Draw)
   EXPECT_NO_THROW(lock.draw(surf.cairo()));
 }
 
-TEST_F(LockTest, StaticIcons)
-{
-  // Toasted that static SVG icons are initialized
-  EXPECT_NO_THROW({
-    auto& locked = Lock::lockedIcon;
-    auto& unlocked = Lock::unlockedIcon;
-    // Icons should be usable
-  });
-}

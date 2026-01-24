@@ -71,7 +71,7 @@ TEST_F(DatabaseIngestorTest, Construction)
 }
 
 // NOTE: DatabaseIngestor tests disabled - requires full Ravel database setup
-// These tests were failing because DatabaseIngestor needs properRavel
+// These tests were failing because DatabaseIngestor needs proper Ravel
 // initialization which is complex to set up in unit tests
 
 TEST_F(DatabaseIngestorTest, DISABLED_ImportSimpleCSV)

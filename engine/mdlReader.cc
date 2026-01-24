@@ -293,15 +293,18 @@ namespace minsky
           break; // we don't parse the sketch information - not used in Minsky
         string definition;
         if (!nameStr.empty() && nameStr.back()=='=')
-          // only read definition if this was a variable definition
-          definition=collapseWS(trimWS(readToken(mdlFile,'~')));
-        switch (definition[0])
           {
-          case '=': case ':': // for now, treat constant assignment and data assignment equally to numeric assignment
-            definition.erase(definition.begin());
-            break;
-          default:
-            break;
+            // only read definition if this was a variable definition
+            definition=collapseWS(trimWS(readToken(mdlFile,'~')));
+            if (!definition.empty())
+              switch (definition[0])
+                {
+                case '=': case ':': // for now, treat constant assignment and data assignment equally to numeric assignment
+                  definition.erase(definition.begin());
+                  break;
+                default:
+                  break;
+                }
           }
         auto unitField=trimWS(readToken(mdlFile,'~'));
         regex_match(unitField,match,unitFieldPattern);

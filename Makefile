@@ -554,6 +554,7 @@ dist:
 js-dist:
 	sh makeJsDist.sh
 
+.PHONY: lcov
 lcov: export GCC=1
 lcov: export GCOV=1
 LCOV_FLAGS=--no-external --ignore-errors gcov,mismatch,wrap,version

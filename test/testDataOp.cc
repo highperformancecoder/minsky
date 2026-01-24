@@ -23,6 +23,7 @@
 
 #include <gtest/gtest.h>
 #include <fstream>
+#include <filesystem>
 
 using namespace minsky;
 using namespace std;
@@ -108,14 +109,8 @@ TEST_F(DataOpTest, InterpolateOutsideRange)
   op.data[1.0] = 10.0;
   op.data[2.0] = 20.0;
   
-  // Test extrapolation or clamping behavior
-  // (behavior may vary - check implementation)
-  double val = op.interpolate(0.5);  // Before first point
-  double val2 = op.interpolate(2.5);  // After last point
-  
-  // Should return some value (may clamp or extrapolate)
-  EXPECT_TRUE(std::isfinite(val) || true);  // Accept any result for now
-  EXPECT_TRUE(std::isfinite(val2) || true);
+  EXPECT_NEAR(10, op.interpolate(0.5),0.1);
+  EXPECT_NEAR(20, op.interpolate(2.5),0.1);
 }
 
 TEST_F(DataOpTest, DerivativeAtDataPoints)
@@ -180,9 +175,7 @@ TEST_F(DataOpTest, EmptyData)
   DataOp op;
   
   //Empty data set - interpolation should handle gracefully
-  double val = op.interpolate(1.0);
-  // Should return some default or throw
-  // (behavior depends on implementation)
+  EXPECT_EQ(0, op.interpolate(1.0));
 }
 
 TEST_F(DataOpTest, SingleDataPoint)
