@@ -1,6 +1,6 @@
 {
   "name": "ravel",
-  "version":"3.20.0",
+  "version": "3.20.0",
   "author": "High Performance Coders",
   "description": "Graphical dynamical systems simulator oriented towards economics",
   "repository": {
@@ -67,17 +67,23 @@
       {
         "from": "node_modules/call-bind-apply-helpers",
         "to": "node_modules/call-bind-apply-helpers",
-        "filter": ["**/*"]
+        "filter": [
+          "**/*"
+        ]
       },
       {
         "from": "node_modules/function-bind",
         "to": "node_modules/function-bind",
-        "filter": ["**/*"]
+        "filter": [
+          "**/*"
+        ]
       },
       {
         "from": "node_modules/es-errors",
         "to": "node_modules/es-errors",
-        "filter": ["**/*"]
+        "filter": [
+          "**/*"
+        ]
       }
     ],
     "fileAssociations": [
@@ -141,7 +147,10 @@
     "@angular/material": "^20.0.0",
     "@ngx-translate/core": "^16.0.4",
     "@ngx-translate/http-loader": "^16.0.1",
+    "nx": "^21.2.1",
+    "@nx/workspace": "^21.0.0",
     "@nx/jest": "21.2.1",
+    "@nx/js": "21.2.1",
     "@types/jest": "^29.0.0",
     "electron": "^37.0.0",
     "electron-builder": "^26.0.12",
@@ -154,8 +163,6 @@
     "ngx-color-picker": "^20.0.0",
     "npm-run-all": "^4.1.5",
     "nx-electron": "^21.0.0",
-    "@nx/js": "21.2.1",
-    "@nrwl/workspace": "^19.8.4",
     "wait-on": "^8.0.3"
   },
   "dependencies": {

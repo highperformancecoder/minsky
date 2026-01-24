@@ -11,12 +11,12 @@ LIBS:=$(subst -lecolab,$(ECOLAB_HOME)/lib/libecolab.a,$(LIBS))
 
 VPATH= .. ../schema ../model ../engine ../RESTService ../RavelCAPI/civita ../RavelCAPI $(ECOLAB_HOME)/include
 
-GTESTOBJS=testCSVParser.o testCanvas.o testDerivative.o testExpressionWalker.o testGrid.o testLatexToPango.o testLockGroup.o testMdl.o testMinsky.o testModel.o testPannableTab.o testPhillips.o testPlotWidget.o testPubTab.o testSaver.o testSheet.o testStr.o testTensorOps.o testUnits.o testUserFunction.o testVariable.o testVariablePane.o testXVector.o testZStream.o ticket-1461.o
+GTESTOBJS=testCSVParser.o testCanvas.o testDataOp.o testDatabaseIngestor.o testDerivative.o testExpressionWalker.o testGrid.o testLatexToPango.o testLock.o testLockGroup.o testMdl.o testMdlReader.o testMinsky.o testModel.o testPannableTab.o testPhillips.o testPlotWidget.o testPubTab.o testSaver.o testSheet.o testStr.o testTensorOps.o testUnits.o testUserFunction.o testVariable.o testVariablePane.o testXVector.o testZStream.o ticket-1461.o
 
 MINSKYOBJS=localMinsky.o ../libminsky.a
-FLAGS:=-I.. -I../RESTService -I../RavelCAPI/civita -I../RavelCAPI $(FLAGS)
+FLAGS:=-I.. -I../RESTService -I../RavelCAPI/civita -I../RavelCAPI  -I../model -I../engine -I../schema $(FLAGS)
 FLAGS+=-std=c++20  -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -DUSE_UNROLLED -DCLASSDESC_ARITIES=0xf \
-  -Wno-unknown-warning-option -Wno-unused-local-typedefs -Wno-unused-command-line-argument -I../model -I../engine -I../schema
+  -Wno-unknown-warning-option -Wno-unused-local-typedefs -Wno-unused-command-line-argument
 LIBS+=-L../RavelCAPI -lravelCAPI -L../RavelCAPI/civita -lcivita -lboost_system -lboost_thread \
 	-lboost_regex -lboost_date_time -lboost_filesystem -lclipboard -lxcb -lX11 \
 	-lgsl -lssl -lcrypto -lgslcblas  -lxml2 -ltiff -ldl
