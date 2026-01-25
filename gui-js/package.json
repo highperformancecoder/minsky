@@ -1,6 +1,6 @@
 {
   "name": "ravel",
-  "version":"3.21.0",
+  "version":"3.21.1",
   "author": "High Performance Coders",
   "description": "Graphical dynamical systems simulator oriented towards economics",
   "repository": {
