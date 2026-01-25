@@ -150,6 +150,12 @@ ipcMain.handle(
   }
 );
 
+ipcMain.on(
+  events.REFRESH_ALL_GODLEY_POPUPS, async () => {
+    WindowManager.refreshAllGodleyPopups();
+  }
+);
+
 ipcMain.on(events.ADD_RECENT_FILE, (event, filePath: string) => {
   RecentFilesManager.addFileToRecentFiles(filePath);
 });

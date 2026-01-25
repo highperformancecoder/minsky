@@ -2,6 +2,13 @@
 
 SF_WEB=hpcoder@web.sourceforge.net:/home/project-web/minsky/htdocs
 
+export DEBUG
+export GCC
+export AEGIS
+export MXE
+export OPENMP
+export OPT
+
 # location of TCL and TK libraries 
 TCL_PREFIX=$(shell grep TCL_PREFIX $(call search,lib*/tclConfig.sh) | cut -f2 -d\')
 TCL_VERSION=$(shell grep TCL_VERSION $(call search,lib*/tclConfig.sh) | cut -f2 -d\')
@@ -44,7 +51,7 @@ ifneq ($(MAKECMDGOALS),clean)
 # disable AEGIS build here, as EcoLab 6 is still a little raw
 build_ecolab:=$(shell cd ecolab; if $(MAKE) $(MAKEOVERRIDES) AEGIS= $(JOBS) only-libs >build.log 2>&1; then echo "ecolab built"; fi)
 
-$(warning $(build_ecolab))
+#$(warning $(build_ecolab))
 ifneq ($(build_ecolab),ecolab built)
 $(warning $(shell cat ecolab/build.log))
 $(error Making ecolab failed: check ecolab/build.log)
@@ -556,18 +563,24 @@ dist:
 js-dist:
 	sh makeJsDist.sh
 
+.PHONY: lcov
+lcov: export GCC=1
+lcov: export GCOV=1
 LCOV_FLAGS=--no-external --ignore-errors gcov,mismatch,wrap,version
 lcov:
 	$(MAKE) clean
-	-$(MAKE) GCC=1 GCOV=1 tests python3
-	lcov -i -c -d . $(LCOV_FLAGS) -o lcovi.info
+	$(MAKE) tests
+#	lcov -i -c -d . $(LCOV_FLAGS) -o lcovi.info
 # ensure schema export code is exercised
-	-$(MAKE) GCOV=1 minsky.xsd
-	-$(MAKE) GCOV=1 sure
-	lcov -c -d .  $(LCOV_FLAGS) -o lcovt.info
-	lcov -a lcovi.info -a lcovt.info -o lcov.info
-	lcov -r lcov.info --ignore-errors unused */ecolab/* "*.cd" "*.xcd" "*.rcd" "*.tcd" -o lcovr.info 
-	genhtml -o coverage lcovr.info
+	-$(MAKE) minsky.xsd
+	-$(MAKE) sure
+	mkdir -p coverage
+	gcovr -r . --html --html-details -o coverage/index.html
+#	lcov -c -d .  $(LCOV_FLAGS) -o lcovt.info
+#	lcov -a lcovi.info -a lcovt.info -o lcov.info
+#	lcov -r lcov.info --ignore-errors unused */ecolab/* "*.cd" "*.xcd" "*.rcd" "*.tcd" -o lcovr.info 
+#	genhtml -o coverage lcovr.info
+
 
 compile_commands.json: Makefile
 	-rm *.o

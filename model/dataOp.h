@@ -41,7 +41,7 @@ namespace minsky
   public:
     ~DataOp() {}
     
-    const DataOp& operator=(const DataOp& x); 
+    DataOp& operator=(const DataOp& x)=default;
 
     std::map<double, double> data;
     void readData(const std::string& fileName);

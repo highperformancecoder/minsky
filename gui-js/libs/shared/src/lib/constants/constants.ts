@@ -52,6 +52,7 @@ export const events = {
   RECORD: 'record',
   RECORDING_REPLAY: 'recording-replay',
   RECORDING_STATUS_CHANGED: 'recording-status-changed',
+  REFRESH_ALL_GODLEY_POPUPS: 'refresh-all-godley-popups',
   REFRESH_CSV_IMPORT: 'refresh-csv-import',
   REPLAY_RECORDING: 'replay-recording',
   RESET_ZOOM: 'reset-zoom',
