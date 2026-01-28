@@ -459,7 +459,7 @@ namespace minsky
       const set<size_t> idxSet(idx.begin(),idx.end());
       set<size_t> newIdx;
       const size_t hcSize=cachedResult.hypercube().numElements();
-      for (auto& i: idx)
+      for (auto& i: idxSet)
         {
           checkCancel();
           // strip of any indices outside the output range

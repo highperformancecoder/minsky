@@ -50,6 +50,21 @@ struct Eval: private std::shared_ptr<EvalCommon>, public TensorEval
   void operator()() {TensorEval::eval(ValueVector::flowVars.data(), ValueVector::flowVars.size(), ValueVector::stockVars.data());}
 };
 
+// utility class for generating scrambled index
+struct ScrambledIndex: public Index
+{
+  ScrambledIndex(size_t n) {
+    vector<size_t> idx;
+    for (auto i=0; i<n; ++i) idx.push_back(i);
+    next_permutation(idx.begin(),idx.end());
+    next_permutation(idx.begin(),idx.end());
+    assignVector(idx);
+    // check the indices are scrambled
+    set sortedIndex(begin(),end());
+    assert(!equal(begin(), end(), sortedIndex.begin()));
+  }
+};
+    
 class TensorOpSuite : public ::testing::Test
 {
 public:
@@ -270,6 +285,36 @@ TEST_F(TensorOpSuite, difference2D)
     if (std::isfinite(i))
       EXPECT_EQ(10,i);
 }
+
+TEST_F(TensorOpSuite, difference2DunorderedSparse)
+{
+  vector<unsigned> dims{5,5};
+  fromVal.hypercube(Hypercube(dims));
+  // set an unordered index
+  fromVal.index(ScrambledIndex(fromVal.size()));
+  for (size_t i=0; i<fromVal.size(); ++i)
+    fromVal[i]=fromVal.index()[i];
+  
+  int delta=1;
+  evalOp<OperationType::difference>("0",delta);
+  for (auto& i: *to->vValue())
+    if (std::isfinite(i))
+      EXPECT_EQ(1,i);
+  evalOp<OperationType::difference>("1",delta);
+  for (auto& i: *to->vValue())
+    if (std::isfinite(i))
+      EXPECT_EQ(5,i);
+  delta=2;
+  evalOp<OperationType::difference>("0",delta);
+  for (auto& i: *to->vValue())
+    if (std::isfinite(i))
+      EXPECT_EQ(2,i);
+  evalOp<OperationType::difference>("1",delta);
+  for (auto& i: *to->vValue())
+    if (std::isfinite(i))
+      EXPECT_EQ(10,i);
+}
+
 TEST_F(TensorOpSuite, difference1D)
 {
   vector<unsigned> dims{5};
@@ -306,6 +351,39 @@ TEST_F(TensorOpSuite, difference1D)
   EXPECT_EQ(1, to->vValue()->hypercube().xvectors[0][0].value);
   vector<size_t> ii{0,1,2,3};
   for (size_t _i=0; _i<4; ++_i) EXPECT_EQ(ii[_i], to->vValue()->index()[_i]);
+}
+  
+TEST_F(TensorOpSuite, difference1DunorderedSparse)
+{
+  vector<unsigned> dims{5};
+  fromVal.hypercube(Hypercube(dims));
+  // set an unordered index
+  fromVal.index(ScrambledIndex(fromVal.size()));
+  for (size_t i=0; i<fromVal.size(); ++i)
+    // use square function to avoid constant difference
+    fromVal[i]=fromVal.index()[i]*fromVal.index()[i];
+
+  int delta=1;
+  evalOp<OperationType::difference>("",delta=1);
+  EXPECT_EQ(4, to->vValue()->hypercube().dims()[0]);
+  int j=0;
+  for (auto& i: *to->vValue())
+    EXPECT_EQ(2*(j++)+1,i);
+  EXPECT_EQ(1, to->vValue()->hypercube().xvectors[0][0].value);
+
+  evalOp<OperationType::difference>("",delta=-1);
+  EXPECT_EQ(4, to->vValue()->hypercube().dims()[0]);
+  j=0;
+  for (auto& i: *to->vValue())
+    EXPECT_EQ(-2*(j++)-1,i);
+  EXPECT_EQ(0, to->vValue()->hypercube().xvectors[0][0].value);
+                  
+  evalOp<OperationType::difference>("",delta=2);
+  EXPECT_EQ(3, to->vValue()->hypercube().dims()[0]);
+  j=0;
+  for (auto& i: *to->vValue())
+    EXPECT_EQ(4*(j+++1),i);
+  EXPECT_EQ(2, to->vValue()->hypercube().xvectors[0][0].value);
 }
   
 TEST_F(TensorOpSuite, difference2D_II)
@@ -421,6 +499,49 @@ TEST_F(TensorOpSuite, gatherInterpolateDate)
   fromVal.hypercube(hc);
   for (size_t i=0; i<x.size(); ++i)
     fromVal[i]=x[i].date().year()+x[i].date().day_of_year()/365.0;
+  OperationPtr gatherOp(OperationType::gather);
+  Variable<VariableType::flow> gatheredVar("gathered");
+  Wire w1(from->ports(0), gatherOp->ports(1));
+  Wire w2(to->ports(0), gatherOp->ports(2));   
+  Wire w3(gatherOp->ports(0), gatheredVar.ports(1));
+      
+  auto& gathered=*gatheredVar.vValue();
+  auto& toVal=*to->vValue();
+  Eval eval(gatheredVar, gatherOp);
+  for (size_t i=1990; i<1990+x.size(); ++i)
+    {
+      toVal[0]=i;
+      eval();
+      EXPECT_EQ(0,gathered.rank());
+      EXPECT_NEAR(i, gathered[0],0.01);
+    }
+}
+  
+TEST_F(TensorOpSuite, gatherInterpolateDateUnorderedSparse)
+{
+  using boost::gregorian::date;
+  using boost::gregorian::Jan;
+  using boost::gregorian::Feb;
+  using boost::gregorian::Jun;
+  vector<ptime> x;
+  x.emplace_back(date(1990,Jan,1));
+  x.emplace_back(date(1991,Feb,1));
+  x.emplace_back(date(1992,Jun,1));
+  x.emplace_back(date(1993,Jan,1));
+  x.emplace_back(date(1994,Jan,1));
+  Hypercube hc(vector<unsigned>{unsigned(x.size())});
+  hc.xvectors[0].dimension=Dimension(Dimension::time,"");
+  for (size_t i=0; i<x.size(); ++i)
+    {
+      hc.xvectors[0][i]=x[i];
+    }
+  fromVal.hypercube(hc);
+  fromVal.index(ScrambledIndex(fromVal.size()));
+  for (size_t i=0; i<x.size(); ++i)
+    {
+      auto j=fromVal.index()[i];
+      fromVal[i]=x[j].date().year()+x[j].date().day_of_year()/365.0;
+    }
   OperationPtr gatherOp(OperationType::gather);
   Variable<VariableType::flow> gatheredVar("gathered");
   Wire w1(from->ports(0), gatherOp->ports(1));
@@ -570,9 +691,9 @@ TEST_F(TensorOpSuite, sparse2Gather)
   for (auto& i: fromVal)
     i=(&i-&fromVal[0])%2;
 
-  toVal.index({1,3,5});
+  toVal.index({1,5,3});
   toVal.hypercube(Hypercube({6}));
-  toVal[0]=0; toVal[1]=1; toVal[2]=3;
+  toVal[0]=0; toVal[2]=1; toVal[1]=3;
       
   // apply gather to the orignal vector.
   OperationPtr gatherOp(OperationType::gather);
