@@ -158,7 +158,6 @@ namespace schema2
       {
         layout.addItem(items,i);
         // override any height specifcation with a legacy iconScale parameter
-        items.back().height.reset();
         items.back().iconScale=i.zoomFactor/m.zoomFactor;
       }
     for (auto& i: m.model.groups)
