@@ -5,7 +5,7 @@ import sys
 from pathlib import Path
 here=str(Path(sys.argv[0]).parent.parent)
 if here=="": here='.' #relative path
-sys.path.append(here)
+sys.path.insert(0,here)
 
 # work out where the assets are
 assetDir=here+'/gui-js/apps/minsky-web/src/assets/images/icons/'

@@ -284,7 +284,7 @@ namespace minsky
                   }
                 pango.setMarkup(text);
               }
-            colWidth=max(colWidth,pango.width());
+            colWidth=max(colWidth,pango.width() + (row==0? pulldownHot:0));
             cairo_move_to(cairo,x+3,y);
             pango.show();
             y+=rowHeight;
@@ -299,6 +299,11 @@ namespace minsky
         else if (col+1<colLeftMargin.size())
           x=colLeftMargin[col+1];
       }
+
+    // display pulldown for last column
+    cairo_move_to(cairo,x-pulldownHot,topTableOffset);
+    pango.setMarkup("▼");
+    pango.show();
 
     pango.setMarkup
       (capitalise(enumKey<GodleyAssetClass::AssetClass>(assetClass)));
@@ -549,7 +554,7 @@ namespace minsky
       return;  
     if (selectedRow==0)
       {  
-		// Disallow moving flow labels column and prevent columns from moving when import stockvar dropdown button is pressed in empty column. For tickets 1053/1064/1066
+        // Disallow moving flow labels column and prevent columns from moving when import stockvar dropdown button is pressed in empty column. For tickets 1053/1064/1066
         if (c>0 && size_t(c)<m_godleyIcon.table.cols() && selectedCol>0 && size_t(selectedCol)<m_godleyIcon.table.cols() && c!=selectedCol && !(colLeftMargin[c+1]-x < pulldownHot)) 
           m_godleyIcon.table.moveCol(selectedCol,c-selectedCol);
       }

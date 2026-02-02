@@ -157,11 +157,11 @@ namespace schema2
       rotation=layout.rotation;
       if (layout.width>=0)
         width.reset(new float(layout.width));
-      else if (type=="PlotWidget")
+      else if (type=="PlotWidget" || type=="GodleyIcon")
         width.reset(new float(150));
       if (layout.height>=0)
         height.reset(new float(layout.height));
-      else if (type=="PlotWidget")
+      else if (type=="PlotWidget" || type=="GodleyIcon")
         height.reset(new float(150));
       if (layout.sliderBoundsSet)
         slider.reset(new Slider(layout.sliderVisible,layout.sliderStepRel,
