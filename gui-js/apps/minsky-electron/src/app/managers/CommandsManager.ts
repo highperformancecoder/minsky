@@ -17,6 +17,7 @@ import { homedir } from 'os';
 import JSON5 from 'json5';
 import { extname, join, dirname } from 'path';
 import { tmpdir } from 'os';
+import fullname from 'fullname';
 import { HelpFilesManager } from './HelpFilesManager';
 import { WindowManager } from './WindowManager';
 import { StoreManager } from './StoreManager';
@@ -475,6 +476,7 @@ export class CommandsManager {
     minsky.clearAllMaps();
     minsky.pushFlags();
     minsky.clearHistory();
+    minsky.author(await fullname());
     minsky.model.setZoom(1);
     minsky.canvas.recentre();
     minsky.popFlags();

@@ -157,6 +157,7 @@ namespace minsky
     namedItems.clear();
     flags=reset_needed|fullEqnDisplay_needed;
     fileVersion=minskyVersion;
+    author="";
     if (doClearHistory) clearHistory();
   }
 
