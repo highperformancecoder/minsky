@@ -1,4 +1,4 @@
-import {
+import  {
   Functions,
   importCSVvariableName,
   InstallCase,
@@ -367,6 +367,18 @@ export class ApplicationMenuManager {
         {
           label: 'Group selection',
           async click() {minsky.canvas.groupSelection();},
+        },
+        {
+          label: 'Author',
+          async click() {
+            let author=encodeURIComponent(await minsky.author());
+            WindowManager.createPopupWindowWithRouting({
+              width: 400,
+              height: 80,
+              title: 'Author',
+              url: `#/headless/menu/edit/author?author=${author}`,
+            });
+          },
         },
         {
           label: 'Dimensions',
