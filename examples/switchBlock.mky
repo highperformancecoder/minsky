@@ -510,7 +510,7 @@
     </palette>
    </Item>
    <Item>
-    <detailedText>Enter&#0032;your&#0032;note&#0032;here</detailedText>
+    <detailedText>Enter&#32;your&#32;note&#32;here</detailedText>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>

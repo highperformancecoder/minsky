@@ -1240,7 +1240,7 @@
   </items>
   <groups>
    <Group>
-    <name>Phillips&#0032;Curve</name>
+    <name>Phillips&#32;Curve</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>

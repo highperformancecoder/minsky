@@ -2429,7 +2429,7 @@
     <miniPlot>false</miniPlot>
     <data>
      <vector>
-      <string>Flows&#0032;V&#0032;/&#0032;Stock&#0032;Variables&#0032;-&gt;</string>
+      <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>
       <string>Vault</string>
       <string>Loan</string>
       <string>Firm</string>
@@ -2449,7 +2449,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Record&#0032;Loan</string>
+      <string>Record&#32;Loan</string>
       <string></string>
       <string>A</string>
       <string></string>
@@ -2469,7 +2469,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Pay&#0032;Interest</string>
+      <string>Pay&#32;Interest</string>
       <string></string>
       <string></string>
       <string>-B</string>
@@ -2479,7 +2479,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Record&#0032;Payment</string>
+      <string>Record&#32;Payment</string>
       <string></string>
       <string>-B</string>
       <string></string>
@@ -2489,7 +2489,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Deposit&#0032;Interest</string>
+      <string>Deposit&#32;Interest</string>
       <string></string>
       <string></string>
       <string>C</string>
@@ -2539,7 +2539,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Record&#0032;Repay</string>
+      <string>Record&#32;Repay</string>
       <string></string>
       <string>-G</string>
       <string></string>

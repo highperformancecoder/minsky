@@ -386,7 +386,7 @@
      <dimensionNames>
       <string>country</string>
       <string>date</string>
-      <string>&#0032;value</string>
+      <string>&#32;value</string>
      </dimensionNames>
     </csvDataSpec>
     <tensorData>
@@ -488,7 +488,7 @@
      <dimensionNames>
       <string>sex</string>
       <string>date</string>
-      <string>&#0032;value</string>
+      <string>&#32;value</string>
      </dimensionNames>
     </csvDataSpec>
     <tensorData>
@@ -590,7 +590,7 @@
      <dimensionNames>
       <string>country</string>
       <string>date</string>
-      <string>&#0032;value</string>
+      <string>&#32;value</string>
      </dimensionNames>
     </csvDataSpec>
     <tensorData>
@@ -666,7 +666,7 @@
      <dimensionNames>
       <string>sex</string>
       <string>date</string>
-      <string>&#0032;value</string>
+      <string>&#32;value</string>
      </dimensionNames>
     </csvDataSpec>
     <tensorData>
@@ -847,7 +847,7 @@
     <arg>1</arg>
    </Item>
    <Item>
-    <detailedText>integrals&#0032;are&#0032;for&#0032;testing&#0032;purposes</detailedText>
+    <detailedText>integrals&#32;are&#32;for&#32;testing&#32;purposes</detailedText>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>

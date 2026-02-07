@@ -3355,7 +3355,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>Employment&#0032;Rate</name>
+    <name>Employment&#32;Rate</name>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
@@ -3614,15 +3614,15 @@
     </palette>
    </Item>
    <Item>
-    <name>Employment&#0032;vs&#0032;Wages&#0032;Share</name>
+    <name>Employment&#32;vs&#32;Wages&#32;Share</name>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
     <grid>true</grid>
     <subgrid>false</subgrid>
     <plotType>line</plotType>
-    <xlabel>Wages&#0032;Share</xlabel>
-    <ylabel>Employment&#0032;Rate</ylabel>
+    <xlabel>Wages&#32;Share</xlabel>
+    <ylabel>Employment&#32;Rate</ylabel>
     <nxTicks>10</nxTicks>
     <nyTicks>10</nyTicks>
     <xtickAngle>-45</xtickAngle>
@@ -3873,7 +3873,7 @@
     </palette>
    </Item>
    <Item>
-    <name>Debt&#0032;to&#0032;GDP&#0032;Ratio</name>
+    <name>Debt&#32;to&#32;GDP&#32;Ratio</name>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
@@ -4132,7 +4132,7 @@
     </palette>
    </Item>
    <Item>
-    <name>Income&#0032;Shares</name>
+    <name>Income&#32;Shares</name>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
@@ -4140,7 +4140,7 @@
     <subgrid>false</subgrid>
     <plotType>line</plotType>
     <xlabel>Years</xlabel>
-    <ylabel>Ratios&#0032;to&#0032;GDP</ylabel>
+    <ylabel>Ratios&#32;to&#32;GDP</ylabel>
     <nxTicks>10</nxTicks>
     <nyTicks>10</nyTicks>
     <xtickAngle>-45</xtickAngle>
@@ -4391,7 +4391,7 @@
     </palette>
    </Item>
    <Item>
-    <name>Growth&#0032;Rate</name>
+    <name>Growth&#32;Rate</name>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>

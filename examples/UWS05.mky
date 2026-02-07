@@ -1645,7 +1645,7 @@
     <miniPlot>false</miniPlot>
     <data>
      <vector>
-      <string>Flows&#0032;V&#0032;/&#0032;Stock&#0032;Variables&#0032;-&gt;</string>
+      <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>
       <string>Firms</string>
       <string>Loans</string>
       <string>Safe</string>
@@ -1665,7 +1665,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Record&#0032;Loan</string>
+      <string>Record&#32;Loan</string>
       <string></string>
       <string>A</string>
       <string></string>
@@ -1675,7 +1675,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Compound&#0032;Debt</string>
+      <string>Compound&#32;Debt</string>
       <string></string>
       <string>B</string>
       <string></string>
@@ -1685,7 +1685,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Servicing&#0032;Debt</string>
+      <string>Servicing&#32;Debt</string>
       <string>-B</string>
       <string></string>
       <string>B</string>
@@ -1695,7 +1695,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Record&#0032;Servicing</string>
+      <string>Record&#32;Servicing</string>
       <string></string>
       <string>-B</string>
       <string></string>

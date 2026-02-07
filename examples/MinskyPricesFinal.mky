@@ -275,7 +275,7 @@
     <coords>
      <float>463.5</float>
      <float>626.842</float>
-     <float>-2.51535</float>
+     <float>-2.51532</float>
      <float>425.776</float>
      <float>103.25</float>
      <float>261.466</float>
@@ -604,7 +604,7 @@
      <float>608.056</float>
      <float>271.608</float>
      <float>628.842</float>
-     <float>210.83</float>
+     <float>210.828</float>
      <float>631.818</float>
      <float>265.479</float>
     </coords>
@@ -681,8 +681,8 @@
     <coords>
      <float>945.387</float>
      <float>610.97</float>
-     <float>850.684</float>
-     <float>305.67</float>
+     <float>850.685</float>
+     <float>305.673</float>
      <float>930.456</float>
      <float>592.91</float>
     </coords>
@@ -704,8 +704,8 @@
     <coords>
      <float>940.37</float>
      <float>620.533</float>
-     <float>860.649</float>
-     <float>353.64</float>
+     <float>860.65</float>
+     <float>353.641</float>
      <float>913.091</float>
      <float>615.23</float>
     </coords>
@@ -778,7 +778,7 @@
      <float>876.665</float>
      <float>53.4908</float>
      <float>842.53</float>
-     <float>28.5261</float>
+     <float>28.5262</float>
      <float>891.396</float>
      <float>28.6346</float>
     </coords>
@@ -808,8 +808,8 @@
     <coords>
      <float>871.658</float>
      <float>56.6906</float>
-     <float>848.917</float>
-     <float>35.3895</float>
+     <float>848.916</float>
+     <float>35.3894</float>
      <float>902.649</float>
      <float>57.2786</float>
     </coords>
@@ -6397,49 +6397,49 @@
     <miniPlot>false</miniPlot>
     <data>
      <vector>
-      <string>Flows&#0032;V&#0032;/&#0032;Stock&#0032;Variables&#0032;-&gt;</string>
+      <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>
       <string>LF</string>
       <string>DF</string>
       <string>DW</string>
       <string>EB</string>
      </vector>
      <vector>
-      <string>Initial&#0032;Conditions</string>
+      <string>Initial&#32;Conditions</string>
       <string>0</string>
       <string>-0</string>
       <string>0</string>
       <string>-0</string>
      </vector>
      <vector>
-      <string>Lend&#0032;for&#0032;Investment</string>
+      <string>Lend&#32;for&#32;Investment</string>
       <string>Invest</string>
       <string>Invest</string>
       <string></string>
       <string></string>
      </vector>
      <vector>
-      <string>Service&#0032;Debt</string>
+      <string>Service&#32;Debt</string>
       <string></string>
       <string>-IntL</string>
       <string></string>
       <string>IntL</string>
      </vector>
      <vector>
-      <string>Deposit&#0032;Interest</string>
+      <string>Deposit&#32;Interest</string>
       <string></string>
       <string>IntDF</string>
       <string></string>
       <string>-IntDF</string>
      </vector>
      <vector>
-      <string>Deposit&#0032;Interest</string>
+      <string>Deposit&#32;Interest</string>
       <string></string>
       <string></string>
       <string>IntDW</string>
       <string>-IntDW</string>
      </vector>
      <vector>
-      <string>Hire&#0032;Workers</string>
+      <string>Hire&#32;Workers</string>
       <string></string>
       <string>-Wages</string>
       <string>Wages</string>
@@ -6460,7 +6460,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Repay&#0032;Debt</string>
+      <string>Repay&#32;Debt</string>
       <string>-Repay</string>
       <string>-Repay</string>
       <string></string>

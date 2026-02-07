@@ -421,7 +421,7 @@
   </wires>
   <items>
    <Item>
-    <detailedText>Lending&#0032;and&#0032;repayment&#0032;rates&#0010;</detailedText>
+    <detailedText>Lending&#32;and&#32;repayment&#32;rates&#10;</detailedText>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -5148,7 +5148,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>Money&#0032;and&#0032;Bank&#0032;Accounts</name>
+    <name>Money&#32;and&#32;Bank&#32;Accounts</name>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
@@ -5925,7 +5925,7 @@
     </palette>
    </Item>
    <Item>
-    <name>Velocity&#0032;of&#0032;Money</name>
+    <name>Velocity&#32;of&#32;Money</name>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
@@ -6184,7 +6184,7 @@
     </palette>
    </Item>
    <Item>
-    <name>D&#0032;and&#0032;Money&#0032;Stock</name>
+    <name>D&#32;and&#32;Money&#32;Stock</name>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
@@ -6443,7 +6443,7 @@
     </palette>
    </Item>
    <Item>
-    <name>Debt&#0032;to&#0032;GDP&#0032;Ratio</name>
+    <name>Debt&#32;to&#32;GDP&#32;Ratio</name>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
@@ -6741,7 +6741,7 @@
     <miniPlot>false</miniPlot>
     <data>
      <vector>
-      <string>Flows&#0032;V&#0032;/&#0032;Stock&#0032;Variables&#0032;-&gt;</string>
+      <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>
       <string>Reserves</string>
       <string>C_D</string>
       <string>I_D</string>
@@ -6749,7 +6749,7 @@
       <string>B_E</string>
      </vector>
      <vector>
-      <string>Initial&#0032;Conditions</string>
+      <string>Initial&#32;Conditions</string>
       <string>100</string>
       <string>60</string>
       <string>20</string>
@@ -6765,7 +6765,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Debt&#0032;Repayment</string>
+      <string>Debt&#32;Repayment</string>
       <string></string>
       <string>Repay</string>
       <string>-Repay</string>
@@ -6773,7 +6773,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Interest&#0032;Payment</string>
+      <string>Interest&#32;Payment</string>
       <string></string>
       <string>int</string>
       <string>-int</string>
@@ -6781,7 +6781,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Bank&#0032;Fee</string>
+      <string>Bank&#32;Fee</string>
       <string></string>
       <string>-Fee</string>
       <string></string>
@@ -6789,7 +6789,7 @@
       <string>Fee</string>
      </vector>
      <vector>
-      <string>Hire&#0032;workers&#0032;(C)</string>
+      <string>Hire&#32;workers&#32;(C)</string>
       <string></string>
       <string>-W_C</string>
       <string></string>
@@ -6797,7 +6797,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Hire&#0032;workers&#0032;(I)</string>
+      <string>Hire&#32;workers&#32;(I)</string>
       <string></string>
       <string></string>
       <string>-W_I</string>
@@ -6805,7 +6805,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Purchases&#0032;(I)</string>
+      <string>Purchases&#32;(I)</string>
       <string></string>
       <string>C_I</string>
       <string>-C_I</string>
@@ -6813,7 +6813,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Purchases&#0032;(C)</string>
+      <string>Purchases&#32;(C)</string>
       <string></string>
       <string>-I_C</string>
       <string>I_C</string>
@@ -6821,7 +6821,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Workers&#0032;Consumption</string>
+      <string>Workers&#32;Consumption</string>
       <string></string>
       <string>C_W</string>
       <string></string>
@@ -6829,7 +6829,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Bankers&#0032;Consumption</string>
+      <string>Bankers&#32;Consumption</string>
       <string></string>
       <string>C_B</string>
       <string></string>
@@ -6837,7 +6837,7 @@
       <string>-C_B</string>
      </vector>
      <vector>
-      <string>Bankers&#0032;Investment</string>
+      <string>Bankers&#32;Investment</string>
       <string></string>
       <string></string>
       <string>I_B</string>
@@ -6893,14 +6893,14 @@
     <miniPlot>false</miniPlot>
     <data>
      <vector>
-      <string>Flows&#0032;V&#0032;/&#0032;Stock&#0032;Variables&#0032;-&gt;</string>
+      <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>
       <string>C_D</string>
       <string>D</string>
       <string></string>
       <string>C_{NW}</string>
      </vector>
      <vector>
-      <string>Initial&#0032;Conditions</string>
+      <string>Initial&#32;Conditions</string>
       <string>60</string>
       <string>10</string>
       <string></string>
@@ -6914,56 +6914,56 @@
       <string></string>
      </vector>
      <vector>
-      <string>Debt&#0032;Repayment</string>
+      <string>Debt&#32;Repayment</string>
       <string>Repay</string>
       <string>-Repay</string>
       <string></string>
       <string></string>
      </vector>
      <vector>
-      <string>Interest&#0032;Payments</string>
+      <string>Interest&#32;Payments</string>
       <string>int</string>
       <string></string>
       <string></string>
       <string>int</string>
      </vector>
      <vector>
-      <string>Bank&#0032;Fee</string>
+      <string>Bank&#32;Fee</string>
       <string>-Fee</string>
       <string></string>
       <string></string>
       <string>-Fee</string>
      </vector>
      <vector>
-      <string>Hire&#0032;workers&#0032;(C)</string>
+      <string>Hire&#32;workers&#32;(C)</string>
       <string>-W_C</string>
       <string></string>
       <string></string>
       <string>-W_C</string>
      </vector>
      <vector>
-      <string>Bankers&#0032;Consumption</string>
+      <string>Bankers&#32;Consumption</string>
       <string>C_B</string>
       <string></string>
       <string></string>
       <string>C_B</string>
      </vector>
      <vector>
-      <string>Purchases&#0032;(I)</string>
+      <string>Purchases&#32;(I)</string>
       <string>C_I</string>
       <string></string>
       <string></string>
       <string>C_I</string>
      </vector>
      <vector>
-      <string>Workers&#0032;Consumption</string>
+      <string>Workers&#32;Consumption</string>
       <string>C_W</string>
       <string></string>
       <string></string>
       <string>C_W</string>
      </vector>
      <vector>
-      <string>Purchases&#0032;(C)</string>
+      <string>Purchases&#32;(C)</string>
       <string>-I_C</string>
       <string></string>
       <string></string>
@@ -7015,13 +7015,13 @@
     <miniPlot>false</miniPlot>
     <data>
      <vector>
-      <string>Flows&#0032;V&#0032;/&#0032;Stock&#0032;Variables&#0032;-&gt;</string>
+      <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>
       <string>I_D</string>
       <string>D</string>
       <string>I_{NW}</string>
      </vector>
      <vector>
-      <string>Initial&#0032;Conditions</string>
+      <string>Initial&#32;Conditions</string>
       <string>20</string>
       <string>10</string>
       <string>10</string>
@@ -7033,37 +7033,37 @@
       <string></string>
      </vector>
      <vector>
-      <string>Debt&#0032;Repayment</string>
+      <string>Debt&#32;Repayment</string>
       <string>-Repay</string>
       <string>-Repay</string>
       <string></string>
      </vector>
      <vector>
-      <string>Interest&#0032;Payments</string>
+      <string>Interest&#32;Payments</string>
       <string>-int</string>
       <string></string>
       <string>-int</string>
      </vector>
      <vector>
-      <string>Hire&#0032;workers&#0032;(I)</string>
+      <string>Hire&#32;workers&#32;(I)</string>
       <string>-W_I</string>
       <string></string>
       <string>-W_I</string>
      </vector>
      <vector>
-      <string>Purchases&#0032;(I)</string>
+      <string>Purchases&#32;(I)</string>
       <string>-C_I</string>
       <string></string>
       <string>-C_I</string>
      </vector>
      <vector>
-      <string>Bankers&#0032;Investment</string>
+      <string>Bankers&#32;Investment</string>
       <string>I_B</string>
       <string></string>
       <string>I_B</string>
      </vector>
      <vector>
-      <string>Purchases&#0032;(C)</string>
+      <string>Purchases&#32;(C)</string>
       <string>I_C</string>
       <string></string>
       <string>I_C</string>
@@ -7108,31 +7108,31 @@
     <miniPlot>false</miniPlot>
     <data>
      <vector>
-      <string>Flows&#0032;V&#0032;/&#0032;Stock&#0032;Variables&#0032;-&gt;</string>
+      <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>
       <string>W_D</string>
       <string></string>
       <string>W_{NW}</string>
      </vector>
      <vector>
-      <string>Initial&#0032;Conditions</string>
+      <string>Initial&#32;Conditions</string>
       <string>15</string>
       <string></string>
       <string>15</string>
      </vector>
      <vector>
-      <string>Hire&#0032;workers&#0032;(C)</string>
+      <string>Hire&#32;workers&#32;(C)</string>
       <string>W_C</string>
       <string></string>
       <string>W_C</string>
      </vector>
      <vector>
-      <string>Hire&#0032;workers&#0032;(I)</string>
+      <string>Hire&#32;workers&#32;(I)</string>
       <string>W_I</string>
       <string></string>
       <string>W_I</string>
      </vector>
      <vector>
-      <string>Workers&#0032;Consumption</string>
+      <string>Workers&#32;Consumption</string>
       <string>-C_W</string>
       <string></string>
       <string>-C_W</string>

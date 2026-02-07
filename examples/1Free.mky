@@ -857,7 +857,7 @@
     <miniPlot>false</miniPlot>
     <data>
      <vector>
-      <string>Flows&#0032;V&#0032;/&#0032;Stock&#0032;Variables&#0032;-&gt;</string>
+      <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>
       <string>Vault</string>
       <string>Loans</string>
       <string>Firms</string>
@@ -866,7 +866,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Initial&#0032;Conditions</string>
+      <string>Initial&#32;Conditions</string>
       <string>99</string>
       <string>0</string>
       <string>0</string>
@@ -875,7 +875,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Lend&#0032;from&#0032;Vault</string>
+      <string>Lend&#32;from&#32;Vault</string>
       <string>-2Loan</string>
       <string></string>
       <string>2Loan</string>
@@ -884,7 +884,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Record&#0032;Loan</string>
+      <string>Record&#32;Loan</string>
       <string></string>
       <string>2Loan</string>
       <string></string>
@@ -893,7 +893,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Charge&#0032;Interest</string>
+      <string>Charge&#32;Interest</string>
       <string></string>
       <string>IntLoan</string>
       <string></string>
@@ -902,7 +902,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Pay&#0032;Interest</string>
+      <string>Pay&#32;Interest</string>
       <string></string>
       <string></string>
       <string>-IntLoan</string>
@@ -911,7 +911,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Record&#0032;Interest&#0032;Payment</string>
+      <string>Record&#32;Interest&#32;Payment</string>
       <string></string>
       <string>-IntLoan</string>
       <string></string>
@@ -920,7 +920,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Pay&#0032;Interest</string>
+      <string>Pay&#32;Interest</string>
       <string></string>
       <string></string>
       <string>FirmInt</string>

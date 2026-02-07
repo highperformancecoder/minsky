@@ -40,7 +40,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>:\int_0^\infty&#0032;e^{-x^2/2}</name>
+    <name>:\int_0^\infty&#32;e^{-x^2/2}</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -108,7 +108,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>:\partial&#0032;f(x)/\partial&#0032;x|_0</name>
+    <name>:\partial&#32;f(x)/\partial&#32;x|_0</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>

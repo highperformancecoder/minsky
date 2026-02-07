@@ -374,8 +374,8 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <detailedText>This&#0032;is&#0032;here&#0032;just&#0032;to&#0032;enable&#0032;compareWithOctave&#0032;to&#0032;work</detailedText>
-    <tooltip>Dummy&#0032;integral</tooltip>
+    <detailedText>This&#32;is&#32;here&#32;just&#32;to&#32;enable&#32;compareWithOctave&#32;to&#32;work</detailedText>
+    <tooltip>Dummy&#32;integral</tooltip>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>

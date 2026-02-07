@@ -408,7 +408,7 @@
     <arg>1</arg>
    </Item>
    <Item>
-    <name>:Predator&#0032;Birth&#0032;Rate</name>
+    <name>:Predator&#32;Birth&#32;Rate</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -544,7 +544,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>:Predator&#0032;Death&#0032;Rate</name>
+    <name>:Predator&#32;Death&#32;Rate</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -578,7 +578,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>:Prey&#0032;Death&#0032;Rate</name>
+    <name>:Prey&#32;Death&#32;Rate</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -646,7 +646,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>:Prey&#0032;Birth&#0032;Rate</name>
+    <name>:Prey&#32;Birth&#32;Rate</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -714,7 +714,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>:Predator&#0032;Deaths</name>
+    <name>:Predator&#32;Deaths</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -748,7 +748,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>:Prey&#0032;Deaths</name>
+    <name>:Prey&#32;Deaths</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -850,7 +850,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>:Predator&#0032;Births</name>
+    <name>:Predator&#32;Births</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -884,7 +884,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>:Prey&#0032;Births</name>
+    <name>:Prey&#32;Births</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -918,7 +918,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>:Prey&#0032;Deaths</name>
+    <name>:Prey&#32;Deaths</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -952,7 +952,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>:Predator&#0032;Births</name>
+    <name>:Predator&#32;Births</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -986,7 +986,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>:Predator&#0032;Deaths</name>
+    <name>:Predator&#32;Deaths</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -1020,7 +1020,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>:Prey&#0032;Births</name>
+    <name>:Prey&#32;Births</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>

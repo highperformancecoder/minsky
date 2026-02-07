@@ -19,12 +19,12 @@ FLAGS+=-std=c++20  -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -DUSE_UNROLLED -DCLA
   -Wno-unknown-warning-option -Wno-unused-local-typedefs -Wno-unused-command-line-argument
 LIBS+=-L../RavelCAPI -lravelCAPI -L../RavelCAPI/civita -lcivita \
 	-lboost_filesystem -lboost_system -lboost_thread \
-	-lboost_date_time -lclipboard -lxcb -lX11 \
+	-lboost_date_time -lclipboard \
 	-lgsl -lssl -lcrypto -lgslcblas  -lxml2 -ltiff -ldl
 
 ifdef MXE
 else
-LIBS+=-lxcb
+LIBS+=-lxcb -lX11
 endif
 
 ifdef OPENMP

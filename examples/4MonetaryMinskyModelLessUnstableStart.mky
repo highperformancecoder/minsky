@@ -7082,7 +7082,7 @@
     <miniPlot>false</miniPlot>
     <data>
      <vector>
-      <string>Flows&#0032;V&#0032;/&#0032;Stock&#0032;Variables&#0032;-&gt;</string>
+      <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>
       <string>BC</string>
       <string>BPL</string>
       <string>FL</string>
@@ -7098,7 +7098,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Compound&#0032;Debt</string>
+      <string>Compound&#32;Debt</string>
       <string></string>
       <string></string>
       <string>A</string>
@@ -7114,7 +7114,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Service&#0032;Debt</string>
+      <string>Service&#32;Debt</string>
       <string></string>
       <string>B</string>
       <string></string>
@@ -7130,7 +7130,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Record&#0032;Servicing</string>
+      <string>Record&#32;Servicing</string>
       <string></string>
       <string></string>
       <string>-B</string>
@@ -7146,7 +7146,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Debt-financed&#0032;investment</string>
+      <string>Debt-financed&#32;investment</string>
       <string></string>
       <string></string>
       <string>C</string>
@@ -7162,7 +7162,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Debt-financed&#0032;investment</string>
+      <string>Debt-financed&#32;investment</string>
       <string></string>
       <string></string>
       <string></string>
@@ -7194,7 +7194,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Interest&#0032;Firms</string>
+      <string>Interest&#32;Firms</string>
       <string></string>
       <string>-E</string>
       <string></string>
@@ -7210,7 +7210,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Interest&#0032;Workers</string>
+      <string>Interest&#32;Workers</string>
       <string></string>
       <string>-F</string>
       <string></string>
@@ -7226,7 +7226,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Consumption&#0032;Banks</string>
+      <string>Consumption&#32;Banks</string>
       <string></string>
       <string>-G</string>
       <string></string>
@@ -7242,7 +7242,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Consumption&#0032;Workers</string>
+      <string>Consumption&#32;Workers</string>
       <string></string>
       <string></string>
       <string></string>
@@ -7258,7 +7258,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Debt&#0032;repayment</string>
+      <string>Debt&#32;repayment</string>
       <string>I</string>
       <string></string>
       <string></string>
@@ -7274,7 +7274,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Record&#0032;repayment</string>
+      <string>Record&#32;repayment</string>
       <string></string>
       <string></string>
       <string>-I</string>
@@ -7290,7 +7290,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Lend&#0032;from&#0032;Capital</string>
+      <string>Lend&#32;from&#32;Capital</string>
       <string>-J</string>
       <string></string>
       <string></string>
@@ -7306,7 +7306,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Record&#0032;Loan</string>
+      <string>Record&#32;Loan</string>
       <string></string>
       <string></string>
       <string>J</string>
@@ -7322,7 +7322,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Employment&#0032;rate&#0032;ODE</string>
+      <string>Employment&#32;rate&#32;ODE</string>
       <string></string>
       <string></string>
       <string></string>
@@ -7338,7 +7338,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Wage&#0032;ODE</string>
+      <string>Wage&#32;ODE</string>
       <string></string>
       <string></string>
       <string></string>
@@ -7354,7 +7354,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Price&#0032;ODE</string>
+      <string>Price&#32;ODE</string>
       <string></string>
       <string></string>
       <string></string>
@@ -7370,7 +7370,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Real&#0032;Capital&#0032;ODE</string>
+      <string>Real&#32;Capital&#32;ODE</string>
       <string></string>
       <string></string>
       <string></string>
@@ -7386,7 +7386,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Productivity&#0032;ODE</string>
+      <string>Productivity&#32;ODE</string>
       <string></string>
       <string></string>
       <string></string>
@@ -7402,7 +7402,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Population&#0032;ODE</string>
+      <string>Population&#32;ODE</string>
       <string></string>
       <string></string>
       <string></string>

@@ -296,7 +296,7 @@
     <arg>1</arg>
    </Item>
    <Item>
-    <name>:O(t)&#0032;-&#0032;Output&#0032;at&#0032;time&#0032;t</name>
+    <name>:O(t)&#32;-&#32;Output&#32;at&#32;time&#32;t</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -330,7 +330,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>:I(t)&#0032;-&#0032;Investment&#0032;at&#0032;time&#0032;t</name>
+    <name>:I(t)&#32;-&#32;Investment&#32;at&#32;time&#32;t</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -364,7 +364,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>M(t)&#0032;-&#0032;Machines&#0032;at&#0032;time&#0032;t</name>
+    <name>M(t)&#32;-&#32;Machines&#32;at&#32;time&#32;t</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -398,7 +398,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>M(t)&#0032;-&#0032;Machines&#0032;at&#0032;time&#0032;t</name>
+    <name>M(t)&#32;-&#32;Machines&#32;at&#32;time&#32;t</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -432,7 +432,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>:L(t)&#0032;-&#0032;Labor&#0032;at&#0032;time&#0032;t</name>
+    <name>:L(t)&#32;-&#32;Labor&#32;at&#32;time&#32;t</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -466,7 +466,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>M(t)&#0032;-&#0032;Machines&#0032;at&#0032;time&#0032;t</name>
+    <name>M(t)&#32;-&#32;Machines&#32;at&#32;time&#32;t</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -500,7 +500,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>:s&#0032;-&#0032;Savings&#0032;Rate</name>
+    <name>:s&#32;-&#32;Savings&#32;Rate</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -533,7 +533,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>:d&#0032;-&#0032;Depreciation&#0032;Rate</name>
+    <name>:d&#32;-&#32;Depreciation&#32;Rate</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>

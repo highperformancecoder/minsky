@@ -71,7 +71,7 @@
   </wires>
   <items>
    <Item>
-    <detailedText>scalar&#0032;input</detailedText>
+    <detailedText>scalar&#32;input</detailedText>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -567,7 +567,7 @@
     <arg>1</arg>
    </Item>
    <Item>
-    <detailedText>tensor&#0032;input</detailedText>
+    <detailedText>tensor&#32;input</detailedText>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -697,7 +697,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <detailedText>Tensor&#0032;switch&#0032;with&#0032;scalar&#0032;selector</detailedText>
+    <detailedText>Tensor&#32;switch&#32;with&#32;scalar&#32;selector</detailedText>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -721,7 +721,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <detailedText>Tensor&#0032;switch&#0032;with&#0032;tensor&#0032;selector</detailedText>
+    <detailedText>Tensor&#32;switch&#32;with&#32;tensor&#32;selector</detailedText>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>

@@ -23,7 +23,7 @@ export class AuthorComponent implements OnDestroy {
     private windowUtilityService: WindowUtilityService
   ) {
     this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe((params) => {
-      this.author=params.author;
+      this.author=params.author ?? '';
     });
   }
 

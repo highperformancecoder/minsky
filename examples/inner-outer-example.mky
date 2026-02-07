@@ -195,7 +195,7 @@
     <showColSlice>head</showColSlice>
    </Item>
    <Item>
-    <name>i\otimes&#0032;i</name>
+    <name>i\otimes&#32;i</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -228,7 +228,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>i\cdot&#0032;i</name>
+    <name>i\cdot&#32;i</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>

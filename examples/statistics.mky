@@ -613,7 +613,7 @@
     <arg>1</arg>
    </Item>
    <Item>
-    <name>:std&#0032;deviation</name>
+    <name>:std&#32;deviation</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -672,7 +672,7 @@
     <arg>3</arg>
    </Item>
    <Item>
-    <name>:3rd&#0032;moment&#0032;about&#0032;mean</name>
+    <name>:3rd&#32;moment&#32;about&#32;mean</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -949,7 +949,7 @@
     <arg>1</arg>
    </Item>
    <Item>
-    <detailedText>Integrals&#0032;are&#0032;there&#0032;purely&#0032;to&#0032;run&#0032;a&#0032;unit&#0032;test&#0032;of&#0032;these&#0032;statistical&#0032;functions.</detailedText>
+    <detailedText>Integrals&#32;are&#32;there&#32;purely&#32;to&#32;run&#32;a&#32;unit&#32;test&#32;of&#32;these&#32;statistical&#32;functions.</detailedText>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
