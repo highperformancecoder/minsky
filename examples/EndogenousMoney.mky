@@ -1,6 +1,7 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>3.4.0-beta.3</minskyVersion>
+  <minskyVersion>3.22.0</minskyVersion>
+  <author></author>
   <wires>
    <Wire>
     <id>454</id>
@@ -900,8 +901,8 @@
     <symbolEvery>1</symbolEvery>
     <id>80</id>
     <type>Variable:stock</type>
-    <x>1353.98</x>
-    <y>545.406</y>
+    <x>1349.03</x>
+    <y>545.906</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -933,8 +934,8 @@
     <symbolEvery>1</symbolEvery>
     <id>82</id>
     <type>Variable:stock</type>
-    <x>1417.98</x>
-    <y>538.406</y>
+    <x>1409.03</x>
+    <y>540.906</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -966,8 +967,8 @@
     <symbolEvery>1</symbolEvery>
     <id>84</id>
     <type>Variable:stock</type>
-    <x>1449.98</x>
-    <y>548.406</y>
+    <x>1439.03</x>
+    <y>547.906</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -999,8 +1000,8 @@
     <symbolEvery>1</symbolEvery>
     <id>86</id>
     <type>Variable:stock</type>
-    <x>1481.98</x>
-    <y>542.406</y>
+    <x>1469.03</x>
+    <y>543.906</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1032,8 +1033,8 @@
     <symbolEvery>1</symbolEvery>
     <id>88</id>
     <type>Variable:stock</type>
-    <x>1513.98</x>
-    <y>537.406</y>
+    <x>1499.03</x>
+    <y>540.906</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1065,8 +1066,8 @@
     <symbolEvery>1</symbolEvery>
     <id>90</id>
     <type>Variable:flow</type>
-    <x>1298.51</x>
-    <y>104.213</y>
+    <x>1297.01</x>
+    <y>111.713</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1083,7 +1084,7 @@
      <stepRel>false</stepRel>
      <visible>true</visible>
      <min>-1</min>
-     <max>1.42857</max>
+     <max>1</max>
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
@@ -1099,8 +1100,8 @@
     <symbolEvery>1</symbolEvery>
     <id>93</id>
     <type>Variable:flow</type>
-    <x>1307.51</x>
-    <y>136.213</y>
+    <x>1305.01</x>
+    <y>141.713</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1133,8 +1134,8 @@
     <symbolEvery>1</symbolEvery>
     <id>96</id>
     <type>Variable:flow</type>
-    <x>1293.51</x>
-    <y>168.213</y>
+    <x>1293.01</x>
+    <y>171.713</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1151,7 +1152,7 @@
      <stepRel>false</stepRel>
      <visible>true</visible>
      <min>-1</min>
-     <max>1.11111</max>
+     <max>1</max>
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
@@ -1167,8 +1168,8 @@
     <symbolEvery>1</symbolEvery>
     <id>99</id>
     <type>Variable:flow</type>
-    <x>1289.51</x>
-    <y>200.213</y>
+    <x>1290.01</x>
+    <y>201.713</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1201,8 +1202,8 @@
     <symbolEvery>1</symbolEvery>
     <id>102</id>
     <type>Variable:flow</type>
-    <x>1291.51</x>
-    <y>234.213</y>
+    <x>1291.01</x>
+    <y>233.713</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1235,8 +1236,8 @@
     <symbolEvery>1</symbolEvery>
     <id>105</id>
     <type>Variable:flow</type>
-    <x>1297.51</x>
-    <y>268.213</y>
+    <x>1295.01</x>
+    <y>265.713</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1253,7 +1254,7 @@
      <stepRel>false</stepRel>
      <visible>true</visible>
      <min>-1</min>
-     <max>13.3333</max>
+     <max>1</max>
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
@@ -1269,8 +1270,8 @@
     <symbolEvery>1</symbolEvery>
     <id>108</id>
     <type>Variable:flow</type>
-    <x>1295.51</x>
-    <y>302.213</y>
+    <x>1294.01</x>
+    <y>297.713</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1287,7 +1288,7 @@
      <stepRel>false</stepRel>
      <visible>true</visible>
      <min>-1</min>
-     <max>45</max>
+     <max>1</max>
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
@@ -1303,8 +1304,8 @@
     <symbolEvery>1</symbolEvery>
     <id>111</id>
     <type>Variable:flow</type>
-    <x>1290.51</x>
-    <y>336.213</y>
+    <x>1289.01</x>
+    <y>329.713</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1337,8 +1338,8 @@
     <symbolEvery>1</symbolEvery>
     <id>114</id>
     <type>Variable:flow</type>
-    <x>1292.51</x>
-    <y>370.213</y>
+    <x>1291.01</x>
+    <y>361.713</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1371,8 +1372,8 @@
     <symbolEvery>1</symbolEvery>
     <id>117</id>
     <type>Variable:flow</type>
-    <x>1292.51</x>
-    <y>404.213</y>
+    <x>1291.01</x>
+    <y>393.713</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1405,8 +1406,8 @@
     <symbolEvery>1</symbolEvery>
     <id>120</id>
     <type>Variable:flow</type>
-    <x>1294.51</x>
-    <y>438.213</y>
+    <x>1292.01</x>
+    <y>425.713</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1439,7 +1440,7 @@
     <symbolEvery>1</symbolEvery>
     <id>123</id>
     <type>Variable:stock</type>
-    <x>821.478</x>
+    <x>816.528</x>
     <y>261.422</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
@@ -1472,8 +1473,8 @@
     <symbolEvery>1</symbolEvery>
     <id>125</id>
     <type>Variable:flow</type>
-    <x>773.728</x>
-    <y>33.9082</y>
+    <x>771.228</x>
+    <y>38.9082</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1490,7 +1491,7 @@
      <stepRel>false</stepRel>
      <visible>true</visible>
      <min>-1</min>
-     <max>13.3333</max>
+     <max>1</max>
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
@@ -1506,8 +1507,8 @@
     <symbolEvery>1</symbolEvery>
     <id>128</id>
     <type>Variable:flow</type>
-    <x>771.728</x>
-    <y>67.9082</y>
+    <x>770.228</x>
+    <y>70.9082</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1524,7 +1525,7 @@
      <stepRel>false</stepRel>
      <visible>true</visible>
      <min>-1</min>
-     <max>45</max>
+     <max>1</max>
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
@@ -1540,8 +1541,8 @@
     <symbolEvery>1</symbolEvery>
     <id>131</id>
     <type>Variable:flow</type>
-    <x>768.728</x>
-    <y>101.908</y>
+    <x>767.228</x>
+    <y>102.908</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1574,8 +1575,8 @@
     <symbolEvery>1</symbolEvery>
     <id>134</id>
     <type>Variable:flow</type>
-    <x>766.728</x>
-    <y>135.908</y>
+    <x>765.228</x>
+    <y>134.908</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1608,8 +1609,8 @@
     <symbolEvery>1</symbolEvery>
     <id>137</id>
     <type>Variable:flow</type>
-    <x>765.728</x>
-    <y>169.908</y>
+    <x>766.228</x>
+    <y>166.908</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1642,8 +1643,8 @@
     <symbolEvery>1</symbolEvery>
     <id>140</id>
     <type>Variable:stock</type>
-    <x>853.478</x>
-    <y>250.422</y>
+    <x>846.528</x>
+    <y>253.422</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1675,8 +1676,8 @@
     <symbolEvery>1</symbolEvery>
     <id>142</id>
     <type>Variable:stock</type>
-    <x>829.682</x>
-    <y>764.04</y>
+    <x>825.282</x>
+    <y>763.54</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1708,8 +1709,8 @@
     <symbolEvery>1</symbolEvery>
     <id>144</id>
     <type>Variable:flow</type>
-    <x>781.51</x>
-    <y>430.823</y>
+    <x>779.51</x>
+    <y>438.323</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1726,7 +1727,7 @@
      <stepRel>false</stepRel>
      <visible>true</visible>
      <min>-1</min>
-     <max>13.3333</max>
+     <max>1</max>
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
@@ -1742,8 +1743,8 @@
     <symbolEvery>1</symbolEvery>
     <id>147</id>
     <type>Variable:flow</type>
-    <x>779.51</x>
-    <y>464.823</y>
+    <x>778.51</x>
+    <y>470.323</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1760,7 +1761,7 @@
      <stepRel>false</stepRel>
      <visible>true</visible>
      <min>-1</min>
-     <max>45</max>
+     <max>1</max>
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
@@ -1776,8 +1777,8 @@
     <symbolEvery>1</symbolEvery>
     <id>150</id>
     <type>Variable:flow</type>
-    <x>778.51</x>
-    <y>498.823</y>
+    <x>776.51</x>
+    <y>502.323</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1810,8 +1811,8 @@
     <symbolEvery>1</symbolEvery>
     <id>153</id>
     <type>Variable:flow</type>
-    <x>776.51</x>
-    <y>532.823</y>
+    <x>775.51</x>
+    <y>534.323</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1844,8 +1845,8 @@
     <symbolEvery>1</symbolEvery>
     <id>156</id>
     <type>Variable:flow</type>
-    <x>791.51</x>
-    <y>566.823</y>
+    <x>789.51</x>
+    <y>566.323</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1878,8 +1879,8 @@
     <symbolEvery>1</symbolEvery>
     <id>159</id>
     <type>Variable:flow</type>
-    <x>782.51</x>
-    <y>598.823</y>
+    <x>781.51</x>
+    <y>596.323</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1896,7 +1897,7 @@
      <stepRel>false</stepRel>
      <visible>true</visible>
      <min>-1</min>
-     <max>1.42857</max>
+     <max>1</max>
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
@@ -1913,7 +1914,7 @@
     <id>162</id>
     <type>Variable:flow</type>
     <x>777.51</x>
-    <y>630.823</y>
+    <y>626.323</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1930,7 +1931,7 @@
      <stepRel>false</stepRel>
      <visible>true</visible>
      <min>-1</min>
-     <max>1.11111</max>
+     <max>1</max>
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
@@ -1947,7 +1948,7 @@
     <id>165</id>
     <type>Variable:flow</type>
     <x>775.51</x>
-    <y>662.823</y>
+    <y>656.323</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1980,8 +1981,8 @@
     <symbolEvery>1</symbolEvery>
     <id>168</id>
     <type>Variable:stock</type>
-    <x>861.682</x>
-    <y>749.04</y>
+    <x>855.282</x>
+    <y>753.54</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -2013,8 +2014,8 @@
     <symbolEvery>1</symbolEvery>
     <id>170</id>
     <type>Variable:stock</type>
-    <x>893.682</x>
-    <y>741.04</y>
+    <x>885.282</x>
+    <y>747.54</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -2046,8 +2047,8 @@
     <symbolEvery>1</symbolEvery>
     <id>172</id>
     <type>Variable:stock</type>
-    <x>1385.98</x>
-    <y>533.406</y>
+    <x>1379.03</x>
+    <y>537.906</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -2199,7 +2200,7 @@
      <stepRel>false</stepRel>
      <visible>true</visible>
      <min>-1</min>
-     <max>1</max>
+     <max>210</max>
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
@@ -2233,7 +2234,7 @@
      <stepRel>false</stepRel>
      <visible>true</visible>
      <min>-1</min>
-     <max>1</max>
+     <max>23.3333</max>
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
@@ -2502,9 +2503,9 @@
     <slider>
      <stepRel>false</stepRel>
      <visible>true</visible>
-     <min>-1</min>
-     <max>7</max>
-     <step>0.1</step>
+     <min>3</min>
+     <max>20</max>
+     <step>1</step>
     </slider>
     <miniPlot>false</miniPlot>
    </Item>
@@ -2766,14 +2767,14 @@
     <slider>
      <stepRel>false</stepRel>
      <visible>true</visible>
-     <min>-1</min>
-     <max>9</max>
-     <step>0.1</step>
+     <min>5</min>
+     <max>20</max>
+     <step>1</step>
     </slider>
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>:\tau_{M\rightarrow&#32;M+}</name>
+    <name>:\tau_{M\rightarrow&#0032;M+}</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -2799,9 +2800,9 @@
     <slider>
      <stepRel>false</stepRel>
      <visible>true</visible>
-     <min>-1</min>
-     <max>1</max>
-     <step>0.1</step>
+     <min>-3</min>
+     <max>3</max>
+     <step>0.03</step>
     </slider>
     <miniPlot>false</miniPlot>
    </Item>
@@ -2900,9 +2901,9 @@
     <slider>
      <stepRel>false</stepRel>
      <visible>true</visible>
-     <min>-1</min>
-     <max>1</max>
-     <step>0.1</step>
+     <min>-7</min>
+     <max>7</max>
+     <step>0.07</step>
     </slider>
     <miniPlot>false</miniPlot>
    </Item>
@@ -3033,9 +3034,9 @@
     <slider>
      <stepRel>false</stepRel>
      <visible>true</visible>
-     <min>-1</min>
-     <max>1</max>
-     <step>0.1</step>
+     <min>-5</min>
+     <max>5</max>
+     <step>0.05</step>
     </slider>
     <miniPlot>false</miniPlot>
    </Item>
@@ -4002,7 +4003,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>:\tau_{M\rightarrow&#32;M+}</name>
+    <name>:\tau_{M\rightarrow&#0032;M+}</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -4045,8 +4046,8 @@
     <symbolEvery>1</symbolEvery>
     <id>313</id>
     <type>Variable:stock</type>
-    <x>1322.48</x>
-    <y>895.228</y>
+    <x>1317.53</x>
+    <y>893.728</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -4078,8 +4079,8 @@
     <symbolEvery>1</symbolEvery>
     <id>315</id>
     <type>Variable:flow</type>
-    <x>1269.73</x>
-    <y>701.017</y>
+    <x>1268.23</x>
+    <y>705.517</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -4112,8 +4113,8 @@
     <symbolEvery>1</symbolEvery>
     <id>318</id>
     <type>Variable:flow</type>
-    <x>1267.73</x>
-    <y>735.017</y>
+    <x>1266.23</x>
+    <y>737.517</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -4146,8 +4147,8 @@
     <symbolEvery>1</symbolEvery>
     <id>321</id>
     <type>Variable:flow</type>
-    <x>1268.73</x>
-    <y>769.017</y>
+    <x>1268.23</x>
+    <y>769.517</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -4180,8 +4181,8 @@
     <symbolEvery>1</symbolEvery>
     <id>324</id>
     <type>Variable:flow</type>
-    <x>1266.73</x>
-    <y>803.017</y>
+    <x>1267.23</x>
+    <y>801.517</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -4214,8 +4215,8 @@
     <symbolEvery>1</symbolEvery>
     <id>327</id>
     <type>Variable:stock</type>
-    <x>1354.48</x>
-    <y>897.228</y>
+    <x>1347.53</x>
+    <y>897.728</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -4305,7 +4306,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>Capitalist&#32;Bank&#32;Accounts</name>
+    <name>Capitalist&#0032;Bank&#0032;Accounts</name>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
@@ -4564,7 +4565,7 @@
     </palette>
    </Item>
    <Item>
-    <name>GDP&#32;and&#32;Loans</name>
+    <name>GDP&#0032;and&#0032;Loans</name>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
@@ -4572,7 +4573,7 @@
     <subgrid>false</subgrid>
     <plotType>line</plotType>
     <xlabel>Years</xlabel>
-    <ylabel>$&#32;and&#32;$/Year</ylabel>
+    <ylabel>$&#0032;and&#0032;$/Year</ylabel>
     <nxTicks>10</nxTicks>
     <nyTicks>10</nyTicks>
     <xtickAngle>-45</xtickAngle>
@@ -4823,7 +4824,7 @@
     </palette>
    </Item>
    <Item>
-    <name>Money&#32;and&#32;Loans</name>
+    <name>Money&#0032;and&#0032;Loans</name>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
@@ -5082,7 +5083,7 @@
     </palette>
    </Item>
    <Item>
-    <name>Worker&#32;and&#32;Bank</name>
+    <name>Worker&#0032;and&#0032;Bank</name>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
@@ -5341,7 +5342,7 @@
     </palette>
    </Item>
    <Item>
-    <name>Debt&#32;Ratio</name>
+    <name>Debt&#0032;Ratio</name>
     <logx>false</logx>
     <logy>false</logy>
     <ypercent>false</ypercent>
@@ -5640,7 +5641,7 @@
     <miniPlot>false</miniPlot>
     <data>
      <vector>
-      <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>
+      <string>Flows&#0032;V&#0032;/&#0032;Stock&#0032;Variables&#0032;-&gt;</string>
       <string>Reserves</string>
       <string>Loans</string>
       <string>Patient</string>
@@ -5649,7 +5650,7 @@
       <string>NW_{Bank}</string>
      </vector>
      <vector>
-      <string>Initial&#32;Conditions</string>
+      <string>Initial&#0032;Conditions</string>
       <string>90</string>
       <string>10</string>
       <string>90</string>
@@ -5658,7 +5659,7 @@
       <string>0</string>
      </vector>
      <vector>
-      <string>Lend&#32;money</string>
+      <string>Lend&#0032;money</string>
       <string></string>
       <string>Lend</string>
       <string></string>
@@ -5667,7 +5668,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Pay&#32;Interest</string>
+      <string>Pay&#0032;Interest</string>
       <string></string>
       <string></string>
       <string></string>
@@ -5676,7 +5677,7 @@
       <string>Int</string>
      </vector>
      <vector>
-      <string>Repay&#32;loans</string>
+      <string>Repay&#0032;loans</string>
       <string></string>
       <string>-Repay</string>
       <string></string>
@@ -5685,7 +5686,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Hire&#32;workers</string>
+      <string>Hire&#0032;workers</string>
       <string></string>
       <string></string>
       <string>-Wages_P</string>
@@ -5694,7 +5695,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Hire&#32;workers</string>
+      <string>Hire&#0032;workers</string>
       <string></string>
       <string></string>
       <string></string>
@@ -5721,7 +5722,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Consumption&#32;by&#32;workers</string>
+      <string>Consumption&#0032;by&#0032;workers</string>
       <string></string>
       <string></string>
       <string>Cons_{WP}</string>
@@ -5730,7 +5731,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Consumption&#32;by&#32;workers</string>
+      <string>Consumption&#0032;by&#0032;workers</string>
       <string></string>
       <string></string>
       <string></string>
@@ -5739,7 +5740,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Cons&#32;bankers</string>
+      <string>Cons&#0032;bankers</string>
       <string></string>
       <string></string>
       <string>Cons_{BP}</string>
@@ -5748,7 +5749,7 @@
       <string>-Cons_{BP}</string>
      </vector>
      <vector>
-      <string>Cons&#32;banks</string>
+      <string>Cons&#0032;banks</string>
       <string></string>
       <string></string>
       <string></string>
@@ -5801,13 +5802,13 @@
     <miniPlot>false</miniPlot>
     <data>
      <vector>
-      <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>
+      <string>Flows&#0032;V&#0032;/&#0032;Stock&#0032;Variables&#0032;-&gt;</string>
       <string>Patient</string>
       <string></string>
       <string>NW_P</string>
      </vector>
      <vector>
-      <string>Initial&#32;Conditions</string>
+      <string>Initial&#0032;Conditions</string>
       <string>90</string>
       <string></string>
       <string>90</string>
@@ -5825,31 +5826,31 @@
       <string>-Cons_P</string>
      </vector>
      <vector>
-      <string>Cons&#32;bankers</string>
+      <string>Cons&#0032;bankers</string>
       <string>Cons_{BP}</string>
       <string></string>
       <string>Cons_{BP}</string>
      </vector>
      <vector>
-      <string>Consumption&#32;by&#32;workers</string>
+      <string>Consumption&#0032;by&#0032;workers</string>
       <string>Cons_{WP}</string>
       <string></string>
       <string>Cons_{WP}</string>
      </vector>
      <vector>
-      <string>Lend&#32;money</string>
+      <string>Lend&#0032;money</string>
       <string></string>
       <string></string>
       <string></string>
      </vector>
      <vector>
-      <string>Repay&#32;loans</string>
+      <string>Repay&#0032;loans</string>
       <string></string>
       <string></string>
       <string></string>
      </vector>
      <vector>
-      <string>Hire&#32;workers</string>
+      <string>Hire&#0032;workers</string>
       <string>-Wages_P</string>
       <string></string>
       <string>-Wages_P</string>
@@ -5900,13 +5901,13 @@
     <miniPlot>false</miniPlot>
     <data>
      <vector>
-      <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>
+      <string>Flows&#0032;V&#0032;/&#0032;Stock&#0032;Variables&#0032;-&gt;</string>
       <string>Impatient</string>
       <string>Loans</string>
       <string>NW_I</string>
      </vector>
      <vector>
-      <string>Initial&#32;Conditions</string>
+      <string>Initial&#0032;Conditions</string>
       <string>10</string>
       <string>10</string>
       <string>0</string>
@@ -5924,37 +5925,37 @@
       <string>Cons_P</string>
      </vector>
      <vector>
-      <string>Cons&#32;banks</string>
+      <string>Cons&#0032;banks</string>
       <string>Cons_{BI}</string>
       <string></string>
       <string>Cons_{BI}</string>
      </vector>
      <vector>
-      <string>Consumption&#32;by&#32;workers</string>
+      <string>Consumption&#0032;by&#0032;workers</string>
       <string>Cons_{WI}</string>
       <string></string>
       <string>Cons_{WI}</string>
      </vector>
      <vector>
-      <string>Pay&#32;Interest</string>
+      <string>Pay&#0032;Interest</string>
       <string>-Int</string>
       <string></string>
       <string>-Int</string>
      </vector>
      <vector>
-      <string>Lend&#32;money</string>
+      <string>Lend&#0032;money</string>
       <string>Lend</string>
       <string>Lend</string>
       <string></string>
      </vector>
      <vector>
-      <string>Repay&#32;loans</string>
+      <string>Repay&#0032;loans</string>
       <string>-Repay</string>
       <string>-Repay</string>
       <string></string>
      </vector>
      <vector>
-      <string>Hire&#32;workers</string>
+      <string>Hire&#0032;workers</string>
       <string>-Wages_I</string>
       <string></string>
       <string>-Wages_I</string>
@@ -6000,19 +6001,19 @@
     <miniPlot>false</miniPlot>
     <data>
      <vector>
-      <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>
+      <string>Flows&#0032;V&#0032;/&#0032;Stock&#0032;Variables&#0032;-&gt;</string>
       <string>Workers</string>
       <string></string>
       <string>NW_{Workers}</string>
      </vector>
      <vector>
-      <string>Initial&#32;Conditions</string>
+      <string>Initial&#0032;Conditions</string>
       <string>0</string>
       <string></string>
       <string>-0</string>
      </vector>
      <vector>
-      <string>Consumption&#32;by&#32;workers</string>
+      <string>Consumption&#0032;by&#0032;workers</string>
       <string>-Cons_{WI}</string>
       <string></string>
       <string>-Cons_{WI}</string>
@@ -6024,7 +6025,7 @@
       <string>-Cons_{WP}</string>
      </vector>
      <vector>
-      <string>Hire&#32;workers</string>
+      <string>Hire&#0032;workers</string>
       <string>Wages_I</string>
       <string></string>
       <string>Wages_I</string>

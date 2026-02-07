@@ -1,6 +1,7 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>3.4.0-beta.3</minskyVersion>
+  <minskyVersion>3.22.0</minskyVersion>
+  <author></author>
   <wires>
    <Wire>
     <id>85</id>
@@ -70,7 +71,7 @@
   </wires>
   <items>
    <Item>
-    <detailedText>scalar&#32;input</detailedText>
+    <detailedText>scalar&#0032;input</detailedText>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -566,7 +567,7 @@
     <arg>1</arg>
    </Item>
    <Item>
-    <detailedText>tensor&#32;input</detailedText>
+    <detailedText>tensor&#0032;input</detailedText>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -696,7 +697,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <detailedText>Tensor&#32;switch&#32;with&#32;scalar&#32;selector</detailedText>
+    <detailedText>Tensor&#0032;switch&#0032;with&#0032;scalar&#0032;selector</detailedText>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -720,7 +721,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <detailedText>Tensor&#32;switch&#32;with&#32;tensor&#32;selector</detailedText>
+    <detailedText>Tensor&#0032;switch&#0032;with&#0032;tensor&#0032;selector</detailedText>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>

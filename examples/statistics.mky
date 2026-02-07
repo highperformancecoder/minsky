@@ -1,6 +1,7 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>3.4.0-beta.3</minskyVersion>
+  <minskyVersion>3.22.0</minskyVersion>
+  <author></author>
   <wires>
    <Wire>
     <id>83</id>
@@ -612,7 +613,7 @@
     <arg>1</arg>
    </Item>
    <Item>
-    <name>:std&#32;deviation</name>
+    <name>:std&#0032;deviation</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -671,7 +672,7 @@
     <arg>3</arg>
    </Item>
    <Item>
-    <name>:3rd&#32;moment&#32;about&#32;mean</name>
+    <name>:3rd&#0032;moment&#0032;about&#0032;mean</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -714,7 +715,7 @@
     <symbolEvery>1</symbolEvery>
     <id>58</id>
     <type>Variable:integral</type>
-    <x>649</x>
+    <x>647</x>
     <y>130</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
@@ -727,6 +728,13 @@
      <int>60</int>
     </ports>
     <bookmark>false</bookmark>
+    <slider>
+     <stepRel>false</stepRel>
+     <visible>true</visible>
+     <min>1.79769e+308</min>
+     <max>-1.79769e+308</max>
+     <step>0</step>
+    </slider>
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
@@ -768,7 +776,7 @@
     <symbolEvery>1</symbolEvery>
     <id>64</id>
     <type>Variable:integral</type>
-    <x>651</x>
+    <x>648</x>
     <y>176</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
@@ -781,6 +789,13 @@
      <int>66</int>
     </ports>
     <bookmark>false</bookmark>
+    <slider>
+     <stepRel>false</stepRel>
+     <visible>true</visible>
+     <min>1.79769e+308</min>
+     <max>-1.79769e+308</max>
+     <step>0</step>
+    </slider>
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
@@ -822,7 +837,7 @@
     <symbolEvery>1</symbolEvery>
     <id>70</id>
     <type>Variable:integral</type>
-    <x>654</x>
+    <x>651</x>
     <y>230</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
@@ -835,6 +850,13 @@
      <int>72</int>
     </ports>
     <bookmark>false</bookmark>
+    <slider>
+     <stepRel>false</stepRel>
+     <visible>true</visible>
+     <min>1.79769e+308</min>
+     <max>-1.79769e+308</max>
+     <step>0</step>
+    </slider>
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
@@ -876,7 +898,7 @@
     <symbolEvery>1</symbolEvery>
     <id>76</id>
     <type>Variable:integral</type>
-    <x>692</x>
+    <x>689</x>
     <y>292</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
@@ -889,6 +911,13 @@
      <int>78</int>
     </ports>
     <bookmark>false</bookmark>
+    <slider>
+     <stepRel>false</stepRel>
+     <visible>true</visible>
+     <min>1.79769e+308</min>
+     <max>-1.79769e+308</max>
+     <step>0</step>
+    </slider>
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
@@ -920,7 +949,7 @@
     <arg>1</arg>
    </Item>
    <Item>
-    <detailedText>Integrals&#32;are&#32;there&#32;purely&#32;to&#32;run&#32;a&#32;unit&#32;test&#32;of&#32;these&#32;statistical&#32;functions.</detailedText>
+    <detailedText>Integrals&#0032;are&#0032;there&#0032;purely&#0032;to&#0032;run&#0032;a&#0032;unit&#0032;test&#0032;of&#0032;these&#0032;statistical&#0032;functions.</detailedText>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>

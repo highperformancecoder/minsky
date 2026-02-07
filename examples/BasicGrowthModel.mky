@@ -1,6 +1,7 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>3.4.0-beta.3</minskyVersion>
+  <minskyVersion>3.22.0</minskyVersion>
+  <author></author>
   <wires>
    <Wire>
     <id>74</id>
@@ -295,7 +296,7 @@
     <arg>1</arg>
    </Item>
    <Item>
-    <name>:O(t)&#32;-&#32;Output&#32;at&#32;time&#32;t</name>
+    <name>:O(t)&#0032;-&#0032;Output&#0032;at&#0032;time&#0032;t</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -329,7 +330,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>:I(t)&#32;-&#32;Investment&#32;at&#32;time&#32;t</name>
+    <name>:I(t)&#0032;-&#0032;Investment&#0032;at&#0032;time&#0032;t</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -363,7 +364,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>M(t)&#32;-&#32;Machines&#32;at&#32;time&#32;t</name>
+    <name>M(t)&#0032;-&#0032;Machines&#0032;at&#0032;time&#0032;t</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -373,7 +374,7 @@
     <symbolEvery>1</symbolEvery>
     <id>36</id>
     <type>Variable:integral</type>
-    <x>891</x>
+    <x>875</x>
     <y>174</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
@@ -397,7 +398,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>M(t)&#32;-&#32;Machines&#32;at&#32;time&#32;t</name>
+    <name>M(t)&#0032;-&#0032;Machines&#0032;at&#0032;time&#0032;t</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -431,7 +432,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>:L(t)&#32;-&#32;Labor&#32;at&#32;time&#32;t</name>
+    <name>:L(t)&#0032;-&#0032;Labor&#0032;at&#0032;time&#0032;t</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -465,7 +466,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>M(t)&#32;-&#32;Machines&#32;at&#32;time&#32;t</name>
+    <name>M(t)&#0032;-&#0032;Machines&#0032;at&#0032;time&#0032;t</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -499,7 +500,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>:s&#32;-&#32;Savings&#32;Rate</name>
+    <name>:s&#0032;-&#0032;Savings&#0032;Rate</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -532,7 +533,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>:d&#32;-&#32;Depreciation&#32;Rate</name>
+    <name>:d&#0032;-&#0032;Depreciation&#0032;Rate</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>

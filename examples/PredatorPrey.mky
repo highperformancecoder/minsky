@@ -1,6 +1,7 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>3.4.0-beta.3</minskyVersion>
+  <minskyVersion>3.22.0</minskyVersion>
+  <author></author>
   <wires>
    <Wire>
     <id>125</id>
@@ -407,7 +408,7 @@
     <arg>1</arg>
    </Item>
    <Item>
-    <name>:Predator&#32;Birth&#32;Rate</name>
+    <name>:Predator&#0032;Birth&#0032;Rate</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -451,7 +452,7 @@
     <symbolEvery>1</symbolEvery>
     <id>43</id>
     <type>Variable:integral</type>
-    <x>353.332</x>
+    <x>348.332</x>
     <y>280.553</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
@@ -485,7 +486,7 @@
     <symbolEvery>1</symbolEvery>
     <id>45</id>
     <type>Variable:integral</type>
-    <x>316.332</x>
+    <x>314.332</x>
     <y>403.553</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
@@ -543,7 +544,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>:Predator&#32;Death&#32;Rate</name>
+    <name>:Predator&#0032;Death&#0032;Rate</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -577,7 +578,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>:Prey&#32;Death&#32;Rate</name>
+    <name>:Prey&#0032;Death&#0032;Rate</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -645,7 +646,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>:Prey&#32;Birth&#32;Rate</name>
+    <name>:Prey&#0032;Birth&#0032;Rate</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -713,7 +714,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>:Predator&#32;Deaths</name>
+    <name>:Predator&#0032;Deaths</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -747,7 +748,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>:Prey&#32;Deaths</name>
+    <name>:Prey&#0032;Deaths</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -849,7 +850,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>:Predator&#32;Births</name>
+    <name>:Predator&#0032;Births</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -883,7 +884,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>:Prey&#32;Births</name>
+    <name>:Prey&#0032;Births</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -917,7 +918,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>:Prey&#32;Deaths</name>
+    <name>:Prey&#0032;Deaths</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -951,7 +952,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>:Predator&#32;Births</name>
+    <name>:Predator&#0032;Births</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -985,7 +986,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>:Predator&#32;Deaths</name>
+    <name>:Predator&#0032;Deaths</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -1019,7 +1020,7 @@
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
-    <name>:Prey&#32;Births</name>
+    <name>:Prey&#0032;Births</name>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>

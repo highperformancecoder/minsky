@@ -1,6 +1,7 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>3.15.0</minskyVersion>
+  <minskyVersion>3.22.0</minskyVersion>
+  <author></author>
   <wires>
    <Wire>
     <id>102</id>
@@ -42,16 +43,16 @@
     <from>9</from>
     <to>32</to>
     <coords>
-     <float>448.002</float>
-     <float>-82.9996</float>
-     <float>456.065</float>
-     <float>-75.942</float>
-     <float>492.365</float>
-     <float>-64.851</float>
-     <float>475.222</float>
-     <float>-7.38029</float>
-     <float>483.5</float>
-     <float>23</float>
+     <float>444.002</float>
+     <float>49.0004</float>
+     <float>452.01</float>
+     <float>56.0095</float>
+     <float>488.06</float>
+     <float>67.0242</float>
+     <float>471.035</float>
+     <float>124.1</float>
+     <float>477</float>
+     <float>155</float>
     </coords>
    </Wire>
    <Wire>
@@ -69,12 +70,12 @@
     <from>17</from>
     <to>41</to>
     <coords>
-     <float>30</float>
-     <float>42</float>
-     <float>1.81027</float>
-     <float>-27.4666</float>
-     <float>7.9998</float>
-     <float>-64.9998</float>
+     <float>26.0001</float>
+     <float>174</float>
+     <float>-2.13879</float>
+     <float>104.659</float>
+     <float>4.9999</float>
+     <float>67.0002</float>
     </coords>
    </Wire>
    <Wire>
@@ -97,14 +98,14 @@
     <from>31</from>
     <to>60</to>
     <coords>
-     <float>404.5</float>
-     <float>23</float>
-     <float>356.996</float>
-     <float>-104.336</float>
-     <float>21.0227</float>
-     <float>-32.8331</float>
-     <float>191</float>
-     <float>-51.25</float>
+     <float>403</float>
+     <float>155</float>
+     <float>373.128</float>
+     <float>74.9263</float>
+     <float>161.855</float>
+     <float>119.89</float>
+     <float>262</float>
+     <float>137</float>
     </coords>
    </Wire>
    <Wire>
@@ -117,12 +118,12 @@
     <from>85</from>
     <to>14</to>
     <coords>
-     <float>167.734</float>
-     <float>173.335</float>
-     <float>119.515</float>
-     <float>41.2432</float>
-     <float>94.0001</float>
-     <float>11</float>
+     <float>164.234</float>
+     <float>305.335</float>
+     <float>115.959</float>
+     <float>173.09</float>
+     <float>90.0002</float>
+     <float>143</float>
     </coords>
    </Wire>
    <Wire>
@@ -130,12 +131,12 @@
     <from>85</from>
     <to>61</to>
     <coords>
-     <float>167.734</float>
-     <float>173.335</float>
-     <float>110.036</float>
-     <float>57.8325</float>
-     <float>191</float>
-     <float>-13.75</float>
+     <float>164.234</float>
+     <float>305.335</float>
+     <float>104.657</float>
+     <float>186.071</float>
+     <float>262</float>
+     <float>137</float>
     </coords>
    </Wire>
    <Wire>
@@ -143,12 +144,12 @@
     <from>31</from>
     <to>101</to>
     <coords>
-     <float>404.5</float>
-     <float>23</float>
-     <float>421.546</float>
-     <float>146.99</float>
-     <float>337.5</float>
-     <float>173.335</float>
+     <float>403</float>
+     <float>155</float>
+     <float>420.175</float>
+     <float>279.927</float>
+     <float>333</float>
+     <float>305.335</float>
     </coords>
    </Wire>
    <Wire>
@@ -176,14 +177,14 @@
     <from>85</from>
     <to>94</to>
     <coords>
-     <float>167.734</float>
-     <float>173.335</float>
-     <float>170.589</float>
-     <float>124.535</float>
-     <float>173.177</float>
-     <float>123.208</float>
-     <float>234.316</float>
-     <float>181.504</float>
+     <float>164.234</float>
+     <float>305.335</float>
+     <float>167.064</float>
+     <float>256.957</float>
+     <float>169.63</float>
+     <float>255.642</float>
+     <float>230.232</float>
+     <float>313.501</float>
     </coords>
    </Wire>
    <Wire>
@@ -1075,9 +1076,9 @@
     <slider>
      <stepRel>false</stepRel>
      <visible>true</visible>
-     <min>-10</min>
-     <max>10</max>
-     <step>0.002</step>
+     <min>1.79769e+308</min>
+     <max>-1.79769e+308</max>
+     <step>0</step>
     </slider>
     <miniPlot>false</miniPlot>
    </Item>
@@ -1230,9 +1231,9 @@
     <slider>
      <stepRel>false</stepRel>
      <visible>true</visible>
-     <min>-9.09091</min>
-     <max>9.09091</max>
-     <step>0.00181818</step>
+     <min>1.79769e+308</min>
+     <max>-1.79769e+308</max>
+     <step>0</step>
     </slider>
     <miniPlot>false</miniPlot>
    </Item>

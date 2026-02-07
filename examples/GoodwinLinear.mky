@@ -1,6 +1,7 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>3.4.0-beta.3</minskyVersion>
+  <minskyVersion>3.22.0</minskyVersion>
+  <author></author>
   <wires>
    <Wire>
     <id>89</id>
@@ -80,10 +81,10 @@
     <from>33</from>
     <to>26</to>
     <coords>
-     <float>379.29</float>
+     <float>378.29</float>
      <float>227.48</float>
-     <float>352.686</float>
-     <float>365.34</float>
+     <float>351.624</float>
+     <float>365.659</float>
      <float>474.79</float>
      <float>407.24</float>
     </coords>
@@ -108,10 +109,10 @@
     <from>54</from>
     <to>30</to>
     <coords>
-     <float>701.5</float>
+     <float>692</float>
      <float>420.7</float>
-     <float>744.548</float>
-     <float>500.403</float>
+     <float>733.677</float>
+     <float>497.865</float>
      <float>470.22</float>
      <float>543.97</float>
     </coords>
@@ -134,10 +135,10 @@
     <from>17</from>
     <to>22</to>
     <coords>
-     <float>293.74</float>
+     <float>306.24</float>
      <float>151.25</float>
-     <float>-8.83005</float>
-     <float>227.203</float>
+     <float>6.2403</float>
+     <float>226.558</float>
      <float>348.95</float>
      <float>414.5</float>
     </coords>
@@ -147,10 +148,10 @@
     <from>42</from>
     <to>73</to>
     <coords>
-     <float>547.86</float>
+     <float>541.36</float>
      <float>254.1</float>
-     <float>729.434</float>
-     <float>213.373</float>
+     <float>726.001</float>
+     <float>212.685</float>
      <float>889.35</float>
      <float>376.31</float>
     </coords>
@@ -160,12 +161,12 @@
     <from>17</from>
     <to>74</to>
     <coords>
-     <float>293.74</float>
+     <float>306.24</float>
      <float>151.25</float>
-     <float>760.505</float>
-     <float>-43.8858</float>
-     <float>751.138</float>
-     <float>497.81</float>
+     <float>764.444</float>
+     <float>-40.307</float>
+     <float>755.249</float>
+     <float>491.454</float>
      <float>889.35</float>
      <float>376.31</float>
     </coords>
@@ -707,7 +708,7 @@
     <symbolEvery>1</symbolEvery>
     <id>58</id>
     <type>Variable:integral</type>
-    <x>344.24</x>
+    <x>350.24</x>
     <y>151.25</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>

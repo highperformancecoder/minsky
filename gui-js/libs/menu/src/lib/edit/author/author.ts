@@ -1,7 +1,6 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService, WindowUtilityService } from '@minsky/core';
-import { GodleyIcon} from '@minsky/shared';
 import { Subject, takeUntil } from 'rxjs';
 import { InputModalComponent} from '@minsky/ui-components';
 
@@ -14,9 +13,9 @@ import { InputModalComponent} from '@minsky/ui-components';
     imports: [InputModalComponent],
 })
 export class AuthorComponent implements OnDestroy {
-  author: string;
+  author='';
 
-  destroy$ = new Subject<{}>();
+  destroy$ = new Subject<void>();
   
   constructor(
     private route: ActivatedRoute,
@@ -30,13 +29,13 @@ export class AuthorComponent implements OnDestroy {
 
   async handleEditAuthor(author: string) {
     if (this.electronService.isElectron) {
-      this.electronService.minsky.author(author);
+      await this.electronService.minsky.author(author);
     }
     this.windowUtilityService.closeCurrentWindowIfNotMain();
   }
 
   ngOnDestroy() {
-    this.destroy$.next(undefined);
+    this.destroy$.next();
     this.destroy$.complete();
   }
 }

@@ -1,6 +1,7 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>3.4.0-beta.3</minskyVersion>
+  <minskyVersion>3.22.0</minskyVersion>
+  <author></author>
   <wires>
    <Wire>
     <id>659</id>
@@ -272,10 +273,10 @@
     <from>275</from>
     <to>74</to>
     <coords>
-     <float>463</float>
+     <float>463.5</float>
      <float>626.842</float>
-     <float>-2.69669</float>
-     <float>425.914</float>
+     <float>-2.51535</float>
+     <float>425.776</float>
      <float>103.25</float>
      <float>261.466</float>
     </coords>
@@ -600,12 +601,12 @@
     <from>558</from>
     <to>554</to>
     <coords>
-     <float>594.747</float>
-     <float>269.734</float>
-     <float>630.462</float>
-     <float>165.308</float>
-     <float>634.605</float>
-     <float>255.977</float>
+     <float>608.056</float>
+     <float>271.608</float>
+     <float>628.842</float>
+     <float>210.83</float>
+     <float>631.818</float>
+     <float>265.479</float>
     </coords>
    </Wire>
    <Wire>
@@ -678,12 +679,12 @@
     <from>601</from>
     <to>594</to>
     <coords>
-     <float>956.053</float>
-     <float>610.943</float>
-     <float>828.045</float>
-     <float>198.274</float>
-     <float>925.084</float>
-     <float>604.301</float>
+     <float>945.387</float>
+     <float>610.97</float>
+     <float>850.684</float>
+     <float>305.67</float>
+     <float>930.456</float>
+     <float>592.91</float>
     </coords>
    </Wire>
    <Wire>
@@ -701,12 +702,12 @@
     <from>603</from>
     <to>599</to>
     <coords>
-     <float>953.424</float>
-     <float>619.269</float>
-     <float>822.699</float>
-     <float>181.626</float>
-     <float>909.964</float>
-     <float>605.569</float>
+     <float>940.37</float>
+     <float>620.533</float>
+     <float>860.649</float>
+     <float>353.64</float>
+     <float>913.091</float>
+     <float>615.23</float>
     </coords>
    </Wire>
    <Wire>
@@ -774,12 +775,12 @@
     <from>646</from>
     <to>639</to>
     <coords>
-     <float>862.655</float>
-     <float>53.0157</float>
-     <float>819.286</float>
-     <float>21.2976</float>
-     <float>896.863</float>
-     <float>39.6966</float>
+     <float>876.665</float>
+     <float>53.4908</float>
+     <float>842.53</float>
+     <float>28.5261</float>
+     <float>891.396</float>
+     <float>28.6346</float>
     </coords>
    </Wire>
    <Wire>
@@ -792,12 +793,12 @@
     <from>648</from>
     <to>640</to>
     <coords>
-     <float>856.025</float>
-     <float>56.0028</float>
-     <float>817.17</float>
-     <float>19.6132</float>
-     <float>896.863</float>
-     <float>36.7297</float>
+     <float>871.658</float>
+     <float>56.6906</float>
+     <float>852.596</float>
+     <float>38.8396</float>
+     <float>891.396</float>
+     <float>46.6346</float>
     </coords>
    </Wire>
    <Wire>
@@ -805,12 +806,12 @@
     <from>648</from>
     <to>644</to>
     <coords>
-     <float>856.025</float>
-     <float>56.0028</float>
-     <float>817.742</float>
-     <float>20.1413</float>
-     <float>907.368</float>
-     <float>46.6664</float>
+     <float>871.658</float>
+     <float>56.6906</float>
+     <float>848.917</float>
+     <float>35.3895</float>
+     <float>902.649</float>
+     <float>57.2786</float>
     </coords>
    </Wire>
    <Wire>
@@ -1904,8 +1905,8 @@
     <symbolEvery>1</symbolEvery>
     <id>156</id>
     <type>Variable:flow</type>
-    <x>154.469</x>
-    <y>-14.04</y>
+    <x>156.469</x>
+    <y>-13.54</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1938,8 +1939,8 @@
     <symbolEvery>1</symbolEvery>
     <id>159</id>
     <type>Variable:flow</type>
-    <x>162.469</x>
-    <y>17.96</y>
+    <x>161.469</x>
+    <y>16.46</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1972,8 +1973,8 @@
     <symbolEvery>1</symbolEvery>
     <id>162</id>
     <type>Variable:flow</type>
-    <x>156.469</x>
-    <y>49.96</y>
+    <x>155.469</x>
+    <y>46.46</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -2006,8 +2007,8 @@
     <symbolEvery>1</symbolEvery>
     <id>165</id>
     <type>Variable:flow</type>
-    <x>152.469</x>
-    <y>113.96</y>
+    <x>154.469</x>
+    <y>106.46</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -2041,7 +2042,7 @@
     <id>168</id>
     <type>Variable:flow</type>
     <x>153.469</x>
-    <y>145.96</y>
+    <y>136.46</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -2075,7 +2076,7 @@
     <id>171</id>
     <type>Variable:flow</type>
     <x>151.469</x>
-    <y>177.96</y>
+    <y>166.46</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -2108,8 +2109,8 @@
     <symbolEvery>1</symbolEvery>
     <id>174</id>
     <type>Variable:flow</type>
-    <x>153.469</x>
-    <y>209.96</y>
+    <x>154.469</x>
+    <y>196.46</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -2142,8 +2143,8 @@
     <symbolEvery>1</symbolEvery>
     <id>177</id>
     <type>Variable:stock</type>
-    <x>208.269</x>
-    <y>289.76</y>
+    <x>204.969</x>
+    <y>290.26</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -2175,8 +2176,8 @@
     <symbolEvery>1</symbolEvery>
     <id>179</id>
     <type>Variable:stock</type>
-    <x>240.269</x>
-    <y>290.76</y>
+    <x>234.969</x>
+    <y>291.26</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -2208,8 +2209,8 @@
     <symbolEvery>1</symbolEvery>
     <id>181</id>
     <type>Variable:stock</type>
-    <x>272.269</x>
-    <y>292.76</y>
+    <x>264.969</x>
+    <y>293.26</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -2241,8 +2242,8 @@
     <symbolEvery>1</symbolEvery>
     <id>183</id>
     <type>Variable:stock</type>
-    <x>304.269</x>
-    <y>290.76</y>
+    <x>294.969</x>
+    <y>290.26</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -2410,7 +2411,7 @@
     <symbolEvery>1</symbolEvery>
     <id>196</id>
     <type>Variable:integral</type>
-    <x>435.25</x>
+    <x>434.25</x>
     <y>353.466</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
@@ -2478,7 +2479,7 @@
     <symbolEvery>1</symbolEvery>
     <id>201</id>
     <type>Variable:integral</type>
-    <x>1043.25</x>
+    <x>1042.25</x>
     <y>259.467</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
@@ -2648,8 +2649,8 @@
     <symbolEvery>1</symbolEvery>
     <id>215</id>
     <type>Variable:flow</type>
-    <x>154.469</x>
-    <y>81.96</y>
+    <x>153.469</x>
+    <y>76.46</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -3187,7 +3188,7 @@
     <symbolEvery>1</symbolEvery>
     <id>258</id>
     <type>Variable:integral</type>
-    <x>230.25</x>
+    <x>229.25</x>
     <y>262.467</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
@@ -6396,49 +6397,49 @@
     <miniPlot>false</miniPlot>
     <data>
      <vector>
-      <string>Flows&#32;V&#32;/&#32;Stock&#32;Variables&#32;-&gt;</string>
+      <string>Flows&#0032;V&#0032;/&#0032;Stock&#0032;Variables&#0032;-&gt;</string>
       <string>LF</string>
       <string>DF</string>
       <string>DW</string>
       <string>EB</string>
      </vector>
      <vector>
-      <string>Initial&#32;Conditions</string>
+      <string>Initial&#0032;Conditions</string>
       <string>0</string>
       <string>-0</string>
       <string>0</string>
       <string>-0</string>
      </vector>
      <vector>
-      <string>Lend&#32;for&#32;Investment</string>
+      <string>Lend&#0032;for&#0032;Investment</string>
       <string>Invest</string>
       <string>Invest</string>
       <string></string>
       <string></string>
      </vector>
      <vector>
-      <string>Service&#32;Debt</string>
+      <string>Service&#0032;Debt</string>
       <string></string>
       <string>-IntL</string>
       <string></string>
       <string>IntL</string>
      </vector>
      <vector>
-      <string>Deposit&#32;Interest</string>
+      <string>Deposit&#0032;Interest</string>
       <string></string>
       <string>IntDF</string>
       <string></string>
       <string>-IntDF</string>
      </vector>
      <vector>
-      <string>Deposit&#32;Interest</string>
+      <string>Deposit&#0032;Interest</string>
       <string></string>
       <string></string>
       <string>IntDW</string>
       <string>-IntDW</string>
      </vector>
      <vector>
-      <string>Hire&#32;Workers</string>
+      <string>Hire&#0032;Workers</string>
       <string></string>
       <string>-Wages</string>
       <string>Wages</string>
@@ -6459,7 +6460,7 @@
       <string></string>
      </vector>
      <vector>
-      <string>Repay&#32;Debt</string>
+      <string>Repay&#0032;Debt</string>
       <string>-Repay</string>
       <string>-Repay</string>
       <string></string>

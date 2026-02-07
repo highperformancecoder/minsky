@@ -1,6 +1,7 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>3.4.0-beta.3</minskyVersion>
+  <minskyVersion>3.22.0</minskyVersion>
+  <author></author>
   <wires>
    <Wire>
     <id>55</id>
@@ -348,13 +349,13 @@
     <miniPlot>false</miniPlot>
     <url>/home/scratch/github/minsky-develop/examples/binaryInterpolation-x3.csv</url>
     <csvDataSpec>
-     <dataRowOffset>1</dataRowOffset>
-     <dataColOffset>2</dataColOffset>
-     <numCols>2</numCols>
      <separator>,</separator>
      <quote>&quot;</quote>
      <escape>\</escape>
      <decSeparator>.</decSeparator>
+     <dataRowOffset>1</dataRowOffset>
+     <dataColOffset>2</dataColOffset>
+     <numCols>2</numCols>
      <mergeDelimiters>false</mergeDelimiters>
      <counter>false</counter>
      <dontFail>false</dontFail>
@@ -385,7 +386,7 @@
      <dimensionNames>
       <string>country</string>
       <string>date</string>
-      <string>&#32;value</string>
+      <string>&#0032;value</string>
      </dimensionNames>
     </csvDataSpec>
     <tensorData>
@@ -450,13 +451,13 @@
     <miniPlot>false</miniPlot>
     <url>/home/scratch/github/minsky-develop/examples/binaryInterpolation-x4.csv</url>
     <csvDataSpec>
-     <dataRowOffset>1</dataRowOffset>
-     <dataColOffset>2</dataColOffset>
-     <numCols>2</numCols>
      <separator>,</separator>
      <quote>&quot;</quote>
      <escape>\</escape>
      <decSeparator>.</decSeparator>
+     <dataRowOffset>1</dataRowOffset>
+     <dataColOffset>2</dataColOffset>
+     <numCols>2</numCols>
      <mergeDelimiters>false</mergeDelimiters>
      <counter>false</counter>
      <dontFail>false</dontFail>
@@ -487,7 +488,7 @@
      <dimensionNames>
       <string>sex</string>
       <string>date</string>
-      <string>&#32;value</string>
+      <string>&#0032;value</string>
      </dimensionNames>
     </csvDataSpec>
     <tensorData>
@@ -552,13 +553,13 @@
     <miniPlot>false</miniPlot>
     <url>/home/scratch/github/minsky-develop/examples/binaryInterpolation-x3.csv</url>
     <csvDataSpec>
-     <dataRowOffset>1</dataRowOffset>
-     <dataColOffset>2</dataColOffset>
-     <numCols>2</numCols>
      <separator>,</separator>
      <quote>&quot;</quote>
      <escape>\</escape>
      <decSeparator>.</decSeparator>
+     <dataRowOffset>1</dataRowOffset>
+     <dataColOffset>2</dataColOffset>
+     <numCols>2</numCols>
      <mergeDelimiters>false</mergeDelimiters>
      <counter>false</counter>
      <dontFail>false</dontFail>
@@ -589,7 +590,7 @@
      <dimensionNames>
       <string>country</string>
       <string>date</string>
-      <string>&#32;value</string>
+      <string>&#0032;value</string>
      </dimensionNames>
     </csvDataSpec>
     <tensorData>
@@ -628,13 +629,13 @@
     <miniPlot>false</miniPlot>
     <url>/home/scratch/github/minsky-develop/examples/binaryInterpolation-x4.csv</url>
     <csvDataSpec>
-     <dataRowOffset>1</dataRowOffset>
-     <dataColOffset>2</dataColOffset>
-     <numCols>2</numCols>
      <separator>,</separator>
      <quote>&quot;</quote>
      <escape>\</escape>
      <decSeparator>.</decSeparator>
+     <dataRowOffset>1</dataRowOffset>
+     <dataColOffset>2</dataColOffset>
+     <numCols>2</numCols>
      <mergeDelimiters>false</mergeDelimiters>
      <counter>false</counter>
      <dontFail>false</dontFail>
@@ -665,7 +666,7 @@
      <dimensionNames>
       <string>sex</string>
       <string>date</string>
-      <string>&#32;value</string>
+      <string>&#0032;value</string>
      </dimensionNames>
     </csvDataSpec>
     <tensorData>
@@ -752,9 +753,9 @@
     <slider>
      <stepRel>false</stepRel>
      <visible>true</visible>
-     <min>0</min>
+     <min>-1</min>
      <max>0</max>
-     <step>5.43231e-312</step>
+     <step>0.0001</step>
     </slider>
     <miniPlot>false</miniPlot>
    </Item>
@@ -795,7 +796,7 @@
     <symbolEvery>1</symbolEvery>
     <id>42</id>
     <type>Variable:integral</type>
-    <x>743</x>
+    <x>741</x>
     <y>75</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
@@ -808,6 +809,13 @@
      <int>44</int>
     </ports>
     <bookmark>false</bookmark>
+    <slider>
+     <stepRel>false</stepRel>
+     <visible>true</visible>
+     <min>1.79769e+308</min>
+     <max>-1.79769e+308</max>
+     <step>0</step>
+    </slider>
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
@@ -839,7 +847,7 @@
     <arg>1</arg>
    </Item>
    <Item>
-    <detailedText>integrals&#32;are&#32;for&#32;testing&#32;purposes</detailedText>
+    <detailedText>integrals&#0032;are&#0032;for&#0032;testing&#0032;purposes</detailedText>
     <xmin>NaN</xmin>
     <xmax>NaN</xmax>
     <ymin>NaN</ymin>
@@ -873,7 +881,7 @@
     <symbolEvery>1</symbolEvery>
     <id>49</id>
     <type>Variable:integral</type>
-    <x>1480</x>
+    <x>1477</x>
     <y>563</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
@@ -886,6 +894,13 @@
      <int>51</int>
     </ports>
     <bookmark>false</bookmark>
+    <slider>
+     <stepRel>false</stepRel>
+     <visible>true</visible>
+     <min>1.79769e+308</min>
+     <max>-1.79769e+308</max>
+     <step>0</step>
+    </slider>
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
