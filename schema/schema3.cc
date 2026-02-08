@@ -411,6 +411,9 @@ namespace schema3
         for (auto& hli: lg->handleLockInfo)
           slg.handleLockInfo.emplace_back(hli);
       }
+
+    title=g.tooltip();
+    description=g.detailedText();
   }
       
   PhillipsDiagram::PhillipsDiagram(const minsky::PhillipsDiagram& pd)
@@ -455,6 +458,8 @@ namespace schema3
     const minsky::LocalMinsky lm(m);
     m.model->clear();
     populateGroup(*m.model);
+    m.model->tooltip(title);
+    m.model->detailedText(description);
     m.canvas.model=m.model;
 
     m.model->setZoom(zoomFactor);

@@ -248,6 +248,8 @@ namespace schema3
     int schemaVersion=Minsky::version;
     std::string minskyVersion="unknown";
     std::string author;
+    std::string title;
+    std::string description;
     vector<Wire> wires;
     vector<Item> items;
     Optional<vector<int>> inVariables, outVariables;

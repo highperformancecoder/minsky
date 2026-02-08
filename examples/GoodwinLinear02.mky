@@ -2,6 +2,8 @@
   <schemaVersion>3</schemaVersion>
   <minskyVersion>3.22.0</minskyVersion>
   <author></author>
+  <title>Goodwin&#32;Cycle</title>
+  <description>Goodwin&apos;s&#32;classic&#32;class&#32;struggle&#32;model&#32;with&#32;linear&#32;Phillips&#32;curve</description>
   <wires>
    <Wire>
     <id>102</id>

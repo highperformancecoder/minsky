@@ -2,6 +2,8 @@
   <schemaVersion>3</schemaVersion>
   <minskyVersion>3.22.0</minskyVersion>
   <author></author>
+  <title></title>
+  <description></description>
   <wires>
    <Wire>
     <id>827</id>
@@ -866,8 +868,8 @@
     <coords>
      <float>943.648</float>
      <float>634.21</float>
-     <float>846.776</float>
-     <float>361.359</float>
+     <float>846.777</float>
+     <float>361.361</float>
      <float>928.717</float>
      <float>616.15</float>
     </coords>
@@ -993,8 +995,8 @@
     <coords>
      <float>834.158</float>
      <float>248.35</float>
-     <float>793.76</float>
-     <float>207.133</float>
+     <float>793.759</float>
+     <float>207.132</float>
      <float>865.149</float>
      <float>248.938</float>
     </coords>

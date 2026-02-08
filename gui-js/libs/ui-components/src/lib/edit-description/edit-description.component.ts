@@ -53,6 +53,9 @@ export class EditDescriptionComponent implements OnInit {
       case 'wire':
         item=this.electronService.minsky.canvas.wire;
         break;
+      case 'model':
+        item=this.electronService.minsky.model;
+        break;
       }
       
       item.bookmark(this.editDescriptionForm.get('bookmark').value);

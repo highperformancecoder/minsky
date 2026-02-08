@@ -2,6 +2,8 @@
   <schemaVersion>3</schemaVersion>
   <minskyVersion>3.22.0</minskyVersion>
   <author></author>
+  <title></title>
+  <description></description>
   <wires>
    <Wire>
     <id>39</id>
