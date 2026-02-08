@@ -378,7 +378,7 @@ export class ContextMenuManager {
     let menuItems: MenuItem[] = [
       new MenuItem({
         label: 'Description',
-        click: () => CommandsManager.postNote('item')
+        click: async () => await CommandsManager.postNote('item')
       }),
     ];
 

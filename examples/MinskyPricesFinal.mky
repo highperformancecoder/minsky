@@ -2,6 +2,8 @@
   <schemaVersion>3</schemaVersion>
   <minskyVersion>3.22.0</minskyVersion>
   <author></author>
+  <title></title>
+  <description></description>
   <wires>
    <Wire>
     <id>659</id>
@@ -275,7 +277,7 @@
     <coords>
      <float>463.5</float>
      <float>626.842</float>
-     <float>-2.51532</float>
+     <float>-2.51529</float>
      <float>425.776</float>
      <float>103.25</float>
      <float>261.466</float>
@@ -604,7 +606,7 @@
      <float>608.056</float>
      <float>271.608</float>
      <float>628.842</float>
-     <float>210.828</float>
+     <float>210.826</float>
      <float>631.818</float>
      <float>265.479</float>
     </coords>
@@ -681,8 +683,8 @@
     <coords>
      <float>945.387</float>
      <float>610.97</float>
-     <float>850.685</float>
-     <float>305.673</float>
+     <float>850.686</float>
+     <float>305.676</float>
      <float>930.456</float>
      <float>592.91</float>
     </coords>
@@ -704,8 +706,8 @@
     <coords>
      <float>940.37</float>
      <float>620.533</float>
-     <float>860.65</float>
-     <float>353.641</float>
+     <float>860.651</float>
+     <float>353.642</float>
      <float>913.091</float>
      <float>615.23</float>
     </coords>
@@ -778,7 +780,7 @@
      <float>876.665</float>
      <float>53.4908</float>
      <float>842.53</float>
-     <float>28.5262</float>
+     <float>28.5263</float>
      <float>891.396</float>
      <float>28.6346</float>
     </coords>
@@ -808,8 +810,8 @@
     <coords>
      <float>871.658</float>
      <float>56.6906</float>
-     <float>848.916</float>
-     <float>35.3894</float>
+     <float>848.915</float>
+     <float>35.3893</float>
      <float>902.649</float>
      <float>57.2786</float>
     </coords>

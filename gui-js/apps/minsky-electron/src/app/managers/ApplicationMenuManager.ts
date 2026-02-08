@@ -381,6 +381,10 @@ export class ApplicationMenuManager {
           },
         },
         {
+          label: 'Description',
+          click: async () => await CommandsManager.postNote('model')
+        },
+        {
           label: 'Dimensions',
           click() {
             WindowManager.createPopupWindowWithRouting({

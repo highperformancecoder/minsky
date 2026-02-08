@@ -254,6 +254,9 @@ export class CommandsManager {
     case 'wire':
       item=minsky.canvas.wire;
       break;
+    case 'model':
+      item=minsky.model;
+      break;
     }
 
     const window=WindowManager.createPopupWindowWithRouting({
