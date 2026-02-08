@@ -143,7 +143,7 @@
     "node": ">=20.11.1"
   },
   "devDependencies": {
-    "@angular-devkit/build-angular": "^20.0.0",
+    "@angular-devkit/build-angular": "^20.3.15",
     "@angular/material": "^20.0.0",
     "@ngx-translate/core": "^16.0.4",
     "@ngx-translate/http-loader": "^16.0.1",
