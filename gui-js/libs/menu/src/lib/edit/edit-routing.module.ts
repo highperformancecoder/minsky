@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { DimensionsComponent } from './dimensions/dimensions.component';
-import {AuthorComponent } from './author/author';
+import { AuthorComponent } from './author/author';
 
 const routes: Routes = [
   { path: 'author', component: AuthorComponent },
