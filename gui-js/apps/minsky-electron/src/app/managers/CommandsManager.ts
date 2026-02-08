@@ -478,9 +478,9 @@ export class CommandsManager {
     minsky.clearHistory();
     try
     {
-      minsky.author(await fullname());
+      await minsky.author(await fullname());
     } catch {
-      minsky.author(''); // initialise to blank on error
+      await minsky.author(''); // initialise to blank on error
     }
     minsky.model.setZoom(1);
     minsky.canvas.recentre();
