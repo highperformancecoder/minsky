@@ -1,6 +1,7 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>3.4.0-beta.3</minskyVersion>
+  <minskyVersion>3.22.0</minskyVersion>
+  <author></author>
   <wires>
    <Wire>
     <id>197</id>
@@ -127,10 +128,10 @@
     <from>37</from>
     <to>160</to>
     <coords>
-     <float>74</float>
+     <float>69</float>
      <float>414.04</float>
-     <float>196.738</float>
-     <float>326.543</float>
+     <float>193.134</float>
+     <float>325.548</float>
      <float>462</float>
      <float>272.04</float>
     </coords>
@@ -458,7 +459,7 @@
      <stepRel>false</stepRel>
      <visible>true</visible>
      <min>-1</min>
-     <max>1</max>
+     <max>100</max>
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
@@ -525,7 +526,7 @@
      <stepRel>false</stepRel>
      <visible>true</visible>
      <min>-1</min>
-     <max>1</max>
+     <max>50</max>
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
@@ -778,8 +779,8 @@
     <symbolEvery>1</symbolEvery>
     <id>61</id>
     <type>Variable:stock</type>
-    <x>488.5</x>
-    <y>247.04</y>
+    <x>486.5</x>
+    <y>250.04</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -811,8 +812,8 @@
     <symbolEvery>1</symbolEvery>
     <id>63</id>
     <type>Variable:stock</type>
-    <x>520.5</x>
-    <y>247.04</y>
+    <x>516.5</x>
+    <y>249.04</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -844,7 +845,7 @@
     <symbolEvery>1</symbolEvery>
     <id>65</id>
     <type>Variable:stock</type>
-    <x>552.5</x>
+    <x>546.5</x>
     <y>256.04</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
@@ -877,8 +878,8 @@
     <symbolEvery>1</symbolEvery>
     <id>67</id>
     <type>Variable:stock</type>
-    <x>584.5</x>
-    <y>245.04</y>
+    <x>576.5</x>
+    <y>247.04</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -910,8 +911,8 @@
     <symbolEvery>1</symbolEvery>
     <id>69</id>
     <type>Variable:flow</type>
-    <x>419</x>
-    <y>-30.66</y>
+    <x>420</x>
+    <y>-25.66</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -945,7 +946,7 @@
     <id>72</id>
     <type>Variable:flow</type>
     <x>420</x>
-    <y>1.34</y>
+    <y>4.34</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -979,7 +980,7 @@
     <id>75</id>
     <type>Variable:flow</type>
     <x>420</x>
-    <y>33.34</y>
+    <y>34.34</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1012,8 +1013,8 @@
     <symbolEvery>1</symbolEvery>
     <id>78</id>
     <type>Variable:flow</type>
-    <x>420</x>
-    <y>65.34</y>
+    <x>419</x>
+    <y>64.34</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1047,7 +1048,7 @@
     <id>81</id>
     <type>Variable:flow</type>
     <x>420</x>
-    <y>97.34</y>
+    <y>94.34</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1081,7 +1082,7 @@
     <id>84</id>
     <type>Variable:flow</type>
     <x>420</x>
-    <y>129.34</y>
+    <y>124.34</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -1114,8 +1115,8 @@
     <symbolEvery>1</symbolEvery>
     <id>87</id>
     <type>Variable:flow</type>
-    <x>420</x>
-    <y>161.34</y>
+    <x>419</x>
+    <y>154.34</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>

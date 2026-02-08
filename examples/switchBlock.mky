@@ -1,6 +1,7 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>3.4.0-beta.3</minskyVersion>
+  <minskyVersion>3.22.0</minskyVersion>
+  <author></author>
   <wires>
    <Wire>
     <id>46</id>
@@ -196,7 +197,7 @@
     <symbolEvery>1</symbolEvery>
     <id>13</id>
     <type>Variable:integral</type>
-    <x>209</x>
+    <x>207</x>
     <y>60</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>

@@ -462,6 +462,7 @@ namespace schema3
     m.dimensions=dimensions;
     m.conversions=conversions;
     m.fileVersion=minskyVersion;
+    m.author=author;
     
     static_cast<minsky::Simulation&>(m)=rungeKutta;
 

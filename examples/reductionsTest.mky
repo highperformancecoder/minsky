@@ -1,6 +1,7 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>3.4.0-beta.3</minskyVersion>
+  <minskyVersion>3.22.0</minskyVersion>
+  <author></author>
   <wires>
    <Wire>
     <id>217</id>
@@ -1997,7 +1998,7 @@
     <symbolEvery>1</symbolEvery>
     <id>169</id>
     <type>Variable:integral</type>
-    <x>527</x>
+    <x>525</x>
     <y>87</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
@@ -2010,6 +2011,13 @@
      <int>171</int>
     </ports>
     <bookmark>false</bookmark>
+    <slider>
+     <stepRel>false</stepRel>
+     <visible>true</visible>
+     <min>1.79769e+308</min>
+     <max>-1.79769e+308</max>
+     <step>0</step>
+    </slider>
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
@@ -2051,7 +2059,7 @@
     <symbolEvery>1</symbolEvery>
     <id>175</id>
     <type>Variable:integral</type>
-    <x>529</x>
+    <x>526</x>
     <y>142</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
@@ -2064,6 +2072,13 @@
      <int>177</int>
     </ports>
     <bookmark>false</bookmark>
+    <slider>
+     <stepRel>false</stepRel>
+     <visible>true</visible>
+     <min>1.79769e+308</min>
+     <max>-1.79769e+308</max>
+     <step>0</step>
+    </slider>
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
@@ -2105,7 +2120,7 @@
     <symbolEvery>1</symbolEvery>
     <id>181</id>
     <type>Variable:integral</type>
-    <x>534</x>
+    <x>531</x>
     <y>191</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
@@ -2118,6 +2133,13 @@
      <int>183</int>
     </ports>
     <bookmark>false</bookmark>
+    <slider>
+     <stepRel>false</stepRel>
+     <visible>true</visible>
+     <min>1.79769e+308</min>
+     <max>-1.79769e+308</max>
+     <step>0</step>
+    </slider>
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
@@ -2159,7 +2181,7 @@
     <symbolEvery>1</symbolEvery>
     <id>187</id>
     <type>Variable:integral</type>
-    <x>533</x>
+    <x>530</x>
     <y>255</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
@@ -2172,6 +2194,13 @@
      <int>189</int>
     </ports>
     <bookmark>false</bookmark>
+    <slider>
+     <stepRel>false</stepRel>
+     <visible>true</visible>
+     <min>1.79769e+308</min>
+     <max>-1.79769e+308</max>
+     <step>0</step>
+    </slider>
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
@@ -2213,7 +2242,7 @@
     <symbolEvery>1</symbolEvery>
     <id>193</id>
     <type>Variable:integral</type>
-    <x>533</x>
+    <x>531</x>
     <y>298</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
@@ -2226,6 +2255,13 @@
      <int>195</int>
     </ports>
     <bookmark>false</bookmark>
+    <slider>
+     <stepRel>false</stepRel>
+     <visible>true</visible>
+     <min>1.79769e+308</min>
+     <max>-1.79769e+308</max>
+     <step>0</step>
+    </slider>
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
@@ -2267,7 +2303,7 @@
     <symbolEvery>1</symbolEvery>
     <id>199</id>
     <type>Variable:integral</type>
-    <x>530</x>
+    <x>527</x>
     <y>348</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
@@ -2280,6 +2316,13 @@
      <int>201</int>
     </ports>
     <bookmark>false</bookmark>
+    <slider>
+     <stepRel>false</stepRel>
+     <visible>true</visible>
+     <min>1.79769e+308</min>
+     <max>-1.79769e+308</max>
+     <step>0</step>
+    </slider>
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
@@ -2321,7 +2364,7 @@
     <symbolEvery>1</symbolEvery>
     <id>205</id>
     <type>Variable:integral</type>
-    <x>513</x>
+    <x>510</x>
     <y>437</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
@@ -2334,6 +2377,13 @@
      <int>207</int>
     </ports>
     <bookmark>false</bookmark>
+    <slider>
+     <stepRel>false</stepRel>
+     <visible>true</visible>
+     <min>1.79769e+308</min>
+     <max>-1.79769e+308</max>
+     <step>0</step>
+    </slider>
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
@@ -2375,7 +2425,7 @@
     <symbolEvery>1</symbolEvery>
     <id>211</id>
     <type>Variable:integral</type>
-    <x>527</x>
+    <x>524</x>
     <y>518</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
@@ -2388,6 +2438,13 @@
      <int>213</int>
     </ports>
     <bookmark>false</bookmark>
+    <slider>
+     <stepRel>false</stepRel>
+     <visible>true</visible>
+     <min>1.79769e+308</min>
+     <max>-1.79769e+308</max>
+     <step>0</step>
+    </slider>
     <miniPlot>false</miniPlot>
    </Item>
    <Item>

@@ -1,16 +1,17 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>3.4.0-beta.3</minskyVersion>
+  <minskyVersion>3.22.0</minskyVersion>
+  <author></author>
   <wires>
    <Wire>
     <id>39</id>
     <from>1</from>
     <to>3</to>
     <coords>
-     <float>149</float>
+     <float>146</float>
      <float>208</float>
-     <float>210.561</float>
-     <float>48.7746</float>
+     <float>208.407</float>
+     <float>46.5858</float>
      <float>359</float>
      <float>166.25</float>
     </coords>
@@ -60,10 +61,10 @@
     <from>1</from>
     <to>30</to>
     <coords>
-     <float>149</float>
+     <float>146</float>
      <float>208</float>
-     <float>196.814</float>
-     <float>370.368</float>
+     <float>194.095</float>
+     <float>371.321</float>
      <float>241</float>
      <float>406</float>
     </coords>
@@ -78,10 +79,10 @@
     <from>1</from>
     <to>35</to>
     <coords>
-     <float>149</float>
+     <float>146</float>
      <float>208</float>
-     <float>162.963</float>
-     <float>432.41</float>
+     <float>160.018</float>
+     <float>433.297</float>
      <float>302</float>
      <float>514</float>
     </coords>

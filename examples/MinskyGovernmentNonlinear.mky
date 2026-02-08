@@ -1,6 +1,7 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>3.4.0-beta.3</minskyVersion>
+  <minskyVersion>3.22.0</minskyVersion>
+  <author></author>
   <wires>
    <Wire>
     <id>411</id>
@@ -212,12 +213,12 @@
     <from>254</from>
     <to>380</to>
     <coords>
-     <float>815</float>
+     <float>808</float>
      <float>402</float>
-     <float>797.077</float>
-     <float>423.969</float>
-     <float>858.358</float>
-     <float>516.463</float>
+     <float>789.631</float>
+     <float>424.516</float>
+     <float>852.438</float>
+     <float>519.314</float>
      <float>1096</float>
      <float>405</float>
     </coords>
@@ -302,10 +303,10 @@
     <from>236</from>
     <to>120</to>
     <coords>
-     <float>911.5</float>
+     <float>914</float>
      <float>606</float>
-     <float>917.972</float>
-     <float>561.623</float>
+     <float>920.647</float>
+     <float>560.422</float>
      <float>836</float>
      <float>570</float>
     </coords>
@@ -325,10 +326,10 @@
     <from>260</from>
     <to>97</to>
     <coords>
-     <float>716</float>
+     <float>720.5</float>
      <float>574</float>
-     <float>666.602</float>
-     <float>442.604</float>
+     <float>670.197</float>
+     <float>440.198</float>
      <float>504</float>
      <float>489</float>
     </coords>
@@ -423,10 +424,10 @@
     <from>216</from>
     <to>160</to>
     <coords>
-     <float>635.5</float>
+     <float>633.5</float>
      <float>73</float>
-     <float>579.361</float>
-     <float>151.593</float>
+     <float>577.781</float>
+     <float>151.005</float>
      <float>550</float>
      <float>197</float>
     </coords>
@@ -506,10 +507,10 @@
     <from>271</from>
     <to>145</to>
     <coords>
-     <float>446.5</float>
+     <float>440.5</float>
      <float>705</float>
-     <float>1118.35</float>
-     <float>717.826</float>
+     <float>1118.8</float>
+     <float>717.949</float>
      <float>1064</float>
      <float>639</float>
     </coords>
@@ -519,10 +520,10 @@
     <from>64</from>
     <to>73</to>
     <coords>
-     <float>1379</float>
+     <float>1371.5</float>
      <float>124</float>
-     <float>1370.81</float>
-     <float>617.457</float>
+     <float>1363.34</float>
+     <float>615.548</float>
      <float>1242</float>
      <float>614</float>
     </coords>
@@ -557,14 +558,14 @@
     <from>239</from>
     <to>191</to>
     <coords>
-     <float>80.5</float>
+     <float>90</float>
      <float>542</float>
-     <float>55.4796</float>
-     <float>519.983</float>
-     <float>-9.57349</float>
-     <float>282.789</float>
-     <float>52.4771</float>
-     <float>20.5744</float>
+     <float>65</float>
+     <float>520.001</float>
+     <float>3.8147e-05</float>
+     <float>283.001</float>
+     <float>62</float>
+     <float>21</float>
      <float>110</float>
      <float>6</float>
     </coords>
@@ -589,10 +590,10 @@
     <from>251</from>
     <to>372</to>
     <coords>
-     <float>788.5</float>
+     <float>786.5</float>
      <float>370</float>
-     <float>928.382</float>
-     <float>236.595</float>
+     <float>927.28</float>
+     <float>235.738</float>
      <float>1096</float>
      <float>405</float>
     </coords>
@@ -607,12 +608,12 @@
     <from>194</from>
     <to>179</to>
     <coords>
-     <float>12</float>
+     <float>24</float>
      <float>268</float>
-     <float>303.58</float>
-     <float>373.737</float>
-     <float>601.568</float>
-     <float>476.271</float>
+     <float>312.43</float>
+     <float>372.595</float>
+     <float>607.198</float>
+     <float>474.021</float>
      <float>1011</float>
      <float>601</float>
     </coords>
@@ -1983,7 +1984,7 @@
     <symbolEvery>1</symbolEvery>
     <id>197</id>
     <type>Variable:integral</type>
-    <x>270</x>
+    <x>266</x>
     <y>0</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
@@ -2001,7 +2002,7 @@
      <stepRel>false</stepRel>
      <visible>true</visible>
      <min>-1</min>
-     <max>1</max>
+     <max>317.234</max>
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
@@ -2051,7 +2052,7 @@
     <symbolEvery>1</symbolEvery>
     <id>202</id>
     <type>Variable:integral</type>
-    <x>398</x>
+    <x>389</x>
     <y>66</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
@@ -2069,7 +2070,7 @@
      <stepRel>false</stepRel>
      <visible>true</visible>
      <min>-1</min>
-     <max>1</max>
+     <max>1.11405</max>
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
@@ -2153,7 +2154,7 @@
     <symbolEvery>1</symbolEvery>
     <id>210</id>
     <type>Variable:integral</type>
-    <x>544</x>
+    <x>538</x>
     <y>118</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
@@ -2171,7 +2172,7 @@
      <stepRel>false</stepRel>
      <visible>true</visible>
      <min>-1</min>
-     <max>1</max>
+     <max>105.548</max>
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
@@ -2289,7 +2290,7 @@
     <symbolEvery>1</symbolEvery>
     <id>221</id>
     <type>Variable:integral</type>
-    <x>1346</x>
+    <x>1342</x>
     <y>124</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
@@ -2833,7 +2834,7 @@
     <symbolEvery>1</symbolEvery>
     <id>268</id>
     <type>Variable:integral</type>
-    <x>282</x>
+    <x>280</x>
     <y>768</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
@@ -3071,7 +3072,7 @@
     <symbolEvery>1</symbolEvery>
     <id>288</id>
     <type>Variable:integral</type>
-    <x>63</x>
+    <x>69</x>
     <y>268</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>

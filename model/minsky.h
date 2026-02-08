@@ -191,6 +191,9 @@ namespace minsky
         reset();
       return reset_flag();
     }
+
+    /// author of this model
+    std::string author;
     
     VariableValues variableValues;
     Dimensions dimensions;
