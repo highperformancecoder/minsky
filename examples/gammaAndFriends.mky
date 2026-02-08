@@ -1,6 +1,7 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>3.4.0-beta.3</minskyVersion>
+  <minskyVersion>3.22.0</minskyVersion>
+  <author></author>
   <wires>
    <Wire>
     <id>58</id>
@@ -495,7 +496,7 @@
     <symbolEvery>1</symbolEvery>
     <id>40</id>
     <type>Variable:integral</type>
-    <x>435</x>
+    <x>433</x>
     <y>137</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
@@ -508,6 +509,13 @@
      <int>42</int>
     </ports>
     <bookmark>false</bookmark>
+    <slider>
+     <stepRel>false</stepRel>
+     <visible>true</visible>
+     <min>1.79769e+308</min>
+     <max>-1.79769e+308</max>
+     <step>0</step>
+    </slider>
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
@@ -549,7 +557,7 @@
     <symbolEvery>1</symbolEvery>
     <id>46</id>
     <type>Variable:integral</type>
-    <x>435</x>
+    <x>432</x>
     <y>179</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
@@ -562,6 +570,13 @@
      <int>48</int>
     </ports>
     <bookmark>false</bookmark>
+    <slider>
+     <stepRel>false</stepRel>
+     <visible>true</visible>
+     <min>1.79769e+308</min>
+     <max>-1.79769e+308</max>
+     <step>0</step>
+    </slider>
     <miniPlot>false</miniPlot>
    </Item>
    <Item>
@@ -603,7 +618,7 @@
     <symbolEvery>1</symbolEvery>
     <id>52</id>
     <type>Variable:integral</type>
-    <x>431</x>
+    <x>428</x>
     <y>219</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
@@ -616,6 +631,13 @@
      <int>54</int>
     </ports>
     <bookmark>false</bookmark>
+    <slider>
+     <stepRel>false</stepRel>
+     <visible>true</visible>
+     <min>1.79769e+308</min>
+     <max>-1.79769e+308</max>
+     <step>0</step>
+    </slider>
     <miniPlot>false</miniPlot>
    </Item>
    <Item>

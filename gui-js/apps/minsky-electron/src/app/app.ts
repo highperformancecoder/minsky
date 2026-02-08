@@ -76,7 +76,7 @@ export default class App {
 	// Macs sometimes put extra guff on the command line, so ignore errors
 	}
     } else { // start an empty model
-      CommandsManager.createNewSystem();
+      await CommandsManager.createNewSystem();
     }
   }
 

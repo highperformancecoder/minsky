@@ -1,16 +1,17 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>3.4.0-beta.3</minskyVersion>
+  <minskyVersion>3.22.0</minskyVersion>
+  <author></author>
   <wires>
    <Wire>
     <id>112</id>
     <from>37</from>
     <to>2</to>
     <coords>
-     <float>360</float>
+     <float>348</float>
      <float>147.363</float>
-     <float>376.057</float>
-     <float>184.901</float>
+     <float>364.024</float>
+     <float>184.824</float>
      <float>352</float>
      <float>255.363</float>
     </coords>
@@ -73,10 +74,10 @@
     <from>61</from>
     <to>27</to>
     <coords>
-     <float>65</float>
+     <float>62</float>
      <float>165.363</float>
-     <float>84.1424</float>
-     <float>163.098</float>
+     <float>82.5757</float>
+     <float>162.928</float>
      <float>102.5</float>
      <float>155.363</float>
     </coords>
@@ -96,10 +97,10 @@
     <from>48</from>
     <to>26</to>
     <coords>
-     <float>97.5</float>
+     <float>86</float>
      <float>121.999</float>
-     <float>104.988</float>
-     <float>120.683</float>
+     <float>96.4487</float>
+     <float>120.163</float>
      <float>102.5</float>
      <float>137.363</float>
     </coords>
@@ -134,10 +135,10 @@
     <from>54</from>
     <to>23</to>
     <coords>
-     <float>125.5</float>
+     <float>108.5</float>
      <float>230.363</float>
-     <float>157.523</float>
-     <float>214.606</float>
+     <float>144.053</float>
+     <float>212.869</float>
      <float>159.636</float>
      <float>159.181</float>
     </coords>
@@ -147,10 +148,10 @@
     <from>37</from>
     <to>98</to>
     <coords>
-     <float>360</float>
+     <float>348</float>
      <float>147.363</float>
-     <float>406.461</float>
-     <float>153.875</float>
+     <float>400.013</float>
+     <float>154.653</float>
      <float>456.5</float>
      <float>167.363</float>
     </coords>
@@ -514,7 +515,7 @@
     <symbolEvery>1</symbolEvery>
     <id>45</id>
     <type>Variable:integral</type>
-    <x>823.545</x>
+    <x>812.545</x>
     <y>184.727</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>

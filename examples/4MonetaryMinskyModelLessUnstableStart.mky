@@ -1,6 +1,7 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>3.4.0-beta.3</minskyVersion>
+  <minskyVersion>3.22.0</minskyVersion>
+  <author></author>
   <wires>
    <Wire>
     <id>593</id>
@@ -127,10 +128,10 @@
     <from>525</from>
     <to>54</to>
     <coords>
-     <float>31.9999</float>
+     <float>28.9999</float>
      <float>481.001</float>
-     <float>189.994</float>
-     <float>498.029</float>
+     <float>189.695</float>
+     <float>498.32</float>
      <float>207</float>
      <float>472.001</float>
     </coords>
@@ -353,10 +354,10 @@
     <from>513</from>
     <to>134</to>
     <coords>
-     <float>472.5</float>
+     <float>470</float>
      <float>575</float>
-     <float>476.139</float>
-     <float>534.987</float>
+     <float>473.739</float>
+     <float>533.884</float>
      <float>500.999</float>
      <float>532.001</float>
     </coords>
@@ -541,12 +542,12 @@
     <from>401</from>
     <to>200</to>
     <coords>
-     <float>922</float>
+     <float>919</float>
      <float>269.5</float>
-     <float>945.383</float>
-     <float>282.491</float>
-     <float>752.097</float>
-     <float>333.409</float>
+     <float>941.976</float>
+     <float>282.265</float>
+     <float>752.058</float>
+     <float>332.295</float>
      <float>775</float>
      <float>330.001</float>
     </coords>
@@ -606,16 +607,16 @@
     <from>357</from>
     <to>208</to>
     <coords>
-     <float>739</float>
+     <float>738</float>
      <float>214.5</float>
-     <float>758.148</float>
-     <float>202.227</float>
-     <float>673.699</float>
-     <float>189.46</float>
-     <float>699.231</float>
-     <float>142.325</float>
-     <float>740.473</float>
-     <float>139.38</float>
+     <float>757.176</float>
+     <float>202.209</float>
+     <float>672.604</float>
+     <float>189.424</float>
+     <float>698.173</float>
+     <float>142.22</float>
+     <float>739.475</float>
+     <float>139.271</float>
      <float>746</float>
      <float>143.001</float>
     </coords>
@@ -2623,7 +2624,7 @@
      <stepRel>false</stepRel>
      <visible>true</visible>
      <min>-1</min>
-     <max>1</max>
+     <max>300</max>
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
@@ -2689,7 +2690,7 @@
      <stepRel>false</stepRel>
      <visible>true</visible>
      <min>-1</min>
-     <max>1</max>
+     <max>900</max>
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
@@ -2722,7 +2723,7 @@
      <stepRel>false</stepRel>
      <visible>true</visible>
      <min>-1</min>
-     <max>1</max>
+     <max>1.25</max>
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
@@ -2958,7 +2959,7 @@
      <stepRel>false</stepRel>
      <visible>true</visible>
      <min>-1</min>
-     <max>1</max>
+     <max>56.905</max>
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
@@ -2992,7 +2993,7 @@
      <stepRel>false</stepRel>
      <visible>true</visible>
      <min>-1</min>
-     <max>1</max>
+     <max>300</max>
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
@@ -3162,7 +3163,7 @@
      <stepRel>false</stepRel>
      <visible>true</visible>
      <min>-1</min>
-     <max>1</max>
+     <max>6</max>
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
@@ -3230,7 +3231,7 @@
      <stepRel>false</stepRel>
      <visible>true</visible>
      <min>-1</min>
-     <max>1</max>
+     <max>45.524</max>
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
@@ -3702,7 +3703,7 @@
      <stepRel>false</stepRel>
      <visible>true</visible>
      <min>-1</min>
-     <max>1</max>
+     <max>1.25</max>
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
@@ -4136,7 +4137,7 @@
      <stepRel>false</stepRel>
      <visible>true</visible>
      <min>-1</min>
-     <max>1</max>
+     <max>900</max>
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
@@ -4236,7 +4237,7 @@
      <stepRel>false</stepRel>
      <visible>true</visible>
      <min>-1</min>
-     <max>1</max>
+     <max>1.25</max>
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
@@ -4504,7 +4505,7 @@
      <stepRel>false</stepRel>
      <visible>true</visible>
      <min>-1</min>
-     <max>1</max>
+     <max>1.25</max>
      <step>0.1</step>
     </slider>
     <miniPlot>false</miniPlot>
@@ -4962,8 +4963,8 @@
     <symbolEvery>1</symbolEvery>
     <id>436</id>
     <type>Variable:stock</type>
-    <x>650.2</x>
-    <y>1017.81</y>
+    <x>646.9</x>
+    <y>1018.31</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -4995,8 +4996,8 @@
     <symbolEvery>1</symbolEvery>
     <id>438</id>
     <type>Variable:stock</type>
-    <x>682.2</x>
-    <y>1021.81</y>
+    <x>676.9</x>
+    <y>1022.31</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -5028,8 +5029,8 @@
     <symbolEvery>1</symbolEvery>
     <id>440</id>
     <type>Variable:stock</type>
-    <x>714.2</x>
-    <y>1016.81</y>
+    <x>706.9</x>
+    <y>1017.31</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -5061,8 +5062,8 @@
     <symbolEvery>1</symbolEvery>
     <id>442</id>
     <type>Variable:stock</type>
-    <x>746.2</x>
-    <y>1017.81</y>
+    <x>736.9</x>
+    <y>1018.31</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -5094,8 +5095,8 @@
     <symbolEvery>1</symbolEvery>
     <id>444</id>
     <type>Variable:stock</type>
-    <x>778.2</x>
-    <y>1019.81</y>
+    <x>766.9</x>
+    <y>1020.31</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -5127,8 +5128,8 @@
     <symbolEvery>1</symbolEvery>
     <id>446</id>
     <type>Variable:stock</type>
-    <x>810.2</x>
-    <y>1012.81</y>
+    <x>796.9</x>
+    <y>1013.31</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -5160,8 +5161,8 @@
     <symbolEvery>1</symbolEvery>
     <id>448</id>
     <type>Variable:stock</type>
-    <x>842.2</x>
-    <y>1011.81</y>
+    <x>826.9</x>
+    <y>1011.31</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -5193,8 +5194,8 @@
     <symbolEvery>1</symbolEvery>
     <id>450</id>
     <type>Variable:stock</type>
-    <x>874.2</x>
-    <y>1015.81</y>
+    <x>856.9</x>
+    <y>1016.31</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -5226,8 +5227,8 @@
     <symbolEvery>1</symbolEvery>
     <id>452</id>
     <type>Variable:stock</type>
-    <x>906.2</x>
-    <y>1016.81</y>
+    <x>886.9</x>
+    <y>1018.31</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -5259,8 +5260,8 @@
     <symbolEvery>1</symbolEvery>
     <id>454</id>
     <type>Variable:stock</type>
-    <x>938.199</x>
-    <y>1014.81</y>
+    <x>916.899</x>
+    <y>1014.31</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -5292,8 +5293,8 @@
     <symbolEvery>1</symbolEvery>
     <id>456</id>
     <type>Variable:flow</type>
-    <x>595</x>
-    <y>430.508</y>
+    <x>593</x>
+    <y>431.008</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -5326,8 +5327,8 @@
     <symbolEvery>1</symbolEvery>
     <id>459</id>
     <type>Variable:flow</type>
-    <x>596</x>
-    <y>462.508</y>
+    <x>593</x>
+    <y>461.008</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -5360,8 +5361,8 @@
     <symbolEvery>1</symbolEvery>
     <id>462</id>
     <type>Variable:flow</type>
-    <x>596</x>
-    <y>494.508</y>
+    <x>593</x>
+    <y>491.008</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -5394,8 +5395,8 @@
     <symbolEvery>1</symbolEvery>
     <id>465</id>
     <type>Variable:flow</type>
-    <x>596</x>
-    <y>526.508</y>
+    <x>592</x>
+    <y>521.008</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -5428,8 +5429,8 @@
     <symbolEvery>1</symbolEvery>
     <id>468</id>
     <type>Variable:flow</type>
-    <x>596</x>
-    <y>558.508</y>
+    <x>593</x>
+    <y>551.008</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -5462,8 +5463,8 @@
     <symbolEvery>1</symbolEvery>
     <id>471</id>
     <type>Variable:flow</type>
-    <x>596</x>
-    <y>590.508</y>
+    <x>593</x>
+    <y>581.008</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -5496,8 +5497,8 @@
     <symbolEvery>1</symbolEvery>
     <id>474</id>
     <type>Variable:flow</type>
-    <x>596</x>
-    <y>622.508</y>
+    <x>592</x>
+    <y>611.008</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -5530,8 +5531,8 @@
     <symbolEvery>1</symbolEvery>
     <id>477</id>
     <type>Variable:flow</type>
-    <x>595</x>
-    <y>654.508</y>
+    <x>592</x>
+    <y>641.008</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -5564,8 +5565,8 @@
     <symbolEvery>1</symbolEvery>
     <id>480</id>
     <type>Variable:flow</type>
-    <x>599</x>
-    <y>686.508</y>
+    <x>596</x>
+    <y>671.008</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -5598,8 +5599,8 @@
     <symbolEvery>1</symbolEvery>
     <id>483</id>
     <type>Variable:flow</type>
-    <x>597</x>
-    <y>718.508</y>
+    <x>595</x>
+    <y>701.008</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -5633,7 +5634,7 @@
     <id>486</id>
     <type>Variable:flow</type>
     <x>582</x>
-    <y>784.508</y>
+    <y>763.008</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -5667,7 +5668,7 @@
     <id>489</id>
     <type>Variable:flow</type>
     <x>584</x>
-    <y>886.508</y>
+    <y>859.008</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -5701,7 +5702,7 @@
     <id>492</id>
     <type>Variable:flow</type>
     <x>583</x>
-    <y>920.508</y>
+    <y>891.008</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -5734,8 +5735,8 @@
     <symbolEvery>1</symbolEvery>
     <id>495</id>
     <type>Variable:flow</type>
-    <x>582</x>
-    <y>852.508</y>
+    <x>581</x>
+    <y>827.008</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -5769,7 +5770,7 @@
     <id>498</id>
     <type>Variable:flow</type>
     <x>580</x>
-    <y>818.508</y>
+    <y>795.008</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -5803,7 +5804,7 @@
     <id>501</id>
     <type>Variable:flow</type>
     <x>584</x>
-    <y>750.508</y>
+    <y>731.008</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -5836,8 +5837,8 @@
     <symbolEvery>1</symbolEvery>
     <id>504</id>
     <type>Variable:stock</type>
-    <x>970.199</x>
-    <y>1011.81</y>
+    <x>946.899</x>
+    <y>1011.31</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
     <scaleFactor>1</scaleFactor>
@@ -5984,7 +5985,7 @@
     <slider>
      <stepRel>false</stepRel>
      <visible>true</visible>
-     <min>-1</min>
+     <min>-10</min>
      <max>-1</max>
      <step>0.1</step>
     </slider>
@@ -6215,9 +6216,9 @@
     <slider>
      <stepRel>false</stepRel>
      <visible>true</visible>
-     <min>-1</min>
-     <max>1</max>
-     <step>0.1</step>
+     <min>-0.4</min>
+     <max>0.4</max>
+     <step>0.004</step>
     </slider>
     <miniPlot>false</miniPlot>
    </Item>
@@ -6380,7 +6381,7 @@
     <slider>
      <stepRel>false</stepRel>
      <visible>true</visible>
-     <min>-33.3333</min>
+     <min>-333.333</min>
      <max>1</max>
      <step>0.1</step>
     </slider>

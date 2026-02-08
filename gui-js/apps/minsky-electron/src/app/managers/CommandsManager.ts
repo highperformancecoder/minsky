@@ -476,7 +476,12 @@ export class CommandsManager {
     minsky.clearAllMaps();
     minsky.pushFlags();
     minsky.clearHistory();
-    minsky.author(await fullname());
+    try
+    {
+      await minsky.author(await fullname());
+    } catch {
+      await minsky.author(''); // initialise to blank on error
+    }
     minsky.model.setZoom(1);
     minsky.canvas.recentre();
     minsky.popFlags();

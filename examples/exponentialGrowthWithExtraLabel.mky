@@ -1,6 +1,7 @@
  <Minsky xmlns="http://minsky.sf.net/minsky">
   <schemaVersion>3</schemaVersion>
-  <minskyVersion>3.4.0-beta.3</minskyVersion>
+  <minskyVersion>3.22.0</minskyVersion>
+  <author></author>
   <wires>
    <Wire>
     <id>38</id>
@@ -35,10 +36,10 @@
     <from>11</from>
     <to>7</to>
     <coords>
-     <float>142</float>
+     <float>140</float>
      <float>27</float>
-     <float>154.1</float>
-     <float>-7.3889</float>
+     <float>151.684</float>
+     <float>-6.2063</float>
      <float>84</float>
      <float>24</float>
     </coords>
@@ -111,7 +112,7 @@
     <symbolEvery>1</symbolEvery>
     <id>8</id>
     <type>Variable:integral</type>
-    <x>87</x>
+    <x>86</x>
     <y>63</y>
     <itemTabX>NaN</itemTabX>
     <itemTabY>NaN</itemTabY>
@@ -195,7 +196,7 @@
     <slider>
      <stepRel>false</stepRel>
      <visible>true</visible>
-     <min>-0.1</min>
+     <min>-1</min>
      <max>-0.1</max>
      <step>0.01</step>
     </slider>
