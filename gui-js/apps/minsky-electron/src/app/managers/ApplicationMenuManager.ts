@@ -185,6 +185,10 @@ export class ApplicationMenuManager {
           ],
         },
         {
+          label: 'Project Information',
+          click: async () => await CommandsManager.postNote('model')
+        },
+        {
           label: 'Library',
           click() {
             shell.openExternal(
