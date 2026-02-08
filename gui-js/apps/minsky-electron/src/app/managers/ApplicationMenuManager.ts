@@ -185,6 +185,10 @@ export class ApplicationMenuManager {
           ],
         },
         {
+          label: 'Project Information',
+          click: async () => await CommandsManager.postNote('model')
+        },
+        {
           label: 'Library',
           click() {
             shell.openExternal(
@@ -379,6 +383,10 @@ export class ApplicationMenuManager {
               url: `#/headless/menu/edit/author?author=${author}`,
             });
           },
+        },
+        {
+          label: 'Description',
+          click: async () => await CommandsManager.postNote('model')
         },
         {
           label: 'Dimensions',
