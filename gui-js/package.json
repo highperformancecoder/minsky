@@ -27,7 +27,21 @@
         "target": "nsis",
         "arch": ["x64"]
       }],
-      "verifyUpdateCodeSignature": false
+      "sign": false,
+      "verifyUpdateCodeSignature": false,
+      "publisherName": "High Performance Coders"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "deleteAppDataOnUninstall": false,
+      "runAfterFinish": false,
+      "installerIcon": "apps/minsky-electron/src/assets/RavelLogo.ico",
+      "uninstallerIcon": "apps/minsky-electron/src/assets/RavelLogo.ico",
+      "license": "../LICENSE.md"
     },
     "linux": {
       "executableName": "minsky",
