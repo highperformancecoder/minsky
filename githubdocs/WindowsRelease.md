@@ -34,6 +34,11 @@
     npm run export:package:windows
 ~~~~~
   NB this step is now called by the `make MXE=1` target.
+- Electron-builder, called from within export:package:windows, runs several 32 bit applications under wine. So not only does wine need to be installed, but also 32 bit emulation mode is required. On OpenSUSE 16, 32 bit emulation is disabled by default, and needs to be enabled with a kernel parameter. To do this,
+  ~~~~
+     zypper install grub2-compat-ia32
+  ~~~~
+  and reboot.
 - Installer will be found in `gui-js/dist/executable`, and also copied to /tmp.
 - After a complete rebuild of MXE, some of the dependent DLL names may have changed, in which case you'll get an error message about not being able to read 'setMessageCallback'. This is a bugger to debug, but you can use depends.exe to open the minskyRESTService.node file, add the minsky.exe directory as a search path, and look for dlls referenced but not found. It's a bit of guesswork, as most of these are system libraries that depends doesn't know about, but if any of these are from the MXE build, you'll need to add it the the `MXE_DLLS` in the minsky Makefile.
 
@@ -43,3 +48,4 @@ With MXE, there is very limited debugging facilities. Essentially all that is po
 make MXE=1 DEBUG=1 OPT="-O3 -NDEBUG"
 ~~~~
 Note that without the OPT parameter, the compiler core dumps.
+
