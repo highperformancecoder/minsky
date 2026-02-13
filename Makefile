@@ -8,12 +8,7 @@ export AEGIS
 export MXE
 export OPENMP
 export OPT
-
-# location of TCL and TK libraries 
-TCL_PREFIX=$(shell grep TCL_PREFIX $(call search,lib*/tclConfig.sh) | cut -f2 -d\')
-TCL_VERSION=$(shell grep TCL_VERSION $(call search,lib*/tclConfig.sh) | cut -f2 -d\')
-TCL_LIB=$(dir $(shell find $(TCL_PREFIX) -name init.tcl -path "*/tcl$(TCL_VERSION)*" -print))
-TK_LIB=$(dir $(shell find $(TCL_PREFIX) -name tk.tcl -path "*/tk$(TCL_VERSION)*" -print))
+export CPLUSPLUS
 
 # root directory for ecolab include files and libraries
 ECOLAB_HOME=$(shell pwd)/ecolab
@@ -41,7 +36,8 @@ MAKEOVERRIDES+=DEBUG=$(DEBUG)
 ifeq ($(HAVE_CLANG),1)
 ifndef MXE
 ifndef GCC
-MAKEOVERRIDES+=CPLUSPLUS="clang++ -std=c++20"
+CPLUSPLUS="clang++ -std=c++20"
+#MAKEOVERRIDES+=CPLUSPLUS="clang++ -std=c++20"
 endif
 endif
 endif
@@ -88,12 +84,16 @@ LINK=$(CPLUSPLUS)
 endif
 endif
 
-EXTRA_FLAGS=-I$(shell pwd)/ecolab/include -DCIVITA_ALLOCATOR=civita::LibCAllocator
+export EXTRA_FLAGS=-I$(shell pwd)/ecolab/include -DCIVITA_ALLOCATOR=civita::LibCAllocator
+export CLASSDESC=$(shell pwd)/ecolab/classdesc/classdesc
+export OPENMP=1
+export GCOV
+export FPIC=1
 ifdef CPUPROFILE
 EXTRA_FLAGS+=-g
 endif
 
-MAKEOVERRIDES+=FPIC=1 CLASSDESC=$(shell pwd)/ecolab/classdesc/classdesc EXTRA_FLAGS="$(EXTRA_FLAGS)" CPLUSPLUS="$(CPLUSPLUS)" GCOV=$(GCOV) OPENMP=1
+#MAKEOVERRIDES+=FPIC=1 CLASSDESC=$(shell pwd)/ecolab/classdesc/classdesc EXTRA_FLAGS="$(EXTRA_FLAGS)" CPLUSPLUS="$(CPLUSPLUS)" GCOV=$(GCOV) OPENMP=1
 $(warning $(MAKEOVERRIDES))
 ifneq ($(MAKECMDGOALS),clean)
 build_ravelcapi:=$(shell cd RavelCAPI; if  $(MAKE) $(JOBS) $(MAKEOVERRIDES)  >build.log 2>&1; then echo "ravelcapi built"; fi) 
@@ -487,7 +487,7 @@ node-api.o: node-api.cc
 $(EXES):
 
 tests: $(EXES)
-	cd test; $(MAKE) $(MAKEOVERRIDES)
+	cd test; $(MAKE) $(MAKEOVERRIDES) CPLUSPLUS="$(CPLUSPLUS)"
 
 BASIC_CLEAN=rm -rf *.o *~ "\#*\#" core *.d *.cd *.rcd *.tcd *.xcd *.gcda *.gcno *.so *.dll *.dylib
 
