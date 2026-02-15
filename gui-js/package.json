@@ -1,6 +1,6 @@
 {
   "name": "ravel",
-  "version": "3.22.0",
+  "version":"3.23.0",
   "author": "High Performance Coders",
   "description": "Graphical dynamical systems simulator oriented towards economics",
   "repository": {
@@ -23,7 +23,25 @@
     },
     "win": {
       "icon": "apps/minsky-electron/src/assets/RavelLogo.ico",
-      "target": "nsis"
+      "target": [{
+        "target": "nsis",
+        "arch": ["x64"]
+      }],
+      "sign": false,
+      "verifyUpdateCodeSignature": false,
+      "publisherName": "High Performance Coders"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowElevation": true,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "deleteAppDataOnUninstall": false,
+      "runAfterFinish": false,
+      "installerIcon": "apps/minsky-electron/src/assets/RavelLogo.ico",
+      "uninstallerIcon": "apps/minsky-electron/src/assets/RavelLogo.ico",
+      "license": "../LICENSE.md"
     },
     "linux": {
       "executableName": "minsky",
@@ -51,10 +69,6 @@
       {
         "from": "build",
         "to": "build"
-      },
-      {
-        "from": "node-addons",
-        "to": "node-addons"
       },
       {
         "from": "apps/minsky-electron/src/assets",
@@ -152,7 +166,7 @@
     "@nx/workspace": "^21.2.1",
     "@types/jest": "^29.0.0",
     "electron": "^37.0.0",
-    "electron-builder": "^26.0.12",
+    "electron-builder": "^26.7.0",
     "exitzero": "^1.0.1",
     "is-electron": "^2.2.2",
     "jest": "^29.0.0",
