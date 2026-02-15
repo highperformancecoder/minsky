@@ -456,6 +456,11 @@ namespace minsky
       else
         outerStride=arg->hypercube().numElements();
       auto idx=arg->index();
+      if (idx.empty())
+        {
+          cachedResult.index(idx);
+          return;
+        }
       const set<size_t> idxSet(idx.begin(),idx.end());
       set<size_t> newIdx;
       const size_t hcSize=cachedResult.hypercube().numElements();
@@ -466,7 +471,7 @@ namespace minsky
           auto t=ssize_t(i)-delta;
           if (t>=0 && t<ssize_t(arg->hypercube().numElements()) && idxSet.contains(t) && sameSlice(t,i))
             {
-              auto linealIndex=hypercube().linealIndex(arg->hypercube().splitIndex(delta>0? t: i));
+              auto linealIndex=cachedResult.hypercube().linealIndex(arg->hypercube().splitIndex(delta>0? t: i));
               if (linealIndex<hcSize)
                 {
                   argIndices.push_back(i);
@@ -1552,8 +1557,8 @@ namespace minsky
       arg=a;
       // not sure how to avoid this const cast here
       const_cast<Ravel&>(ravel).populateHypercube(a->hypercube());
-      chain=ravel::createRavelChain(ravel.getState(), a);
-      m_timestamp=Timestamp::clock::now();
+      //force update on first evaluation 
+      m_timestamp={}; //Timestamp::clock::now();
       chainChecked=false;
     }
 

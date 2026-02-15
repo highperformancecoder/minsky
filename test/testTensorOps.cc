@@ -72,7 +72,7 @@ public:
   LocalMinsky lm{dummyM};
 
   GroupPtr g{new Group}; // allow itemPtrFromThis() to work.
-  VariablePtr from{VariableType::flow,"from"}, to{VariableType::flow,"to"};
+  VariablePtr from{VariableType::parameter,"from"}, to{VariableType::flow,"to"};
   VariableValue& fromVal;
   TensorOpSuite(): fromVal(*from->vValue()) {
     g->self=g;

@@ -61,6 +61,8 @@ namespace minsky
     bool godleyOverridden=false;
     std::string name; // name of this variable
     classdesc::Exclude<std::weak_ptr<Group>> m_scope;
+    // set the timestamp to the creation time of this VV, to handle scalar parameter types
+    VariableValueData() {tensorInit.updateTimestamp();}
   };
   
   class VariableValue: public VariableType, public VariableValueData
@@ -75,8 +77,7 @@ namespace minsky
     friend class VariableManager;
     friend struct SchemaHelper;
 
-    // values are always live
-    ITensor::Timestamp timestamp() const override {return Timestamp::clock::now();}
+    
 
   protected: // protected to allow creation of zero/one constants.
     /// the initial value of this variable
@@ -139,6 +140,8 @@ namespace minsky
         allocValue();
       assert(idxInRange());
     }
+
+    ITensor::Timestamp timestamp() const override;
 
     bool idxInRange() const;
 

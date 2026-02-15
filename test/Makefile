@@ -26,10 +26,10 @@ else
 LIBS+=-lxcb
 endif
 
-#ifdef OPENMP
+ifdef OPENMP
 FLAGS+=-fopenmp
 LIBS+=-fopenmp
-#endif
+endif
 
 # RSVG dependencies calculated here
 FLAGS+=$(shell pkg-config --cflags librsvg-2.0)
@@ -52,9 +52,6 @@ unittests: gtestUnittests.o $(GTESTOBJS) $(MINSKYOBJS)
 testDatabase: main.o testDatabase.o $(MINSKYOBJS)
 	$(CPLUSPLUS) $(FLAGS)  -o $@ $^ $(LIBS)
 
-testLatexToPango: main.o testLatexToPango.o $(MINSKYOBJS)
-	$(CPLUSPLUS) $(FLAGS)  -o $@ $^ $(LIBS)
-
 testGroup: main.o testGroup.o $(MINSKYOBJS)
 	$(CPLUSPLUS) $(FLAGS)  -o $@ $^ $(LIBS)
 
@@ -62,9 +59,6 @@ cmpFp: cmpFp.o
 	$(CPLUSPLUS) $(FLAGS) -o $@ $<
 
 checkSchemasAreSame: checkSchemasAreSame.o $(MINSKYOBJS)
-	$(CPLUSPLUS) $(FLAGS) -o $@ $^ $(LIBS)
-
-tcl-cov: tcl-cov.o $(MINSKYOBJS)
 	$(CPLUSPLUS) $(FLAGS) -o $@ $^ $(LIBS)
 
 ifneq ($(MAKECMDGOALS),clean)

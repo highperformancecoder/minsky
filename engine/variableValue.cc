@@ -87,6 +87,17 @@ namespace minsky
     return s_one;
   }
 
+  ITensor::Timestamp VariableValue::timestamp() const
+  {
+    if (m_type==parameter)
+      return tensorInit.timestamp(); // timestamp is when VV was initiliased
+    else if (rhs) // delegate timestamp to input
+      return rhs->timestamp();
+    else // values are always live
+      return Timestamp::clock::now();
+  }
+
+  
   void VariableValue::importFromCSV(const std::vector<std::string>& filenames)
   {
     if (!filenames.empty())

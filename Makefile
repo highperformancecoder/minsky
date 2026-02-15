@@ -86,7 +86,6 @@ endif
 
 export EXTRA_FLAGS=-I$(shell pwd)/ecolab/include -DCIVITA_ALLOCATOR=civita::LibCAllocator
 export CLASSDESC=$(shell pwd)/ecolab/classdesc/classdesc
-export OPENMP=1
 export GCOV
 export FPIC=1
 ifdef CPUPROFILE
@@ -231,11 +230,12 @@ FLAGS+=-Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-defaul
 endif
 
 # enable OPENMP by default
-#ifdef OPENMP
+ifdef OPENMP
 # Default compiler on MacOSX does not support OpenMP. Sigh!
 ifneq ($(OS),Darwin)
 FLAGS+=-fopenmp
 LIBS+=-fopenmp
+endif
 endif
 
 ifeq ($(DEBUG), 1)
@@ -489,7 +489,7 @@ $(EXES):
 tests: $(EXES)
 	cd test; $(MAKE) $(MAKEOVERRIDES) CPLUSPLUS="$(CPLUSPLUS)"
 
-BASIC_CLEAN=rm -rf *.o *~ "\#*\#" core *.d *.cd *.rcd *.tcd *.xcd *.gcda *.gcno *.so *.dll *.dylib
+BASIC_CLEAN=rm -rf *.o *.a *~ "\#*\#" core *.d *.cd *.rcd *.tcd *.xcd *.gcda *.gcno *.so *.dll *.dylib
 
 clean:
 	-$(BASIC_CLEAN) minsky.xsd

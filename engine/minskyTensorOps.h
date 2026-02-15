@@ -103,12 +103,14 @@ namespace minsky
     int idx() const {return value->idx();}
     
     /// 
-    ITensor::Timestamp timestamp() const override {return ev->timestamp();}
+    ITensor::Timestamp timestamp() const override {return value->timestamp();}
     double operator[](std::size_t i) const override {
-      return value->isFlowVar()? ev->flowVars()[value->idx()+i]: ev->stockVars()[value->idx()+i];
+      auto fv=ev->flowVars();
+      auto sv=ev->stockVars();
+      return value->isFlowVar()? (fv? fv[idx()+i]:0): (sv? sv[idx()+i]:0);
     }
     TensorVarValBase(const std::shared_ptr<VV>& vv, const shared_ptr<EvalCommon>& ev):
-      value(vv), ev(ev) {}
+      value(vv), ev(ev) {assert(vv&&ev);}
     const Hypercube& hypercube() const override {return value->hypercube();}
     const Index& index() const override {return value->index();}
     using I::index;

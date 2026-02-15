@@ -2294,6 +2294,7 @@ export class VariableValue extends CppClass {
   async sliderStepRel(...args: boolean[]): Promise<boolean> {return this.$callMethod('sliderStepRel',...args);}
   async summary(): Promise<object> {return this.$callMethod('summary');}
   async temp(): Promise<boolean> {return this.$callMethod('temp');}
+  async timestamp(): Promise<object> {return this.$callMethod('timestamp');}
   async tooltip(...args: string[]): Promise<string> {return this.$callMethod('tooltip',...args);}
   async type(): Promise<string> {return this.$callMethod('type');}
   async typeName(a1: number): Promise<string> {return this.$callMethod('typeName',a1);}
