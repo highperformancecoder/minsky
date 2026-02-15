@@ -44,6 +44,31 @@ describe('Minsky tests', ()=>{
     minsky.save(tmpDir+"/foo.mky");
     minsky.load(tmpDir+"/foo.mky");
   });
+
+  test('model tooltip/detailedText round-trip',async ()=>{
+    // Set tooltip and detailedText on the model
+    const testTooltip = 'Test Model Title';
+    const testDetailedText = 'Test Model Description with details';
+    
+    await minsky.model.tooltip(testTooltip);
+    await minsky.model.detailedText(testDetailedText);
+    
+    // Verify values are set
+    expect(await minsky.model.tooltip()).toBe(testTooltip);
+    expect(await minsky.model.detailedText()).toBe(testDetailedText);
+    
+    // Save to file
+    const testFile = tmpDir + "/model-metadata-test.mky";
+    minsky.save(testFile);
+    
+    // Clear and reload
+    minsky.clearAllMaps(true);
+    minsky.load(testFile);
+    
+    // Verify values are preserved after load
+    expect(await minsky.model.tooltip()).toBe(testTooltip);
+    expect(await minsky.model.detailedText()).toBe(testDetailedText);
+  });
  
   test('name item', async ()=>{
      minsky.canvas.addOperation("time");
