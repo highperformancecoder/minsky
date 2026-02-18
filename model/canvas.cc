@@ -428,14 +428,21 @@ namespace minsky
     if (!item)
       {
         // Check if clicking on a group's edge I/O variable
-        if (auto g=model->findAny
+        model->recursiveDo(&Group::groups,
+                           [&](Groups&, Groups::const_iterator i)
+                           {
+                             if ((*i)->visible())
+                               if (auto selected=(*i)->select(x,y))
+                                 {
+                                   item=selected;
+                                   return true;
+                                 }
+                             return false;
+                           });
+        if (!item)
+          item=model->findAny
             (&Group::groups, [&](const GroupPtr& i)
-                             {return i->visible() && i->select(x,y);}))
-          if (auto selected=g->select(x,y))
-            return selected;
-        item=model->findAny
-          (&Group::groups, [&](const GroupPtr& i)
-                           {return i->visible() && i->clickType(x,y)!=ClickType::outside;});
+                             {return i->visible() && i->clickType(x,y)!=ClickType::outside;});
       }
     return item;
   }
