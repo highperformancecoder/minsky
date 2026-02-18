@@ -523,7 +523,9 @@ void Sheet::draw(cairo_t* cairo) const
 
 void Sheet::draw(const ICairoShim& cairoShim) const
 {
-  draw(cairoShim.cairoContext());
+  // TODO: Implement properly without cairo_t* delegation
+  auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
+  draw(shimImpl._internalGetCairoContext());
 }
 
 void Sheet::exportAsCSV(const string& filename, bool tabular) const

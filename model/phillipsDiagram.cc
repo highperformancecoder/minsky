@@ -78,8 +78,9 @@ namespace minsky
 
   void PhillipsStock::draw(const ICairoShim& cairoShim) const
   {
-    // Delegate to cairo_t* version
-    draw(cairoShim.cairoContext());
+    // TODO: Implement properly without cairo_t* delegation
+    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
+    draw(shimImpl._internalGetCairoContext());
   }
 
   

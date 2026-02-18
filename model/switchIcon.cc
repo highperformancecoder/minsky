@@ -127,8 +127,9 @@ namespace minsky
 
   void SwitchIcon::draw(const ICairoShim& cairoShim) const
   {
-    // Delegate to cairo_t* version as this uses drawTriangle which needs cairo_t*
-    draw(cairoShim.cairoContext());
+    // TODO: Implement properly - this uses drawTriangle which needs refactoring
+    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
+    draw(shimImpl._internalGetCairoContext());
   }
   
 }

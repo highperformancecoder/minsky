@@ -75,6 +75,9 @@ namespace minsky
 
     // Pango support
     ecolab::Pango& pango() const override;
+    
+    // TEMPORARY: Internal accessor for migration - to be removed once all implementations are updated
+    cairo_t* _internalGetCairoContext() const { return cairo; }
   };
 
 }

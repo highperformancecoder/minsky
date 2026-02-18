@@ -181,7 +181,9 @@ namespace minsky
 
   void IntOp::draw(const ICairoShim& cairoShim) const
   { 	  
-      cairo_t* cairo = cairoShim.cairoContext();
+      // TODO: Refactor to use cairoShim methods instead of raw cairo_t*
+      auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
+      cairo_t* cairo = shimImpl._internalGetCairoContext();
       // if rotation is in 1st or 3rd quadrant, rotate as
       // normal, otherwise flip the text so it reads L->R
     auto [angle,textFlipped]=rotationAsRadians();

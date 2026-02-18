@@ -880,7 +880,9 @@ void VariableBase::draw(cairo_t *cairo) const
 
 void VariableBase::draw(const ICairoShim& cairoShim) const
 {	
-  cairo_t* cairo = cairoShim.cairoContext();
+  // TODO: Refactor RenderVariable to use ICairoShim
+  auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
+  cairo_t* cairo = shimImpl._internalGetCairoContext();
   auto [angle,flipped]=rotationAsRadians();
   const float z=zoomFactor();
 

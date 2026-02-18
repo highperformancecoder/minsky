@@ -510,8 +510,9 @@ namespace
   void Wire::draw(const ICairoShim& cairoShim, bool reverseArrow) const
   {
     // Wire drawing is complex and uses storeCairoCoords which requires cairo_t*
-    // For now, delegate to the cairo_t* version using the underlying context
-    draw(cairoShim.cairoContext(), reverseArrow);
+    // TODO: This will be properly refactored in a separate PR (per owner comment)
+    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
+    draw(shimImpl._internalGetCairoContext(), reverseArrow);
   }
 
   void Wire::split()

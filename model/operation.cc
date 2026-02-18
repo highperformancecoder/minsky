@@ -321,7 +321,9 @@ namespace minsky
 
   void OperationBase::draw(const ICairoShim& cairoShim) const
   {
-    cairo_t* cairo = cairoShim.cairoContext();
+    // TODO: Refactor iconDraw to use ICairoShim
+    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
+    cairo_t* cairo = shimImpl._internalGetCairoContext();
     // if rotation is in 1st or 3rd quadrant, rotate as
     // normal, otherwise flip the text so it reads L->R
     const double angle=rotation() * M_PI / 180.0;

@@ -216,7 +216,9 @@ namespace minsky
 
   void PlotWidget::draw(const ICairoShim& cairoShim) const
   {
-    draw(cairoShim.cairoContext());
+    // TODO: Implement properly without cairo_t* delegation
+    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
+    draw(shimImpl._internalGetCairoContext());
   }
   
   void PlotWidget::scalePlot()
