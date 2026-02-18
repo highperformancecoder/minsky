@@ -878,7 +878,7 @@ void VariableBase::draw(cairo_t *cairo) const
   if (selected) drawSelected(cairo);
 }
 
-void VariableBase::draw(ICairoShim& cairoShim) const
+void VariableBase::draw(const ICairoShim& cairoShim) const
 {	
   cairo_t* cairo = cairoShim.cairoContext();
   auto [angle,flipped]=rotationAsRadians();

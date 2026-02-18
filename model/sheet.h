@@ -71,7 +71,7 @@ namespace minsky
     const std::string& setSliceIndicator();
     
     void draw(cairo_t* cairo) const override;
-    void draw(ICairoShim& cairoShim) const override;
+    void draw(const ICairoShim& cairoShim) const override;
     
     /// calculates the input value
     void computeValue();

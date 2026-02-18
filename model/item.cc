@@ -33,7 +33,6 @@
 #include "noteBase.rcd"
 #include "noteBase.xcd"
 #include "polyRESTProcessBase.h"
-#include "../engine/cairoShimCairo.h"
 #include "minsky_epilogue.h"
 #include <exception>
 
@@ -306,7 +305,7 @@ namespace minsky
     cairo_stroke(cairo);
   }
 
-  void Item::drawPorts(ICairoShim& cairoShim) const
+  void Item::drawPorts(const ICairoShim& cairoShim) const
   {
     cairoShim.save();
     cairoShim.newPath();
@@ -329,7 +328,7 @@ namespace minsky
     cairo_paint(cairo);
   }
 
-  void Item::drawSelected(ICairoShim& cairoShim)
+  void Item::drawSelected(const ICairoShim& cairoShim)
   {
     // implemented by filling the clip region with a transparent grey
     cairoShim.save();
@@ -354,7 +353,7 @@ namespace minsky
       cairo_line_to(cairo,1,1);
     }
 
-    void Item::drawResizeHandle(ICairoShim& cairoShim, double x, double y, double sf, double angle)
+    void Item::drawResizeHandle(const ICairoShim& cairoShim, double x, double y, double sf, double angle)
     {
       cairoShim.save();
       cairoShim.translate(x,y);
@@ -394,7 +393,7 @@ namespace minsky
     cairo_stroke(cairo);
   }
 
-  void Item::drawResizeHandles(ICairoShim& cairoShim) const
+  void Item::drawResizeHandles(const ICairoShim& cairoShim) const
   {
     auto sf=resizeHandleSize();
     double angle=0.5*M_PI;
@@ -413,7 +412,7 @@ namespace minsky
     cairo_stroke(cairo);
   }
 
-  void BottomRightResizerItem::drawResizeHandles(ICairoShim& cairoShim) const
+  void BottomRightResizerItem::drawResizeHandles(const ICairoShim& cairoShim) const
   { 			  			
     const Point p=resizeHandleCoords();
     drawResizeHandle(cairoShim,p.x()-x(),p.y()-y(),resizeHandleSize(),0);
@@ -450,13 +449,11 @@ namespace minsky
     if (selected) drawSelected(cairo);
   }
 
-  void Item::draw(ICairoShim& cairoShim) const
+  void Item::draw(const ICairoShim& cairoShim) const
   {
-    // Use underlying cairo_t* for Pango compatibility
-    cairo_t* cairo = cairoShim.cairoContext();
     auto [angle,flipped]=rotationAsRadians();
     const Rotate r(rotation()+(flipped? 180:0),0,0);
-    Pango pango(cairo);
+    auto& pango = cairoShim.pango();
     const float z=zoomFactor();
     pango.angle=angle+(flipped? M_PI: 0);
     pango.setFontSize(12.0*scaleFactor()*z);
@@ -510,13 +507,13 @@ namespace minsky
       }
   }
 
-  void Item::displayTooltip(ICairoShim& cairoShim, const std::string& tooltip) const
+  void Item::displayTooltip(const ICairoShim& cairoShim, const std::string& tooltip) const
   {
     const string unitstr=units().latexStr();
     if (!tooltip.empty() || !unitstr.empty())
       {
         cairoShim.save();
-        Pango pango(cairoShim.cairoContext());
+        auto& pango = cairoShim.pango();
         string toolTipText=latexToPango(tooltip);
         if (!unitstr.empty())
           toolTipText+=" Units:"+latexToPango(unitstr);

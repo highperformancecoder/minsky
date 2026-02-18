@@ -167,7 +167,7 @@ namespace minsky
     void disconnectAllVars();
     using ecolab::Plot::draw;
     void draw(cairo_t* cairo) const override;
-    void draw(ICairoShim& cairoShim) const override;
+    void draw(const ICairoShim& cairoShim) const override;
     void requestRedraw(); ///< redraw plot using current data to all open windows
     void redrawWithBounds() override {redraw(0,0,500,500);}    
     

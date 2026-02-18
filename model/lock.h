@@ -42,7 +42,7 @@ namespace minsky
     static SVGRenderer lockedIcon;
     static SVGRenderer unlockedIcon;
     void draw(cairo_t* cairo) const override;
-    void draw(ICairoShim& cairoShim) const override;
+    void draw(const ICairoShim& cairoShim) const override;
     Units units(bool) const override;
     /// Ravel this is connected to. nullptr if not connected to a Ravel
     Ravel* ravelInput() const;

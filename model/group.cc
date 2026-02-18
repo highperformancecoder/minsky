@@ -1041,7 +1041,7 @@ namespace minsky
     
   }
 
-  void Group::draw(ICairoShim& cairoShim) const
+  void Group::draw(const ICairoShim& cairoShim) const
   {
     draw(cairoShim.cairoContext());
   }

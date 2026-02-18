@@ -507,7 +507,7 @@ namespace
       }
   }
 
-  void Wire::draw(ICairoShim& cairoShim, bool reverseArrow) const
+  void Wire::draw(const ICairoShim& cairoShim, bool reverseArrow) const
   {
     // Wire drawing is complex and uses storeCairoCoords which requires cairo_t*
     // For now, delegate to the cairo_t* version using the underlying context

@@ -21,6 +21,7 @@
 
 #include "noteBase.h"
 #include "intrusiveMap.h"
+#include "ICairoShim.h"
 
 #include <error.h>
 #include <arrays.h>
@@ -66,7 +67,7 @@ namespace minsky
     
     /// draw this item into a cairo context
     void draw(cairo_t* cairo, bool reverseArrow=false) const;
-    void draw(ICairoShim& cairoShim, bool reverseArrow=false) const;
+    void draw(const ICairoShim& cairoShim, bool reverseArrow=false) const;
     
     /// display coordinates 
     std::vector<float> coords() const;

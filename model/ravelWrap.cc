@@ -142,7 +142,7 @@ namespace minsky
     if (selected) drawSelected(cairo);
   }
 
-  void Ravel::draw(ICairoShim& cairoShim) const
+  void Ravel::draw(const ICairoShim& cairoShim) const
   {
     draw(cairoShim.cairoContext());
   }

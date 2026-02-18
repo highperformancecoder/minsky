@@ -164,7 +164,7 @@ namespace minsky
     } memoisedRotator;
 
     static void drawResizeHandle(cairo_t* cairo, double x, double y, double sf, double angle);
-    static void drawResizeHandle(ICairoShim& cairoShim, double x, double y, double sf, double angle);
+    static void drawResizeHandle(const ICairoShim& cairoShim, double x, double y, double sf, double angle);
     
 
   public:
@@ -291,7 +291,7 @@ namespace minsky
 
     /// draw this item into a cairo context
     virtual void draw(cairo_t* cairo) const;
-    virtual void draw(ICairoShim& cairoShim) const;
+    virtual void draw(const ICairoShim& cairoShim) const;
     /// resize this item on the canvas
     virtual void resize(const LassoBox& b);
     /// factor by which item has been resized
@@ -316,9 +316,9 @@ namespace minsky
     void drawPorts(cairo_t* cairo) const;
     void drawPorts(ICairoShim& cairoShim) const;
     static void drawSelected(cairo_t* cairo);
-    static void drawSelected(ICairoShim& cairoShim);
+    static void drawSelected(const ICairoShim& cairoShim);
     virtual void drawResizeHandles(cairo_t* cairo) const;
-    virtual void drawResizeHandles(ICairoShim& cairoShim) const;
+    virtual void drawResizeHandles(const ICairoShim& cairoShim) const;
     
     /// returns the clicktype given a mouse click at \a x, \a y.
     virtual ClickType::Type clickType(float x, float y) const;
@@ -370,7 +370,7 @@ namespace minsky
   {
     bool onResizeHandle(float x, float y) const override; 
     void drawResizeHandles(cairo_t* cairo) const override;
-    void drawResizeHandles(ICairoShim& cairoShim) const override;
+    void drawResizeHandles(const ICairoShim& cairoShim) const override;
     /// returns coordinates of the resizer handle
     virtual Point resizeHandleCoords() const;
   };

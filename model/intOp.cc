@@ -179,7 +179,7 @@ namespace minsky
       if (selected) drawSelected(cairo);       
   }
 
-  void IntOp::draw(ICairoShim& cairoShim) const
+  void IntOp::draw(const ICairoShim& cairoShim) const
   { 	  
       cairo_t* cairo = cairoShim.cairoContext();
       // if rotation is in 1st or 3rd quadrant, rotate as
@@ -215,8 +215,8 @@ namespace minsky
         if (textFlipped) cairoShim.rotate(M_PI);
         const double sf = scaleFactor();  
         cairoShim.scale(sf,sf);		  
-        cairo_move_to(cairo,-7,3.5);
-        cairo_show_text(cairo,"∫dt");
+        cairoShim.moveTo(-7,3.5);
+        cairoShim.showText("∫dt");
         cairoShim.restore();
       }
       DrawBinOp d(cairo, zoomFactor());

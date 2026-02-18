@@ -125,7 +125,7 @@ namespace minsky
     if (selected) drawSelected(cairo);
   }
 
-  void SwitchIcon::draw(ICairoShim& cairoShim) const
+  void SwitchIcon::draw(const ICairoShim& cairoShim) const
   {
     // Delegate to cairo_t* version as this uses drawTriangle which needs cairo_t*
     draw(cairoShim.cairoContext());

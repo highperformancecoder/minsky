@@ -76,7 +76,7 @@ namespace minsky
       }
   }
 
-  void PhillipsStock::draw(ICairoShim& cairoShim) const
+  void PhillipsStock::draw(const ICairoShim& cairoShim) const
   {
     // Delegate to cairo_t* version
     draw(cairoShim.cairoContext());

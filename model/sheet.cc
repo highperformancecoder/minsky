@@ -521,7 +521,7 @@ void Sheet::draw(cairo_t* cairo) const
   cairo_clip(cairo);
 }
 
-void Sheet::draw(ICairoShim& cairoShim) const
+void Sheet::draw(const ICairoShim& cairoShim) const
 {
   draw(cairoShim.cairoContext());
 }

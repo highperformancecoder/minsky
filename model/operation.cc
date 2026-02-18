@@ -319,7 +319,7 @@ namespace minsky
     if (selected) drawSelected(cairo);          
   }
 
-  void OperationBase::draw(ICairoShim& cairoShim) const
+  void OperationBase::draw(const ICairoShim& cairoShim) const
   {
     cairo_t* cairo = cairoShim.cairoContext();
     // if rotation is in 1st or 3rd quadrant, rotate as
@@ -368,12 +368,12 @@ namespace minsky
     
     {
       cairoShim.save();
-      cairo_identity_matrix(cairo);
-      cairo_translate(cairo, x(), y());
-      cairo_rotate(cairo, angle);
-      cairo_user_to_device(cairo, &x0, &y0);
-      cairo_user_to_device(cairo, &x1, &y1);
-      cairo_user_to_device(cairo, &x2, &y2);
+      cairoShim.identityMatrix();
+      cairoShim.translate(x(), y());
+      cairoShim.rotate(angle);
+      cairoShim.userToDevice(x0, y0);
+      cairoShim.userToDevice(x1, y1);
+      cairoShim.userToDevice(x2, y2);
       cairoShim.restore();
     }
     

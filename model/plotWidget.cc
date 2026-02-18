@@ -214,7 +214,7 @@ namespace minsky
 
   }
 
-  void PlotWidget::draw(ICairoShim& cairoShim) const
+  void PlotWidget::draw(const ICairoShim& cairoShim) const
   {
     draw(cairoShim.cairoContext());
   }

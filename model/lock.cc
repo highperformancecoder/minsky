@@ -103,7 +103,7 @@ namespace minsky
     if (selected) drawSelected(cairo);
   }
 
-  void Lock::draw(ICairoShim& cairoShim) const 
+  void Lock::draw(const ICairoShim& cairoShim) const 
   {
     const float z=zoomFactor()*scaleFactor();
     const float w=iWidth()*z, h=iHeight()*z;

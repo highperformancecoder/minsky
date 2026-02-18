@@ -520,7 +520,7 @@ namespace minsky
       }
   }
 
-  void GodleyIcon::draw(ICairoShim& cairoShim) const
+  void GodleyIcon::draw(const ICairoShim& cairoShim) const
   {
     draw(cairoShim.cairoContext());
   }
