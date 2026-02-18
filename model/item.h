@@ -26,6 +26,7 @@
 #include "geometry.h"
 #include "str.h"
 #include "polyRESTProcessBase.h"
+#include "ICairoShim.h"
 
 #include <json_pack_base.h>
 
@@ -163,6 +164,7 @@ namespace minsky
     } memoisedRotator;
 
     static void drawResizeHandle(cairo_t* cairo, double x, double y, double sf, double angle);
+    static void drawResizeHandle(ICairoShim& cairoShim, double x, double y, double sf, double angle);
     
 
   public:
@@ -289,6 +291,7 @@ namespace minsky
 
     /// draw this item into a cairo context
     virtual void draw(cairo_t* cairo) const;
+    virtual void draw(ICairoShim& cairoShim) const;
     /// resize this item on the canvas
     virtual void resize(const LassoBox& b);
     /// factor by which item has been resized
@@ -301,6 +304,7 @@ namespace minsky
 
     /// display tooltip text, eg on mouseover
     virtual void displayTooltip(cairo_t*, const std::string&) const;
+    virtual void displayTooltip(ICairoShim&, const std::string&) const;
     
     /// update display after a step()
     virtual void updateIcon(double t) {}
@@ -310,8 +314,11 @@ namespace minsky
     virtual ~Item() {}
 
     void drawPorts(cairo_t* cairo) const;
+    void drawPorts(ICairoShim& cairoShim) const;
     static void drawSelected(cairo_t* cairo);
+    static void drawSelected(ICairoShim& cairoShim);
     virtual void drawResizeHandles(cairo_t* cairo) const;
+    virtual void drawResizeHandles(ICairoShim& cairoShim) const;
     
     /// returns the clicktype given a mouse click at \a x, \a y.
     virtual ClickType::Type clickType(float x, float y) const;
@@ -363,6 +370,7 @@ namespace minsky
   {
     bool onResizeHandle(float x, float y) const override; 
     void drawResizeHandles(cairo_t* cairo) const override;
+    void drawResizeHandles(ICairoShim& cairoShim) const override;
     /// returns coordinates of the resizer handle
     virtual Point resizeHandleCoords() const;
   };
