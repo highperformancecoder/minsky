@@ -24,6 +24,7 @@
 #include "dimension.h"
 #include "minskyTensorOps.h"
 #include "pango.h"
+#include "../engine/cairoShimCairo.h"
 
 #include "capiRenderer.xcd"
 #include "CSVTools.xcd"
@@ -139,6 +140,11 @@ namespace minsky
         }
     }        
     if (selected) drawSelected(cairo);
+  }
+
+  void Ravel::draw(ICairoShim& cairoShim) const
+  {
+    draw(cairoShim.cairoContext());
   }
 
   void Ravel::resize(const LassoBox& b)

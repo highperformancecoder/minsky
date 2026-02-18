@@ -21,6 +21,7 @@
 #include "itemT.rcd"
 #include "switchIcon.h"
 #include "switchIcon.rcd"
+#include "../engine/cairoShimCairo.h"
 #include "minsky_epilogue.h"
 using namespace ecolab::cairo;
 using namespace ecolab;
@@ -122,6 +123,12 @@ namespace minsky
     cairo_rectangle(cairo,-0.5*width-8,-0.5*height-8,width+16,height+8);
     cairo_clip(cairo);
     if (selected) drawSelected(cairo);
+  }
+
+  void SwitchIcon::draw(ICairoShim& cairoShim) const
+  {
+    // Delegate to cairo_t* version as this uses drawTriangle which needs cairo_t*
+    draw(cairoShim.cairoContext());
   }
   
 }

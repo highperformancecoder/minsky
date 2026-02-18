@@ -27,6 +27,7 @@
 #include <arrays.h>
 #include <cairo_base.h>
 #include <ctype.h>
+#include "../engine/cairoShimCairo.h"
 #include "godleyIcon.rcd"
 #include "itemT.rcd"
 #include "godleyTableWindow.xcd"
@@ -517,6 +518,11 @@ namespace minsky
       {
         drawSelected(cairo);
       }
+  }
+
+  void GodleyIcon::draw(ICairoShim& cairoShim) const
+  {
+    draw(cairoShim.cairoContext());
   }
 
   string GodleyIcon::rowSum(int row) const

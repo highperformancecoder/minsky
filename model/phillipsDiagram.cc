@@ -22,6 +22,7 @@
 #include "phillipsDiagram.rcd"
 #include "phillipsDiagram.xcd"
 #include "minsky.h"
+#include "../engine/cairoShimCairo.h"
 #include "minsky_epilogue.h"
 using ecolab::cairo::CairoSave;
 
@@ -73,6 +74,12 @@ namespace minsky
           }
         cairo_fill(cairo);
       }
+  }
+
+  void PhillipsStock::draw(ICairoShim& cairoShim) const
+  {
+    // Delegate to cairo_t* version
+    draw(cairoShim.cairoContext());
   }
 
   
