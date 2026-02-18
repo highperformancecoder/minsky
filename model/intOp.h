@@ -64,6 +64,7 @@ namespace minsky
     {return intVar->valueId();}
     
     void draw(cairo_t*) const override;
+    void draw(ICairoShim&) const override;
     void resize(const LassoBox& b) override;  
 
     /// return reference to integration variable

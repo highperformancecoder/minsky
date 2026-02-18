@@ -269,6 +269,7 @@ namespace minsky
     void makeSubroutine();
     
     void draw(cairo_t*) const override;
+    void draw(ICairoShim&) const override;
 
     /// draw representations of edge variables around group icon
     void drawEdgeVariables(cairo_t*) const;

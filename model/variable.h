@@ -198,7 +198,8 @@ namespace minsky
     /** draws the icon onto the given cairo context 
         @return cairo path of icon outline
     */
-    void draw(cairo_t*) const override;  
+    void draw(cairo_t*) const override;
+    void draw(ICairoShim&) const override;
     void resize(const LassoBox& b) override;
     ClickType::Type clickType(float x, float y) const override;
 
