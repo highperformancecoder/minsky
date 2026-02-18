@@ -912,10 +912,10 @@ namespace minsky
     auto z=zoomFactor();
     const double w=0.5*iWidth()*z, h=0.5*iHeight()*z;
     if (onResizeHandle(x,y)) return ClickType::onResize;         
-    if (displayContents() && inIORegion(x,y)==IORegion::none)
-      return ClickType::outside;
     if (auto item=select(x,y))
       return item->clickType(x,y);
+    if (displayContents() && inIORegion(x,y)==IORegion::none)
+      return ClickType::outside;
     if ((abs(x-this->x())<w && abs(y-this->y())<h+topMargin*z)) // check also if (x,y) is within top and bottom margins of group. for feature 88
       return ClickType::onItem;
     return ClickType::outside;
