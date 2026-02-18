@@ -76,6 +76,7 @@ namespace minsky
     void drawUserFunction(cairo_t* cairo) const;
     
     void draw(cairo_t*) const override;
+    void draw(ICairoShim&) const override;
     void resize(const LassoBox& b) override;
     float scaleFactor() const override;       
 

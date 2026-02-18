@@ -103,6 +103,32 @@ namespace minsky
     if (selected) drawSelected(cairo);
   }
 
+  void Lock::draw(ICairoShim& cairoShim) const 
+  {
+    const float z=zoomFactor()*scaleFactor();
+    const float w=iWidth()*z, h=iHeight()*z;
+
+    {
+      cairoShim.save();
+      cairoShim.translate(-0.5*w,-0.5*h);
+      SVGRenderer* icon=locked()? &lockedIcon: &unlockedIcon;
+      icon->render(cairoShim.cairoContext(),w,h);
+      cairoShim.restore();
+    }
+    
+    if (mouseFocus)
+      { 		  
+        drawPorts(cairoShim);
+        displayTooltip(cairoShim,tooltip());
+        if (onResizeHandles) drawResizeHandles(cairoShim);
+      }	       
+
+    // add 8 pt margin to allow for ports
+    cairoShim.rectangle(-0.5*w-8,-0.5*h-8,w+16,h+8);
+    cairoShim.clip();
+    if (selected) drawSelected(cairoShim);
+  }
+
   Units Lock::units(bool check) const
   {
     if (locked())
