@@ -27,6 +27,7 @@
 
 #include <cairo_base.h>
 #include <pango.h>
+#include "../engine/cairoShimCairo.h"
 #include "minsky_epilogue.h"
 
 #include <math.h>
@@ -316,6 +317,100 @@ namespace minsky
     clipPath.appendToCurrent(cairo);          
     cairo_clip(cairo);          
     if (selected) drawSelected(cairo);          
+  }
+
+  void OperationBase::draw(ICairoShim& cairoShim) const
+  {
+    cairo_t* cairo = cairoShim.cairoContext();
+    // if rotation is in 1st or 3rd quadrant, rotate as
+    // normal, otherwise flip the text so it reads L->R
+    const double angle=rotation() * M_PI / 180.0;
+    const bool textFlipped=flipped(rotation());
+    const float z=zoomFactor();
+
+    {
+      cairoShim.save();
+      cairoShim.scale(z,z);
+      iconDraw(cairo);
+      cairoShim.restore();
+    }
+
+        
+    cairoShim.save();
+    cairoShim.rotate(angle);
+        
+    float l=OperationBase::l*z, r=OperationBase::r*z, 
+      h=OperationBase::h*z;
+          
+    if (fabs(l)<0.5*iWidth()*z) l=-0.5*iWidth()*z;        
+    if (r<0.5*iWidth()*z) r=0.5*iWidth()*z;    
+    if (h<0.5*iHeight()*z) h=0.5*iHeight()*z;    
+        
+    cairoShim.moveTo(-r,-h);
+    cairoShim.lineTo(-r,h);
+    cairoShim.lineTo(r,h);
+    cairoShim.lineTo(r+2*z,0);
+    cairoShim.lineTo(r,-h);      
+    
+    cairoShim.closePath();		  	 
+    
+    cairoShim.setSourceRGB(0,0,1);
+    cairoShim.strokePreserve();
+        
+    cairo::Path clipPath(cairo);
+    
+    // compute port coordinates relative to the icon's
+    // point of reference. Move outport 2 pixels right for ticket For ticket 362.
+    double x0=r, y0=0, x1=l, y1=numPorts() > 2? -h+3: 0, 
+      x2=l, y2=numPorts() > 2? h-3: 0;
+                      
+    if (textFlipped) swap(y1,y2);
+    
+    {
+      cairoShim.save();
+      cairo_identity_matrix(cairo);
+      cairo_translate(cairo, x(), y());
+      cairo_rotate(cairo, angle);
+      cairo_user_to_device(cairo, &x0, &y0);
+      cairo_user_to_device(cairo, &x1, &y1);
+      cairo_user_to_device(cairo, &x2, &y2);
+      cairoShim.restore();
+    }
+    
+    if (numPorts()>0) 
+      m_ports[0]->moveTo(x0, y0);
+    if (numPorts()>1) 
+      {
+#ifdef DISPLAY_POW_UPSIDE_DOWN
+        if (type()==OperationType::pow)
+          ports[1]->moveTo(x2, y2);
+        else
+#endif
+          m_ports[1]->moveTo(x1, y1);
+      }
+    
+    if (numPorts()>2)
+      {
+#ifdef DISPLAY_POW_UPSIDE_DOWN
+        if (type()==OperationType::pow)
+          ports[2]->moveTo(x1, y1);
+        else
+#endif
+          m_ports[2]->moveTo(x2, y2);
+      }
+
+    cairoShim.restore(); // undo rotation
+    if (mouseFocus)
+      {
+        drawPorts(cairoShim);
+        displayTooltip(cairoShim,tooltip());
+        if (onResizeHandles) drawResizeHandles(cairoShim);
+      }
+          
+    cairoShim.newPath();          
+    clipPath.appendToCurrent(cairo);          
+    cairoShim.clip();          
+    if (selected) drawSelected(cairoShim);          
   }    
   
   void OperationBase::resize(const LassoBox& b)

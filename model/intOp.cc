@@ -22,6 +22,7 @@
 #include "intOp.h"
 #include "intOp.rcd"
 #include "itemT.rcd"
+#include "../engine/cairoShimCairo.h"
 #include "minsky_epilogue.h"
 
 namespace minsky
@@ -176,6 +177,153 @@ namespace minsky
       clipPath.appendToCurrent(cairo);
       cairo_clip(cairo);          
       if (selected) drawSelected(cairo);       
+  }
+
+  void IntOp::draw(ICairoShim& cairoShim) const
+  { 	  
+      cairo_t* cairo = cairoShim.cairoContext();
+      // if rotation is in 1st or 3rd quadrant, rotate as
+      // normal, otherwise flip the text so it reads L->R
+    auto [angle,textFlipped]=rotationAsRadians();
+      double coupledIntTranslation=0;
+      const float z=zoomFactor();
+    
+      float l=OperationBase::l*z, r=OperationBase::r*z, 
+        h=OperationBase::h*z;
+      
+      if (fabs(l)<iWidth()*z) l=-iWidth()*z;        
+      if (r<iWidth()*z) r=iWidth()*z;    
+      if (h<iHeight()*z) h=iHeight()*z;   
+
+      if (coupled() && intVar)
+        {
+          cairoShim.save();
+          auto& iv=*intVar;
+          const RenderVariable rv(iv,cairo);
+          // we need to add some translation if the variable is bound
+          cairo_rotate(cairo,angle);
+          coupledIntTranslation=-0.5*(intVarOffset+2*rv.width()+2+r)*z;
+          if (rv.width()<iv.iWidth()) coupledIntTranslation=-0.5*(intVarOffset+2*iv.iWidth()+2+r)*z;
+          cairoShim.restore();
+        }
+    
+
+      {
+        cairoShim.save();
+        cairoShim.rotate(angle); 
+        cairoShim.scale(z,z);
+        if (textFlipped) cairoShim.rotate(M_PI);
+        const double sf = scaleFactor();  
+        cairoShim.scale(sf,sf);		  
+        cairo_move_to(cairo,-7,3.5);
+        cairo_show_text(cairo,"∫dt");
+        cairoShim.restore();
+      }
+      DrawBinOp d(cairo, zoomFactor());
+      d.drawPort([&](){d.drawSymbol("0");}, l,h,rotation()); 
+      d.drawPort([&](){d.drawSymbol("f");}, l,-h,rotation()); 
+      
+      cairoShim.save(); 
+      cairoShim.rotate(angle); 
+       
+      int intVarWidth=0;
+    
+   
+      cairoShim.moveTo(l,h);
+      cairoShim.lineTo(l,-h);
+      cairoShim.lineTo(r,0);     
+    
+      cairoShim.closePath();		  	 
+    
+      cairoShim.setSourceRGB(0,0,1);    
+      cairoShim.strokePreserve();    
+    
+      if (coupled() && intVar)
+        {
+          const float ivo=intVarOffset*z;
+          cairoShim.newPath();
+          cairoShim.moveTo(r,0);
+          cairoShim.lineTo(r+ivo,0);
+          cairoShim.setSourceRGB(0,0,0);
+          cairoShim.stroke();
+     
+          // display an integration variable next to it
+          RenderVariable rv(*intVar, cairo);
+          // save the render width for later use in setting the clip
+          intVarWidth=rv.width()*z;
+          if (rv.width()<intVar->iWidth()) intVarWidth=0.5*intVar->iWidth()*z;
+          // set the port location...
+          const Rotate rot(rotation(), x(), y());
+          auto ivp=rot(x()+r+ivo+intVarWidth, y());
+          intVar->moveTo(ivp.x(), ivp.y());
+         
+          cairoShim.save();
+          cairoShim.translate(r+ivo+intVarWidth,0);
+          // to get text to render correctly, we need to set
+          // the var's rotation, then antirotate it
+          intVar->rotation(rotation());
+          cairoShim.rotate(-M_PI*rotation()/180.0);
+          rv.draw();
+          cairoShim.restore();
+	 
+          // build clip path the hard way grr...
+          cairoShim.moveTo(l,h);
+          cairoShim.lineTo(l,-h);
+          cairoShim.lineTo(r,0);
+          cairoShim.lineTo(r+ivo,0);
+          float rvw=rv.width()*z, rvh=rv.height()*z;
+          if (rv.width()<intVar->iWidth()) rvw=intVar->iWidth()*z;
+          if (rv.height()<intVar->iHeight()) rvh=intVar->iHeight()*z;
+          cairoShim.lineTo(r+ivo,-rvh);
+          cairoShim.lineTo(r+ivo+2*rvw,-rvh);
+          cairoShim.lineTo(r+ivo+2*rvw+2*z,0);
+          cairoShim.lineTo(r+ivo+2*rvw,rvh);
+          cairoShim.lineTo(r+ivo,rvh);
+          cairoShim.lineTo(r+ivo,0);        
+          cairoShim.lineTo(r,0);        
+          cairoShim.closePath();        
+        }
+    
+      cairo::Path clipPath(cairo); 
+    
+      double x0=r, y0=0, x1=l, y1=numPorts() > 2? -h+3: 0, 
+        x2=l, y2=numPorts() > 2? h-3: 0;
+                  
+      if (textFlipped) swap(y1,y2);
+	
+      // adjust for integration variable
+      if (coupled())
+        x0+=intVarOffset+2*intVarWidth+2;
+	
+      cairoShim.save();
+      cairo_identity_matrix(cairo);
+      cairo_translate(cairo, x(), y());
+      cairo_rotate(cairo, angle);
+      cairo_user_to_device(cairo, &x0, &y0);
+      cairo_user_to_device(cairo, &x1, &y1);
+      cairo_user_to_device(cairo, &x2, &y2);
+      cairoShim.restore();
+    
+      if (numPorts()>0) 
+        m_ports[0]->moveTo(x0, y0);
+      if (numPorts()>1) 
+        m_ports[1]->moveTo(x1, y1);
+      if (numPorts()>2)
+        m_ports[2]->moveTo(x2, y2);
+	
+      cairoShim.translate(-coupledIntTranslation,0);        
+      cairoShim.restore(); // undo rotation
+      if (mouseFocus)
+        {
+          drawPorts(cairoShim);
+          displayTooltip(cairoShim,tooltip());
+        }
+      if (onResizeHandles) drawResizeHandles(cairoShim);  
+	
+      cairoShim.newPath();
+      clipPath.appendToCurrent(cairo);
+      cairoShim.clip();          
+      if (selected) drawSelected(cairoShim);       
   }
   
   void IntOp::resize(const LassoBox& b)
