@@ -426,9 +426,17 @@ namespace minsky
                           return false;  
                        });
     if (!item)
-      item=model->findAny
-        (&Group::groups, [&](const GroupPtr& i)
-                         {return i->visible() && i->clickType(x,y)!=ClickType::outside;});
+      {
+        // Check if clicking on a group's edge I/O variable
+        if (auto g=model->findAny
+            (&Group::groups, [&](const GroupPtr& i)
+                             {return i->visible() && i->select(x,y);}))
+          if (auto selected=g->select(x,y))
+            return selected;
+        item=model->findAny
+          (&Group::groups, [&](const GroupPtr& i)
+                           {return i->visible() && i->clickType(x,y)!=ClickType::outside;});
+      }
     return item;
   }
   
