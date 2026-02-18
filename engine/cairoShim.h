@@ -12,56 +12,46 @@
 #include <string>
 #include <memory>
 
-namespace ravel
+namespace minsky
 {
-  template <class G> class CairoShimImpl;
-
-  template <class G>
-  class CairoShim
+  class ICairoShim
   {
-    CairoShimImpl<G>* impl; 
-    CairoShim(const CairoShim&)=delete;
-    void operator=(const CairoShim&)=delete;
   public:
-    // template parameter G = cairo_t* or HDC
-    CairoShim(G);
-    ~CairoShim();
+    volatile void moveTo(double x, double y)=0;
+    volatile void lineTo(double x, double y)=0;
+    volatile void relMoveTo(double x, double y)=0;
+    volatile void relLineTo(double x, double y)=0;
+    volatile void arc(double x, double y, double radius, double start, double end)=0;
 
-    void moveTo(double x, double y);
-    void lineTo(double x, double y);
-    void relMoveTo(double x, double y);
-    void relLineTo(double x, double y);
-    void arc(double x, double y, double radius, double start, double end);
-
-    void setLineWidth(double);
+    volatile void setLineWidth(double)=0;
 
     // paths
-    void newPath();
-    void closePath();
-    void fill();
-    void clip();
-    void stroke();
-    void strokePreserve();
+    volatile void newPath()=0;
+    volatile void closePath()=0;
+    volatile void fill()=0;
+    volatile void clip()=0;
+    volatile void stroke()=0;
+    volatile void strokePreserve()=0;
 
     // sources
-    void setSourceRGB(double r, double g, double b);
-    void setSourceRGBA(double r, double g, double b, double a);
+    volatile void setSourceRGB(double r, double g, double b)=0;
+    volatile void setSourceRGBA(double r, double g, double b, double a)=0;
     
     // text. Argument is in UTF8 encoding
-    void showText(const std::string&);
-    void setTextExtents(const std::string&);
-    double textWidth() const;
-    double textHeight() const;
+    volatile void showText(const std::string&)=0;
+    volatile void setTextExtents(const std::string&)=0;
+    volatile double textWidth() const=0;
+    volatile double textHeight() const=0;
 
     // matrix transformation
-    void identityMatrix();
-    void translate(double x, double y);
-    void scale(double sx, double sy);
-    void rotate(double angle); ///< angle in radians
+    volatile void identityMatrix()=0;
+    volatile void translate(double x, double y)=0;
+    volatile void scale(double sx, double sy)=0;
+    volatile void rotate(double angle)=0; ///< angle in radians
 
     // context manipulation
-    void save();
-    void restore();
+    volatile void save()=0;
+    volatile void restore()=0;
     
   };
 
