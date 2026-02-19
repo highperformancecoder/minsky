@@ -219,6 +219,97 @@ namespace minsky
     if (selected) drawSelected(cairo);
   }
   
+  void OperationBase::drawUserFunction(const ICairoShim& cairoShim) const
+  {
+    // if rotation is in 1st or 3rd quadrant, rotate as
+    // normal, otherwise flip the text so it reads L->R
+    const double angle=rotation() * M_PI / 180.0;
+    const bool textFlipped=flipped(rotation());
+    const float z=zoomFactor();
+
+    auto& c=dynamic_cast<const NamedOp&>(*this);
+          
+    auto& pango = cairoShim.pango();
+    pango.setFontSize(10.0*scaleFactor()*z);
+    pango.setMarkup(latexToPango(c.description()));
+    pango.angle=angle + (textFlipped? M_PI: 0);
+    const Rotate r(rotation()+ (textFlipped? 180: 0),0,0);
+
+    // parameters of icon in userspace (unscaled) coordinates
+    float w, h, hoffs;
+    w=0.5*pango.width()+2*z; 
+    h=0.5*pango.height()+4*z;        
+    hoffs=pango.top()/z;
+    
+    {
+      cairoShim.save();
+      cairoShim.moveTo(r.x(-w+1,-h-hoffs+2*z), r.y(-w+1,-h-hoffs+2*z));
+      pango.show();
+      cairoShim.restore();
+    }
+
+    cairoShim.rotate(angle);
+               
+    cairoShim.setSourceRGB(0,0,1);
+    cairoShim.moveTo(-w,-h);
+    cairoShim.lineTo(-w,h);
+    cairoShim.lineTo(w,h);
+
+    cairoShim.lineTo(w+2*z,0);
+    cairoShim.lineTo(w,-h);
+    cairoShim.closePath();
+    cairoShim.save(); // Save the clip path shape
+    cairoShim.stroke();
+    cairoShim.restore();
+          
+    cairoShim.rotate(-angle); // undo rotation
+
+    // set the output ports coordinates
+    // compute port coordinates relative to the icon's
+    // point of reference
+    const Rotate rr(rotation(),0,0);
+
+    m_ports[0]->moveTo(x()+rr.x(w+2,0), y()+rr.y(w+2,0));
+    switch (numPorts())
+      {
+      case 1: break;
+      case 2: 
+        m_ports[1]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,0));
+        break;
+      case 3: default:
+        m_ports[1]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,textFlipped? h-3: -h+3));
+        m_ports[2]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,textFlipped? -h+3: h-3));
+        break;
+      }
+    if (type()==OperationType::userFunction)
+      {
+        cairoShim.setSourceRGB(0,0,0);
+        // TODO: DrawBinOp needs complete ICairoShim refactoring
+        // For now using temporary workaround
+        auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
+        DrawBinOp drawBinOp(shimImpl._internalGetCairoContext(), zoomFactor());
+        drawBinOp.drawPort([&](){drawBinOp.drawSymbol("x");},-1.1*w,-1.1*h,rotation());
+        drawBinOp.drawPort([&](){drawBinOp.drawSymbol("y");},-1.1*w,1.1*h,rotation());
+      }
+    if (mouseFocus)
+      {
+        drawPorts(cairoShim);
+        displayTooltip(cairoShim,tooltip());
+        if (onResizeHandles) drawResizeHandles(cairoShim);             
+      }
+    // Re-create the clip path
+    cairoShim.rotate(angle);
+    cairoShim.moveTo(-w,-h);
+    cairoShim.lineTo(-w,h);
+    cairoShim.lineTo(w,h);
+    cairoShim.lineTo(w+2*z,0);
+    cairoShim.lineTo(w,-h);
+    cairoShim.closePath();
+    cairoShim.clip();
+    cairoShim.rotate(-angle);
+    if (selected) drawSelected(cairoShim);
+  }
+  
   void OperationBase::setCachedText(cairo_t* cairo, const std::string& text, double size) const
   {
     if (cachedPango && cairo==cachedPango->cairoContext()) return;

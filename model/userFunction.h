@@ -60,11 +60,7 @@ namespace  minsky
     {return (t==OperationType::userFunction)? new UserFunction: nullptr;}
 
     void draw(cairo_t* cairo) const override {drawUserFunction(cairo);}
-    void draw(const ICairoShim& cairoShim) const override {
-      // TODO: Add drawUserFunction(ICairoShim&) overload
-      auto& shimImpl = dynamic_cast<const minsky::CairoShimCairo&>(cairoShim);
-      drawUserFunction(shimImpl._internalGetCairoContext());
-    }
+    void draw(const ICairoShim& cairoShim) const override {drawUserFunction(cairoShim);}
     
   };
 

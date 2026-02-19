@@ -40,11 +40,8 @@ namespace minsky
     void draw(const ICairoShim& cairoShim) const override {
       if (description().empty())
         OperationBase::draw(cairoShim);
-      else {
-        // TODO: Add drawUserFunction(ICairoShim&) overload
-        auto& shimImpl = dynamic_cast<const minsky::CairoShimCairo&>(cairoShim);
-        drawUserFunction(shimImpl._internalGetCairoContext());
-      }
+      else
+        drawUserFunction(cairoShim);
     }
     
   public:
