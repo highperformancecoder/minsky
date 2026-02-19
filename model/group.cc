@@ -1208,8 +1208,11 @@ namespace minsky
           // Check if click is within this variable's bounds at the edge position
           const float dx = x - varX, dy = y - varY;
           const RenderVariable rv(*v);
-          const float rx = dx * cos(v->rotation() * M_PI / 180) - dy * sin(v->rotation() * M_PI / 180);
-          const float ry = dy * cos(v->rotation() * M_PI / 180) + dx * sin(v->rotation() * M_PI / 180);
+          const float vRotRad = v->rotation() * M_PI / 180;
+          const float cosRot = cos(vRotRad);
+          const float sinRot = sin(vRotRad);
+          const float rx = dx * cosRot - dy * sinRot;
+          const float ry = dy * cosRot + dx * sinRot;
           if (rx >= -rv.width() && rx <= rv.width() && ry >= -rv.height() && ry <= rv.height())
             return v;
           
@@ -1219,9 +1222,9 @@ namespace minsky
               top = t;
             }
           else if (i % 2)
-            top -= v->height();
+            top -= (b - t);
           else
-            bottom += v->height();
+            bottom += (b - t);
         }
       return nullptr;
     };
