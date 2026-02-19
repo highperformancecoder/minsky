@@ -1221,9 +1221,9 @@ namespace minsky
               top = t;
             }
           else if (i % 2)
-            top -= v->height();
+            top -= (b - t);
           else
-            bottom += v->height();
+            bottom += (b - t);
         }
     };
     
