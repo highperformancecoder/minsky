@@ -1180,18 +1180,16 @@ namespace minsky
     return rotFactor;
   }
 
-  ItemPtr Group::select(float x, float y) const
+  void Group::positionEdgeVariables() const
   {
-    // Edge variables are positioned during drawing, but we need to check
-    // their positions for hit testing. Temporarily position them at their
-    // correct edge locations.
+    // Position edge variables at their correct edge locations
+    // This is needed for hit testing since ports are positioned relative to variables
     float left, right;
     margins(left, right);
     const float z = zoomFactor();
     const Rotate r(rotation(), 0, 0);
     
-    // Helper to position and check variables on one edge
-    auto checkEdge = [&](const vector<VariablePtr>& vars, float edgeX) -> ItemPtr {
+    auto positionEdge = [&](const vector<VariablePtr>& vars, float edgeX) {
       float top = 0, bottom = 0;
       for (size_t i = 0; i < vars.size(); ++i)
         {
@@ -1201,20 +1199,21 @@ namespace minsky
           auto t = v->bb.top() * vz, b = v->bb.bottom() * vz;
           if (i > 0) edgeY = i % 2 ? top - b : bottom - t;
           
-          // Calculate where this variable would be positioned
-          const float varX = r.x(edgeX, edgeY) + this->x();
-          const float varY = r.y(edgeX, edgeY) + this->y();
+          // Move variable to edge position (same as in draw1edge)
+          v->moveTo(r.x(edgeX, edgeY) + this->x(), r.y(edgeX, edgeY) + this->y());
+          v->rotation(rotation());
           
-          // Check if click is within this variable's bounds at the edge position
-          const float dx = x - varX, dy = y - varY;
+          // Also position ports (simplified version of what happens in Variable::draw)
+          // This ensures port hit testing works correctly
           const RenderVariable rv(*v);
-          const float vRotRad = v->rotation() * M_PI / 180;
-          const float cosRot = cos(vRotRad);
-          const float sinRot = sin(vRotRad);
-          const float rx = dx * cosRot - dy * sinRot;
-          const float ry = dy * cosRot + dx * sinRot;
-          if (rx >= -rv.width() && rx <= rv.width() && ry >= -rv.height() && ry <= rv.height())
-            return v;
+          const double w = std::max(rv.width(), 0.5 * v->iWidth());
+          const double angle = v->rotation() * M_PI / 180.0;
+          const double sa = sin(angle), ca = cos(angle);
+          const double x0 = vz * w, y0 = 0, x1 = -vz * w + 2, y1 = 0;
+          if (v->portsSize() > 0)
+            v->ports(0).lock()->moveTo(v->x() + (x0 * ca - y0 * sa), v->y() + (y0 * ca + x0 * sa));
+          if (v->portsSize() > 1)
+            v->ports(1).lock()->moveTo(v->x() + (x1 * ca - y1 * sa), v->y() + (y1 * ca + x1 * sa));
           
           if (i == 0)
             {
@@ -1222,20 +1221,30 @@ namespace minsky
               top = t;
             }
           else if (i % 2)
-            top -= (b - t);
+            top -= v->height();
           else
-            bottom += (b - t);
+            bottom += v->height();
         }
-      return nullptr;
     };
     
-    // Check input variables on the left edge
-    if (auto v = checkEdge(inVariables, -0.5 * (iWidth() * z - left)))
-      return v;
+    positionEdge(inVariables, -0.5 * (iWidth() * z - left));
+    positionEdge(outVariables, 0.5 * (iWidth() * z - right));
+  }
+
+  ItemPtr Group::select(float x, float y) const
+  {
+    // Position edge variables at their correct locations for accurate hit testing
+    positionEdgeVariables();
     
-    // Check output variables on the right edge  
-    if (auto v = checkEdge(outVariables, 0.5 * (iWidth() * z - right)))
-      return v;
+    // Check input variables
+    for (auto& v: inVariables)
+      if (RenderVariable(*v).inImage(x,y)) 
+        return v;
+    
+    // Check output variables
+    for (auto& v: outVariables)
+      if (RenderVariable(*v).inImage(x,y)) 
+        return v;
     
     return nullptr;
   }
