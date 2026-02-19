@@ -24,6 +24,7 @@
 #include "plotWidget.h"
 #include <cairo_base.h>
 #include <pango.h>
+#include "../engine/cairoShimCairo.h"
 
 #include "itemT.rcd"
 #include "sheet.rcd"
@@ -518,6 +519,13 @@ void Sheet::draw(cairo_t* cairo) const
   cairo_reset_clip(cairo);
   cairo_rectangle(cairo,-0.5*m_width,-0.5*m_height,m_width,m_height);
   cairo_clip(cairo);
+}
+
+void Sheet::draw(const ICairoShim& cairoShim) const
+{
+  // TODO: Implement properly without cairo_t* delegation
+  auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
+  draw(shimImpl._internalGetCairoContext());
 }
 
 void Sheet::exportAsCSV(const string& filename, bool tabular) const

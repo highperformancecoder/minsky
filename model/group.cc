@@ -25,6 +25,7 @@
 #include "autoLayout.h"
 #include "equations.h"
 #include <cairo_base.h>
+#include "../engine/cairoShimCairo.h"
 #include "group.rcd"
 #include "itemT.rcd"
 #include "bookmark.rcd"
@@ -1038,6 +1039,13 @@ namespace minsky
     if (selected)
       drawSelected(cairo);
     
+  }
+
+  void Group::draw(const ICairoShim& cairoShim) const
+  {
+    // TODO: Implement properly without cairo_t* delegation
+    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
+    draw(shimImpl._internalGetCairoContext());
   }
 
   void Group::draw1edge(const vector<VariablePtr>& vars, cairo_t* cairo, 

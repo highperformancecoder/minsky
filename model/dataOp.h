@@ -37,6 +37,12 @@ namespace minsky
       else
         drawUserFunction(cairo);
     }
+    void draw(const ICairoShim& cairoShim) const override {
+      if (description().empty())
+        OperationBase::draw(cairoShim);
+      else
+        drawUserFunction(cairoShim);
+    }
     
   public:
     ~DataOp() {}

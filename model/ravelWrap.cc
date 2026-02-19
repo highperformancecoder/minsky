@@ -24,6 +24,7 @@
 #include "dimension.h"
 #include "minskyTensorOps.h"
 #include "pango.h"
+#include "../engine/cairoShimCairo.h"
 
 #include "capiRenderer.xcd"
 #include "CSVTools.xcd"
@@ -139,6 +140,71 @@ namespace minsky
         }
     }        
     if (selected) drawSelected(cairo);
+  }
+
+  void Ravel::draw(const ICairoShim& cairoShim) const
+  {
+    const double  z=zoomFactor(), r=m_editorMode? 1.1*z*wrappedRavel.radius(): 30*z;
+    if (flipped)
+      {
+        m_ports[0]->moveTo(x()-1.1*r, y());
+        m_ports[1]->moveTo(x()+1.1*r, y());
+        drawTriangle(cairoShim,m_ports[1]->x()-x(),m_ports[1]->y()-y(),{0,0,0,1},M_PI);
+      }
+    else
+      {
+        m_ports[0]->moveTo(x()+1.1*r, y());
+        m_ports[1]->moveTo(x()-1.1*r, y());
+        drawTriangle(cairoShim,m_ports[1]->x()-x(),m_ports[1]->y()-y(),{0,0,0,1},0);
+      }
+    if (mouseFocus)
+      {
+        drawPorts(cairoShim);
+        displayTooltip(cairoShim,tooltip().empty()? explanation: tooltip());
+        // Resize handles always visible on mousefocus. For ticket 92.
+        if (m_editorMode) drawResizeHandles(cairoShim);
+      }
+    cairoShim.rectangle(-r,-r,2*r,2*r);
+    cairoShim.rectangle(-1.1*r,-1.1*r,2.2*r,2.2*r);
+    cairoShim.strokePreserve();
+    if (onBorder || lockGroup)
+      { // shadow the border when mouse is over it
+        cairoShim.save();
+        cairo::Colour c{1,1,1,0};
+        if (lockGroup)
+          c=palette[ lockGroup->colour() % paletteSz ];
+        c.r*=0.5; c.g*=0.5; c.b*=0.5;
+        c.a=onBorder? 0.5:0.3;
+        cairoShim.setSourceRGBA(c.r,c.g,c.b,c.a);
+        cairoShim.setFillRule(CAIRO_FILL_RULE_EVEN_ODD);
+        cairoShim.fillPreserve();
+        cairoShim.restore();
+      }
+    
+    cairoShim.clip();
+
+    {
+      cairoShim.save();
+      cairoShim.rectangle(-r,-r,2*r,2*r);
+      cairoShim.clip();
+      if (m_editorMode)
+        {
+          cairoShim.scale(z,z);
+          // TODO: CairoRenderer needs ICairoShim support
+          auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
+          CairoRenderer cr(shimImpl._internalGetCairoContext());
+          wrappedRavel.render(cr);
+        }
+      else
+        {
+          cairoShim.translate(-r,-r);
+          // TODO: SVGRenderer needs ICairoShim support
+          auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
+          svgRenderer.render(shimImpl._internalGetCairoContext(),2*r,2*r);
+        }
+      cairoShim.restore();
+    }        
+    if (selected) drawSelected(cairoShim);
   }
 
   void Ravel::resize(const LassoBox& b)

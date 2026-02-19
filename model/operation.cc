@@ -27,6 +27,7 @@
 
 #include <cairo_base.h>
 #include <pango.h>
+#include "../engine/cairoShimCairo.h"
 #include "minsky_epilogue.h"
 
 #include <math.h>
@@ -218,6 +219,97 @@ namespace minsky
     if (selected) drawSelected(cairo);
   }
   
+  void OperationBase::drawUserFunction(const ICairoShim& cairoShim) const
+  {
+    // if rotation is in 1st or 3rd quadrant, rotate as
+    // normal, otherwise flip the text so it reads L->R
+    const double angle=rotation() * M_PI / 180.0;
+    const bool textFlipped=flipped(rotation());
+    const float z=zoomFactor();
+
+    auto& c=dynamic_cast<const NamedOp&>(*this);
+          
+    auto& pango = cairoShim.pango();
+    pango.setFontSize(10.0*scaleFactor()*z);
+    pango.setMarkup(latexToPango(c.description()));
+    pango.angle=angle + (textFlipped? M_PI: 0);
+    const Rotate r(rotation()+ (textFlipped? 180: 0),0,0);
+
+    // parameters of icon in userspace (unscaled) coordinates
+    float w, h, hoffs;
+    w=0.5*pango.width()+2*z; 
+    h=0.5*pango.height()+4*z;        
+    hoffs=pango.top()/z;
+    
+    {
+      cairoShim.save();
+      cairoShim.moveTo(r.x(-w+1,-h-hoffs+2*z), r.y(-w+1,-h-hoffs+2*z));
+      pango.show();
+      cairoShim.restore();
+    }
+
+    cairoShim.rotate(angle);
+               
+    cairoShim.setSourceRGB(0,0,1);
+    cairoShim.moveTo(-w,-h);
+    cairoShim.lineTo(-w,h);
+    cairoShim.lineTo(w,h);
+
+    cairoShim.lineTo(w+2*z,0);
+    cairoShim.lineTo(w,-h);
+    cairoShim.closePath();
+    cairoShim.save(); // Save the clip path shape
+    cairoShim.stroke();
+    cairoShim.restore();
+          
+    cairoShim.rotate(-angle); // undo rotation
+
+    // set the output ports coordinates
+    // compute port coordinates relative to the icon's
+    // point of reference
+    const Rotate rr(rotation(),0,0);
+
+    m_ports[0]->moveTo(x()+rr.x(w+2,0), y()+rr.y(w+2,0));
+    switch (numPorts())
+      {
+      case 1: break;
+      case 2: 
+        m_ports[1]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,0));
+        break;
+      case 3: default:
+        m_ports[1]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,textFlipped? h-3: -h+3));
+        m_ports[2]->moveTo(x()+rr.x(-w,0), y()+rr.y(-w,textFlipped? -h+3: h-3));
+        break;
+      }
+    if (type()==OperationType::userFunction)
+      {
+        cairoShim.setSourceRGB(0,0,0);
+        // TODO: DrawBinOp needs complete ICairoShim refactoring
+        // For now using temporary workaround
+        auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
+        DrawBinOp drawBinOp(shimImpl._internalGetCairoContext(), zoomFactor());
+        drawBinOp.drawPort([&](){drawBinOp.drawSymbol("x");},-1.1*w,-1.1*h,rotation());
+        drawBinOp.drawPort([&](){drawBinOp.drawSymbol("y");},-1.1*w,1.1*h,rotation());
+      }
+    if (mouseFocus)
+      {
+        drawPorts(cairoShim);
+        displayTooltip(cairoShim,tooltip());
+        if (onResizeHandles) drawResizeHandles(cairoShim);             
+      }
+    // Re-create the clip path
+    cairoShim.rotate(angle);
+    cairoShim.moveTo(-w,-h);
+    cairoShim.lineTo(-w,h);
+    cairoShim.lineTo(w,h);
+    cairoShim.lineTo(w+2*z,0);
+    cairoShim.lineTo(w,-h);
+    cairoShim.closePath();
+    cairoShim.clip();
+    cairoShim.rotate(-angle);
+    if (selected) drawSelected(cairoShim);
+  }
+  
   void OperationBase::setCachedText(cairo_t* cairo, const std::string& text, double size) const
   {
     if (cachedPango && cairo==cachedPango->cairoContext()) return;
@@ -316,6 +408,102 @@ namespace minsky
     clipPath.appendToCurrent(cairo);          
     cairo_clip(cairo);          
     if (selected) drawSelected(cairo);          
+  }
+
+  void OperationBase::draw(const ICairoShim& cairoShim) const
+  {
+    // TODO: Refactor iconDraw to use ICairoShim
+    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
+    cairo_t* cairo = shimImpl._internalGetCairoContext();
+    // if rotation is in 1st or 3rd quadrant, rotate as
+    // normal, otherwise flip the text so it reads L->R
+    const double angle=rotation() * M_PI / 180.0;
+    const bool textFlipped=flipped(rotation());
+    const float z=zoomFactor();
+
+    {
+      cairoShim.save();
+      cairoShim.scale(z,z);
+      iconDraw(cairo);
+      cairoShim.restore();
+    }
+
+        
+    cairoShim.save();
+    cairoShim.rotate(angle);
+        
+    float l=OperationBase::l*z, r=OperationBase::r*z, 
+      h=OperationBase::h*z;
+          
+    if (fabs(l)<0.5*iWidth()*z) l=-0.5*iWidth()*z;        
+    if (r<0.5*iWidth()*z) r=0.5*iWidth()*z;    
+    if (h<0.5*iHeight()*z) h=0.5*iHeight()*z;    
+        
+    cairoShim.moveTo(-r,-h);
+    cairoShim.lineTo(-r,h);
+    cairoShim.lineTo(r,h);
+    cairoShim.lineTo(r+2*z,0);
+    cairoShim.lineTo(r,-h);      
+    
+    cairoShim.closePath();		  	 
+    
+    cairoShim.setSourceRGB(0,0,1);
+    cairoShim.strokePreserve();
+        
+    cairo::Path clipPath(cairo);
+    
+    // compute port coordinates relative to the icon's
+    // point of reference. Move outport 2 pixels right for ticket For ticket 362.
+    double x0=r, y0=0, x1=l, y1=numPorts() > 2? -h+3: 0, 
+      x2=l, y2=numPorts() > 2? h-3: 0;
+                      
+    if (textFlipped) swap(y1,y2);
+    
+    {
+      cairoShim.save();
+      cairoShim.identityMatrix();
+      cairoShim.translate(x(), y());
+      cairoShim.rotate(angle);
+      cairoShim.userToDevice(x0, y0);
+      cairoShim.userToDevice(x1, y1);
+      cairoShim.userToDevice(x2, y2);
+      cairoShim.restore();
+    }
+    
+    if (numPorts()>0) 
+      m_ports[0]->moveTo(x0, y0);
+    if (numPorts()>1) 
+      {
+#ifdef DISPLAY_POW_UPSIDE_DOWN
+        if (type()==OperationType::pow)
+          ports[1]->moveTo(x2, y2);
+        else
+#endif
+          m_ports[1]->moveTo(x1, y1);
+      }
+    
+    if (numPorts()>2)
+      {
+#ifdef DISPLAY_POW_UPSIDE_DOWN
+        if (type()==OperationType::pow)
+          ports[2]->moveTo(x1, y1);
+        else
+#endif
+          m_ports[2]->moveTo(x2, y2);
+      }
+
+    cairoShim.restore(); // undo rotation
+    if (mouseFocus)
+      {
+        drawPorts(cairoShim);
+        displayTooltip(cairoShim,tooltip());
+        if (onResizeHandles) drawResizeHandles(cairoShim);
+      }
+          
+    cairoShim.newPath();          
+    clipPath.appendToCurrent(cairo);          
+    cairoShim.clip();          
+    if (selected) drawSelected(cairoShim);          
   }    
   
   void OperationBase::resize(const LassoBox& b)

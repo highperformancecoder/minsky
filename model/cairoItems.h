@@ -54,5 +54,6 @@ namespace minsky
   };
 
   void drawTriangle(cairo_t* cairo, double x, double y, const ecolab::cairo::Colour& col, double angle=0);
+  void drawTriangle(const ICairoShim& cairoShim, double x, double y, const ecolab::cairo::Colour& col, double angle=0);
 }
 #endif

@@ -65,6 +65,7 @@ namespace minsky
 
     /// draw icon to \a context
     void draw(cairo_t* context) const override;
+    void draw(const ICairoShim& cairoShim) const override;
 
     /// whether icon is oriented so input ports are on the rhs, and output on the lhs
     bool flipped=false;
