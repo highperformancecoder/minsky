@@ -1107,6 +1107,7 @@ export class Group extends Item {
   async portY(a1: number): Promise<number> {return this.$callMethod('portY',a1);}
   async ports(a1: number): Promise<object> {return this.$callMethod('ports',a1);}
   async portsSize(): Promise<number> {return this.$callMethod('portsSize');}
+  async positionEdgeVariables(): Promise<void> {return this.$callMethod('positionEdgeVariables');}
   async px(...args: number[]): Promise<number> {return this.$callMethod('px',...args);}
   async py(...args: number[]): Promise<number> {return this.$callMethod('py',...args);}
   async pz(...args: number[]): Promise<number> {return this.$callMethod('pz',...args);}
@@ -2030,6 +2031,7 @@ export class Selection extends CppClass {
   async portY(a1: number): Promise<number> {return this.$callMethod('portY',a1);}
   async ports(a1: number): Promise<object> {return this.$callMethod('ports',a1);}
   async portsSize(): Promise<number> {return this.$callMethod('portsSize');}
+  async positionEdgeVariables(): Promise<void> {return this.$callMethod('positionEdgeVariables');}
   async randomLayout(): Promise<void> {return this.$callMethod('randomLayout');}
   async relZoom(...args: number[]): Promise<number> {return this.$callMethod('relZoom',...args);}
   async removeDisplayPlot(): Promise<void> {return this.$callMethod('removeDisplayPlot');}
