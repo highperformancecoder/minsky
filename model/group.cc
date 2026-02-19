@@ -33,6 +33,8 @@
 using namespace std;
 using namespace ecolab::cairo;
 
+#include <algorithm>
+
 // size of the top and bottom margins of the group icon
 static const int topMargin=10;
 
@@ -1206,7 +1208,7 @@ namespace minsky
           // Also position ports (simplified version of what happens in Variable::draw)
           // This ensures port hit testing works correctly
           const RenderVariable rv(*v);
-          const double w = std::max(rv.width(), 0.5 * v->iWidth());
+          const double w = std::max(rv.width(), 0.5f * v->iWidth());
           const double angle = v->rotation() * M_PI / 180.0;
           const double sa = sin(angle), ca = cos(angle);
           const double x0 = vz * w, y0 = 0, x1 = -vz * w + 2, y1 = 0;
