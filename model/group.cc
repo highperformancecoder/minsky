@@ -1182,12 +1182,58 @@ namespace minsky
 
   ItemPtr Group::select(float x, float y) const
   {
-    for (auto& v: inVariables)
-      if (RenderVariable(*v).inImage(x,y)) 
-        return v;
-    for (auto& v: outVariables)
-      if (RenderVariable(*v).inImage(x,y)) 
-        return v;
+    // Edge variables are positioned during drawing, but we need to check
+    // their positions for hit testing. Temporarily position them at their
+    // correct edge locations.
+    float left, right;
+    margins(left, right);
+    const float z = zoomFactor();
+    const Rotate r(rotation(), 0, 0);
+    
+    // Helper to position and check variables on one edge
+    auto checkEdge = [&](const vector<VariablePtr>& vars, float edgeX) -> ItemPtr {
+      float top = 0, bottom = 0;
+      for (size_t i = 0; i < vars.size(); ++i)
+        {
+          auto& v = vars[i];
+          float edgeY = 0;
+          auto vz = v->zoomFactor();
+          auto t = v->bb.top() * vz, b = v->bb.bottom() * vz;
+          if (i > 0) edgeY = i % 2 ? top - b : bottom - t;
+          
+          // Calculate where this variable would be positioned
+          const float varX = r.x(edgeX, edgeY) + this->x();
+          const float varY = r.y(edgeX, edgeY) + this->y();
+          
+          // Check if click is within this variable's bounds at the edge position
+          const float dx = x - varX, dy = y - varY;
+          const RenderVariable rv(*v);
+          const float rx = dx * cos(v->rotation() * M_PI / 180) - dy * sin(v->rotation() * M_PI / 180);
+          const float ry = dy * cos(v->rotation() * M_PI / 180) + dx * sin(v->rotation() * M_PI / 180);
+          if (rx >= -rv.width() && rx <= rv.width() && ry >= -rv.height() && ry <= rv.height())
+            return v;
+          
+          if (i == 0)
+            {
+              bottom = b;
+              top = t;
+            }
+          else if (i % 2)
+            top -= v->height();
+          else
+            bottom += v->height();
+        }
+      return nullptr;
+    };
+    
+    // Check input variables on the left edge
+    if (auto v = checkEdge(inVariables, -0.5 * (iWidth() * z - left)))
+      return v;
+    
+    // Check output variables on the right edge  
+    if (auto v = checkEdge(outVariables, 0.5 * (iWidth() * z - right)))
+      return v;
+    
     return nullptr;
   }
 
