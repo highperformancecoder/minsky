@@ -74,9 +74,10 @@ namespace minsky
     virtual void addPorts();
 
     void drawUserFunction(cairo_t* cairo) const;
+    void drawUserFunction(const ICairoShim& cairoShim) const;
     
     void draw(cairo_t*) const override;
-    void draw(ICairoShim&) const override;
+    void draw(const ICairoShim&) const override;
     void resize(const LassoBox& b) override;
     float scaleFactor() const override;       
 
