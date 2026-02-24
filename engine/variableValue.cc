@@ -90,11 +90,20 @@ namespace minsky
   ITensor::Timestamp VariableValue::timestamp() const
   {
     if (m_type==parameter)
-      return tensorInit.timestamp(); // timestamp is when VV was initiliased
+      {
+        //cout<<"parameter: "<<tensorInit.timestamp()<<" "<<name<<endl;
+        return tensorInit.timestamp(); // timestamp is when VV was initiliased
+      }
     else if (rhs) // delegate timestamp to input
-      return rhs->timestamp();
+      {
+        //cout<<"tensor expression: "<<rhs->timestamp()<<" "<<name<<endl;
+        return rhs->timestamp();
+      }
     else // values are always live
-      return Timestamp::clock::now();
+      {
+        //cout<<"live: "<<Timestamp::clock::now()<<" "<<name<<endl;
+        return Timestamp::clock::now();
+      }
   }
 
   

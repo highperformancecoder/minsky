@@ -813,6 +813,7 @@ namespace MathDAG
         {
           auto chain=createRavelChain(lock.lockedState, rhs->addEvalOps(ev,{}));
           if (chain.empty()) return {};
+          result->rhs=chain.back();
           result->index(chain.back()->index());
           result->hypercube(chain.back()->hypercube());
           ev.emplace_back(EvalOpPtr(new TensorEval(result, make_shared<EvalCommon>(), chain.back())));
