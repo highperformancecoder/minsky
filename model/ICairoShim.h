@@ -23,11 +23,11 @@
 #include <string>
 #include <cairo.h>
 
+// Forward declarations for Pango
+namespace ecolab { class Pango; }
+
 namespace minsky
 {
-  // Forward declarations for Pango
-  namespace ecolab { class Pango; }
-
   /// Abstract interface for Cairo drawing operations
   class ICairoShim
   {
@@ -92,4 +92,5 @@ namespace minsky
   };
 }
 
+#include "ICairoShim.xcd"
 #endif // ICAIROSHIM_H

@@ -27,6 +27,7 @@
 #include "lock.rcd"
 #include "lock.xcd"
 #include "minsky.h"
+#include "cairoShimCairo.h"
 #include "minsky_epilogue.h"
 using namespace std;
 
