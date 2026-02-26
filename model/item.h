@@ -304,7 +304,7 @@ namespace minsky
 
     /// display tooltip text, eg on mouseover
     virtual void displayTooltip(cairo_t*, const std::string&) const;
-    virtual void displayTooltip(ICairoShim&, const std::string&) const;
+    virtual void displayTooltip(const ICairoShim&, const std::string&) const;
     
     /// update display after a step()
     virtual void updateIcon(double t) {}
@@ -314,7 +314,7 @@ namespace minsky
     virtual ~Item() {}
 
     void drawPorts(cairo_t* cairo) const;
-    void drawPorts(ICairoShim& cairoShim) const;
+    void drawPorts(const ICairoShim& cairoShim) const;
     static void drawSelected(cairo_t* cairo);
     static void drawSelected(const ICairoShim& cairoShim);
     virtual void drawResizeHandles(cairo_t* cairo) const;

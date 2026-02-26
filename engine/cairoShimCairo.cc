@@ -1,4 +1,5 @@
 #include "cairoShimCairo.h"
+#include "minsky_epilogue.h"
 #define CAIRO_WIN32_STATIC_BUILD
 #include <cairo.h>
 #undef CAIRO_WIN32_STATIC_BUILD

@@ -1,6 +1,6 @@
 #ifndef CAIROSHIMCAIRO_H
 #define CAIROSHIMCAIRO_H
-#include "../model/ICairoShim.h"
+#include "ICairoShim.h"
 #include <cairo.h>
 #include <pango.h>
 #include <memory>
@@ -81,4 +81,6 @@ namespace minsky
   };
 
 }
+
+#include "cairoShimCairo.xcd"
 #endif
