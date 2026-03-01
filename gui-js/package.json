@@ -184,7 +184,7 @@
     "@angular/common": "^20.3.16",
     "@angular/compiler": "^20.3.16",
     "@angular/compiler-cli": "^20.3.16",
-    "@angular/core": "^20.3.16",
+    "@angular/core": "^20.3.17",
     "@angular/forms": "^20.3.16",
     "@angular/platform-browser-dynamic": "^20.3.16",
     "@angular/router": "^20.3.16",
