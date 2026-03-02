@@ -270,7 +270,7 @@ void DataSpec::givenTFguessRemainder(std::istream& initialInput, std::istream& r
         {
           m_uniqueValues.resize(uniqueVals.size());
           for (size_t i=0; i<uniqueVals.size(); ++i) m_uniqueValues[i]=uniqueVals[i].size();
-          if (fileSize==-1)
+          if (fileSize==uintmax_t(-1))
             ++minsky().progressState;
           else
             pu.setProgress(double(remainingInput.tellg())/fileSize);
@@ -278,7 +278,7 @@ void DataSpec::givenTFguessRemainder(std::istream& initialInput, std::istream& r
       while (!processChunk(remainingInput, tf, row+CSVDialog::numInitialLines, uniqueVals));
       m_uniqueValues.resize(uniqueVals.size());
       for (size_t i=0; i<uniqueVals.size(); ++i) m_uniqueValues[i]=uniqueVals[i].size();
-      if (fileSize==-1)
+      if (fileSize==uintmax_t(-1))
         ++minsky().progressState;
       else
         pu.setProgress(double(remainingInput.tellg())/fileSize);

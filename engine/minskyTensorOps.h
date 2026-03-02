@@ -141,7 +141,7 @@ namespace minsky
              || value->idx()+i<ev->fvSize());
       return ev->flowVars()[value->idx()+i];
     }
-    TensorVarVal& operator=(const ITensor& t) override {
+    TensorVarVal& asg(const ITensor& t) override {
       index(t.index());
       hypercube(t.hypercube());
       for (size_t i=0; i<size(); ++i)
@@ -150,6 +150,7 @@ namespace minsky
       ev->update(ev->flowVars(), ev->fvSize(), ev->stockVars());
       return *this;
     }
+    TensorVarVal& operator=(const ITensor& t) {return asg(t);}
   };
 
   

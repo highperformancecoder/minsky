@@ -483,7 +483,7 @@ namespace minsky
       // original implementation left on place for reference
       //return cachedResult.rank()<=1 || (i%innerStride==j%innerStride && i/outerStride==j/outerStride);
       assert(i%innerStride==j%innerStride); // internally, delta should be a multiple of innerStride
-      return abs(ssize_t(i)-ssize_t(j))<outerStride; // simpler version of above
+      return abs(ssize_t(i)-ssize_t(j))<ssize_t(outerStride); // simpler version of above
     }
     
     void computeTensor() const override
