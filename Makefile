@@ -285,7 +285,8 @@ ifdef AEGIS
   # ensure all exes get built in AEGIS mode
   TESTS=tests 
   # -Wno-class-memaccess -Wno-stringop-overflow -Wno-restrict to silence bogus messages in g++
-  FLAGS+=-Werror=delete-non-virtual-dtor -Wno-unknown-pragmas -Wno-class-memaccess -Wno-stringop-overflow  -Wno-stringop-overflow
+  FLAGS+=-Werror=delete-non-virtual-dtor -Wno-unknown-pragmas -Wno-stringop-overflow  -Wno-stringop-overflow
+  CXXFLAGS+=-Wno-class-memaccess 
 endif
 
 ifdef ASAN
