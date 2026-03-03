@@ -8,6 +8,8 @@ export AEGIS
 export MXE
 export OPENMP
 export OPT
+#export FLAGS
+export CPLUSPLUS
 
 # location of TCL and TK libraries 
 TCL_PREFIX=$(shell grep TCL_PREFIX $(call search,lib*/tclConfig.sh) | cut -f2 -d\')
@@ -41,7 +43,7 @@ MAKEOVERRIDES+=DEBUG=$(DEBUG)
 ifeq ($(HAVE_CLANG),1)
 ifndef MXE
 ifndef GCC
-MAKEOVERRIDES+=CPLUSPLUS="clang++ -std=c++20"
+CPLUSPLUS=clang++ -std=c++20
 endif
 endif
 endif
@@ -88,7 +90,11 @@ LINK=$(CPLUSPLUS)
 endif
 endif
 
-MAKEOVERRIDES+=FPIC=1 CLASSDESC=$(shell pwd)/ecolab/classdesc/classdesc EXTRA_FLAGS="-I$(shell pwd)/ecolab/include -DCIVITA_ALLOCATOR=civita::LibCAllocator" CPLUSPLUS="$(CPLUSPLUS)" GCOV=$(GCOV)
+export EXTRA_FLAGS=-I$(shell pwd)/ecolab/include -DCIVITA_ALLOCATOR=civita::LibCAllocator
+export CPLUSPLUS
+export GCOV
+export CLASSDESC=$(shell pwd)/ecolab/classdesc/classdesc
+MAKEOVERRIDES+=FPIC=1
 ifneq ($(MAKECMDGOALS),clean)
 build_ravelcapi:=$(shell cd RavelCAPI; if  $(MAKE) $(JOBS) $(MAKEOVERRIDES)  >build.log 2>&1; then echo "ravelcapi built"; fi) 
 $(warning $(build_ravelcapi))
@@ -276,10 +282,11 @@ endif
 
 TESTS=
 ifdef AEGIS
-# ensure all exes get built in AEGIS mode
-TESTS=tests 
-# enable TCL coverage testing
-FLAGS+=-DTCL_COV -Werror=delete-non-virtual-dtor -Wno-unknown-pragmas 
+  # ensure all exes get built in AEGIS mode
+  TESTS=tests 
+  # -Wno-class-memaccess -Wno-stringop-overflow -Wno-restrict to silence bogus messages in g++
+  FLAGS+=-Werror=delete-non-virtual-dtor -Wno-unknown-pragmas -Wno-stringop-overflow  -Wno-stringop-overflow
+  CXXFLAGS+=-Wno-class-memaccess 
 endif
 
 ifdef ASAN

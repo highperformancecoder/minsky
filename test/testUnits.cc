@@ -116,7 +116,7 @@ TEST(Units, set)
     init(op);
     // most single arg functions are dimensionless, and args must match for two args
     if (OperationTypeInfo::numArguments<op>()>0 && op!=OperationType::percent)
-      EXPECT_THROW(opp->checkUnits(), std::exception);
+      {EXPECT_THROW(opp->checkUnits(), std::exception);}
 
     from2->setUnits(from1->unitsStr());
     if (OperationTypeInfo::numArguments<op>()==1)
