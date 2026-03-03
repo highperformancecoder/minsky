@@ -1636,7 +1636,7 @@ namespace minsky
         }
     else if (auto v=it->variableCast())
       return make_shared<ConstTensorVarVal>(v->vValue(), tfp.ev);
-    else if (auto sw=dynamic_cast<const SwitchIcon*>(it.get()))
+    else if (dynamic_cast<const SwitchIcon*>(it.get()))
       {
         auto r=make_shared<SwitchTensor>();
         r->setArguments(tfp.tensorsFromPorts(*it));
