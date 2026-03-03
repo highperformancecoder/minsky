@@ -97,6 +97,9 @@ namespace minsky
   void CairoShimCairo::setFontSize(double size) const
   {cairo_set_font_size(cairo, size);}
 
+  void CairoShimCairo::selectFontFace(const std::string& family, cairo_font_slant_t slant, cairo_font_weight_t weight) const
+  {cairo_select_font_face(cairo, family.c_str(), slant, weight);}
+
   void CairoShimCairo::textExtents(const std::string& text, cairo_text_extents_t& extents) const
   {cairo_text_extents(cairo,text.c_str(),&extents);}
 

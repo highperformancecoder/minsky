@@ -71,6 +71,7 @@ namespace minsky
     // Text operations
     virtual void showText(const std::string& text) const = 0;
     virtual void setFontSize(double size) const = 0;
+    virtual void selectFontFace(const std::string& family, cairo_font_slant_t slant, cairo_font_weight_t weight) const = 0;
     virtual void textExtents(const std::string& text, cairo_text_extents_t& extents) const = 0;
 
     // Transformation operations

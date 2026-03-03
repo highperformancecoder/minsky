@@ -57,6 +57,7 @@ namespace minsky
     // Text operations
     void showText(const std::string& text) const override;
     void setFontSize(double size) const override;
+    void selectFontFace(const std::string& family, cairo_font_slant_t slant, cairo_font_weight_t weight) const override;
     void textExtents(const std::string& text, cairo_text_extents_t& extents) const override;
 
     // Transformation operations
