@@ -284,10 +284,7 @@ namespace minsky
     if (type()==OperationType::userFunction)
       {
         cairoShim.setSourceRGB(0,0,0);
-        // TODO: DrawBinOp needs complete ICairoShim refactoring
-        // For now using temporary workaround
-        auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-        DrawBinOp drawBinOp(shimImpl._internalGetCairoContext(), zoomFactor());
+        DrawBinOpShim drawBinOp(cairoShim, zoomFactor());
         drawBinOp.drawPort([&](){drawBinOp.drawSymbol("x");},-1.1*w,-1.1*h,rotation());
         drawBinOp.drawPort([&](){drawBinOp.drawSymbol("y");},-1.1*w,1.1*h,rotation());
       }

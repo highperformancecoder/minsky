@@ -178,6 +178,79 @@ namespace minsky
       f();
     }
   };
+
+  /// helper class to draw port label symbols using ICairoShim
+  struct DrawBinOpShim
+  {
+    const ICairoShim& cairoShim;
+    double zoomFactor;
+    DrawBinOpShim(const ICairoShim& cairoShim, double z=1): cairoShim(cairoShim), zoomFactor(z) {}
+
+    void drawPlus() const
+    {
+      cairoShim.moveTo(0,-5);
+      cairoShim.lineTo(0,5);
+      cairoShim.moveTo(-5,0);
+      cairoShim.lineTo(5,0);
+      cairoShim.stroke();
+    }
+
+    void drawMinus() const
+    {
+      cairoShim.moveTo(-5,0);
+      cairoShim.lineTo(5,0);
+      cairoShim.stroke();
+    }
+
+    void drawMultiply() const
+    {
+      cairoShim.moveTo(-5,-5);
+      cairoShim.lineTo(5,5);
+      cairoShim.moveTo(-5,5);
+      cairoShim.lineTo(5,-5);
+      cairoShim.stroke();
+    }
+
+    void drawDivide() const
+    {
+      cairoShim.moveTo(-5,0);
+      cairoShim.lineTo(5,0);
+      cairoShim.newSubPath();
+      cairoShim.arc(0,3,1,0,2*M_PI);
+      cairoShim.newSubPath();
+      cairoShim.arc(0,-3,1,0,2*M_PI);
+      cairoShim.stroke();
+    }
+
+    void drawSymbol(const char* s) const
+    {
+      cairoShim.scale(zoomFactor,zoomFactor);
+      cairoShim.moveTo(-5,0);
+      cairoShim.showText(s);
+    }
+  
+    // puts a small symbol to identify port
+    // x, y = position of symbol
+    template <class F>
+    void drawPort(F f, float x, float y, float rotation)  const
+    {
+      cairoShim.save();
+      
+      const double angle=rotation * M_PI / 180.0;
+      if (minsky::flipped(rotation))
+        y=-y;
+      cairoShim.rotate(angle);
+      
+      cairoShim.translate(0.7*x,0.6*y);
+      cairoShim.scale(0.5,0.5);
+      
+      // and counter-rotate
+      cairoShim.rotate(-angle);
+      f();
+      
+      cairoShim.restore();
+    }
+  };
 }
 
 #include "operation.cd"
