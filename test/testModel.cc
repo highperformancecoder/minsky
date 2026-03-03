@@ -133,7 +133,7 @@ TEST_F(ModelSuite, makeSubroutine)
   group0->makeSubroutine();
   for (auto& i: group0->items)
     if (auto v=i->variableCast())
-      EXPECT_TRUE(v->rawName()[0]!=':');
+      {EXPECT_TRUE(v->rawName()[0]!=':');}
 }
   
 TEST_F(ModelSuite, SelectGroup)
@@ -754,7 +754,7 @@ TEST_F(ModelSuite,selectAllVariables)
     {
       auto ii=dynamic_cast<VariableBase*>(i.get());
       EXPECT_TRUE(ii);
-      if (ii) EXPECT_EQ(dynamic_pointer_cast<VariableBase>(a)->valueId(), ii->valueId());
+      if (ii) {EXPECT_EQ(dynamic_pointer_cast<VariableBase>(a)->valueId(), ii->valueId());}
     }
 
   canvas.item=b;
@@ -822,7 +822,7 @@ TEST_F(ModelSuite,renameAllInstances)
   canvas.renameAllInstances("foobar1");
   for (auto i: model->items)
     if (auto v=dynamic_cast<VariableBase*>(i.get()))
-      EXPECT_TRUE(v->name()!="foobar1");
+      {EXPECT_TRUE(v->name()!="foobar1");}
         
   // check integrals are renamed too
   auto integ=new IntOp;
@@ -1731,9 +1731,9 @@ TEST_F(ModelSuite, saveAsGroup)
   // check I/O variables
   EXPECT_EQ(group0->inVariables.size(),newGroup.inVariables.size());
   EXPECT_EQ(group0->outVariables.size(),newGroup.outVariables.size());
-  for (int i=0; i<group0->inVariables.size(); ++i)
+  for (size_t i=0; i<group0->inVariables.size(); ++i)
     EXPECT_EQ(group0->inVariables[i]->name(), newGroup.inVariables[i]->name());
-  for (int i=0; i<group0->outVariables.size(); ++i)
+  for (size_t i=0; i<group0->outVariables.size(); ++i)
     EXPECT_EQ(group0->outVariables[i]->name(), newGroup.outVariables[i]->name());
   // check items
   EXPECT_EQ(group0->items.size(), newGroup.items.size());
