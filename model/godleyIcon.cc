@@ -567,7 +567,7 @@ namespace minsky
         cairoShim.save();
         cairoShim.translate(left+leftMargin(),top);
         // Render SVG using ICairoShim abstraction
-        cairoShim.renderSVG(svgRenderer.handle(), w-leftMargin(), h-bottomMargin());
+        cairoShim.renderSVG(svgRenderer, w-leftMargin(), h-bottomMargin());
         titley=top+0.1*(h-bottomMargin());
         cairoShim.restore();
       }

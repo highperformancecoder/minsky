@@ -23,11 +23,13 @@
 #include <string>
 #include <cairo.h>
 
-// Forward declarations for Pango
+// Forward declarations
 namespace ecolab { class Pango; }
 
 namespace minsky
 {
+  class SVGRenderer;
+  
   /// Abstract interface for Cairo drawing operations
   class ICairoShim
   {
@@ -92,11 +94,11 @@ namespace minsky
     virtual ecolab::Pango& pango() const = 0;
 
     // SVG rendering support
-    /// Render a pre-loaded SVG resource into a region of size width x height
-    /// @param svgHandle - RsvgHandle* from SVGRenderer::handle(), passed as void* for abstraction
+    /// Render an SVG resource into a region of size width x height
+    /// @param svgRenderer - Reference to SVGRenderer containing the loaded SVG resource
     /// @param width - target width for rendering
     /// @param height - target height for rendering
-    virtual void renderSVG(void* svgHandle, double width, double height) const = 0;
+    virtual void renderSVG(const SVGRenderer& svgRenderer, double width, double height) const = 0;
   };
 }
 

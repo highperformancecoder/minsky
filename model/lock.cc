@@ -114,7 +114,7 @@ namespace minsky
       cairoShim.translate(-0.5*w,-0.5*h);
       SVGRenderer* icon=locked()? &lockedIcon: &unlockedIcon;
       // Render SVG using ICairoShim abstraction
-      cairoShim.renderSVG(icon->handle(), w, h);
+      cairoShim.renderSVG(*icon, w, h);
       cairoShim.restore();
     }
     

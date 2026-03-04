@@ -199,7 +199,7 @@ namespace minsky
         {
           cairoShim.translate(-r,-r);
           // Render SVG using ICairoShim abstraction
-          cairoShim.renderSVG(svgRenderer.handle(), 2*r, 2*r);
+          cairoShim.renderSVG(svgRenderer, 2*r, 2*r);
         }
       cairoShim.restore();
     }        

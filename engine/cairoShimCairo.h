@@ -1,6 +1,7 @@
 #ifndef CAIROSHIMCAIRO_H
 #define CAIROSHIMCAIRO_H
 #include "ICairoShim.h"
+#include "SVGItem.h"
 #include <cairo.h>
 #include <pango.h>
 #include <memory>
@@ -78,7 +79,7 @@ namespace minsky
     ecolab::Pango& pango() const override;
     
     // SVG rendering support
-    void renderSVG(void* svgHandle, double width, double height) const override;
+    void renderSVG(const SVGRenderer& svgRenderer, double width, double height) const override;
     
     // TEMPORARY: Internal accessor for migration - to be removed once all implementations are updated
     cairo_t* _internalGetCairoContext() const { return cairo; }
