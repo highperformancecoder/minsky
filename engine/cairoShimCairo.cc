@@ -4,6 +4,13 @@
 #include <cairo.h>
 #undef CAIRO_WIN32_STATIC_BUILD
 #include <pango.h>
+#include <librsvg/rsvg.h>
+
+// if not #ifdef protected, you get a deprecated warning, which is
+// made fatal by -Werror
+#ifndef RSVG_CAIRO_H
+#include <librsvg/rsvg-cairo.h>
+#endif
 
 using namespace std;
 
@@ -136,5 +143,28 @@ namespace minsky
     if (!m_pango)
       m_pango.reset(new ecolab::Pango(cairo));
     return *m_pango;
+  }
+
+  // SVG rendering support
+  void CairoShimCairo::renderSVG(void* svgHandle, double width, double height) const
+  {
+    if (!svgHandle) return;
+    
+    RsvgHandle* svg = static_cast<RsvgHandle*>(svgHandle);
+#ifdef MXE // MXE doesn't currently have a Rust compiler, so librsvg can be no later than 2.40.21
+    RsvgDimensionData dims;
+    rsvg_handle_get_dimensions(svg, &dims);
+    cairo_scale(cairo, width/dims.width, height/dims.height);
+    rsvg_handle_render_cairo(svg, cairo);
+#else
+    GError* err=nullptr;
+    const RsvgRectangle rect{0,0,width,height};
+    rsvg_handle_render_document(svg, cairo, &rect, &err);
+    if (err)
+      {
+        g_error_free(err);
+        // Silently ignore errors for now to avoid breaking rendering
+      }
+#endif
   }
 }

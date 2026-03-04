@@ -566,9 +566,8 @@ namespace minsky
       {
         cairoShim.save();
         cairoShim.translate(left+leftMargin(),top);
-        // SVGRenderer requires cairo_t* (librsvg dependency)
-        auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-        svgRenderer.render(shimImpl._internalGetCairoContext(), w-leftMargin(), h-bottomMargin());
+        // Render SVG using ICairoShim abstraction
+        cairoShim.renderSVG(svgRenderer.handle(), w-leftMargin(), h-bottomMargin());
         titley=top+0.1*(h-bottomMargin());
         cairoShim.restore();
       }

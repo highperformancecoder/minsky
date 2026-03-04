@@ -198,9 +198,8 @@ namespace minsky
       else
         {
           cairoShim.translate(-r,-r);
-          // TODO: SVGRenderer needs ICairoShim support
-          auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-          svgRenderer.render(shimImpl._internalGetCairoContext(),2*r,2*r);
+          // Render SVG using ICairoShim abstraction
+          cairoShim.renderSVG(svgRenderer.handle(), 2*r, 2*r);
         }
       cairoShim.restore();
     }        
