@@ -55,7 +55,7 @@ struct ScrambledIndex: public Index
 {
   ScrambledIndex(size_t n) {
     vector<size_t> idx;
-    for (auto i=0; i<n; ++i) idx.push_back(i);
+    for (size_t i=0; i<n; ++i) idx.push_back(i);
     next_permutation(idx.begin(),idx.end());
     next_permutation(idx.begin(),idx.end());
     assignVector(idx);
@@ -270,20 +270,20 @@ TEST_F(TensorOpSuite, difference2D)
   evalOp<OperationType::difference>("0",delta);
   for (auto& i: *to->vValue())
     if (std::isfinite(i))
-      EXPECT_EQ(1,i);
+      {EXPECT_EQ(1,i);}
   evalOp<OperationType::difference>("1",delta);
   for (auto& i: *to->vValue())
     if (std::isfinite(i))
-      EXPECT_EQ(5,i);
+      {EXPECT_EQ(5,i);}
   delta=2;
   evalOp<OperationType::difference>("0",delta);
   for (auto& i: *to->vValue())
     if (std::isfinite(i))
-      EXPECT_EQ(2,i);
+      {EXPECT_EQ(2,i);}
   evalOp<OperationType::difference>("1",delta);
   for (auto& i: *to->vValue())
     if (std::isfinite(i))
-      EXPECT_EQ(10,i);
+      {EXPECT_EQ(10,i);}
 }
 
 TEST_F(TensorOpSuite, difference2DunorderedSparse)
@@ -299,20 +299,20 @@ TEST_F(TensorOpSuite, difference2DunorderedSparse)
   evalOp<OperationType::difference>("0",delta);
   for (auto& i: *to->vValue())
     if (std::isfinite(i))
-      EXPECT_EQ(1,i);
+      {EXPECT_EQ(1,i);}
   evalOp<OperationType::difference>("1",delta);
   for (auto& i: *to->vValue())
     if (std::isfinite(i))
-      EXPECT_EQ(5,i);
+      {EXPECT_EQ(5,i);}
   delta=2;
   evalOp<OperationType::difference>("0",delta);
   for (auto& i: *to->vValue())
     if (std::isfinite(i))
-      EXPECT_EQ(2,i);
+      {EXPECT_EQ(2,i);}
   evalOp<OperationType::difference>("1",delta);
   for (auto& i: *to->vValue())
     if (std::isfinite(i))
-      EXPECT_EQ(10,i);
+      {EXPECT_EQ(10,i);}
 }
 
 TEST_F(TensorOpSuite, difference1D)
@@ -401,21 +401,21 @@ TEST_F(TensorOpSuite, difference2D_II)
   EXPECT_EQ(4, to->vValue()->hypercube().dims()[1]);
   for (auto& i: *to->vValue())
     if (std::isfinite(i))
-      EXPECT_EQ(1,i);
+      {EXPECT_EQ(1,i);}
   EXPECT_EQ(1, to->vValue()->hypercube().xvectors[1][0].value);
 
   evalOp<OperationType::difference>("1",delta=-1);
   EXPECT_EQ(4, to->vValue()->hypercube().dims()[1]);
   for (auto& i: *to->vValue())
     if (std::isfinite(i))
-      EXPECT_EQ(-1,i);
+      {EXPECT_EQ(-1,i);}
   EXPECT_EQ(0, to->vValue()->hypercube().xvectors[1][0].value);
                   
   evalOp<OperationType::difference>("1",delta=2);
   EXPECT_EQ(3, to->vValue()->hypercube().dims()[1]);
   for (auto& i: *to->vValue())
     if (std::isfinite(i))
-      EXPECT_EQ(2,i);
+      {EXPECT_EQ(2,i);}
   EXPECT_EQ(2, to->vValue()->hypercube().xvectors[1][0].value);
 
   // check that the sparse code works as expected
@@ -1021,7 +1021,7 @@ TEST_F(MinskyTensorOpSuite, tensorUnOpFactory)
                 double x=scalarOp->evaluate((*src->vValue())[i]);
                 double y=(*dest->vValue())[i];
                 if (finite(x)||finite(y))
-                  EXPECT_EQ(x,y);
+                  {EXPECT_EQ(x,y);}
               }
             break;
           }
@@ -1082,7 +1082,7 @@ TEST_F(MinskyTensorOpSuite, tensorBinOpFactory)
           double x=scalarOp->evaluate((*src1->vValue())[i], (*src2->vValue())[i]);
           double y=(*dest->vValue())[i];
           if (finite(x)||finite(y))
-            EXPECT_EQ(x,y);
+            {EXPECT_EQ(x,y);}
         }
     }
 }
