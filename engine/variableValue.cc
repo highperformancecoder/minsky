@@ -139,7 +139,7 @@ namespace minsky
     return *this;
   }
 
-  VariableValue& VariableValue::operator=(const ITensor& x)
+  VariableValue& VariableValue::asg(const ITensor& x)
   {
     index(x.index());
     hypercube(x.hypercube());
@@ -455,7 +455,7 @@ namespace minsky
                
     // calculate longest dimension
     auto dims=hypercube().dims();
-    auto longestDim=max_element(dims.begin(),dims.end())-dims.begin();
+    size_t longestDim=max_element(dims.begin(),dims.end())-dims.begin();
 
     const auto& xv=hypercube().xvectors;
     

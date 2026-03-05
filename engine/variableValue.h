@@ -169,7 +169,7 @@ namespace minsky
     
     using ITensorVal::operator=;
     VariableValue& operator=(TensorVal const&);
-    VariableValue& operator=(const ITensor& x) override;
+    VariableValue& asg(const ITensor& x) override;
 
     /// allocate space in the variable vector. @returns reference to this
     VariableValue& allocValue();

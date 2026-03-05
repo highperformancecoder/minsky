@@ -1304,6 +1304,7 @@ export class Minsky extends CppClass {
   async addNewPublicationTab(a1: string): Promise<void> {return this.$callMethod('addNewPublicationTab',a1);}
   async allGodleyFlowVars(): Promise<string[]> {return this.$callMethod('allGodleyFlowVars');}
   async assetClasses(): Promise<string[]> {return this.$callMethod('assetClasses');}
+  async author(...args: string[]): Promise<string> {return this.$callMethod('author',...args);}
   async autoLayout(): Promise<void> {return this.$callMethod('autoLayout');}
   async autoSaveFile(): Promise<string> {return this.$callMethod('autoSaveFile');}
   async availableOperations(): Promise<string[]> {return this.$callMethod('availableOperations');}
