@@ -58,8 +58,6 @@ namespace classdesc
   struct tn<RsvgHandle> {
     static string name() {return "RsvgHandle";}
   };
-
-  template struct tn<RsvgHandle>;
 }
 
 
