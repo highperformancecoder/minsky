@@ -27,9 +27,7 @@
         "target": "nsis",
         "arch": ["x64"]
       }],
-      "sign": false,
-      "verifyUpdateCodeSignature": false,
-      "publisherName": "High Performance Coders"
+      "verifyUpdateCodeSignature": false
     },
     "nsis": {
       "oneClick": false,
