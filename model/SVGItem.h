@@ -51,6 +51,18 @@ namespace minsky
   
 }
 
+namespace classdesc
+{
+#define CLASSDESC_TYPENAME___RsvgHandle
+  template <>
+  struct tn<RsvgHandle> {
+    static string name() {return "RsvgHandle";}
+  };
+
+  template struct tn<RsvgHandle>;
+}
+
+
 #include "SVGItem.cd"
 #include "SVGItem.xcd"
 #endif
