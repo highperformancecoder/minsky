@@ -36,8 +36,7 @@ MAKEOVERRIDES+=DEBUG=$(DEBUG)
 ifeq ($(HAVE_CLANG),1)
 ifndef MXE
 ifndef GCC
-CPLUSPLUS="clang++ -std=c++20"
-#MAKEOVERRIDES+=CPLUSPLUS="clang++ -std=c++20"
+CPLUSPLUS=clang++ -std=c++20
 endif
 endif
 endif
@@ -85,15 +84,9 @@ endif
 endif
 
 export EXTRA_FLAGS=-I$(shell pwd)/ecolab/include -DCIVITA_ALLOCATOR=civita::LibCAllocator
-export CLASSDESC=$(shell pwd)/ecolab/classdesc/classdesc
 export GCOV
-export FPIC=1
-ifdef CPUPROFILE
-EXTRA_FLAGS+=-g
-endif
-
-#MAKEOVERRIDES+=FPIC=1 CLASSDESC=$(shell pwd)/ecolab/classdesc/classdesc EXTRA_FLAGS="$(EXTRA_FLAGS)" CPLUSPLUS="$(CPLUSPLUS)" GCOV=$(GCOV) OPENMP=1
-$(warning $(MAKEOVERRIDES))
+export CLASSDESC=$(shell pwd)/ecolab/classdesc/classdesc
+MAKEOVERRIDES+=FPIC=1
 ifneq ($(MAKECMDGOALS),clean)
 build_ravelcapi:=$(shell cd RavelCAPI; if  $(MAKE) $(JOBS) $(MAKEOVERRIDES)  >build.log 2>&1; then echo "ravelcapi built"; fi) 
 $(warning $(build_ravelcapi))
@@ -285,10 +278,11 @@ endif
 
 TESTS=
 ifdef AEGIS
-# ensure all exes get built in AEGIS mode
-TESTS=tests 
-# enable TCL coverage testing
-FLAGS+=-DTCL_COV -Werror=delete-non-virtual-dtor -Wno-unknown-pragmas 
+  # ensure all exes get built in AEGIS mode
+  TESTS=tests 
+  # -Wno-class-memaccess -Wno-stringop-overflow -Wno-restrict to silence bogus messages in g++
+  FLAGS+=-Werror=delete-non-virtual-dtor -Wno-unknown-pragmas -Wno-stringop-overflow  -Wno-stringop-overflow
+  CXXFLAGS+=-Wno-class-memaccess 
 endif
 
 ifdef ASAN

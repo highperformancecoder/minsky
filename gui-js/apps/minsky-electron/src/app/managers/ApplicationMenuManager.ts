@@ -185,6 +185,10 @@ export class ApplicationMenuManager {
           ],
         },
         {
+          label: 'Project Information',
+          click: async () => await CommandsManager.postNote('model')
+        },
+        {
           label: 'Library',
           click() {
             shell.openExternal(
@@ -367,6 +371,22 @@ export class ApplicationMenuManager {
         {
           label: 'Group selection',
           async click() {minsky.canvas.groupSelection();},
+        },
+        {
+          label: 'Author',
+          async click() {
+            let author=encodeURIComponent(await minsky.author());
+            WindowManager.createPopupWindowWithRouting({
+              width: 400,
+              height: 80,
+              title: 'Author',
+              url: `#/headless/menu/edit/author?author=${author}`,
+            });
+          },
+        },
+        {
+          label: 'Description',
+          click: async () => await CommandsManager.postNote('model')
         },
         {
           label: 'Dimensions',

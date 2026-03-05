@@ -97,11 +97,12 @@ namespace minsky
   {
     bufferSurface.reset();
 #ifdef USE_WIN32_SURFACE
+    SetWindowLongPtrA(childWindowId, GWLP_USERDATA, 0); // nullifies WM_PAINT handler
+    SendMessageA(childWindowId, WM_PAINT, 0, 0); // flush windowProc queue
     SelectObject(hdcMem, hOld);
     DeleteObject(hbmMem);
     DeleteDC(hdcMem);
-    SetWindowLongPtrA(childWindowId, GWLP_USERDATA, 0);
-    PostMessageA(childWindowId,WM_CLOSE,0,0);
+    SendMessageA(childWindowId,WM_CLOSE,0,0);
 #elif defined(MAC_OSX_TK)
 #elif defined(USE_X11)
     XFreeGC(display, graphicsContext);

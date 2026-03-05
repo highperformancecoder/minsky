@@ -247,6 +247,9 @@ namespace schema3
     static const int version=3;
     int schemaVersion=Minsky::version;
     std::string minskyVersion="unknown";
+    std::string author;
+    std::string title;
+    std::string description;
     vector<Wire> wires;
     vector<Item> items;
     Optional<vector<int>> inVariables, outVariables;
@@ -267,6 +270,7 @@ namespace schema3
     Minsky(const minsky::Minsky& m, bool packTensorData=true):
       Minsky(*m.model,packTensorData) {
       minskyVersion=m.minskyVersion;
+      author=m.author;
       rungeKutta=m;
       zoomFactor=m.model->zoomFactor();
       bookmarks.insert(bookmarks.end(), m.model->bookmarks.begin(), m.model->bookmarks.end());

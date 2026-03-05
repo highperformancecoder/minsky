@@ -17,6 +17,7 @@ import { homedir } from 'os';
 import JSON5 from 'json5';
 import { extname, join, dirname } from 'path';
 import { tmpdir } from 'os';
+import fullname from 'fullname';
 import { HelpFilesManager } from './HelpFilesManager';
 import { WindowManager } from './WindowManager';
 import { StoreManager } from './StoreManager';
@@ -253,6 +254,9 @@ export class CommandsManager {
     case 'wire':
       item=minsky.canvas.wire;
       break;
+    case 'model':
+      item=minsky.model;
+      break;
     }
 
     const window=WindowManager.createPopupWindowWithRouting({
@@ -475,6 +479,12 @@ export class CommandsManager {
     minsky.clearAllMaps();
     minsky.pushFlags();
     minsky.clearHistory();
+    try
+    {
+      await minsky.author(await fullname());
+    } catch {
+      await minsky.author(''); // initialise to blank on error
+    }
     minsky.model.setZoom(1);
     minsky.canvas.recentre();
     minsky.popFlags();
