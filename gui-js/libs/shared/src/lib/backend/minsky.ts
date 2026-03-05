@@ -12,6 +12,7 @@ class minsky__RenderNativeWindow__RenderFrameArgs {}
 class minsky__VariableType__TypeT {}
 class CAPIRenderer  {}
 class civita__ITensor__Args {}
+class civita__ITensorVal {}
 class classdesc__json_pack_t {}
 class classdesc__pack_t {}
 class classdesc__RESTProcess_t {}
@@ -2246,6 +2247,7 @@ export class VariableValue extends CppClass {
   }
   async adjustSliderBounds(): Promise<void> {return this.$callMethod('adjustSliderBounds');}
   async allocValue(): Promise<VariableValue> {return this.$callMethod('allocValue');}
+  async asg(a1: civita__ITensor): Promise<civita__ITensorVal> {return this.$callMethod('asg',a1);}
   async at(a1: number): Promise<number> {return this.$callMethod('at',a1);}
   async atHCIndex(a1: number): Promise<number> {return this.$callMethod('atHCIndex',a1);}
   async begin(): Promise<number> {return this.$callMethod('begin');}
@@ -2431,6 +2433,7 @@ export class civita__TensorVal extends CppClass {
     super(prefix);
   }
   async allocVal(): Promise<void> {return this.$callMethod('allocVal');}
+  async asg(a1: civita__ITensor): Promise<civita__ITensorVal> {return this.$callMethod('asg',a1);}
   async assign(...args: any[]): Promise<void> {return this.$callMethod('assign',...args);}
   async at(a1: number): Promise<number> {return this.$callMethod('at',a1);}
   async atHCIndex(a1: number): Promise<number> {return this.$callMethod('atHCIndex',a1);}
@@ -2449,6 +2452,7 @@ export class civita__TensorVal extends CppClass {
   async setHypercube(a1: civita__Hypercube): Promise<void> {return this.$callMethod('setHypercube',a1);}
   async shape(): Promise<number[]> {return this.$callMethod('shape');}
   async size(): Promise<number> {return this.$callMethod('size');}
+  async timestamp(): Promise<object> {return this.$callMethod('timestamp');}
   async updateTimestamp(): Promise<void> {return this.$callMethod('updateTimestamp');}
 }
 
