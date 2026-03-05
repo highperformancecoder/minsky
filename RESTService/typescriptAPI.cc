@@ -312,6 +312,7 @@ int main()
   cout << "class minsky__VariableType__TypeT {}\n";
   cout << "class CAPIRenderer  {}\n";
   cout << "class civita__ITensor__Args {}\n";
+  cout << "class civita__ITensorVal {}\n";
   cout << "class classdesc__json_pack_t {}\n";
   cout << "class classdesc__pack_t {}\n";
   cout << "class classdesc__RESTProcess_t {}\n";
