@@ -57,7 +57,7 @@ export class AppComponent implements OnInit, DoCheck {
 
   async ngDoCheck() {
     if(this.loading) {
-      this.loading = false;
+      //this.loading = false;
       this.updatePubTabs();
       this.cdRef.detectChanges();
 
@@ -100,8 +100,8 @@ export class AppComponent implements OnInit, DoCheck {
       .pipe(filter(e => e instanceof NavigationEnd), first())
       .subscribe(() => {
         this.loading = false;
-        //this.updatePubTabs();
-        //this.cdRef.detectChanges();
+        this.updatePubTabs();
+        this.cdRef.detectChanges();
       });  }
 
   async updatePubTabs() {
