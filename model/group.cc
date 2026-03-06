@@ -33,6 +33,8 @@
 using namespace std;
 using namespace ecolab::cairo;
 
+#include <algorithm>
+
 // size of the top and bottom margins of the group icon
 static const int topMargin=10;
 
@@ -912,10 +914,10 @@ namespace minsky
     auto z=zoomFactor();
     const double w=0.5*iWidth()*z, h=0.5*iHeight()*z;
     if (onResizeHandle(x,y)) return ClickType::onResize;         
-    if (displayContents() && inIORegion(x,y)==IORegion::none)
-      return ClickType::outside;
     if (auto item=select(x,y))
       return item->clickType(x,y);
+    if (displayContents() && inIORegion(x,y)==IORegion::none)
+      return ClickType::outside;
     if ((abs(x-this->x())<w && abs(y-this->y())<h+topMargin*z)) // check also if (x,y) is within top and bottom margins of group. for feature 88
       return ClickType::onItem;
     return ClickType::outside;
@@ -1180,14 +1182,72 @@ namespace minsky
     return rotFactor;
   }
 
+  void Group::positionEdgeVariables() const
+  {
+    // Position edge variables at their correct edge locations
+    // This is needed for hit testing since ports are positioned relative to variables
+    float left, right;
+    margins(left, right);
+    const float z = zoomFactor();
+    const Rotate r(rotation(), 0, 0);
+    
+    auto positionEdge = [&](const vector<VariablePtr>& vars, float edgeX) {
+      float top = 0, bottom = 0;
+      for (size_t i = 0; i < vars.size(); ++i)
+        {
+          auto& v = vars[i];
+          float edgeY = 0;
+          auto vz = v->zoomFactor();
+          auto t = v->bb.top() * vz, b = v->bb.bottom() * vz;
+          if (i > 0) edgeY = i % 2 ? top - b : bottom - t;
+          
+          // Move variable to edge position (same as in draw1edge)
+          v->moveTo(r.x(edgeX, edgeY) + this->x(), r.y(edgeX, edgeY) + this->y());
+          v->rotation(rotation());
+          
+          // Also position ports (simplified version of what happens in Variable::draw)
+          // This ensures port hit testing works correctly
+          const RenderVariable rv(*v);
+          const double w = std::max(rv.width(), 0.5f * v->iWidth());
+          const double angle = v->rotation() * M_PI / 180.0;
+          const double sa = sin(angle), ca = cos(angle);
+          const double x0 = vz * w, y0 = 0, x1 = -vz * w + 2, y1 = 0;
+          if (v->portsSize() > 0)
+            v->ports(0).lock()->moveTo(v->x() + (x0 * ca - y0 * sa), v->y() + (y0 * ca + x0 * sa));
+          if (v->portsSize() > 1)
+            v->ports(1).lock()->moveTo(v->x() + (x1 * ca - y1 * sa), v->y() + (y1 * ca + x1 * sa));
+          
+          if (i == 0)
+            {
+              bottom = b;
+              top = t;
+            }
+          else if (i % 2)
+            top -= (b - t);
+          else
+            bottom += (b - t);
+        }
+    };
+    
+    positionEdge(inVariables, -0.5 * (iWidth() * z - left));
+    positionEdge(outVariables, 0.5 * (iWidth() * z - right));
+  }
+
   ItemPtr Group::select(float x, float y) const
   {
+    // Position edge variables at their correct locations for accurate hit testing
+    positionEdgeVariables();
+    
+    // Check input variables
     for (auto& v: inVariables)
       if (RenderVariable(*v).inImage(x,y)) 
         return v;
+    
+    // Check output variables
     for (auto& v: outVariables)
       if (RenderVariable(*v).inImage(x,y)) 
         return v;
+    
     return nullptr;
   }
 

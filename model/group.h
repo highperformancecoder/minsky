@@ -372,6 +372,8 @@ namespace minsky
 
     /// scaling factor to allow a rotated icon to fit on the bitmap
     float rotFactor() const;
+    
+    void positionEdgeVariables() const;
 
     /// returns the variable if point (x,y) is within a
     /// I/O variable icon, null otherwise, indicating that the Group
