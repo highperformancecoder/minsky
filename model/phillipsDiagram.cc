@@ -22,6 +22,7 @@
 #include "phillipsDiagram.rcd"
 #include "phillipsDiagram.xcd"
 #include "minsky.h"
+#include "../engine/cairoShimCairo.h"
 #include "minsky_epilogue.h"
 using ecolab::cairo::CairoSave;
 
@@ -72,6 +73,35 @@ namespace minsky
             cairo_rectangle(cairo,-0.6*w,-0.5*h,1.2*w,-f*h);
           }
         cairo_fill(cairo);
+      }
+  }
+
+  void PhillipsStock::draw(const ICairoShim& cairoShim) const
+  {
+    // Call parent draw (VariableBase still uses _internalGetCairoContext internally)
+    StockVar::draw(cairoShim);
+    
+    // colocate input and output ports on the input side
+    m_ports[0]->moveTo(m_ports[1]->x(), m_ports[1]->y());
+    auto maxV=maxStock[units()];
+    if (maxV>0)
+      {
+        cairoShim.save();
+        auto w=width()*zoomFactor(); 
+        auto h=height()*zoomFactor();
+        auto f=value()/maxV;
+        if (f>=0)
+          {
+            cairoShim.setSourceRGBA(0,0,1,0.3);
+            cairoShim.rectangle(-0.6*w,0.5*h,1.2*w,-f*h);
+          }
+        else
+          {
+            cairoShim.setSourceRGBA(1,0,0,0.3);
+            cairoShim.rectangle(-0.6*w,-0.5*h,1.2*w,-f*h);
+          }
+        cairoShim.fill();
+        cairoShim.restore();
       }
   }
 

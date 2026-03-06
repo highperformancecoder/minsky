@@ -98,3 +98,5 @@ namespace minsky
 
 }
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::SVGRenderer);
+
+

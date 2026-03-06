@@ -120,3 +120,18 @@ void minsky::drawTriangle
   cairo_fill(cairo);
 }
 
+void minsky::drawTriangle
+(const ICairoShim& cairoShim, double x, double y, const cairo::Colour& col, double angle)
+{
+  cairoShim.save();
+  cairoShim.newPath();
+  cairoShim.setSourceRGBA(col.r,col.g,col.b,col.a);
+  cairoShim.translate(x,y);
+  cairoShim.rotate(angle);
+  cairoShim.moveTo(10,0);
+  cairoShim.lineTo(0,-3);
+  cairoShim.lineTo(0,3);
+  cairoShim.fill();
+  cairoShim.restore();
+}
+

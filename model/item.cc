@@ -305,12 +305,36 @@ namespace minsky
     cairo_stroke(cairo);
   }
 
+  void Item::drawPorts(const ICairoShim& cairoShim) const
+  {
+    cairoShim.save();
+    cairoShim.newPath();
+    for (auto& p: m_ports)
+      {
+        cairoShim.newSubPath();
+        cairoShim.arc(p->x()-x(), p->y()-y(), portRadius*zoomFactor(), 0, 2*M_PI);
+      }
+    cairoShim.setSourceRGB(0,0,0);
+    cairoShim.setLineWidth(1);
+    cairoShim.stroke();
+    cairoShim.restore();
+  }
+
   void Item::drawSelected(cairo_t* cairo)
   {
     // implemented by filling the clip region with a transparent grey
     const CairoSave cs(cairo);
     cairo_set_source_rgba(cairo, 0.5,0.5,0.5,0.4);
     cairo_paint(cairo);
+  }
+
+  void Item::drawSelected(const ICairoShim& cairoShim)
+  {
+    // implemented by filling the clip region with a transparent grey
+    cairoShim.save();
+    cairoShim.setSourceRGBA(0.5,0.5,0.5,0.4);
+    cairoShim.paint();
+    cairoShim.restore();
   }
 
     void Item::drawResizeHandle(cairo_t* cairo, double x, double y, double sf, double angle)
@@ -327,6 +351,23 @@ namespace minsky
       cairo_line_to(cairo,-.2,-1);
       cairo_move_to(cairo,.2,1);
       cairo_line_to(cairo,1,1);
+    }
+
+    void Item::drawResizeHandle(const ICairoShim& cairoShim, double x, double y, double sf, double angle)
+    {
+      cairoShim.save();
+      cairoShim.translate(x,y);
+      cairoShim.rotate(angle);
+      cairoShim.scale(sf,sf);
+      cairoShim.moveTo(-1,-.2);
+      cairoShim.lineTo(-1,-1);
+      cairoShim.lineTo(1,1);
+      cairoShim.lineTo(1,0.2);
+      cairoShim.moveTo(-1,-1);
+      cairoShim.lineTo(-.2,-1);
+      cairoShim.moveTo(.2,1);
+      cairoShim.lineTo(1,1);
+      cairoShim.restore();
     }
   
   // Refactor resize() code for all canvas items here. For feature 25 and 94
@@ -352,11 +393,30 @@ namespace minsky
     cairo_stroke(cairo);
   }
 
+  void Item::drawResizeHandles(const ICairoShim& cairoShim) const
+  {
+    auto sf=resizeHandleSize();
+    double angle=0.5*M_PI;
+    for (auto& p: corners())
+      {
+        angle+=0.5*M_PI;
+        drawResizeHandle(cairoShim,p.x()-x(),p.y()-y(),sf,angle);
+      }
+    cairoShim.stroke();
+  }
+
   void BottomRightResizerItem::drawResizeHandles(cairo_t* cairo) const
   { 			  			
     const Point p=resizeHandleCoords();
     drawResizeHandle(cairo,p.x()-x(),p.y()-y(),resizeHandleSize(),0);
     cairo_stroke(cairo);
+  }
+
+  void BottomRightResizerItem::drawResizeHandles(const ICairoShim& cairoShim) const
+  { 			  			
+    const Point p=resizeHandleCoords();
+    drawResizeHandle(cairoShim,p.x()-x(),p.y()-y(),resizeHandleSize(),0);
+    cairoShim.stroke();
   }
   
   // default is just to display the detailed text (ie a "note")
@@ -389,6 +449,35 @@ namespace minsky
     if (selected) drawSelected(cairo);
   }
 
+  void Item::draw(const ICairoShim& cairoShim) const
+  {
+    auto [angle,flipped]=rotationAsRadians();
+    const Rotate r(rotation()+(flipped? 180:0),0,0);
+    auto& pango = cairoShim.pango();
+    const float z=zoomFactor();
+    pango.angle=angle+(flipped? M_PI: 0);
+    pango.setFontSize(12.0*scaleFactor()*z);
+    pango.setMarkup(latexToPango(detailedText()));         
+    // parameters of icon in userspace (unscaled) coordinates
+    const float w=0.5*pango.width()+2*z; 
+    const float h=0.5*pango.height()+4*z;       
+
+    cairoShim.moveTo(r.x(-w+1,-h+2), r.y(-w+1,-h+2));
+    pango.show();
+
+    if (mouseFocus) {
+      displayTooltip(cairoShim,tooltip());	
+    }
+    if (onResizeHandles) drawResizeHandles(cairoShim);	
+    cairoShim.moveTo(r.x(-w,-h), r.y(-w,-h));
+    cairoShim.lineTo(r.x(w,-h), r.y(w,-h));
+    cairoShim.lineTo(r.x(w,h), r.y(w,h));
+    cairoShim.lineTo(r.x(-w,h), r.y(-w,h));
+    cairoShim.closePath();
+    cairoShim.clip();
+    if (selected) drawSelected(cairoShim);
+  }
+
   void Item::dummyDraw() const
   {
     const ecolab::cairo::Surface s(cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
@@ -415,6 +504,30 @@ namespace minsky
         cairo_set_source_rgb(cairo,0,0,0);
         pango.show();
         cairo_stroke(cairo);
+      }
+  }
+
+  void Item::displayTooltip(const ICairoShim& cairoShim, const std::string& tooltip) const
+  {
+    const string unitstr=units().latexStr();
+    if (!tooltip.empty() || !unitstr.empty())
+      {
+        cairoShim.save();
+        auto& pango = cairoShim.pango();
+        string toolTipText=latexToPango(tooltip);
+        if (!unitstr.empty())
+          toolTipText+=" Units:"+latexToPango(unitstr);
+        pango.setMarkup(toolTipText);
+        const float z=zoomFactor();
+        cairoShim.translate(z*(0.5*bb.width())+10,
+                        z*(-0.5*bb.height())-20);
+        cairoShim.rectangle(0,0,pango.width(),pango.height());
+        cairoShim.setSourceRGB(1,1,1);
+        cairoShim.fillPreserve();
+        cairoShim.setSourceRGB(0,0,0);
+        pango.show();
+        cairoShim.stroke();
+        cairoShim.restore();
       }
   }
 
