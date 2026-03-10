@@ -9,7 +9,7 @@ npm test minsky-electron
 if test $? -ne 0; then fail; fi
 npm test minsky-web
 if test $? -ne 0; then fail; fi
-xvfb-run npm test shared
+xvfb-run -a npm test shared
 if test $? -ne 0; then fail; fi
 # commented out tests currently failing
 #npm test core
