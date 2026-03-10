@@ -8,14 +8,7 @@ export AEGIS
 export MXE
 export OPENMP
 export OPT
-#export FLAGS
 export CPLUSPLUS
-
-# location of TCL and TK libraries 
-TCL_PREFIX=$(shell grep TCL_PREFIX $(call search,lib*/tclConfig.sh) | cut -f2 -d\')
-TCL_VERSION=$(shell grep TCL_VERSION $(call search,lib*/tclConfig.sh) | cut -f2 -d\')
-TCL_LIB=$(dir $(shell find $(TCL_PREFIX) -name init.tcl -path "*/tcl$(TCL_VERSION)*" -print))
-TK_LIB=$(dir $(shell find $(TCL_PREFIX) -name tk.tcl -path "*/tk$(TCL_VERSION)*" -print))
 
 # root directory for ecolab include files and libraries
 ECOLAB_HOME=$(shell pwd)/ecolab
@@ -230,7 +223,10 @@ ifeq ($(CPLUSPLUS),clang++)
 FLAGS+=-Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-defaulted-function-deleted -Wno-uninitialized
 endif
 
-ifdef OPENMP
+# enable OPENMP by default
+#ifdef OPENMP
+# Default compiler on MacOSX does not support OpenMP. Sigh!
+ifneq ($(OS),Darwin)
 FLAGS+=-fopenmp
 LIBS+=-fopenmp
 endif
@@ -306,7 +302,7 @@ MXE_DLLS=libboost_thread-mt-x64 libbrotlidec libbrotlicommon libbz2 libcairo-2 \
 libcroco-0 libcrypto-3-x64 \
 libexpat-1 libffi libfontconfig-1 libfreetype-6 libfribidi-0 libgcc_s_seh-1 \
 libgdk_pixbuf-2 libgio-2 libglib-2 libgmodule-2 \
-libgobject-2 libgsl-27 libgslcblas-0 libharfbuzz-0 libiconv-2 libintl-8 \
+libgobject-2 libgomp-1 libgsl-27 libgslcblas-0 libharfbuzz-0 libiconv-2 libintl-8 \
 libjpeg-9 liblzma-5 libpango-1 libpangocairo-1 libpangoft2-1 libpangowin32-1 \
 libpcre2-8-0 libpixman-1-0 libpng16-16 libpq libreadline8 librsvg-2-2 libssl-3-x64 \
 libstdc++-6 libtermcap libwinpthread-1 libxml2-16 tcl86 zlib1
@@ -485,7 +481,7 @@ node-api.o: node-api.cc
 $(EXES):
 
 tests: $(EXES)
-	cd test; $(MAKE)
+	cd test; $(MAKE) $(MAKEOVERRIDES) CPLUSPLUS="$(CPLUSPLUS)"
 
 BASIC_CLEAN=rm -rf *.o *~ "\#*\#" core *.d *.cd *.rcd *.tcd *.xcd *.gcda *.gcno *.so *.dll *.dylib
 

@@ -336,10 +336,14 @@ namespace minsky
   }  
 
   vector<string> Ravel::pickedSliceLabels(int axis) const
-  {return wrappedRavel.sliceLabels(axis);}
+  {
+    return wrappedRavel.sliceLabels(axis);
+  }
   
   vector<string> Ravel::pickedSliceLabels() const
-  {return pickedSliceLabels(wrappedRavel.selectedHandle());}
+  {
+    return pickedSliceLabels(wrappedRavel.selectedHandle());
+  }
 
   void Ravel::pickSliceLabels(int axis, const vector<string>& pick) 
   {
@@ -544,7 +548,7 @@ namespace minsky
 
   Units Ravel::units(bool check) const
   {
-    Units inputUnits=m_ports[1]->units(check);
+   Units inputUnits=m_ports[1]->units(check);
     if (inputUnits.empty()) return inputUnits;
     size_t multiplier=1;
     // at this stage, gross up exponents by the handle size of each
