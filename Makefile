@@ -11,12 +11,6 @@ export OPT
 #export FLAGS
 export CPLUSPLUS
 
-# location of TCL and TK libraries 
-TCL_PREFIX=$(shell grep TCL_PREFIX $(call search,lib*/tclConfig.sh) | cut -f2 -d\')
-TCL_VERSION=$(shell grep TCL_VERSION $(call search,lib*/tclConfig.sh) | cut -f2 -d\')
-TCL_LIB=$(dir $(shell find $(TCL_PREFIX) -name init.tcl -path "*/tcl$(TCL_VERSION)*" -print))
-TK_LIB=$(dir $(shell find $(TCL_PREFIX) -name tk.tcl -path "*/tk$(TCL_VERSION)*" -print))
-
 # root directory for ecolab include files and libraries
 ECOLAB_HOME=$(shell pwd)/ecolab
 export LD_LIBRARY_PATH:=$(ECOLAB_HOME)/lib:$(LD_LIBRARY_PATH):/usr/local/lib64
@@ -308,13 +302,14 @@ libexpat-1 libffi libfontconfig-1 libfreetype-6 libfribidi-0 libgcc_s_seh-1 \
 libgdk_pixbuf-2 libgio-2 libglib-2 libgmodule-2 \
 libgobject-2 libgsl-27 libgslcblas-0 libharfbuzz-0 libiconv-2 libintl-8 \
 libjpeg-9 liblzma-5 libpango-1 libpangocairo-1 libpangoft2-1 libpangowin32-1 \
-libpcre2-8-0 libpixman-1-0 libpng16-16 libpq libreadline8 librsvg-2-2 libssl-3-x64 \
-libstdc++-6 libtermcap libwinpthread-1 libxml2-16 tcl86 zlib1
+libpcre2-8-0 libpixman-1-0 libpng16-16 libreadline8 librsvg-2-2 libssl-3-x64 \
+libstdc++-6 libtermcap libwinpthread-1 libxml2-16 tcl86 zlib1 \
+libsoci libpq libsqlite
 BINDIR=$(subst bin,$(MXE_PREFIX)/bin,$(dir $(shell which $(CPLUSPLUS))))
 $(warning $(BINDIR))
-DLLS=$(wildcard $(MXE_DLLS:%=$(BINDIR)/%*.dll))
+DLLS=$(notdir $(wildcard $(MXE_DLLS:%=$(BINDIR)/%*.dll)))
 # Add soci support for RAVELPRO
-DLLS+=$(wildcard $(BINDIR)/libsoci*.dll) $(BINDIR)/libpq.dll $(BINDIR)/libsqlite3-0.dll
+#DLLS+=$(wildcard $(BINDIR)/libsoci*.dll) $(BINDIR)/libpq.dll $(BINDIR)/libsqlite3-0.dll
 else
 EXE=
 DL=so
@@ -400,11 +395,11 @@ else
 # symbolic debugger available for this build
 OPT=-O0
 endif
-ifdef RAVEL
-GUI_TK_OBJS+=RavelLogo.o
-else
-GUI_TK_OBJS+=MinskyLogo.o
-endif
+#ifdef RAVEL
+#GUI_TK_OBJS+=RavelLogo.o
+#else
+#GUI_TK_OBJS+=MinskyLogo.o
+#endif
 WINDRES=$(MXE_PREFIX)-windres
 endif
 
@@ -434,13 +429,23 @@ gui-js/libs/shared/src/lib/backend/minsky.ts: RESTService/typescriptAPI
 	RESTService/typescriptAPI > $@
 endif
 
+ifdef MXE
+DYNAMIC_LIB_DIR=gui-js/dynamic_libraries
+
+$(DYNAMIC_LIB_DIR)/%: $(BINDIR)/%
+	mkdir -p $(DYNAMIC_LIB_DIR)
+	cp $< $@
+# serialise this rule to rate limit connections to Sectigo timestamper
+	flock sign-lock sign.sh $@
+
+gui-js/build/minskyRESTService.node: $(DLLS:%=$(DYNAMIC_LIB_DIR)/%)
+endif
+
 # N-API node embedded RESTService
 gui-js/build/minskyRESTService.node: addon.o  $(NODE_API) $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) RavelCAPI/libravelCAPI.a RavelCAPI/civita/libcivita.a 
 	mkdir -p gui-js/build
 ifdef MXE
 	$(LINK) -shared -o $@ $^ $(LIBS)
-	mkdir -p gui-js/dynamic_libraries
-	cp $(DLLS) gui-js/dynamic_libraries
 else
 ifeq ($(OS),Darwin)
 	c++ -bundle -undefined dynamic_lookup -Wl,-no_pie -Wl,-search_paths_first -mmacosx-version-min=$(MACOSX_MIN_VERSION) -arch $(ARCH) -stdlib=libc++  -o $@  $^ $(LIBS)
