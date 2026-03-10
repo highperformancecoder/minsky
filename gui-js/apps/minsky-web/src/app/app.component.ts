@@ -57,7 +57,6 @@ export class AppComponent implements OnInit, DoCheck {
 
   async ngDoCheck() {
     if(this.loading) {
-      //this.loading = false;
       this.updatePubTabs();
       this.cdRef.detectChanges();
 
