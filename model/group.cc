@@ -1235,6 +1235,20 @@ namespace minsky
 
   ItemPtr Group::select(float x, float y) const
   {
+    // Short-circuit: no edge variables to hit-test.
+    if (inVariables.empty() && outVariables.empty())
+      return nullptr;
+
+    // Short-circuit: avoid the expensive positionEdgeVariables() call when
+    // (x,y) is clearly outside the expanded group bounding box. Using
+    // w+h as the conservative AABB half-extent covers all rotation angles.
+    const float z = zoomFactor();
+    const float w = 0.5f * iWidth() * z;
+    const float h = 0.5f * iHeight() * z + topMargin * z;
+    const float maxExtent = w + h;
+    if (abs(x - this->x()) > maxExtent || abs(y - this->y()) > maxExtent)
+      return nullptr;
+
     // Ensure edge variable positions are up-to-date before hit-testing.
     // (Positions are otherwise only set during draw1edge() in a render pass.)
     positionEdgeVariables();
