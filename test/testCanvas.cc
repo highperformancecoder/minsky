@@ -124,8 +124,10 @@ TEST(GroupIOTest, groupIOVarSelect)
     EXPECT_NE(nullptr, found)
         << "select() should find the output variable without a prior draw() call (issue #610)";
     if (found)
+      {
         EXPECT_EQ(grp->outVariables[0].get(), found.get())
             << "select() should return the output variable, not some other item";
+      }
 }
 
 /// Regression test to verify the zoomed wire-pull path works.
