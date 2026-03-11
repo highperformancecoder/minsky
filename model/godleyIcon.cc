@@ -27,6 +27,7 @@
 #include <arrays.h>
 #include <cairo_base.h>
 #include <ctype.h>
+#include "../engine/cairoShimCairo.h"
 #include "godleyIcon.rcd"
 #include "itemT.rcd"
 #include "godleyTableWindow.xcd"
@@ -516,6 +517,95 @@ namespace minsky
     if (selected)
       {
         drawSelected(cairo);
+      }
+  }
+
+  void GodleyIcon::draw(const ICairoShim& cairoShim) const
+  {
+    positionVariables();
+    const float z=zoomFactor()*scaleFactor();
+    float w=iWidth()*z+leftMargin(), h=iHeight()*z+bottomMargin(), left=-0.5*w, top=-0.5*h;
+    double titley;
+    
+    if (m_editorMode)
+      {
+        cairoShim.save();
+        cairoShim.rectangle(left, top, w, h);
+        cairoShim.rectangle(left-border*z, top-border*z, w+2*border*z, h+2*border*z);
+        cairoShim.strokePreserve();
+        if (onBorder)
+          { // shadow the border when mouse is over it
+            cairoShim.save();
+            cairoShim.setSourceRGBA(0.5,0.5,0.5,0.5);
+            cairoShim.setFillRule(CAIRO_FILL_RULE_EVEN_ODD);
+            cairoShim.fill();
+            cairoShim.restore();
+          }
+        cairoShim.newPath();
+        cairoShim.rectangle(left, top, w, h);
+        cairoShim.clip();
+        cairoShim.translate(left+border*z+leftMargin(),top+border*z+titleOffs()/* space for title*/);
+        // render to a recording surface to determine size of editor table
+        // TODO - maybe move this stuff into update()
+        // GodleyTableEditor needs cairo_t* for now
+        auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
+        cairo_t* cairo = shimImpl._internalGetCairoContext();
+        const Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR, nullptr));
+        const_cast<GodleyTableEditor&>(editor).zoomFactor=1;
+        const_cast<GodleyTableEditor&>(editor).draw(surf.cairo());
+        const_cast<GodleyTableEditor&>(editor).zoomFactor=min((w-leftMargin()-2*border*z)/surf.width(),(h-bottomMargin()-2*border*z-titleOffs())/surf.height());
+        const_cast<GodleyTableEditor&>(editor).draw(cairo);
+        titley=-0.5*h;
+        w+=2*border*z;
+        h+=2*border*z;
+        left-=border*z;
+        top-=border*z;
+        cairoShim.restore();
+      }
+    else
+      {
+        cairoShim.save();
+        cairoShim.translate(left+leftMargin(),top);
+        // Render SVG using ICairoShim abstraction
+        cairoShim.renderSVG(svgRenderer, w-leftMargin(), h-bottomMargin());
+        titley=top+0.1*(h-bottomMargin());
+        cairoShim.restore();
+      }
+    
+    if (!table.title.empty())
+      {
+        cairoShim.save();
+        auto& pango = cairoShim.pango();
+        pango.setMarkup("<b>"+latexToPango(table.title)+"</b>");
+        pango.setFontSize(titleOffs());
+        cairoShim.moveTo(-0.5*(pango.width()-leftMargin()), titley);
+        pango.show();
+        cairoShim.restore();
+      }
+      
+          
+
+    if (m_variableDisplay && (!m_editorMode || wiresAttached()))
+      {
+        // render the variables - DrawVars needs cairo_t*
+        auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
+        const DrawVars drawVars(shimImpl._internalGetCairoContext(),x(),y());
+        drawVars(m_flowVars); 
+        drawVars(m_stockVars); 
+      }
+    
+    if (mouseFocus)
+      {
+        drawPorts(cairoShim);
+        displayTooltip(cairoShim,tooltip());
+        drawResizeHandles(cairoShim);
+      }
+      
+    cairoShim.rectangle(left,top, w, h);    
+    cairoShim.clip();
+    if (selected)
+      {
+        drawSelected(cairoShim);
       }
   }
 

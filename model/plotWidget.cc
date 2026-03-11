@@ -26,6 +26,7 @@
 #include <cairo/cairo-ps.h>
 #include <cairo/cairo-pdf.h>
 #include <cairo/cairo-svg.h>
+#include "../engine/cairoShimCairo.h"
 
 #include "CSVTools.xcd"
 #include "itemT.rcd"
@@ -211,6 +212,13 @@ namespace minsky
     cairo_clip(cairo);
     if (selected) drawSelected(cairo);
 
+  }
+
+  void PlotWidget::draw(const ICairoShim& cairoShim) const
+  {
+    // TODO: Implement properly without cairo_t* delegation
+    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
+    draw(shimImpl._internalGetCairoContext());
   }
   
   void PlotWidget::scalePlot()

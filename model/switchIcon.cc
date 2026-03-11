@@ -21,6 +21,7 @@
 #include "itemT.rcd"
 #include "switchIcon.h"
 #include "switchIcon.rcd"
+#include "../engine/cairoShimCairo.h"
 #include "minsky_epilogue.h"
 using namespace ecolab::cairo;
 using namespace ecolab;
@@ -122,6 +123,56 @@ namespace minsky
     cairo_rectangle(cairo,-0.5*width-8,-0.5*height-8,width+16,height+8);
     cairo_clip(cairo);
     if (selected) drawSelected(cairo);
+  }
+
+  void SwitchIcon::draw(const ICairoShim& cairoShim) const
+  {
+    auto z=zoomFactor();
+    const float width=m_width*z, height=m_height*z;
+    cairoShim.setLineWidth(1);
+    cairoShim.rectangle(-0.5*width,-0.5*height,width,height);
+    cairoShim.stroke();     	 
+
+    const float w=flipped? -width: width;
+    const float o=flipped? -8: 8;
+    // output port
+    drawTriangle(cairoShim, 0.5*w, 0, palette[0], flipped? M_PI: 0);
+    m_ports[0]->moveTo(x()+0.5*w, y());
+    // control port
+    drawTriangle(cairoShim, 0, -0.5*height-8, palette[0], M_PI/2);
+    m_ports[1]->moveTo(x(), y()-0.5*height-8);
+    const float dy=height/numCases();
+    float y1=-0.5*height+0.5*dy;
+    // case ports
+    for (size_t i=2; i<m_ports.size(); ++i, y1+=dy)
+      {
+        drawTriangle(cairoShim, -0.5*w-o, y1, palette[(i-2)%paletteSz], flipped? M_PI: 0);
+        m_ports[i]->moveTo(x()+-0.5*w-o, y()+y1);
+      }
+    // draw indicating arrow
+    cairoShim.moveTo(0.5*w, 0);
+    try
+      {
+        y1=-0.5*width+0.5*dy+switchValue()*dy;
+      }
+    catch (const std::exception&)
+      {
+        y1=-0.5*width+0.5*dy;
+      }
+    cairoShim.lineTo(-0.45*w,0.9*y1);
+    cairoShim.stroke();
+
+    if (mouseFocus)
+      { 		  
+        drawPorts(cairoShim);
+        displayTooltip(cairoShim,tooltip());
+        if (onResizeHandles) drawResizeHandles(cairoShim);
+      }	       
+
+    // add 8 pt margin to allow for ports
+    cairoShim.rectangle(-0.5*width-8,-0.5*height-8,width+16,height+8);
+    cairoShim.clip();
+    if (selected) drawSelected(cairoShim);
   }
   
 }

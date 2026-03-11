@@ -28,6 +28,7 @@
 #include "pango.h"
 #include "plotWidget.h"
 #include "SVGItem.h"
+#include "../engine/cairoShimCairo.h"
 #include "wire.rcd"
 #include "minsky_epilogue.h"
 #include  <random>
@@ -504,6 +505,14 @@ namespace
         pango.show();
         cairo_stroke(cairo);
       }
+  }
+
+  void Wire::draw(const ICairoShim& cairoShim, bool reverseArrow) const
+  {
+    // Wire drawing is complex and uses storeCairoCoords which requires cairo_t*
+    // TODO: This will be properly refactored in a separate PR (per owner comment)
+    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
+    draw(shimImpl._internalGetCairoContext(), reverseArrow);
   }
 
   void Wire::split()
