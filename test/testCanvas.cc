@@ -128,3 +128,41 @@ TEST(GroupIOTest, groupIOVarSelect)
             << "select() should return the output variable, not some other item";
 }
 
+/// Regression test to verify the zoomed wire-pull path works.
+TEST(GroupIOTest, groupIOVarSelectZoomed)
+{
+    // Build a standalone group with an output variable.
+    auto grp = make_shared<Group>();
+    grp->self = grp;
+    grp->moveTo(200, 200);
+    grp->iWidth(100);
+    grp->iHeight(100);
+
+    // Set a non-default zoom
+    grp->setZoom(2.5f);
+
+    grp->addOutputVar();
+    ASSERT_EQ(1u, grp->outVariables.size());
+
+    // Update bounding box for the output variable so margins() works.
+    auto& outVar = *grp->outVariables[0];
+    outVar.bb.update(outVar);
+
+    float leftMargin, rightMargin;
+    grp->margins(leftMargin, rightMargin);
+    const float z     = grp->zoomFactor();
+    const float xEdge = 0.5f * (grp->iWidth() * z - rightMargin);
+    const float expectedX = grp->x() + xEdge;
+    const float expectedY = grp->y();
+
+    auto found = grp->select(expectedX, expectedY);
+    EXPECT_NE(nullptr, found)
+        << "select() should find the output variable at a non-default zoom";
+
+    // Since `draw()` hasn't positioned the ports dynamically, we check the exact 
+    // underlying static port coordinates of the found variable after positions are set.
+    auto outPort = outVar.ports(0).lock();
+    EXPECT_EQ(ClickType::onPort, grp->clickType(outPort->x(), outPort->y()))
+        << "clickType() on group should yield onPort at a non-default zoom for wire-pulling";
+}
+

@@ -1045,26 +1045,21 @@ namespace minsky
     
   }
 
-  void Group::draw1edge(const vector<VariablePtr>& vars, cairo_t* cairo, 
-                        float x) const
+  // Helper to compute edge variable layout (world-space positions) radially
+  static void layoutEdgeVariables(const vector<VariablePtr>& vars, float xEdge,
+                                  const Item* groupItem, double groupRotation)
   {
     float top=0, bottom=0;
-    const double angle=rotation() * M_PI / 180.0;
     for (size_t i=0; i<vars.size(); ++i)
       {
-        const Rotate r(rotation(),0,0);
+        const Rotate r(groupRotation,0,0);
         auto& v=vars[i];
-        float y=0;
+        float yOff=0;
         auto z=v->zoomFactor();
         auto t=v->bb.top()*z, b=v->bb.bottom()*z;
-        if (i>0) y = i%2? top-b: bottom-t;
-        v->moveTo(r.x(x,y)+this->x(), r.y(x,y)+this->y());
-        const cairo::CairoSave cs(cairo);
-        cairo_translate(cairo,x,y);
-        // cairo context is already rotated, so antirotate
-        cairo_rotate(cairo,-angle);
-        v->rotation(rotation()); 
-        v->draw(cairo);
+        if (i>0) yOff = i%2? top-b: bottom-t;
+        v->moveTo(r.x(xEdge,yOff)+groupItem->x(), r.y(xEdge,yOff)+groupItem->y());
+        v->rotation(groupRotation);
         if (i==0)
           {
             bottom=b;
@@ -1074,6 +1069,44 @@ namespace minsky
           top-=v->height();
         else
           bottom+=v->height();
+      }
+  }
+
+  void Group::draw1edge(const vector<VariablePtr>& vars, cairo_t* cairo, 
+                        float xEdge) const
+  {
+    layoutEdgeVariables(vars, xEdge, this, rotation());
+
+    // Iterate again solely to perform drawing steps.
+    // Group::draw has ALREADY called cairo_scale(cairo, z, z), so the `xEdge`
+    // parameter is properly matched to the visual coordinates.
+    // However, translating `yOff` locally during rendering requires tracking
+    // the variable bounding boxes WITHOUT pre-multiplying `z` onto them here.
+    const double angle=rotation() * M_PI / 180.0;
+    float top=0, bottom=0;
+    for (size_t i=0; i<vars.size(); ++i)
+      {
+        auto& v=vars[i];
+        
+        float yOff = 0;
+        auto t = v->bb.top(), b = v->bb.bottom();
+        if (i > 0) yOff = i % 2 ? top - b : bottom - t;
+        
+        const cairo::CairoSave cs(cairo);
+        cairo_translate(cairo,xEdge,yOff);
+        // cairo context is already rotated, so antirotate
+        cairo_rotate(cairo,-angle);
+        v->draw(cairo);
+
+        if (i == 0)
+          {
+            bottom = b;
+            top = t;
+          }
+        else if (i % 2)
+          top -= v->height() / v->zoomFactor(); // Remove zoom as Group::draw supplies it
+        else
+          bottom += v->height() / v->zoomFactor();
       }
   }
 
@@ -1196,28 +1229,8 @@ namespace minsky
     margins(leftMargin, rightMargin);
     const float z = zoomFactor();
 
-    auto position1edge = [&](const std::vector<VariablePtr>& vars, float xEdge)
-    {
-      float top = 0, bottom = 0;
-      for (size_t i = 0; i < vars.size(); ++i)
-        {
-          const Rotate r(rotation(), 0, 0);
-          auto& v = vars[i];
-          float yOff = 0;
-          auto vz = v->zoomFactor();
-          auto t = v->bb.top() * vz, b = v->bb.bottom() * vz;
-          if (i > 0) yOff = (i % 2) ? top - b : bottom - t;
-          v->moveTo(r.x(xEdge, yOff) + this->x(),
-                    r.y(xEdge, yOff) + this->y());
-          v->rotation(rotation());
-          if (i == 0) { bottom = b; top = t; }
-          else if (i % 2) top -= v->height();
-          else            bottom += v->height();
-        }
-    };
-
-    position1edge(inVariables,  -0.5f * (iWidth() * z - leftMargin));
-    position1edge(outVariables,  0.5f * (iWidth() * z - rightMargin));
+    layoutEdgeVariables(inVariables, -0.5f * (iWidth() * z - leftMargin), this, rotation());
+    layoutEdgeVariables(outVariables, 0.5f * (iWidth() * z - rightMargin), this, rotation());
   }
 
   ItemPtr Group::select(float x, float y) const
