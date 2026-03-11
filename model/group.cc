@@ -1078,10 +1078,6 @@ namespace minsky
     layoutEdgeVariables(vars, xEdge, this, rotation());
 
     // Iterate again solely to perform drawing steps.
-    // Group::draw has ALREADY called cairo_scale(cairo, z, z), so the `xEdge`
-    // parameter is properly matched to the visual coordinates.
-    // However, translating `yOff` locally during rendering requires tracking
-    // the variable bounding boxes WITHOUT pre-multiplying `z` onto them here.
     const double angle=rotation() * M_PI / 180.0;
     float top=0, bottom=0;
     for (size_t i=0; i<vars.size(); ++i)
@@ -1089,7 +1085,8 @@ namespace minsky
         auto& v=vars[i];
         
         float yOff = 0;
-        auto t = v->bb.top(), b = v->bb.bottom();
+        auto z = v->zoomFactor();
+        auto t = v->bb.top() * z, b = v->bb.bottom() * z;
         if (i > 0) yOff = i % 2 ? top - b : bottom - t;
         
         const cairo::CairoSave cs(cairo);
@@ -1104,9 +1101,9 @@ namespace minsky
             top = t;
           }
         else if (i % 2)
-          top -= v->height() / v->zoomFactor(); // Remove zoom as Group::draw supplies it
+          top -= v->height();
         else
-          bottom += v->height() / v->zoomFactor();
+          bottom += v->height();
       }
   }
 
