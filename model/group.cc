@@ -911,11 +911,16 @@ namespace minsky
   {
     auto z=zoomFactor();
     const double w=0.5*iWidth()*z, h=0.5*iHeight()*z;
-    if (onResizeHandle(x,y)) return ClickType::onResize;         
-    if (displayContents() && inIORegion(x,y)==IORegion::none)
-      return ClickType::outside;
+    if (onResizeHandle(x,y)) return ClickType::onResize;
+    // Check edge I/O variables BEFORE the inIORegion early exit.
+    // When a group is zoomed (displayContents()==true), edge variables may
+    // lie outside the I/O region strip. Without this ordering, clicking on
+    // them returns ClickType::outside and the canvas falls back to dragging
+    // the whole group instead of initiating wire dragging. Fixes issue #610.
     if (auto item=select(x,y))
       return item->clickType(x,y);
+    if (displayContents() && inIORegion(x,y)==IORegion::none)
+      return ClickType::outside;
     if ((abs(x-this->x())<w && abs(y-this->y())<h+topMargin*z)) // check also if (x,y) is within top and bottom margins of group. for feature 88
       return ClickType::onItem;
     return ClickType::outside;
@@ -1040,26 +1045,21 @@ namespace minsky
     
   }
 
-  void Group::draw1edge(const vector<VariablePtr>& vars, cairo_t* cairo, 
-                        float x) const
+  // Helper to compute edge variable layout (world-space positions) radially
+  static void layoutEdgeVariables(const vector<VariablePtr>& vars, float xEdge,
+                                  const Item* groupItem, double groupRotation)
   {
     float top=0, bottom=0;
-    const double angle=rotation() * M_PI / 180.0;
     for (size_t i=0; i<vars.size(); ++i)
       {
-        const Rotate r(rotation(),0,0);
+        const Rotate r(groupRotation,0,0);
         auto& v=vars[i];
-        float y=0;
+        float yOff=0;
         auto z=v->zoomFactor();
         auto t=v->bb.top()*z, b=v->bb.bottom()*z;
-        if (i>0) y = i%2? top-b: bottom-t;
-        v->moveTo(r.x(x,y)+this->x(), r.y(x,y)+this->y());
-        const cairo::CairoSave cs(cairo);
-        cairo_translate(cairo,x,y);
-        // cairo context is already rotated, so antirotate
-        cairo_rotate(cairo,-angle);
-        v->rotation(rotation()); 
-        v->draw(cairo);
+        if (i>0) yOff = i%2? top-b: bottom-t;
+        v->moveTo(r.x(xEdge,yOff)+groupItem->x(), r.y(xEdge,yOff)+groupItem->y());
+        v->rotation(groupRotation);
         if (i==0)
           {
             bottom=b;
@@ -1069,6 +1069,41 @@ namespace minsky
           top-=v->height();
         else
           bottom+=v->height();
+      }
+  }
+
+  void Group::draw1edge(const vector<VariablePtr>& vars, cairo_t* cairo, 
+                        float xEdge) const
+  {
+    layoutEdgeVariables(vars, xEdge, this, rotation());
+
+    // Iterate again solely to perform drawing steps.
+    const double angle=rotation() * M_PI / 180.0;
+    float top=0, bottom=0;
+    for (size_t i=0; i<vars.size(); ++i)
+      {
+        auto& v=vars[i];
+        
+        float yOff = 0;
+        auto z = v->zoomFactor();
+        auto t = v->bb.top() * z, b = v->bb.bottom() * z;
+        if (i > 0) yOff = i % 2 ? top - b : bottom - t;
+        
+        const cairo::CairoSave cs(cairo);
+        cairo_translate(cairo,xEdge,yOff);
+        // cairo context is already rotated, so antirotate
+        cairo_rotate(cairo,-angle);
+        v->draw(cairo);
+
+        if (i == 0)
+          {
+            bottom = b;
+            top = t;
+          }
+        else if (i % 2)
+          top -= v->height();
+        else
+          bottom += v->height();
       }
   }
 
@@ -1180,13 +1215,45 @@ namespace minsky
     return rotFactor;
   }
 
+  void Group::positionEdgeVariables() const
+  {
+    // Replicates the positioning logic of draw1edge() without requiring a
+    // Cairo context. Edge I/O variable world-space positions are only set
+    // during a draw() call (via moveTo inside draw1edge()). Calling this
+    // before hit-testing ensures RenderVariable::inImage() sees the correct
+    // positions. Fixes issue #610 (unable to pull wire from group output).
+    float leftMargin, rightMargin;
+    margins(leftMargin, rightMargin);
+    const float z = zoomFactor();
+
+    layoutEdgeVariables(inVariables, -0.5f * (iWidth() * z - leftMargin), this, rotation());
+    layoutEdgeVariables(outVariables, 0.5f * (iWidth() * z - rightMargin), this, rotation());
+  }
+
   ItemPtr Group::select(float x, float y) const
   {
+    // Short-circuit: no edge variables to hit-test.
+    if (inVariables.empty() && outVariables.empty())
+      return nullptr;
+
+    // Short-circuit: avoid the expensive positionEdgeVariables() call when
+    // (x,y) is clearly outside the expanded group bounding box. Using
+    // w+h as the conservative AABB half-extent covers all rotation angles.
+    const float z = zoomFactor();
+    const float w = 0.5f * iWidth() * z;
+    const float h = 0.5f * iHeight() * z + topMargin * z;
+    const float maxExtent = w + h;
+    if (abs(x - this->x()) > maxExtent || abs(y - this->y()) > maxExtent)
+      return nullptr;
+
+    // Ensure edge variable positions are up-to-date before hit-testing.
+    // (Positions are otherwise only set during draw1edge() in a render pass.)
+    positionEdgeVariables();
     for (auto& v: inVariables)
-      if (RenderVariable(*v).inImage(x,y)) 
+      if (RenderVariable(*v).inImage(x,y) || v->clickType(x,y) == ClickType::onPort)
         return v;
     for (auto& v: outVariables)
-      if (RenderVariable(*v).inImage(x,y)) 
+      if (RenderVariable(*v).inImage(x,y) || v->clickType(x,y) == ClickType::onPort)
         return v;
     return nullptr;
   }
