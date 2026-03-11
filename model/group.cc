@@ -911,11 +911,16 @@ namespace minsky
   {
     auto z=zoomFactor();
     const double w=0.5*iWidth()*z, h=0.5*iHeight()*z;
-    if (onResizeHandle(x,y)) return ClickType::onResize;         
-    if (displayContents() && inIORegion(x,y)==IORegion::none)
-      return ClickType::outside;
+    if (onResizeHandle(x,y)) return ClickType::onResize;
+    // Check edge I/O variables BEFORE the inIORegion early exit.
+    // When a group is zoomed (displayContents()==true), edge variables may
+    // lie outside the I/O region strip. Without this ordering, clicking on
+    // them returns ClickType::outside and the canvas falls back to dragging
+    // the whole group instead of initiating wire dragging. Fixes issue #610.
     if (auto item=select(x,y))
       return item->clickType(x,y);
+    if (displayContents() && inIORegion(x,y)==IORegion::none)
+      return ClickType::outside;
     if ((abs(x-this->x())<w && abs(y-this->y())<h+topMargin*z)) // check also if (x,y) is within top and bottom margins of group. for feature 88
       return ClickType::onItem;
     return ClickType::outside;
@@ -1180,13 +1185,51 @@ namespace minsky
     return rotFactor;
   }
 
+  void Group::positionEdgeVariables() const
+  {
+    // Replicates the positioning logic of draw1edge() without requiring a
+    // Cairo context. Edge I/O variable world-space positions are only set
+    // during a draw() call (via moveTo inside draw1edge()). Calling this
+    // before hit-testing ensures RenderVariable::inImage() sees the correct
+    // positions. Fixes issue #610 (unable to pull wire from group output).
+    float leftMargin, rightMargin;
+    margins(leftMargin, rightMargin);
+    const float z = zoomFactor();
+
+    auto position1edge = [&](const std::vector<VariablePtr>& vars, float xEdge)
+    {
+      float top = 0, bottom = 0;
+      for (size_t i = 0; i < vars.size(); ++i)
+        {
+          const Rotate r(rotation(), 0, 0);
+          auto& v = vars[i];
+          float yOff = 0;
+          auto vz = v->zoomFactor();
+          auto t = v->bb.top() * vz, b = v->bb.bottom() * vz;
+          if (i > 0) yOff = (i % 2) ? top - b : bottom - t;
+          v->moveTo(r.x(xEdge, yOff) + this->x(),
+                    r.y(xEdge, yOff) + this->y());
+          v->rotation(rotation());
+          if (i == 0) { bottom = b; top = t; }
+          else if (i % 2) top -= v->height();
+          else            bottom += v->height();
+        }
+    };
+
+    position1edge(inVariables,  -0.5f * (iWidth() * z - leftMargin));
+    position1edge(outVariables,  0.5f * (iWidth() * z - rightMargin));
+  }
+
   ItemPtr Group::select(float x, float y) const
   {
+    // Ensure edge variable positions are up-to-date before hit-testing.
+    // (Positions are otherwise only set during draw1edge() in a render pass.)
+    positionEdgeVariables();
     for (auto& v: inVariables)
-      if (RenderVariable(*v).inImage(x,y)) 
+      if (RenderVariable(*v).inImage(x,y) || v->clickType(x,y) == ClickType::onPort)
         return v;
     for (auto& v: outVariables)
-      if (RenderVariable(*v).inImage(x,y)) 
+      if (RenderVariable(*v).inImage(x,y) || v->clickType(x,y) == ClickType::onPort)
         return v;
     return nullptr;
   }

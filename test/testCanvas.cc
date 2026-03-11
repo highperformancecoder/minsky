@@ -87,3 +87,44 @@ TEST_F(CanvasTest, defaultPlotOptions)
     EXPECT_EQ(originalPlot->palette.back().width, plotAfterDefaultsApplied->palette.back().width);
     EXPECT_EQ(originalPlot->palette.back().dashStyle, plotAfterDefaultsApplied->palette.back().dashStyle);
 }
+
+/// Regression test for issue #610: unable to pull wire from group output.
+/// Verifies that Group::select() correctly finds edge I/O variables even
+/// without a preceding draw() call, by using positionEdgeVariables().
+TEST(GroupIOTest, groupIOVarSelect)
+{
+    // Build a standalone group with an output variable.
+    auto grp = make_shared<Group>();
+    grp->self = grp;
+    grp->moveTo(200, 200);
+    grp->iWidth(100);
+    grp->iHeight(100);
+
+    // Add an output variable to the group (populates outVariables).
+    grp->addOutputVar();
+    ASSERT_EQ(1u, grp->outVariables.size());
+
+    // Update bounding box for the output variable so margins() works.
+    auto& outVar = *grp->outVariables[0];
+    outVar.bb.update(outVar);
+
+    // Compute the expected output-variable x position (right edge midpoint):
+    // This replicates the draw1edge() math used by positionEdgeVariables().
+    float leftMargin, rightMargin;
+    grp->margins(leftMargin, rightMargin);
+    const float z     = grp->zoomFactor();
+    const float xEdge = 0.5f * (grp->iWidth() * z - rightMargin);
+    // First variable (i==0): Rotate is identity for zero rotation, yOff == 0.
+    const float expectedX = grp->x() + xEdge;
+    const float expectedY = grp->y();
+
+    // Before the fix, select() used stale positions (0,0) so this would return
+    // nullptr. After the fix, positionEdgeVariables() is called first.
+    auto found = grp->select(expectedX, expectedY);
+    EXPECT_NE(nullptr, found)
+        << "select() should find the output variable without a prior draw() call (issue #610)";
+    if (found)
+        EXPECT_EQ(grp->outVariables[0].get(), found.get())
+            << "select() should return the output variable, not some other item";
+}
+
