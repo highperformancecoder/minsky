@@ -67,9 +67,11 @@ namespace minsky
         item.itemRef->iWidth(item.zoomX*origIWidth);
         item.itemRef->iHeight(item.zoomY*origIHeight);
         item.itemRef->rotation(item.rotation);
+        minsky::minsky().publicationMode(true);
       }
       ~EnsureEditorMode()
       {
+        minsky::minsky().publicationMode(false);
         if (!item.itemRef) return;
         if (auto g=item.itemRef->group.lock())
           g->relZoom=stashedZf;
