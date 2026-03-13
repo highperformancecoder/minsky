@@ -1355,6 +1355,7 @@ export class Minsky extends CppClass {
   async importDuplicateColumn(a1: GodleyTable,a2: number): Promise<void> {return this.$callMethod('importDuplicateColumn',a1,a2);}
   async importVensim(a1: string): Promise<void> {return this.$callMethod('importVensim',a1);}
   async imposeDimensions(): Promise<void> {return this.$callMethod('imposeDimensions');}
+  async inPopulateMissingDimensions(...args: boolean[]): Promise<boolean> {return this.$callMethod('inPopulateMissingDimensions',...args);}
   async initGodleys(): Promise<void> {return this.$callMethod('initGodleys');}
   async inputWired(a1: string): Promise<boolean> {return this.$callMethod('inputWired',a1);}
   async insertGroupFromFile(a1: string): Promise<void> {return this.$callMethod('insertGroupFromFile',a1);}
@@ -1366,6 +1367,7 @@ export class Minsky extends CppClass {
   async listFonts(): Promise<string[]> {return this.$callMethod('listFonts');}
   async load(a1: string): Promise<void> {return this.$callMethod('load',a1);}
   async loggingEnabled(): Promise<boolean> {return this.$callMethod('loggingEnabled');}
+  async m_publicationMode(...args: boolean[]): Promise<boolean> {return this.$callMethod('m_publicationMode',...args);}
   async makeVariablesConsistent(): Promise<void> {return this.$callMethod('makeVariablesConsistent');}
   async markEdited(): Promise<void> {return this.$callMethod('markEdited');}
   async matchingTableColumns(a1: GodleyIcon,a2: string): Promise<string[]> {return this.$callMethod('matchingTableColumns',a1,a2);}
@@ -1389,6 +1391,7 @@ export class Minsky extends CppClass {
   async populateMissingDimensions(): Promise<void> {return this.$callMethod('populateMissingDimensions');}
   async populateMissingDimensionsFromVariable(...args: any[]): Promise<void> {return this.$callMethod('populateMissingDimensionsFromVariable',...args);}
   async progress(a1: string,a2: number): Promise<void> {return this.$callMethod('progress',a1,a2);}
+  async publicationMode(...args: any[]): Promise<boolean> {return this.$callMethod('publicationMode',...args);}
   async pushFlags(): Promise<void> {return this.$callMethod('pushFlags');}
   async pushHistory(): Promise<boolean> {return this.$callMethod('pushHistory');}
   async randomLayout(): Promise<void> {return this.$callMethod('randomLayout');}
