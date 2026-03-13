@@ -52,7 +52,7 @@ export CPLUSPLUS=$(COMPILER)
 ifneq ($(MAKECMDGOALS),clean)
 # make sure EcoLab is built first, even before starting to include Makefiles
 # disable AEGIS build here, as EcoLab 6 is still a little raw
-build_ecolab:=$(shell cd ecolab; if $(MAKE) $(MAKEOVERRIDES) AEGIS= $(JOBS) only-libs >build.log 2>&1; then echo "ecolab built"; fi)
+build_ecolab:=$(shell cd ecolab; if $(MAKE) $(MAKEOVERRIDES) CPLUSPLUS="$(COMPILER)" AEGIS= $(JOBS) only-libs >build.log 2>&1; then echo "ecolab built"; fi)
 
 #$(warning $(build_ecolab))
 ifneq ($(build_ecolab),ecolab built)
@@ -80,9 +80,9 @@ LIBS+=-framework AppKit
 endif
 export GCOV
 export CLASSDESC=$(shell pwd)/ecolab/classdesc/classdesc
-MAKEOVERRIDES+=FPIC=1
+MAKEOVERRIDES+=FPIC=1 CLASSDESC=$(CLASSDESC)
 ifneq ($(MAKECMDGOALS),clean)
-build_ravelcapi:=$(shell cd RavelCAPI; if  $(MAKE) $(JOBS) $(MAKEOVERRIDES)  >build.log 2>&1; then echo "ravelcapi built"; fi) 
+build_ravelcapi:=$(shell cd RavelCAPI; if  $(MAKE) $(JOBS) $(MAKEOVERRIDES) CPLUSPLUS="$(COMPILER)" >build.log 2>&1; then echo "ravelcapi built"; fi) 
 $(warning $(build_ravelcapi))
 ifneq ($(strip $(build_ravelcapi)),ravelcapi built)
 $(error Making RavelCAPI failed: check RavelCAPI/build.log)
