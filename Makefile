@@ -9,7 +9,6 @@ export MXE
 export OPENMP
 export OPT
 #export FLAGS
-export CPLUSPLUS
 
 # root directory for ecolab include files and libraries
 ECOLAB_HOME=$(shell pwd)/ecolab
@@ -32,15 +31,23 @@ MAKEOVERRIDES+=MXE_PREFIX=x86_64-w64-mingw32.shared
 endif
 
 MAKEOVERRIDES+=DEBUG=$(DEBUG)
-# Build EcoLab with clang to avoid problems with old gcc compilers on
-# some Linux distros
-ifeq ($(HAVE_CLANG),1)
+
 ifndef MXE
-ifndef GCC
-export CPLUSPLUS=clang++ -std=c++20
+ifdef GCC
+COMPILER=g++
+else
+# default to clang if present
+ifeq ($(HAVE_CLANG),1)
+COMPILER=clang++ -std=c++20
+$(warning clang selected)
+else
+COMPILER=g++
+endif
+LINK=$(COMPILER)
 endif
 endif
-endif
+export COMPILER
+export CPLUSPLUS=$(COMPILER)
 
 ifneq ($(MAKECMDGOALS),clean)
 # make sure EcoLab is built first, even before starting to include Makefiles
@@ -53,6 +60,9 @@ $(warning $(shell cat ecolab/build.log))
 $(error Making ecolab failed: check ecolab/build.log)
 endif
 include $(ECOLAB_HOME)/include/Makefile
+# rewrite CPLUSPLUS after clobber in Makefile
+CPLUSPLUS=$(COMPILER)
+
 # link statically to ecolab (needed until all bugs in EcoLab 6 ironed out)
 LIBS:=$(subst -lecolab,$(ECOLAB_HOME)/lib/libecolab.a,$(LIBS)) 
 endif
@@ -68,24 +78,6 @@ MAC_DIST_DIR=minsky.app/Contents/MacOS
 MACOSX_MIN_VERSION=$(shell sw_vers|grep ProductVersion|tr -s '\t'|cut -f2)
 LIBS+=-framework AppKit
 endif
-
-ifndef MXE
-ifdef GCC
-CPLUSPLUS=g++
-else
-# default to clang if present
-ifeq ($(HAVE_CLANG),1)
-CPLUSPLUS=clang++
-$(warning clang selected)
-else
-CPLUSPLUS=g++
-endif
-LINK=$(CPLUSPLUS)
-endif
-endif
-
-export EXTRA_FLAGS=-I$(shell pwd)/ecolab/include -DCIVITA_ALLOCATOR=civita::LibCAllocator
-export CPLUSPLUS
 export GCOV
 export CLASSDESC=$(shell pwd)/ecolab/classdesc/classdesc
 MAKEOVERRIDES+=FPIC=1
