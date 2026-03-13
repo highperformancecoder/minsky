@@ -37,7 +37,7 @@ MAKEOVERRIDES+=DEBUG=$(DEBUG)
 ifeq ($(HAVE_CLANG),1)
 ifndef MXE
 ifndef GCC
-CPLUSPLUS=clang++ -std=c++20
+export CPLUSPLUS=clang++ -std=c++20
 endif
 endif
 endif
