@@ -82,7 +82,11 @@ namespace minsky
       HDC dc=BeginPaint(winfo.childWindowId, &ps);
       BitBlt(dc, x, y, width,height,winfo.hdcMem,x,y,SRCCOPY);
       EndPaint(winfo.childWindowId, &ps);
-      SetWindowPos(winfo.childWindowId,HWND_TOP,winfo.offsetLeft,winfo.offsetTop,winfo.childWidth,winfo.childHeight,SWP_NOACTIVATE);
+      // Note: SetWindowPos was previously called here on every blit to keep the
+      // child window at HWND_TOP, but that fired WM_WINDOWPOSCHANGED on every
+      // paint which could cascade into further WM_PAINT messages and interact
+      // badly with screen-sharing hooks (e.g. Zoom).  The window is already
+      // positioned correctly at creation time in WindowInformation().
 #elif defined(USE_X11)
       static mutex blitting;
       const lock_guard<mutex> lock(blitting);
@@ -160,7 +164,11 @@ namespace minsky
             blit(*winfo, r.left, r.top, r.right-r.left, r.bottom-r.top);
         }
         else
-          ValidateRect(hwnd, nullptr); // prevent infinite WM_PAINT loop when window is being destroyed
+          // GWLP_USERDATA is zeroed in ~WindowInformation before the window is
+          // closed, so reaching here means the WindowInformation has already been
+          // torn down.  Validate the rect so Windows stops generating WM_PAINT
+          // messages for a window that no longer has a backing buffer.
+          ValidateRect(hwnd, nullptr);
         return 0;
       case WM_NCHITTEST:
         return HTTRANSPARENT;

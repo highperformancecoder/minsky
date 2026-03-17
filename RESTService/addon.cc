@@ -219,12 +219,12 @@ namespace minsky
             return String::New(env, utf_to_utf<char16_t>(doCommand(command, arguments)));
           }
 #if defined(_WIN32) || defined(MAC_OSX_TK)
-        // renderFrame and destroyFrame need to be called synchronously on the JS thread.
-        // The child window is created on the JS thread (via synchronous renderFrame), so
-        // destroyFrame must also run on the JS thread to avoid cross-thread SendMessageA
-        // calls in ~WindowInformation() that block the minsky thread while holding
-        // minskyCmdMutex, causing a deadlock when the JS thread subsequently tries to
-        // acquire minskyCmdMutex.
+        // renderFrame and destroyFrame must run synchronously on the JS thread because
+        // Windows requires that a window be created and destroyed on the same thread.
+        // Dispatching destroyFrame to the minsky background thread would call
+        // ~WindowInformation() (and its SendMessageA/SendMessageW) from a thread
+        // that does not own the child HWND, which is undefined behaviour and can
+        // cause hangs or crashes.
         if (command.ends_with(".renderFrame") || command.ends_with(".destroyFrame"))
           return String::New(env, utf_to_utf<char16_t>(doCommand(command, arguments)));
 #endif
@@ -259,9 +259,19 @@ namespace minsky
 
       void drawNativeWindows()
       {
-        const lock_guard<recursive_mutex> lock(minskyCmdMutex);
+        // Don't hold minskyCmdMutex while calling draw(): holding it across
+        // Cairo/GDI operations can deadlock if those operations need the JS
+        // thread's message pump while the JS thread is simultaneously blocked
+        // waiting to acquire minskyCmdMutex for a synchronous command.
+        // Swap out the pending-redraw set under the lock, then draw without it,
+        // matching the pattern used by macOSXDrawNativeWindows().
         const Timer timer(timers["draw"]);
-        for (auto i: nativeWindowsToRedraw)
+        decltype(nativeWindowsToRedraw) windowsToRedraw;
+        {
+          const lock_guard<recursive_mutex> lock(minskyCmdMutex);
+          windowsToRedraw.swap(nativeWindowsToRedraw);
+        }
+        for (auto i: windowsToRedraw)
           try
             {
               i->draw();
@@ -273,7 +283,6 @@ namespace minsky
               break;
             }
           catch (...) {break;}
-        nativeWindowsToRedraw.clear();
       }
 
       // arrange for native window drawing to happen on node's main thread, required for MacOSX.
