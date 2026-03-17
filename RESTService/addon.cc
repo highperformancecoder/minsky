@@ -219,8 +219,13 @@ namespace minsky
             return String::New(env, utf_to_utf<char16_t>(doCommand(command, arguments)));
           }
 #if defined(_WIN32) || defined(MAC_OSX_TK)
-        // renderFrame needs to be called synchronously, otherwise inexplicable hangs occur on Windows.
-        if (command.ends_with(".renderFrame"))
+        // renderFrame and destroyFrame need to be called synchronously on the JS thread.
+        // The child window is created on the JS thread (via synchronous renderFrame), so
+        // destroyFrame must also run on the JS thread to avoid cross-thread SendMessageA
+        // calls in ~WindowInformation() that block the minsky thread while holding
+        // minskyCmdMutex, causing a deadlock when the JS thread subsequently tries to
+        // acquire minskyCmdMutex.
+        if (command.ends_with(".renderFrame") || command.ends_with(".destroyFrame"))
           return String::New(env, utf_to_utf<char16_t>(doCommand(command, arguments)));
 #endif
         if (minskyCommands.size()>20)

@@ -82,7 +82,7 @@ namespace minsky
       HDC dc=BeginPaint(winfo.childWindowId, &ps);
       BitBlt(dc, x, y, width,height,winfo.hdcMem,x,y,SRCCOPY);
       EndPaint(winfo.childWindowId, &ps);
-      SetWindowPos(winfo.childWindowId,HWND_TOP,winfo.offsetLeft,winfo.offsetTop,winfo.childWidth,winfo.childHeight,0);
+      SetWindowPos(winfo.childWindowId,HWND_TOP,winfo.offsetLeft,winfo.offsetTop,winfo.childWidth,winfo.childHeight,SWP_NOACTIVATE);
 #elif defined(USE_X11)
       static mutex blitting;
       const lock_guard<mutex> lock(blitting);
@@ -159,6 +159,8 @@ namespace minsky
           if (GetUpdateRect(hwnd,&r,false))
             blit(*winfo, r.left, r.top, r.right-r.left, r.bottom-r.top);
         }
+        else
+          ValidateRect(hwnd, nullptr); // prevent infinite WM_PAINT loop when window is being destroyed
         return 0;
       case WM_NCHITTEST:
         return HTTRANSPARENT;
