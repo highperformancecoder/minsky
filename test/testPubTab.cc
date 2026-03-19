@@ -157,7 +157,7 @@ TEST_F(PubTabSuite,removeSelf)
          load("1Free.mky");
          // send the Godley table to the pub tab
          for (auto& i: model->items)
-           if (auto g=dynamic_cast<GodleyIcon*>(i.get()))
+           if (dynamic_cast<GodleyIcon*>(i.get()))
              {
                publicationTabs[0].items.emplace_back(i);
                break;
