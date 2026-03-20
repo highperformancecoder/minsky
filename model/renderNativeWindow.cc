@@ -73,6 +73,7 @@ namespace minsky
 
   RenderNativeWindow::~RenderNativeWindow()
   {
+    const lock_guard<mutex> lock(minsky().nativeWindowsToRedrawMutex);
     minsky().nativeWindowsToRedraw.erase(this);
   }
   
@@ -106,6 +107,7 @@ void macOSXRedraw(RenderNativeWindow& window,std::recursive_mutex& cmdMutex)
   void RenderNativeWindow::requestRedraw()
   {
     if (!winInfoPtr.get()) return;
+    const lock_guard<mutex> lock(minsky().nativeWindowsToRedrawMutex);
     minsky().nativeWindowsToRedraw.insert(this);
   }
 

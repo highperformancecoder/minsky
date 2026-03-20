@@ -254,9 +254,14 @@ namespace minsky
 
       void drawNativeWindows()
       {
+        decltype(nativeWindowsToRedraw) windows;
+        {
+          const lock_guard<mutex> lock(nativeWindowsToRedrawMutex);
+          windows.swap(nativeWindowsToRedraw);
+        }
         const lock_guard<recursive_mutex> lock(minskyCmdMutex);
         const Timer timer(timers["draw"]);
-        for (auto i: nativeWindowsToRedraw)
+        for (auto i: windows)
           try
             {
               i->draw();
@@ -268,7 +273,6 @@ namespace minsky
               break;
             }
           catch (...) {break;}
-        nativeWindowsToRedraw.clear();
       }
 
       // arrange for native window drawing to happen on node's main thread, required for MacOSX.
@@ -284,12 +288,11 @@ namespace minsky
         const Timer timer(timers["draw"]);
         decltype(nativeWindowsToRedraw) windows;
         {
-          const lock_guard<recursive_mutex> lock(minskyCmdMutex);
+          const lock_guard<mutex> lock(nativeWindowsToRedrawMutex);
           windows.swap(nativeWindowsToRedraw);
         }
         for (auto i: windows)
           macOSXRedraw(*i,minskyCmdMutex);
-        nativeWindowsToRedraw.clear();
         drawLaunched=false;
        }
       
@@ -336,8 +339,12 @@ namespace minsky
                   catch (...)
                     {flags&=~reset_needed;}
 #ifdef MAC_OSX_TK
-                if (!drawLaunched && nativeWindowsToRedraw.size())
-                  macOSXLaunchDrawNativeWindows();
+                if (!drawLaunched)
+                  {
+                    const lock_guard<mutex> lock(nativeWindowsToRedrawMutex);
+                    if (nativeWindowsToRedraw.size())
+                      macOSXLaunchDrawNativeWindows();
+                  }
 #else
                 drawNativeWindows();
 #endif

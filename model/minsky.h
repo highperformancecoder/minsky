@@ -55,6 +55,7 @@
 #include <vector>
 #include <string>
 #include <set>
+#include <mutex>
 #include <deque>
 #include <cstdio>
 
@@ -102,6 +103,7 @@ namespace minsky
     MinskyExclude& operator=(const MinskyExclude&) {return *this;}
 
     /// record nativeWindows that have requested redrawing
+    std::mutex nativeWindowsToRedrawMutex;
     std::set<RenderNativeWindow*> nativeWindowsToRedraw;
     
   protected:
