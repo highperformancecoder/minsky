@@ -61,8 +61,11 @@ $(warning $(shell cat ecolab/build.log))
 $(error Making ecolab failed: check ecolab/build.log)
 endif
 include $(ECOLAB_HOME)/include/Makefile
+
+ifndef MXE
 # rewrite CPLUSPLUS after clobber in Makefile
 CPLUSPLUS=$(COMPILER)
+endif
 
 # link statically to ecolab (needed until all bugs in EcoLab 6 ironed out)
 LIBS:=$(subst -lecolab,$(ECOLAB_HOME)/lib/libecolab.a,$(LIBS)) 
@@ -83,7 +86,7 @@ export GCOV
 export CLASSDESC=$(shell pwd)/ecolab/classdesc/classdesc
 MAKEOVERRIDES+=FPIC=1 CLASSDESC=$(CLASSDESC)
 ifneq ($(MAKECMDGOALS),clean)
-build_ravelcapi:=$(shell cd RavelCAPI; if  $(MAKE) $(JOBS) $(MAKEOVERRIDES) CPLUSPLUS="$(COMPILER)" >build.log 2>&1; then echo "ravelcapi built"; fi) 
+build_ravelcapi:=$(shell cd RavelCAPI; if  $(MAKE) $(JOBS) $(MAKEOVERRIDES) >build.log 2>&1; then echo "ravelcapi built"; fi) 
 $(warning $(build_ravelcapi))
 ifneq ($(strip $(build_ravelcapi)),ravelcapi built)
 $(error Making RavelCAPI failed: check RavelCAPI/build.log)
@@ -284,10 +287,10 @@ endif
 ifdef MXE
 EXE=.exe
 DL=dll
-FLAGS+=-DMXE
+FLAGS+=-DMXE -D_WIN32 -DUSE_UNROLLED -Wa,-mbig-obj
+CXXFLAGS+=-std=c++20
 PYMINSKY=gui-js/dynamic_libraries/pyminsky.pyd
 PYTHONCAPI=ecolab/classdesc/pythonCAPI.o # extra python.lib shims required on Windows
-FLAGS+=-D_WIN32 -DUSE_UNROLLED -Wa,-mbig-obj
 # DLLS that need to be copied into the binary directory
 MXE_DLLS=libboost_thread-mt-x64 libbrotlidec libbrotlicommon libbz2 libcairo-2 \
 libcroco-0 libcrypto-3-x64 \
@@ -301,8 +304,6 @@ libsoci libpq libsqlite
 BINDIR=$(subst bin,$(MXE_PREFIX)/bin,$(dir $(shell which $(CPLUSPLUS))))
 $(warning $(BINDIR))
 DLLS=$(notdir $(wildcard $(MXE_DLLS:%=$(BINDIR)/%*.dll)))
-# Add soci support for RAVELPRO
-#DLLS+=$(wildcard $(BINDIR)/libsoci*.dll) $(BINDIR)/libpq.dll $(BINDIR)/libsqlite3-0.dll
 else
 EXE=
 DL=so
