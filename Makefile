@@ -32,7 +32,9 @@ endif
 
 MAKEOVERRIDES+=DEBUG=$(DEBUG)
 
-ifndef MXE
+ifdef MXE
+CPLUSPLUSOVERRIDE=
+else
 ifdef GCC
 COMPILER=g++
 else
@@ -47,13 +49,13 @@ LINK=$(COMPILER)
 endif
 export COMPILER
 export CPLUSPLUS=$(COMPILER)
-MAKEOVERRIDES+=CPLUSPLUS="$(COMPILER)"
+CPLUSPLUSOVERRIDE=CPLUSPLUS="$(COMPILER)"
 endif
 
 ifneq ($(MAKECMDGOALS),clean)
 # make sure EcoLab is built first, even before starting to include Makefiles
 # disable AEGIS build here, as EcoLab 6 is still a little raw
-build_ecolab:=$(shell cd ecolab; if $(MAKE) $(MAKEOVERRIDES) AEGIS= $(JOBS) only-libs >build.log 2>&1; then echo "ecolab built"; fi)
+build_ecolab:=$(shell cd ecolab; if $(MAKE) $(MAKEOVERRIDES) $(CPLUSPLUSOVERRIDE) AEGIS= $(JOBS) only-libs >build.log 2>&1; then echo "ecolab built"; fi)
 
 #$(warning $(build_ecolab))
 ifneq ($(build_ecolab),ecolab built)
@@ -487,7 +489,7 @@ $(warning $(CPLUSPLUS) , $(COMPILER))
 
 
 tests: $(EXES)
-	cd test; $(MAKE) $(MAKEOVERRIDES)
+	cd test; $(MAKE)
 
 BASIC_CLEAN=rm -rf *.o *~ "\#*\#" core *.d *.cd *.rcd *.tcd *.xcd *.gcda *.gcno *.so *.dll *.dylib
 
