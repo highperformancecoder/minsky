@@ -483,8 +483,11 @@ node-api.o: node-api.cc
 
 $(EXES):
 
+$(warning $(CPLUSPLUS) , $(COMPILER))
+
+
 tests: $(EXES)
-	cd test; $(MAKE)
+	cd test; $(MAKE) $(MAKEOVERRIDES)
 
 BASIC_CLEAN=rm -rf *.o *~ "\#*\#" core *.d *.cd *.rcd *.tcd *.xcd *.gcda *.gcno *.so *.dll *.dylib
 
