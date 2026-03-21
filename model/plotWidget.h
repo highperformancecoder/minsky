@@ -194,6 +194,12 @@ namespace minsky
     void onMouseLeave() override {valueString="";}
     /// @}
 
+    /// @{ Disambiguate EventInterface vs Item — classdesc resolves to
+    /// EventInterface's empty stubs otherwise (tickets:#1918)
+    void moveTo(float x, float y) override {Item::moveTo(x,y);}
+    std::vector<float> position() const override {return {Item::x(), Item::y()};}
+    /// @}
+
     /// export the plotted data as a CSV file
     // implemented as a single argument function here for exposure to TCL
     void exportAsCSV(const string& filename) {ecolab::Plot::exportAsCSV(filename);}
