@@ -89,7 +89,8 @@ void RenderVariable::draw()
 
 bool RenderVariable::inImage(float x, float y)
 {
-  const float dx=x-var.x(), dy=y-var.y();
+  const float z=var.zoomFactor();
+  const float dx=(x-var.x())/z, dy=(y-var.y())/z;
   const float rx=dx*cos(var.rotation()*M_PI/180)-dy*sin(var.rotation()*M_PI/180);
   const float ry=dy*cos(var.rotation()*M_PI/180)+dx*sin(var.rotation()*M_PI/180);
   return rx>=-w && rx<=w && ry>=-h && ry <= h;

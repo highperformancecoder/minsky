@@ -279,6 +279,9 @@ namespace minsky
     /// draw notches in the I/O region to indicate dockability of
     /// variables there
     void drawIORegion(cairo_t*) const;
+    /// position edge I/O variables at their correct rendered locations
+    /// without requiring a Cairo context (used by select() for hit-testing)
+    void positionEdgeVariables() const;
 
     /// move all items from source to this
     void moveContents(Group& source);     

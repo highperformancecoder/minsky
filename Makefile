@@ -9,13 +9,6 @@ export MXE
 export OPENMP
 export OPT
 #export FLAGS
-export CPLUSPLUS
-
-# location of TCL and TK libraries 
-TCL_PREFIX=$(shell grep TCL_PREFIX $(call search,lib*/tclConfig.sh) | cut -f2 -d\')
-TCL_VERSION=$(shell grep TCL_VERSION $(call search,lib*/tclConfig.sh) | cut -f2 -d\')
-TCL_LIB=$(dir $(shell find $(TCL_PREFIX) -name init.tcl -path "*/tcl$(TCL_VERSION)*" -print))
-TK_LIB=$(dir $(shell find $(TCL_PREFIX) -name tk.tcl -path "*/tk$(TCL_VERSION)*" -print))
 
 # root directory for ecolab include files and libraries
 ECOLAB_HOME=$(shell pwd)/ecolab
@@ -38,20 +31,31 @@ MAKEOVERRIDES+=MXE_PREFIX=x86_64-w64-mingw32.shared
 endif
 
 MAKEOVERRIDES+=DEBUG=$(DEBUG)
-# Build EcoLab with clang to avoid problems with old gcc compilers on
-# some Linux distros
+
+ifdef MXE
+CPLUSPLUSOVERRIDE=
+else
+ifdef GCC
+COMPILER=g++
+else
+# default to clang if present
 ifeq ($(HAVE_CLANG),1)
-ifndef MXE
-ifndef GCC
-CPLUSPLUS=clang++ -std=c++20
+COMPILER=clang++ -std=c++20
+$(warning clang selected)
+else
+COMPILER=g++
 endif
+LINK=$(COMPILER)
 endif
+export COMPILER
+export CPLUSPLUS=$(COMPILER)
+CPLUSPLUSOVERRIDE=CPLUSPLUS="$(COMPILER)"
 endif
 
 ifneq ($(MAKECMDGOALS),clean)
 # make sure EcoLab is built first, even before starting to include Makefiles
 # disable AEGIS build here, as EcoLab 6 is still a little raw
-build_ecolab:=$(shell cd ecolab; if $(MAKE) $(MAKEOVERRIDES) AEGIS= $(JOBS) only-libs >build.log 2>&1; then echo "ecolab built"; fi)
+build_ecolab:=$(shell cd ecolab; if $(MAKE) $(MAKEOVERRIDES) $(CPLUSPLUSOVERRIDE) AEGIS= $(JOBS) only-libs >build.log 2>&1; then echo "ecolab built"; fi)
 
 #$(warning $(build_ecolab))
 ifneq ($(build_ecolab),ecolab built)
@@ -59,6 +63,12 @@ $(warning $(shell cat ecolab/build.log))
 $(error Making ecolab failed: check ecolab/build.log)
 endif
 include $(ECOLAB_HOME)/include/Makefile
+
+ifndef MXE
+# rewrite CPLUSPLUS after clobber in Makefile
+CPLUSPLUS=$(COMPILER)
+endif
+
 # link statically to ecolab (needed until all bugs in EcoLab 6 ironed out)
 LIBS:=$(subst -lecolab,$(ECOLAB_HOME)/lib/libecolab.a,$(LIBS)) 
 endif
@@ -74,29 +84,11 @@ MAC_DIST_DIR=minsky.app/Contents/MacOS
 MACOSX_MIN_VERSION=$(shell sw_vers|grep ProductVersion|tr -s '\t'|cut -f2)
 LIBS+=-framework AppKit
 endif
-
-ifndef MXE
-ifdef GCC
-CPLUSPLUS=g++
-else
-# default to clang if present
-ifeq ($(HAVE_CLANG),1)
-CPLUSPLUS=clang++
-$(warning clang selected)
-else
-CPLUSPLUS=g++
-endif
-LINK=$(CPLUSPLUS)
-endif
-endif
-
-export EXTRA_FLAGS=-I$(shell pwd)/ecolab/include -DCIVITA_ALLOCATOR=civita::LibCAllocator
-export CPLUSPLUS
 export GCOV
 export CLASSDESC=$(shell pwd)/ecolab/classdesc/classdesc
-MAKEOVERRIDES+=FPIC=1
+MAKEOVERRIDES+=FPIC=1 CLASSDESC=$(CLASSDESC)
 ifneq ($(MAKECMDGOALS),clean)
-build_ravelcapi:=$(shell cd RavelCAPI; if  $(MAKE) $(JOBS) $(MAKEOVERRIDES)  >build.log 2>&1; then echo "ravelcapi built"; fi) 
+build_ravelcapi:=$(shell cd RavelCAPI; if  $(MAKE) $(JOBS) $(MAKEOVERRIDES) >build.log 2>&1; then echo "ravelcapi built"; fi) 
 $(warning $(build_ravelcapi))
 ifneq ($(strip $(build_ravelcapi)),ravelcapi built)
 $(error Making RavelCAPI failed: check RavelCAPI/build.log)
@@ -223,11 +215,11 @@ ifdef CLASSDESC_ARITIES
 FLAGS+=-DUSE_UNROLLED -DCLASSDESC_ARITIES=$(CLASSDESC_ARITIES)
 endif
 
-FLAGS+=-std=c++20 -UTR1 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -IRavelCAPI/civita -IRavelCAPI -DCLASSDESC $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-attributes -DCIVITA_ALLOCATOR=civita::LibCAllocator
+FLAGS+=-UTR1 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -IRavelCAPI/civita -IRavelCAPI -DCLASSDESC $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-attributes -DCIVITA_ALLOCATOR=civita::LibCAllocator
 
 ifeq ($(CPLUSPLUS),clang++)
 # note some of these flags are disabling warnings that are invalid in some circumstances
-FLAGS+=-Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-defaulted-function-deleted -Wno-uninitialized
+FLAGS+=-std=c++20 -Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-defaulted-function-deleted -Wno-uninitialized
 endif
 
 ifdef OPENMP
@@ -297,10 +289,10 @@ endif
 ifdef MXE
 EXE=.exe
 DL=dll
-FLAGS+=-DMXE
+FLAGS+=-DMXE -D_WIN32 -DUSE_UNROLLED -Wa,-mbig-obj
+CXXFLAGS+=-std=c++20
 PYMINSKY=gui-js/dynamic_libraries/pyminsky.pyd
 PYTHONCAPI=ecolab/classdesc/pythonCAPI.o # extra python.lib shims required on Windows
-FLAGS+=-D_WIN32 -DUSE_UNROLLED -Wa,-mbig-obj
 # DLLS that need to be copied into the binary directory
 MXE_DLLS=libboost_thread-mt-x64 libbrotlidec libbrotlicommon libbz2 libcairo-2 \
 libcroco-0 libcrypto-3-x64 \
@@ -308,13 +300,12 @@ libexpat-1 libffi libfontconfig-1 libfreetype-6 libfribidi-0 libgcc_s_seh-1 \
 libgdk_pixbuf-2 libgio-2 libglib-2 libgmodule-2 \
 libgobject-2 libgsl-27 libgslcblas-0 libharfbuzz-0 libiconv-2 libintl-8 \
 libjpeg-9 liblzma-5 libpango-1 libpangocairo-1 libpangoft2-1 libpangowin32-1 \
-libpcre2-8-0 libpixman-1-0 libpng16-16 libpq libreadline8 librsvg-2-2 libssl-3-x64 \
-libstdc++-6 libtermcap libwinpthread-1 libxml2-16 tcl86 zlib1
+libpcre2-8-0 libpixman-1-0 libpng16-16 libreadline8 librsvg-2-2 libssl-3-x64 \
+libstdc++-6 libtermcap libwinpthread-1 libxml2-16 tcl86 zlib1 \
+libsoci libpq libsqlite
 BINDIR=$(subst bin,$(MXE_PREFIX)/bin,$(dir $(shell which $(CPLUSPLUS))))
 $(warning $(BINDIR))
-DLLS=$(wildcard $(MXE_DLLS:%=$(BINDIR)/%*.dll))
-# Add soci support for RAVELPRO
-DLLS+=$(wildcard $(BINDIR)/libsoci*.dll) $(BINDIR)/libpq.dll $(BINDIR)/libsqlite3-0.dll
+DLLS=$(notdir $(wildcard $(MXE_DLLS:%=$(BINDIR)/%*.dll)))
 else
 EXE=
 DL=so
@@ -400,11 +391,11 @@ else
 # symbolic debugger available for this build
 OPT=-O0
 endif
-ifdef RAVEL
-GUI_TK_OBJS+=RavelLogo.o
-else
-GUI_TK_OBJS+=MinskyLogo.o
-endif
+#ifdef RAVEL
+#GUI_TK_OBJS+=RavelLogo.o
+#else
+#GUI_TK_OBJS+=MinskyLogo.o
+#endif
 WINDRES=$(MXE_PREFIX)-windres
 endif
 
@@ -434,13 +425,23 @@ gui-js/libs/shared/src/lib/backend/minsky.ts: RESTService/typescriptAPI
 	RESTService/typescriptAPI > $@
 endif
 
+ifdef MXE
+DYNAMIC_LIB_DIR=gui-js/dynamic_libraries
+
+$(DYNAMIC_LIB_DIR)/%: $(BINDIR)/%
+	mkdir -p $(DYNAMIC_LIB_DIR)
+	cp $< $@
+# serialise this rule to rate limit connections to Sectigo timestamper
+	flock sign-lock sign.sh $@
+
+gui-js/build/minskyRESTService.node: $(DLLS:%=$(DYNAMIC_LIB_DIR)/%)
+endif
+
 # N-API node embedded RESTService
 gui-js/build/minskyRESTService.node: addon.o  $(NODE_API) $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) RavelCAPI/libravelCAPI.a RavelCAPI/civita/libcivita.a 
 	mkdir -p gui-js/build
 ifdef MXE
 	$(LINK) -shared -o $@ $^ $(LIBS)
-	mkdir -p gui-js/dynamic_libraries
-	cp $(DLLS) gui-js/dynamic_libraries
 else
 ifeq ($(OS),Darwin)
 	c++ -bundle -undefined dynamic_lookup -Wl,-no_pie -Wl,-search_paths_first -mmacosx-version-min=$(MACOSX_MIN_VERSION) -arch $(ARCH) -stdlib=libc++  -o $@  $^ $(LIBS)
@@ -483,6 +484,9 @@ node-api.o: node-api.cc
 	$(CPLUSPLUS) $(NODE_FLAGS) $(FLAGS) $(CXXFLAGS) $(OPT) -c -o $@ $<
 
 $(EXES):
+
+$(warning $(CPLUSPLUS) , $(COMPILER))
+
 
 tests: $(EXES)
 	cd test; $(MAKE)

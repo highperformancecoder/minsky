@@ -77,7 +77,7 @@ namespace classdesc
   void xsd_generate(xsd_generate_t& g, const string& d, const minsky::Optional<T>& a) 
   {
     xsd_generate_t::Optional o(g,true);
-    T tmp; // a may be null
+    T tmp{}; // a may be null
     xsd_generate(g,d,tmp);
   }
 

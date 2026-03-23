@@ -1270,7 +1270,7 @@ TEST(TensorOps, evalOpEvaluate)
 
       // renaming just the canvas variable should change  it's type
       canvas.item=stockVar;
-      if (auto v=canvas.item->variableCast())
+      if (canvas.item->variableCast())
         {
           canvas.renameItem("foo");
           EXPECT_TRUE(canvas.item && canvas.item->variableCast());
