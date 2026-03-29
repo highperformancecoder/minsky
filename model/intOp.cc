@@ -221,7 +221,7 @@ namespace minsky
         cairoShim.showText("∫dt");
         cairoShim.restore();
       }
-      DrawBinOp d(cairo, zoomFactor());
+      DrawBinOpShim d(cairoShim, zoomFactor());
       d.drawPort([&](){d.drawSymbol("0");}, l,h,rotation()); 
       d.drawPort([&](){d.drawSymbol("f");}, l,-h,rotation()); 
       

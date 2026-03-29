@@ -63,6 +63,7 @@ namespace minsky
 
     /// visual representation of operation on the canvas
     virtual void iconDraw(cairo_t *) const=0;
+    virtual void iconDraw(const ICairoShim&) const=0;
 
     /// returns a list of values the ports currently have
     std::string portValues() const;
