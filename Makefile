@@ -485,9 +485,6 @@ node-api.o: node-api.cc
 
 $(EXES):
 
-$(warning $(CPLUSPLUS) , $(COMPILER))
-
-
 tests: $(EXES)
 	cd test; $(MAKE)
 

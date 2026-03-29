@@ -515,6 +515,7 @@ namespace minsky
               return argUnits;
             }
           case linearRegression:
+          case bulkLinearRegression:
             return m_ports[1]->units(check);
           case correlation:
             return {};
@@ -850,6 +851,30 @@ namespace minsky
     cairo_arc(cairo,3,3,0.2,0,2*M_PI);
     cairo_stroke(cairo);
     cairo_arc(cairo,4,-6,0.2,0,2*M_PI);
+    cairo_stroke(cairo);
+  }
+  template <> void Operation<OperationType::bulkLinearRegression>::iconDraw(cairo_t* cairo) const
+  {
+    const double sf = scaleFactor(); 	     
+    cairo_scale(cairo,sf,sf);
+    cairo_move_to(cairo,-6,6);
+    cairo_line_to(cairo,6,-6);
+    cairo_stroke(cairo);
+    cairo_arc(cairo,-4,0,0.2,0,2*M_PI);
+    cairo_stroke(cairo);
+    cairo_arc(cairo,3,3,0.2,0,2*M_PI);
+    cairo_stroke(cairo);
+    cairo_arc(cairo,4,-6,0.2,0,2*M_PI);
+    cairo_stroke(cairo);
+    cairo_move_to(cairo,-6,-7.5);
+    cairo_line_to(cairo,-7.5,-7.5);
+    cairo_line_to(cairo,-7.5,7.5);
+    cairo_line_to(cairo,-6,7.5);
+    cairo_stroke(cairo);
+    cairo_move_to(cairo,6,-7.5);
+    cairo_line_to(cairo,7.5,-7.5);
+    cairo_line_to(cairo,7.5,7.5);
+    cairo_line_to(cairo,6,7.5);
     cairo_stroke(cairo);
   }
   template <> void Operation<OperationType::ln>::iconDraw(cairo_t* cairo) const
