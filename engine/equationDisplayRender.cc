@@ -1009,7 +1009,7 @@ namespace MathDAG
           parenthesise(surf, [&](Surface& surf){
             arguments[0][0]->render(surf);
             print(surf.cairo(),",",Anchor::nw);
-            arguments[0][1]->render(surf);
+            arguments[1][0]->render(surf);
           });
         }
       else
@@ -1026,7 +1026,7 @@ namespace MathDAG
           parenthesise(surf, [&](Surface& surf){
             arguments[0][0]->render(surf);
             print(surf.cairo(),",",Anchor::nw);
-            arguments[0][1]->render(surf);
+            arguments[1][0]->render(surf);
           });
         }
       else
@@ -1043,7 +1043,7 @@ namespace MathDAG
           parenthesise(surf, [&](Surface& surf){
             arguments[0][0]->render(surf);
             print(surf.cairo(),",",Anchor::nw);
-            arguments[0][1]->render(surf);
+            arguments[1][0]->render(surf);
           });
         }
       else
@@ -1060,7 +1060,7 @@ namespace MathDAG
           parenthesise(surf, [&](Surface& surf){
             arguments[0][0]->render(surf);
             print(surf.cairo(),",",Anchor::nw);
-            arguments[0][1]->render(surf);
+            arguments[1][0]->render(surf);
           });
         }
       else

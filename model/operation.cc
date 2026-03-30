@@ -515,7 +515,20 @@ namespace minsky
               return argUnits;
             }
           case linearRegression:
+            return m_ports[1]->units(check);
           case bulkLinearRegression:
+            if (check)
+              {
+                // second port needs to be dimensionless, otherwise dimensions are mixed
+                if (m_ports[2])
+                  {
+                    if (!m_ports[2]->units(check).empty())
+                      throw_error("X port not dimensionless");
+                  }
+                else
+                  // TODO - how can we check the X-Vector of Y is dimensionless?
+                  ;
+              }
             return m_ports[1]->units(check);
           case correlation:
             return {};

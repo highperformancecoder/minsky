@@ -1146,10 +1146,9 @@ namespace minsky
           hypercube({});
           return;
         }
-      m_index=y->index();
 
       {
-        auto& xv=m_hypercube.xvectors;
+        auto& xv=y->hypercube().xvectors;
         dimension=rank()>1? rank(): 0;
         for (auto i=xv.begin(); i!=xv.end(); ++i)
           if (i->name==args.dimension)
@@ -1165,7 +1164,7 @@ namespace minsky
         }
       else
         {
-          if (rank()>1 && dimension>=rank()) return;
+          if (rank()>1 && dimension>=y->rank()) return;
           // construct x from y's x-vector
           auto tv=make_shared<TensorVal>();
           spreadX=tv;
@@ -1208,7 +1207,11 @@ namespace minsky
       offset.hypercube(sumx.hypercube());
     }
 
-    civita::ITensor::Timestamp timestamp() const override {return std::max(x->timestamp(), y->timestamp());}
+    civita::ITensor::Timestamp timestamp() const override {
+      if (!y) return {};
+      if (!x) return y->timestamp();
+      return std::max(x->timestamp(), y->timestamp());
+    }
  
     
   };
@@ -1220,7 +1223,9 @@ namespace minsky
                       const ITensor::Args& args) override
     {
       LinearRegression::setArguments(y,x,args);
+      if (!y) return;
       hypercube(y->hypercube());
+      m_index=y->index();
     }
 
     double operator[](size_t i) const override
@@ -1251,11 +1256,13 @@ namespace minsky
                       const ITensor::Args& args) override
     {
       LinearRegression::setArguments(y,x,args);
+      if (!y) return;
       if (dimension>=y->rank())
         throw_error("Need to specify axis");
       auto hc=y->hypercube();
       hc.xvectors[dimension]=civita::XVector("Linear Parameters",{},{"Slope","Intercept"});
       hypercube(hc);
+      m_index.clear();
     }
     
     double operator[](size_t i) const override
