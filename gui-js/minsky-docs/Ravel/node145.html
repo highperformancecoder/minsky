@@ -1,67 +1,83 @@
 
-<!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
-<HTML>
+<!--Converted with LaTeX2HTML 2025 (Released January 1, 2025) -->
+<HTML lang="en">
 <HEAD>
-<TITLE>differentiate </TITLE>
-<META NAME="description" CONTENT="differentiate ">
-<META NAME="keywords" CONTENT="Ravel">
-<META NAME="resource-type" CONTENT="document">
-<META NAME="distribution" CONTENT="global">
+<TITLE>Integral Block context menu</TITLE>
 
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-15">
-<META NAME="Generator" CONTENT="LaTeX2HTML v2017.2">
-<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+<META NAME="viewport" CONTENT="width=device-width, initial-scale=1.0">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2025">
 
 <LINK REL="STYLESHEET" HREF="Ravel.css">
 
-<LINK REL="previous" HREF="node143.html">
-<LINK REL="up" HREF="node51.html">
+<LINK REL="previous" HREF="node144.html">
 <LINK REL="next" HREF="node146.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html2391"
-  HREF="node146.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html2387"
-  HREF="node51.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html2383"
-  HREF="node144.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html2389"
+<A
+ HREF="node146.html">
+<IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
+<A
+ HREF="node144.html">
+<IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
+<A
+ HREF="node144.html">
+<IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A> 
+<A ID="tex2html979"
   HREF="Ravel.html">
-<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
+<IMG WIDTH="65" HEIGHT="24" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html2392"
-  HREF="node146.html">Variables and Parameters</A>
-<B> Up:</B> <A NAME="tex2html2388"
-  HREF="node51.html">Operations</A>
-<B> Previous:</B> <A NAME="tex2html2384"
-  HREF="node144.html">Integral Block context menu</A>
- &nbsp; <B>  <A NAME="tex2html2390"
+<B> Next:</B> <A
+ HREF="node146.html">differentiate</A>
+<B> Up:</B> <A
+ HREF="node144.html">integrate</A>
+<B> Previous:</B> <A
+ HREF="node144.html">integrate</A>
+ &nbsp; <B>  <A ID="tex2html980"
   HREF="Ravel.html">Contents</A></B> 
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004219000000000000000">
-differentiate <IMG
- ALIGN="MIDDLE" SRC="img17.png"
- ALT="$d/dt$% WIDTH=34 HEIGHT=31 "></A>
-</H2>
+<H3><A ID="SECTION004218100000000000000">
+Integral Block context menu</A>
+</H3>
 
 <P>
-
-    <IMG
- ALIGN="BOTTOM" SRC="img231.png"
- ALT="\includegraphics[height=10mm]{images/differential}% WIDTH=49 HEIGHT=46 ">
+The integral-block-specific commands on the context menu are:
 
 <P>
-<A NAME="Operation:differentiate"></A> Symbolically differentiates its input
-with respect to system time, producing d/dt[input]. For further
-explanation regarding differentiation, see <a href="https://en.wikipedia.org/wiki/Derivative">this Wikipedia page</a>.
+<BR>
+<IMG
+ STYLE="height: 20.63ex; vertical-align: -9.80ex; " SRC="img229.png"
+ ALT="\begin{tabular}{\vert c\vert p{0.68\textwidth}\vert}
+\hline
+Command &amp; Effect\ta...
+...otate the combined integral block plus name\tabularnewline \hline
+\end{tabular}% WIDTH=1132 HEIGHT=295 ">
+<BR>
+
+<P>
+Editable attributes include the variable's name and its initial value
+at <IMG
+ STYLE="height: 1.68ex; vertical-align: -0.12ex; " SRC="img230.png"
+ ALT="$t=0$% WIDTH=72 HEIGHT=24 ">. The main role of the Edit form is to provide the name for
+the integrated variable&mdash;other details included on the form can
+be controlled from elsewhere in the program. Type the name you want
+to give the variable into the Name field and press Enter or click
+on OK. You can also name the variable via the context menu item ``Rename
+all instances''.
+
+<P>
+The flows to be integrated are connected to the top port of the integral
+block, labelled `<IMG
+ STYLE="height: 2.17ex; vertical-align: -0.57ex; " SRC="img226.png"
+ ALT="$f$% WIDTH=18 HEIGHT=31 ">'. The bottom port, labelled `0', can optionally
+be connected to a constant, parameter or variable, which is used to
+specify the initial value of the integral, following the same rules as
+the <A HREF="node149.html#var:init">variable initial value field</A>.
 
 <P>
 <BR><HR>

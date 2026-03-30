@@ -1,0 +1,3013 @@
+\batchmode
+ %% LyX 2.3.7 created this file.  For more info, see http://www.lyx.org/.
+\documentclass{book}
+\RequirePackage{ifthen}
+
+
+\usepackage[latin9]{inputenc}
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+\usepackage{textcomp}
+\usepackage{ifsym}
+\usepackage{url}
+\usepackage{graphicx}
+\usepackage{esint}
+\usepackage[unicode=true]{hyperref}
+
+\makeatletter
+
+\DeclareTextSymbolDefault{\textquotedbl}{T1}%
+\providecommand{\tabularnewline}{\\}%
+\providecommand{\lyxdot}{.} 
+
+\usepackage{html}
+\usepackage{graphics}\usepackage{color}\title{Minsky Simulation Engine}
+\bodytext{bgcolor="white"}
+\pagecolor{white}
+\author{}
+
+%
+\providecommand{\fwhtmladdimg}[1]{\htmladdimg{#1}}%
+\providecommand{\smhtmladdimg}[1]{\htmladdimg{#1}} 
+
+%
+\providecommand{\buttonIcon}[1]{
+  \resizebox{!}{2ex}{\includegraphics{images/#1}}
+  } 
+
+\makeatother
+
+
+
+
+
+\makeatletter
+
+\makeatletter
+\count@=\the\catcode`\_ \catcode`\_=8 
+\newenvironment{tex2html_wrap}{}{}%
+\catcode`\<=12\catcode`\_=\count@
+\newcommand{\providedcommand}[1]{\expandafter\providecommand\csname #1\endcsname}%
+\newcommand{\renewedcommand}[1]{\expandafter\providecommand\csname #1\endcsname{}%
+  \expandafter\renewcommand\csname #1\endcsname}%
+\newcommand{\newedenvironment}[1]{\newenvironment{#1}{}{}\renewenvironment{#1}}%
+\let\newedcommand\renewedcommand
+\let\renewedenvironment\newedenvironment
+\makeatother
+\let\mathon=$
+\let\mathoff=$
+\ifx\AtBeginDocument\undefined \newcommand{\AtBeginDocument}[1]{}\fi
+\newbox\sizebox
+\setlength{\hoffset}{0pt}\setlength{\voffset}{0pt}
+\addtolength{\textheight}{\footskip}\setlength{\footskip}{0pt}
+\addtolength{\textheight}{\topmargin}\setlength{\topmargin}{0pt}
+\addtolength{\textheight}{\headheight}\setlength{\headheight}{0pt}
+\addtolength{\textheight}{\headsep}\setlength{\headsep}{0pt}
+\newwrite\lthtmlwrite
+\makeatletter
+\let\realnormalsize=\normalsize
+\global\topskip=2sp
+\def\preveqno{}\let\real@float=\@float \let\realend@float=\end@float
+\def\@float{\let\@savefreelist\@freelist\real@float}
+\def\liih@math{\ifmmode$\else\bad@math\fi}
+\def\end@float{\realend@float\global\let\@freelist\@savefreelist}
+\let\real@dbflt=\@dbflt \let\end@dblfloat=\end@float
+\let\@largefloatcheck=\relax
+\let\if@boxedmulticols=\iftrue
+\def\@dbflt{\let\@savefreelist\@freelist\real@dbflt}
+\def\adjustnormalsize{\def\normalsize{\mathsurround=0pt \realnormalsize
+ \parindent=0pt\abovedisplayskip=0pt\belowdisplayskip=0pt}%
+ \def\phantompar{\csname par\endcsname}\normalsize}%
+\def\lthtmltypeout#1{{\let\protect\string \immediate\write\lthtmlwrite{#1}}}%
+\usepackage[tightpage,active]{preview}
+\PreviewBorder=0.5bp
+\newbox\lthtmlPageBox
+\newdimen\lthtmlCropMarkHeight
+\newdimen\lthtmlCropMarkDepth
+\long\def\lthtmlTightVBoxA#1{\def\lthtmllabel{#1}
+    \setbox\lthtmlPageBox\vbox\bgroup\catcode`\_=8 }%
+\long\def\lthtmlTightVBoxZ{\egroup
+    \lthtmlCropMarkHeight=\ht\lthtmlPageBox \advance \lthtmlCropMarkHeight 6pt
+    \lthtmlCropMarkDepth=\dp\lthtmlPageBox
+    \lthtmltypeout{^^J:\lthtmllabel:lthtmlCropMarkHeight:=\the\lthtmlCropMarkHeight}%
+    \lthtmltypeout{^^J:\lthtmllabel:lthtmlCropMarkDepth:=\the\lthtmlCropMarkDepth:1ex:=\the \dimexpr 1ex}%
+    \begin{preview}\copy\lthtmlPageBox\end{preview}}%
+\long\def\lthtmlTightFBoxA#1{\def\lthtmllabel{#1}%
+    \adjustnormalsize\setbox\lthtmlPageBox=\vbox\bgroup\hbox\bgroup %
+    \let\ifinner=\iffalse \let\)\liih@math %
+    \bgroup\catcode`\_=8 }%
+\long\def\lthtmlTightFBoxZ{\egroup\egroup
+    \@next\next\@currlist{}{\def\next{\voidb@x}}%
+    \expandafter\box\next\egroup %
+    \lthtmlCropMarkHeight=\ht\lthtmlPageBox \advance \lthtmlCropMarkHeight 6pt
+    \lthtmlCropMarkDepth=\dp\lthtmlPageBox
+    \lthtmltypeout{^^J:\lthtmllabel:lthtmlCropMarkHeight:=\the\lthtmlCropMarkHeight}%
+    \lthtmltypeout{^^J:\lthtmllabel:lthtmlCropMarkDepth:=\the\lthtmlCropMarkDepth:1ex:=\the \dimexpr 1ex}%
+    \begin{preview}\copy\lthtmlPageBox\end{preview}}%
+    \long\def\lthtmlinlinemathA#1#2\lthtmlindisplaymathZ{\lthtmlTightVBoxA{#1}{\hbox\bgroup#2\egroup}\lthtmlTightVBoxZ}
+    \def\lthtmlinlineA#1#2\lthtmlinlineZ{\lthtmlTightVBoxA{#1}{\hbox\bgroup#2\egroup}\lthtmlTightVBoxZ}
+    \long\def\lthtmldisplayA#1#2\lthtmldisplayZ{\lthtmlTightVBoxA{#1}{#2}\lthtmlTightVBoxZ}
+    \long\def\lthtmldisplayB#1#2\lthtmldisplayZ{\\edef\preveqno{(\theequation)}%
+        \lthtmlTightVBoxA{#1}{\let\@eqnnum\relax#2}\lthtmlTightVBoxZ}
+    \long\def\lthtmlfigureA#1{\let\@savefreelist\@freelist
+        \lthtmlTightFBoxA{#1}}
+    \long\def\lthtmlfigureZ{
+        \lthtmlTightFBoxZ\global\let\@freelist\@savefreelist}
+    \long\def\lthtmlpictureA#1{\let\@savefreelist\@freelist
+        \lthtmlTightVBoxA{#1}}
+    \long\def\lthtmlpictureZ{
+        \lthtmlTightVBoxZ\global\let\@freelist\@savefreelist}
+\def\lthtmlcheckvsize{\ifdim\ht\sizebox<\vsize 
+  \ifdim\wd\sizebox<\hsize\expandafter\hfill\fi \expandafter\vfill
+  \else\expandafter\vss\fi}%
+\providecommand{\selectlanguage}[1]{}%
+\makeatletter \tracingstats = 1 
+
+
+\begin{document}
+\pagestyle{empty}\thispagestyle{empty}\lthtmltypeout{}%
+\lthtmltypeout{latex2htmlLength hsize=\the\hsize}\lthtmltypeout{}%
+\lthtmltypeout{latex2htmlLength vsize=\the\vsize}\lthtmltypeout{}%
+\lthtmltypeout{latex2htmlLength hoffset=\the\hoffset}\lthtmltypeout{}%
+\lthtmltypeout{latex2htmlLength voffset=\the\voffset}\lthtmltypeout{}%
+\lthtmltypeout{latex2htmlLength topmargin=\the\topmargin}\lthtmltypeout{}%
+\lthtmltypeout{latex2htmlLength topskip=\the\topskip}\lthtmltypeout{}%
+\lthtmltypeout{latex2htmlLength headheight=\the\headheight}\lthtmltypeout{}%
+\lthtmltypeout{latex2htmlLength headsep=\the\headsep}\lthtmltypeout{}%
+\lthtmltypeout{latex2htmlLength parskip=\the\parskip}\lthtmltypeout{}%
+\lthtmltypeout{latex2htmlLength oddsidemargin=\the\oddsidemargin}\lthtmltypeout{}%
+\makeatletter
+\if@twoside\lthtmltypeout{latex2htmlLength evensidemargin=\the\evensidemargin}%
+\else\lthtmltypeout{latex2htmlLength evensidemargin=\the\oddsidemargin}\fi%
+\lthtmltypeout{}%
+\makeatother
+\setcounter{page}{1}
+\onecolumn
+
+% !!! IMAGES START HERE !!!
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline8478}%
+$t$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline8480}%
+$-$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline8482}%
+$\times $%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline8484}%
+$\div $%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline8486}%
+$\wedge $%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline8488}%
+$\vee $%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline8490}%
+$x^{y}$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline8492}%
+$\psi ^{(n)}(x)$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline8494}%
+$<$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline8496}%
+$\le $%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline8498}%
+$=$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline8500}%
+$\surd $%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline8502}%
+$|x|$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline8504}%
+$\lfloor x\rfloor $%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline8506}%
+$\neg $%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline8508}%
+$\Gamma $%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline8510}%
+$d/dt$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline8512}%
+$\sum $%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline8514}%
+$\prod $%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline8516}%
+$\sum +$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline8518}%
+$\prod +$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline8520}%
+$\Delta ^{-},\Delta ^{+}$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline8522}%
+$\cdot $%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline8524}%
+$\otimes $%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline8526}%
+$k$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline8528}%
+$\rho $%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline8530}%
+$\intop \ilimits@ dt$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+\setcounter{secnumdepth}{3}
+\setcounter{tocdepth}{3}
+\stepcounter{chapter}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap156}%
+\resizebox{!}{2ex}{\includegraphics{images/mean}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline120}%
+$1.8\times
+10^{19}$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap8880}%
+\includegraphics{images/RavelBlank}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap8881}%
+\includegraphics{images/01RavelDataInflation}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap8882}%
+\includegraphics[width=\textwidth]{images/01BRavelDataInflationSelected}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap8883}%
+\includegraphics{images/02RavelDataInflationGraphed}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap8884}%
+\includegraphics{images/03RavelDataInflationAnalyzed}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{chapter}
+\stepcounter{section}
+\stepcounter{section}
+\stepcounter{section}
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlfigureA{tabular193}%
+\begin{tabular}{lllllll}
+File  & Edit  & Bookmarks  & Insert  & Options  & Simulation  & Help \tabularnewline \end{tabular}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+\stepcounter{subsubsection}
+\stepcounter{subsubsection}
+\stepcounter{subsubsection}
+\stepcounter{subsubsection}
+\stepcounter{subsubsection}
+\stepcounter{subsubsection}
+\stepcounter{subsection}
+\stepcounter{subsubsection}
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap734}%
+\resizebox{!}{2ex}{\includegraphics{images/zoomIn.eps}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap736}%
+\resizebox{!}{2ex}{\includegraphics{images/zoomOut.eps}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap738}%
+\resizebox{!}{2ex}{\includegraphics{images/zoomOrig.eps}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap740}%
+\resizebox{!}{2ex}{\includegraphics{images/zoomToFit.eps}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+\stepcounter{subsubsection}
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline632}%
+$\Delta t$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+\stepcounter{subsubsection}
+\stepcounter{subsubsection}
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap8924}%
+\includegraphics[width=\textwidth]{images/NeoclassicalModelOfFirm}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+\stepcounter{subsubsection}
+\stepcounter{subsubsection}
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline634}%
+$10000\time10000$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap836}%
+\resizebox{!}{2ex}{\includegraphics{images/importData.eps}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap838}%
+\resizebox{!}{2ex}{\includegraphics{images/RavelIcon}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap844}%
+\resizebox{!}{2ex}{\includegraphics{images/Lock}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap846}%
+\resizebox{!}{2ex}{\includegraphics{images/var.eps}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap850}%
+\resizebox{!}{2ex}{\includegraphics{images/plot.eps}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap852}%
+\resizebox{!}{2ex}{\includegraphics{images/sheet.eps}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap854}%
+\resizebox{!}{2ex}{\includegraphics{images/time.eps}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline636}%
+$\pi$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap856}%
+\resizebox{!}{2ex}{\includegraphics{images/BinaryButton.png}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap858}%
+\resizebox{!}{2ex}{\includegraphics{images/sqrt.eps}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap860}%
+\resizebox{!}{2ex}{\includegraphics{images/sum.eps}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap862}%
+\resizebox{!}{2ex}{\includegraphics{images/runningSum.eps}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap864}%
+\resizebox{!}{2ex}{\includegraphics{images/outerProduct.eps}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap866}%
+\resizebox{!}{2ex}{\includegraphics{images/switchIcon.eps}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap868}%
+\resizebox{!}{2ex}{\includegraphics{images/userFunction.eps}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap870}%
+\resizebox{!}{2ex}{\includegraphics{images/NewItem29.eps}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap872}%
+\resizebox{!}{2ex}{\includegraphics{images/int.eps}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap874}%
+\resizebox{!}{2ex}{\includegraphics{images/differentiate.eps}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{section}
+\stepcounter{subsection}
+\stepcounter{subsection}
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmldisplayA{displaymath626}%
+\begin{displaymath}
+ProfitMargin=(Price-Cost)/Cost
+\end{displaymath}%
+\lthtmldisplayZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmldisplayA{displaymath627}%
+\begin{displaymath}
+Profit_{Margin}=\frac{Price-Cost}{Cost}
+\end{displaymath}%
+\lthtmldisplayZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap8935}%
+\includegraphics[width=10cm]{images/ProfitMarginEquation}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap914}%
+\resizebox{!}{2ex}{\includegraphics{images/add}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap916}%
+\resizebox{!}{2ex}{\includegraphics{images/minus}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap918}%
+\resizebox{!}{2ex}{\includegraphics{images/divide}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap920}%
+\resizebox{!}{2ex}{\includegraphics{images/min}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap922}%
+\resizebox{!}{2ex}{\includegraphics{images/max}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{chapter}
+\stepcounter{section}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap8943}%
+\includegraphics{images/tut00Ravel}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap8944}%
+\includegraphics[width=\textwidth]{images/tut01Ravel4DwithSheet}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap8945}%
+\includegraphics[width=\textwidth]{images/tut02HPI4DwithSheetRotatedCountryDate}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap8946}%
+\includegraphics[width=\textwidth]{images/tut04HPI4DwithSheetRotatedCountryDateRealChange}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{section}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline1002}%
+$HPI_{Real}$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline1004}%
+$\Delta{HPI}$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline1010}%
+$\Delta{HPI}_{Advanced}^{Avg}$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline1012}%
+$\Delta{HPI}_{Advanced}$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap8948}%
+\includegraphics[width=\textwidth]{images/tut06HPIwithVariablesAssigned02DeltaHPI}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{section}
+\stepcounter{section}
+\stepcounter{section}
+\stepcounter{section}
+\stepcounter{section}
+\stepcounter{section}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap1088}%
+\resizebox{!}{2ex}{\includegraphics{images/importData}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+
+%
+\providecommand{\operatorKey}[1]{
+  \begin{center}
+    \includegraphics[height=10mm]{images/#1}
+  \end{center}
+  }%
+
+\stepcounter{chapter}
+\stepcounter{section}
+\stepcounter{subsection}
+\stepcounter{subsection}
+\stepcounter{subsection}
+\stepcounter{subsection}
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline2879}%
+$\rightarrow$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{section}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap3251}%
+\resizebox{!}{2ex}{\includegraphics{images/var}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap3253}%
+\resizebox{!}{2ex}{\includegraphics{images/Plus}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap3263}%
+\resizebox{!}{2ex}{\includegraphics{images/dataImport}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap3271}%
+\resizebox{!}{2ex}{\includegraphics{images/ravelIcon}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap8972}%
+\includegraphics[width=10cm]{images/RavelBlank}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap8974}%
+\includegraphics{images/Lock}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+\stepcounter{subsection}
+\stepcounter{subsection}
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap3311}%
+\resizebox{!}{2ex}{\includegraphics{images/time}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap8979}%
+\includegraphics[height=10mm]{images/time}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+\stepcounter{subsubsection}
+\stepcounter{subsubsection}
+\stepcounter{subsubsection}
+\stepcounter{subsubsection}
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline2895}%
+$x$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline2897}%
+$y$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline2909}%
+$x\le0.5$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline2911}%
+$x>0.5$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap8989}%
+\includegraphics[height=10mm]{images/or}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline2925}%
+$b$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline2929}%
+$b=e$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline2943}%
+$n$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmldisplayA{displaymath2843}%
+\begin{displaymath}
+\psi^{(n)}(x)=\frac{d^{n+1}}{dx^{n+1}}\ln\Gamma(x)
+\end{displaymath}%
+\lthtmldisplayZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap8993}%
+\includegraphics[height=10mm]{images/Polygamma}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline2947}%
+$x<y$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline2951}%
+$x\le y$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline2955}%
+$x=y$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap8997}%
+\includegraphics[height=10mm]{images/Equal}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline2957}%
+$e=2.72\ldots$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline2959}%
+$\pi=3.14\ldots$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline2961}%
+$\infty$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+\stepcounter{subsection}
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9002}%
+\includegraphics[height=10mm]{images/squareRoot}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline2971}%
+$e^{x}$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9004}%
+\includegraphics[height=10mm]{images/Exponential}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline2973}%
+$\log_{e}x$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9006}%
+\includegraphics[height=10mm]{images/ln}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9008}%
+\includegraphics[height=10mm]{images/sine}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9010}%
+\includegraphics[height=10mm]{images/cosine}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9012}%
+\includegraphics[height=10mm]{images/tan}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9014}%
+\includegraphics[height=10mm]{images/sin-1}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9016}%
+\includegraphics[height=10mm]{images/cos-1}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9018}%
+\includegraphics[height=10mm]{images/tan-1}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline2977}%
+$\frac{e^{x}-e^{-x}}{2}$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9020}%
+\includegraphics[height=10mm]{images/sinh}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline2979}%
+$\frac{e^{x}+e^{-x}}{2}$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9022}%
+\includegraphics[height=10mm]{images/cosh}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline2981}%
+$\frac{e^{x}-e^{-x}}{e^{x}+e^{-x}}$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9024}%
+\includegraphics[height=10mm]{images/tanh}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9026}%
+\includegraphics[height=10mm]{images/abs}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9028}%
+\includegraphics[height=10mm]{images/floor}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline2991}%
+$x-\lfloor x\rfloor$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9030}%
+\includegraphics[height=10mm]{images/frac}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9032}%
+\includegraphics[height=10mm]{images/not}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmldisplayA{displaymath2844}%
+\begin{displaymath}
+\Gamma(x)=\int_{0}^{\infty}t^{x-1}e^{-t}dt
+\end{displaymath}%
+\lthtmldisplayZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9034}%
+\includegraphics[height=10mm]{images/Gamma}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmldisplayA{eqnarraystar1445}%
+\begin{eqnarray*}
+0! & = & 1\\
+n! & = & \prod_{i=1}^{n}i\\
+\end{eqnarray*}%
+\lthtmldisplayZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmldisplayA{displaymath2845}%
+\begin{displaymath}
+n!=\Gamma(n+1)
+\end{displaymath}%
+\lthtmldisplayZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9036}%
+\includegraphics[height=10mm]{images/Factorial}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+\stepcounter{subsection}
+\stepcounter{subsection}
+\stepcounter{subsection}
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap3635}%
+\resizebox{!}{2ex}{\includegraphics{images/sum}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3003}%
+$\Sigma$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9042}%
+\includegraphics[height=10mm]{images/sum}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3007}%
+$\Pi$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9044}%
+\includegraphics[height=10mm]{images/product}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9046}%
+\includegraphics[height=10mm]{images/infimum}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9048}%
+\includegraphics[height=10mm]{images/supremum}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9050}%
+\includegraphics[height=10mm]{images/any}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9052}%
+\includegraphics[height=10mm]{images/all}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9054}%
+\includegraphics[height=10mm]{images/infindex}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9056}%
+\includegraphics[height=10mm]{images/supindex}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap3717}%
+\resizebox{!}{2ex}{\includegraphics{images/runningSum}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmldisplayA{displaymath2846}%
+\begin{displaymath}
+\left(\begin{array}{cccc}
+1 & 2 & 3 & 4\\
+5 & 4 & 3 & 2\\
+8 & 7 & 6 & 5
+\end{array}\right)
+\end{displaymath}%
+\lthtmldisplayZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmldisplayA{displaymath2847}%
+\begin{displaymath}
+\left(\begin{array}{cccc}
+1 & 3 & 6 & 10\\
+5 & 9 & 12 & 14\\
+8 & 15 & 21 & 26
+\end{array}\right)
+\end{displaymath}%
+\lthtmldisplayZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9058}%
+\includegraphics[height=10mm]{images/runningSum}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmldisplayA{displaymath2849}%
+\begin{displaymath}
+\left(\begin{array}{cccc}
+1 & 2 & 6 & 24\\
+5 & 20 & 60 & 120\\
+8 & 56 & 336 & 1680
+\end{array}\right)
+\end{displaymath}%
+\lthtmldisplayZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9060}%
+\includegraphics[height=10mm]{images/runningProduct}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3015}%
+$\delta$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3021}%
+$\Delta_{i}^{-}=x_{i}-x_{i-\delta}$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3023}%
+$\Delta_{i}^{+}=x_{i+\delta}-x_{i}$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3025}%
+$i$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9062}%
+\includegraphics[height=10mm]{images/difference}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9063}%
+\includegraphics[height=10mm]{images/differencePlus}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap3769}%
+\resizebox{!}{2ex}{\includegraphics{images/innerProduct}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmldisplayA{displaymath2850}%
+\begin{displaymath}
+z_{i_{1},\ldots,i_{r_{x}-1},j_{1},\ldots,j_{r_{y}-1}}=\sum_{k}x_{i_{1}\ldots,i_{a-1},k,i_{a+1}\ldots,i_{r_{x}-1}}y_{j_{1},\ldots,j_{r_{y}-1},k},
+\end{displaymath}%
+\lthtmldisplayZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3029}%
+$a$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3031}%
+$r_{x}$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3033}%
+$r_{y}$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9065}%
+\includegraphics[height=10mm]{images/innerProduct}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmldisplayA{displaymath2851}%
+\begin{displaymath}
+z_{i_{1},i_{2},\ldots,i_{r_{x}},j_{1},\ldots,j_{r_{y}}}=x_{i_{1},,i_{2},\ldots,i_{r_{x}}}y_{j_{1},\ldots,j_{r_{y}}}.
+\end{displaymath}%
+\lthtmldisplayZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9067}%
+\includegraphics[height=10mm]{images/outerProduct}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3049}%
+$>0.5$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmldisplayA{eqnarraystar1619}%
+\begin{eqnarray*}
+\iota(3,3) & = & \left(\begin{array}{ccc}
+0 & 3 & 6\\
+1 & 4 & 7\\
+2 & 5 & 8
+\end{array}\right),\\
+\mathrm{idx}(\iota(3,3)<5) & = & \left(\begin{array}{ccc}
+0 & 3 & nan\\
+1 & 4 & nan\\
+2 & nan & nan
+\end{array}\right),\\
+\end{eqnarray*}%
+\lthtmldisplayZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9069}%
+\includegraphics[height=10mm]{images/index}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3051}%
+$[a_0,\ldots a_{j-1},a_{j+1},\ldots a_{ar}]$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3053}%
+$j$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3055}%
+$[i, a_0,\ldots a_{j-1},a_{j+1},\ldots a_{ar}]$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3061}%
+$x[2.5] = 0.5 (x[2]+x[3])$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9071}%
+\includegraphics[height=10mm]{images/gather}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9073}%
+\includegraphics[height=10mm]{images/meld}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9075}%
+\includegraphics[height=10mm]{images/merge}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9076}%
+\includegraphics[width=\textwidth]{images/MergeExample01TwoVariables}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9077}%
+\includegraphics[width=\textwidth]{images/MergeExample02TwoVariablesSeparate}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9078}%
+\includegraphics[width=\textwidth]{images/MergeExample02TwoVariablesEditForm}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9079}%
+\includegraphics[width=\textwidth]{images/MergeExample03TwoVariablesMerged}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3063}%
+$\mathrm{slice}(\{x_{1},x_{2},\ldots x_{n}\},3)=\{x_{1},x_{2},x_{3}\}$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3065}%
+$\mathrm{slice}(\{x_{1},x_{2},\ldots x_{n}\},-3)=\{x_{n-2},x_{n-1},x_{n}\}$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9081}%
+\includegraphics[height=10mm]{images/slice}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3067}%
+$3\times2$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9083}%
+\includegraphics[height=10mm]{images/size}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9085}%
+\includegraphics[height=10mm]{images/shape}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9088}%
+\includegraphics[height=10mm]{images/mean}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9090}%
+\includegraphics[height=10mm]{images/median}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmldisplayA{displaymath2852}%
+\begin{displaymath}
+\sigma=\frac{1}{N-1}\sum_{i}^{N}(x_{i}-\langle x\rangle)^{2}
+\end{displaymath}%
+\lthtmldisplayZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9092}%
+\includegraphics[height=10mm]{images/stdDev}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmldisplayA{displaymath2853}%
+\begin{displaymath}
+\langle\Delta x^{k}\rangle=\frac{1}{N}\sum_{i}(x_{i}-\langle x\rangle)^{k}
+\end{displaymath}%
+\lthtmldisplayZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmldisplayA{displaymath2854}%
+\begin{displaymath}
+\sigma^{2}=\frac{N}{N-1}\langle\Delta x^{2}\rangle
+\end{displaymath}%
+\lthtmldisplayZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9094}%
+\includegraphics[height=10mm]{images/moment}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap3935}%
+\resizebox{\textwidth}{!}{\includegraphics{images/histogram}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9096}%
+\includegraphics[height=10mm]{images/histogramKey}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3077}%
+$N$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3079}%
+$M$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3081}%
+$(N-1)\times(M-1)$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3083}%
+$(i,j)$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3091}%
+$(x,x)$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmldisplayA{displaymath2855}%
+\begin{displaymath}
+\mathrm{cov}(x,y)=\frac{1}{N-1}\sum_{i}(x_{i}-\langle x\rangle)(y_{i}-\langle y\rangle)
+\end{displaymath}%
+\lthtmldisplayZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9098}%
+\includegraphics[height=10mm]{images/covariance}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmldisplayA{displaymath2856}%
+\begin{displaymath}
+\rho(x,y)=\frac{\mathrm{cov(x,y)}}{\sigma(x)\sigma(y)}
+\end{displaymath}%
+\lthtmldisplayZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9100}%
+\includegraphics[height=10mm]{images/rhoCorrelationCoefficient}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9102}%
+\includegraphics[width=\textwidth]{images/linearRegression}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap3991}%
+\resizebox{!}{2ex}{\includegraphics{images/switch}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap3995}%
+\resizebox{\textwidth}{!}{\includegraphics{images/switch}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline9105}%
+$\textstyle \parbox{1\textwidth}{%
+ \texttt{if not }{\em condition} \texttt{then}\\
+ \ldots\texttt{else}\\
+ \ldots %
+}$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9106}%
+\includegraphics[height=10mm]{images/switchKey}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9108}%
+\includegraphics[height=10mm]{images/userFunction}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3107}%
+$Assets-Liabilities-Equity$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3109}%
+$\begin{array}{c}
+\frac{d}{dt}Loans=Lending-Repay\\
+\frac{d}{dt}Deposits=Lending-Interest-Repay+Spend_{Banks}\\
+\frac{d}{dt}Banks_{Equity}=Interest-Spend_{Banks}\\
+\frac{d}{dt}Reserves=0
+\end{array}$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9110}%
+\includegraphics[width=\textwidth]{images/GodleyTableImages}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap4049}%
+\resizebox{!}{2ex}{\includegraphics{images/GodleyIcon}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9112}%
+\includegraphics[width=\textwidth]{images/GodleyTableIconMode}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlfigureA{tabular1849}%
+\begin{tabular}{|c|p{0.65\textwidth}|}
+\hline 
+Command & Effect\tabularnewline \hline 
+\hline 
+Open Godley Table & Opens the form for editing Godley Tables\tabularnewline \hline 
+Title & Give the Table a name which is displayed on the icon and edit form\tabularnewline \hline 
+Set currency & If multiple currencies are used in a model, specify the currency for
+the current table\tabularnewline \hline 
+Editor Mode & Convert the canvas view of the table from an icon to the table itself,
+which can be edited on the canvas\tabularnewline \hline 
+Row/Col buttons & When Editor Mode is active, show row and column buttons used to add
+and delete rows and columns\tabularnewline \hline 
+Display Variables & Show the stocks and flows defined in the table as variables attached
+to the table in icon view\tabularnewline \hline 
+Copy flow variables & Copy all the flow variables in the table to the canvas\tabularnewline \hline 
+Copy stock variables & Copy all the stock variables in the table to the canvas\tabularnewline \hline 
+Export as & Export the table in either CSV or LaTeX format\tabularnewline \hline 
+Rotate GodleyIcon & This command has been deprecated and will be deleted in a future release\tabularnewline \hline 
+\end{tabular}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+\stepcounter{paragraph}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3111}%
+$A-L-E$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3113}%
+$Lending-0.7Lending-0.3Lending$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9116}%
+\includegraphics[width=\textwidth]{images/GodleyTableEditMode3StocksAndFlows}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{paragraph}
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9119}%
+\includegraphics[width=\textwidth]{images/GodleyTableEditMode}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9121}%
+\includegraphics[width=\textwidth]{images/GodleyTableEditModeButtons}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9123}%
+\includegraphics[width=\textwidth]{images/GodleyTableIconModeShowVariables}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9125}%
+\includegraphics[width=\textwidth]{images/GodleyTableImagesStocksFlowsOnCanvas}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9127}%
+\includegraphics[width=\textwidth]{images/GodleyTableImagesMultiTablesUnfinished}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9128}%
+\includegraphics[width=\textwidth]{images/GodleyTableImagesMultiTablesFinished}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3115}%
+$-Interest$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3117}%
+$+Spend_{Banks}$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3121}%
+$\int dt$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap4141}%
+\resizebox{!}{2ex}{\includegraphics{images/integrate}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3123}%
+$f$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3125}%
+$0$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9132}%
+\includegraphics[height=10mm]{images/integrate}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlfigureA{tabular1892}%
+\begin{tabular}{|c|p{0.68\textwidth}|}
+\hline 
+Command & Effect\tabularnewline \hline 
+\hline 
+Edit & Bring up the Edit form for this integrals\tabularnewline \hline 
+Copy item & Copy the variable name, rather than the combined integral block plus
+name\tabularnewline \hline 
+Toggle var binding & Enable the integral block to be separated from the variable name\tabularnewline \hline 
+Rotate IntOp & Rotate the combined integral block plus name\tabularnewline \hline 
+\end{tabular}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3127}%
+$t=0$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9135}%
+\includegraphics[height=10mm]{images/differential}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{section}
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3133}%
+$a+bx+cx^{2}$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3135}%
+$(n_{1},n_{2},\ldots,n_{r})$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3137}%
+$r$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3139}%
+$n_{1},n_{2},$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{tabular1945}%
+\begin{tabular}{|r|l|}
+\hline 
+name  & description\tabularnewline \hline 
+\verb+one+ & the tensor is filled with `1'\tabularnewline \verb+zero+ & the tensor is filled with `0'\tabularnewline \verb+iota+ & the arithmetic sequence $(0,1,...\prod_{i}n_{i})$\tabularnewline \verb+eye+ & diagonal elements filled with `1', offdiagonal `0'\tabularnewline \verb+rand+ & tensor filled with random numbers in the range $[0,1)$\tabularnewline \hline 
+\end{tabular}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+\stepcounter{subsection}
+\stepcounter{section}
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3145}%
+$\mathrm{Discount}^{\%}=\left(\frac{\mathrm{Discount}}{\mathrm{Price}}\right)$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3147}%
+$+/-$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3149}%
+$\times/\div$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+\stepcounter{section}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9154}%
+\includegraphics[height=10mm]{images/group}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{section}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9156}%
+\includegraphics{images/plotLissajous}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9157}%
+\includegraphics{images/plotSlidingWindow}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+\stepcounter{subsubsection}
+\stepcounter{subsubsection}
+\stepcounter{subsubsection}
+\stepcounter{subsubsection}
+\stepcounter{subsubsection}
+\stepcounter{subsubsection}
+\stepcounter{subsubsection}
+\stepcounter{subsubsection}
+\stepcounter{section}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9168}%
+\includegraphics[width=\textwidth]{images/sheetBasics}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9169}%
+\includegraphics[width=\textwidth]{images/SheetHeadTailSmallBusiness}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{section}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9171}%
+\includegraphics{images/note}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9172}%
+\includegraphics{images/Note+Text}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{section}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3159}%
+$180^{\circ}$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3161}%
+$^{\circ}$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{section}
+{\newpage\clearpage
+\lthtmlfigureA{tabular2099}%
+\begin{tabular}{rl}
+F1  & context sensitive help\tabularnewline Shift  & enter panning mode\tabularnewline $\leftarrow,\rightarrow,\uparrow,\downarrow$\   & adjust sliders, adjust Ravel slicers\tabularnewline \end{tabular}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{tabular2102}%
+\begin{tabular}{rl}
+  \verb-+- & add\\
+  \verb+-+ & subtract \\
+  \verb+*+ & multiply\\
+  \verb++/ & divide\\
+  \verb+^+ & pow\\
+  \verb+%+ & percent operator\\
+  \verb+&+ & integral\\
+  \verb+=+ & Godley table\\
+  \verb+@+ & plot\\
+  \verb+#+ & start a text comment, finish with return\\
+\end{tabular}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{section}
+\stepcounter{section}
+\stepcounter{section}
+{\newpage\clearpage
+\lthtmldisplayA{displaymath2857}%
+\begin{displaymath}
+\left(\begin{array}{ccc}
+x & x & x\\
+x & x & x\\
+x & x & x
+\end{array}\right)
+\end{displaymath}%
+\lthtmldisplayZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3165}%
+$(0,\ldots,n_i-1)$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3167}%
+$n_i$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3171}%
+$(x_0, x_1, x_2)$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3173}%
+$(x_0)$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3175}%
+$(x_0,x_1)$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3177}%
+$(y_0,y_1,y_2)$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3179}%
+$(x_0+0.5(y_0+y_1), x_1+y_2)$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3181}%
+$x_1+y_2$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{section}
+\stepcounter{subsection}
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9185}%
+\includegraphics[width=.7\textwidth]{images/RavelDataImporting01}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9186}%
+\includegraphics[width=.7\textwidth]{images/RavelDataImporting02}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9187}%
+\includegraphics[width=\textwidth]{images/RavelSingleDataPointSelected}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9188}%
+\includegraphics[width=\textwidth]{images/RavelDataSeriesSelected}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9189}%
+\includegraphics[width=\textwidth]{images/RavelData2SeriesSelected}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9190}%
+\includegraphics[width=15cm]{images/RavelDataLockedSubsets}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9191}%
+\includegraphics[width=15cm]{images/CPI_SubsetsAverages}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9192}%
+\includegraphics[width=15cm]{images/CPI_SubsetsAverageVsSelection}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9195}%
+\includegraphics[width=15cm]{images/CPI_SubsetsAxisRotation}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9197}%
+\includegraphics[width=\textwidth]{images/SmallBusinessAggregation}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlfigureA{tabular2185}%
+\begin{tabular}{|c|p{.7\textwidth}|}
+\hline 
+Command & Effect\tabularnewline \hline 
+\hline 
+Help & Bring up context help on Ravels\tabularnewline \hline 
+Description & Open a text form for documenting the Ravel\tabularnewline \hline 
+Editor Mode & Toggle between seeing the Ravel in Edit or Icon mode\tabularnewline \hline 
+Export as CSV & Export the data in the Ravel as a CSV file\tabularnewline \hline 
+Set next aggregation & Determine the mathematical operation applied when the next axis is
+collapsed\tabularnewline \hline 
+Collapse all handles & Aggregate all axes. Ravel will return a single number\tabularnewline \hline 
+Expand all handles & Disaggregate all axes. \tabularnewline \hline 
+Flip & Turn the Ravel around so that the input is on the right and output
+on the left\tabularnewline \hline 
+Link specific handles & Control over linked Ravels to link only some aspects--orientation,
+caliper, etc.\tabularnewline \hline 
+Join Link Group & Add this Ravel to an existing set of linked Ravels\tabularnewline \hline 
+Unlink & Remove this Ravel from an existing set of linked Ravels\tabularnewline \hline 
+Toggle Axis Calipers & Turn the caliper on a selected axis on or off\tabularnewline \hline 
+Sort Axis & Sort axis by the value of axis labels.\tabularnewline \hline 
+Sort by value & Sort axis by the value of the data on an axis.\tabularnewline \hline 
+Pick axis slices & Manually choose which axis values are output by the Ravel\tabularnewline \hline 
+Axis properties & Description and Dimension show the dimension name; Set next aggregation\tabularnewline \hline 
+Rotate Ravel & Rotate the Ravel through an arbitrary angle\tabularnewline \hline 
+Add to Publication Tab & Place the Ravel on a specified Publication Tab\tabularnewline \hline 
+Delete Ravel & \tabularnewline \hline 
+\end{tabular}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9200}%
+\includegraphics[width=\textwidth]{images/SmallBusinessCalipers}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9203}%
+\includegraphics[width=\textwidth]{images/CPI_SubsetsDynamicSorting}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+\stepcounter{subsubsection}
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9207}%
+\includegraphics[height=10mm]{images/Lock}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9210}%
+\includegraphics[width=\textwidth]{images/RavelLinking}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9211}%
+\includegraphics[width=\textwidth]{images/RavelLinking2ndCountry}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{section}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap4593}%
+\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialog}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap4601}%
+\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialog-CSVSettings}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap4609}%
+\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialog-DataSelection}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3183}%
+$\pounds$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3185}%
+$2^{64}$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap4623}%
+\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialogTimeFormat}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlfigureA{table2256}%
+\begin{table}\begin{tabular}{|c|p{.8\textwidth}|}
+\hline 
+Code  & Description \tabularnewline \hline 
+\%a or \%A  & The name of the day of the week according to the current locale, in
+abbreviated form or the full name.\tabularnewline \%b or \%B  & The month name according to the current locale, in abbreviated form
+or the full name.\tabularnewline \%d  & Day of month in range 01 to 31\tabularnewline \%e  & Day of month in range 1 to 31\tabularnewline \%H  & Hour in range 0 to 23\tabularnewline \%I  & Hour in range 1 to 12\tabularnewline \%m  & Month as a decimal number (01 to 12)\tabularnewline \%M  & Minute in range 00 to 59\tabularnewline \%Q  & Quarter (0=1st January, 1=1st March etc)\tabularnewline \%p  & AM or PM\tabularnewline \%s  & Number of seconds since epoch (1st January 1970)\tabularnewline \%S  & Seconds in range 00 to 59 \tabularnewline \%y  & Two digit year YY\tabularnewline \%Y  & Four digit year YYYY\tabularnewline \%z  & numerical timezone offset\tabularnewline \%Z  & Timezone name\tabularnewline \%\%  & Literal \% character\tabularnewline \hline 
+\end{tabular}
+\end{table}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+\stepcounter{section}
+\stepcounter{subsection}
+\stepcounter{subsection}
+\stepcounter{subsection}
+\stepcounter{subsection}
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap4693}%
+\resizebox{!}{2ex}{\includegraphics{images/NewItem23.png}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap4713}%
+\resizebox{\textwidth}{!}{\includegraphics{images/NewItem36}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap4719}%
+\resizebox{\textwidth}{!}{\includegraphics{images/NewItem37}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap4733}%
+\scalebox{0.5}{\includegraphics{images/emptyGodley}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap4745}%
+\scalebox{0.5}{\htmladdimg{NewItem40.png}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap4751}%
+\scalebox{0.5}{\htmladdimg{NewItem41.png}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmldisplayA{displaymath2858}%
+\begin{displaymath}
+\frac{1}{\mathrm{Population}(t)}\cdot\left(\frac{d}{dt}\mathrm{Population}(t)\right)=0.0097
+\end{displaymath}%
+\lthtmldisplayZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmldisplayA{displaymath2859}%
+\begin{displaymath}
+\frac{d}{dt}\mathrm{Population}(t)=0.0097\cdot\mathrm{Population}(t)
+\end{displaymath}%
+\lthtmldisplayZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmldisplayA{displaymath2860}%
+\begin{displaymath}
+\mathrm{Population}(T)=315+\int_{0}^{T}0.0097\cdot\mathrm{Population}(t)dt
+\end{displaymath}%
+\lthtmldisplayZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline3197}%
+$T$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap4773}%
+\resizebox{\textwidth}{!}{\includegraphics{images/NewItem46}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap4779}%
+\resizebox{\textwidth}{!}{\includegraphics{images/NewItem47}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9236}%
+\includegraphics{images/NewItem29}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9237}%
+\includegraphics{images/NewItem39}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9238}%
+\includegraphics{images/NewItem42}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{chapter}
+\stepcounter{section}
+\stepcounter{section}
+\stepcounter{section}
+\stepcounter{section}
+\stepcounter{section}
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlfigureA{tabular4803}%
+\begin{tabular}{|c|p{0.8\textwidth}|}
+\hline
+OPERATOR & DEFINITION \\
+\hline
+\verb'+' &  Addition between x and y.  (eg: \verb'x + y')\\
+\verb'-'& Subtraction between x and y.  (eg: \verb'x - y')\\
+\verb'*'&   Multiplication between x and y.  (eg: \verb'x * y')\\
+\verb'/'& Division between x and y.  (eg: \verb'x / y')\\
+\verb'%'& Modulus of x with respect to y.  (eg: \verb'x % y')\\
+\verb'^'& $x^y$.  (eg: \verb'x ^ y')\\
+\verb':='& Assign the value of x to y. Where y is either a variable
+ or vector type.  (eg: \verb'y := x')\\
+\verb'+='&Increment x by the value of the expression on the right 
+hand side. Where x is either a variable or vector type. 
+(eg: \verb'x += abs(y - z)')\\
+\verb'-='&  Decrement x by the value of the expression on the right 
+hand side. Where x is either a variable or vector type. 
+(eg: \verb'x[i] -= abs(y + z)')\\
+\verb'*='& Assign the multiplication of x by the value of the 
+ expression on the righthand side to x. Where x is either
+ a variable or vector type. (eg: \verb'x *= abs(y / z)')\\
+\verb'/='& Assign the division of x by the value of the expression
+on the right-hand side to x. Where x is either a  variable or vector
+type.  (eg: \verb'x[i + j] /= abs(y * z)')\\
+\verb'%='& Assign x modulo the value of the expression on the right
+hand side to x. Where x is either a variable or vector type.  (eg:
+\verb'x[2] %= y ^ 2')\\
+\hline
+\end{tabular}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlfigureA{tabular4807}%
+\begin{tabular}{|c|p{0.8\textwidth}|}
+\hline
+OPERATOR & DEFINITION\\
+\hline
+\verb'==' or \verb'=' & True only if x is strictly equal to y. (eg: \verb'x == y')\\
+\verb'<>' or \verb'!='& True only if x does not equal y. (eg: \verb'x <> y' or \verb'x != y')\\
+\verb'<'& True only if x is less than y. (eg: \verb'x < y')\\
+\verb'<='& True only if x is less than or equal to y. (eg: \verb'x <= y')\\
+\verb'>'& True only if x is greater than y. (eg: \verb'x > y'\\
+\verb'>='& True only if x greater than or equal to y. (eg: \verb'x >= y')\\
+\hline
+\end{tabular}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlfigureA{tabular4811}%
+\begin{tabular}{|c|p{0.8\textwidth}|}
+\hline
+OPERATOR& DEFINITION\\
+\hline
+\verb'true'& True state or any value other than zero (typically 1).\\
+\verb'false'& False state, value of exactly zero.\\
+\verb'and'& Logical AND, True only if x and y are both true. (eg: \verb'x and y')\\
+\verb'mand'& Multi-input logical AND, True only if all inputs are true. Left to right short-circuiting of expressions. (eg: \verb'mand(x > y, z < w, u or v, w and x)')\\
+\verb'mor'& Multi-input logical OR, True if at least one of the inputs
+are true. Left to right short-circuiting of expressions.  (eg:
+\verb'mor(x > y, z < w, u or v, w and x)')\\
+\verb'nand'& Logical NAND, True only if either x or y is false. (eg: \verb'x nand y')\\
+\verb'nor'& Logical NOR, True only if the result of x or y is false (eg: \verb'x nor y')\\
+\verb'not'& Logical NOT, Negate the logical sense of the input. (eg: \verb'not(x and y) == x nand y')\\
+\verb'or'& Logical OR, True if either x or y is true. (eg: \verb'x or y') \\
+\verb'xor'& Logical XOR, True only if the logical states of x and y differ.  (eg: \verb'x xor y')\\
+\verb'xnor'& Logical XNOR, True iff the biconditional of x and y is
+satisfied.  (eg: \verb'x xnor y')\\
+\verb'&'& Similar to AND but with left to right expression short circuiting optimisation.  (eg: \verb'(x & y) == (y and x)')\\
+\verb'|'& Similar to OR but with left to right expression short
+circuiting optimisation.  (eg: \verb'(x | y) == (y or x)')\\
+\hline
+\end{tabular}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlfigureA{tabular4815}%
+\begin{tabular}{|c|p{0.8\textwidth}|}
+\hline
+FUNCTION & DEFINITION\\
+\hline
+\verb'abs'& Absolute value of x.  (eg: \verb'abs(x)')\\
+\verb'avg'& Average of all the inputs. (eg: \verb'avg(x,y,z,w,u,v) == (x + y + z + w + u + v) / 6')\\
+\verb'ceil'& Smallest integer that is greater than or equal to x.\\
+\verb'clamp'& Clamp x in range between r0 and r1, where r0 < r1. (eg:
+\verb'clamp(r0,x,r1)')\\
+\verb'equal'& Equality test between x and y using normalised epsilon\\
+\verb'erf'& Error function of x.  (eg: \verb'erf(x)')\\
+\verb'erfc'& Complimentary error function of x.  (eg: \verb'erfc(x)')\\
+\verb'exp'& $e^x$\   (eg: \verb'exp(x)')\\
+\verb'expm1'& $e^{x-1}$\  where $x$\  is very small. (eg: \verb'expm1(x)')\\
+\verb'floor'& Largest integer that is less than or equal to x. (eg: \verb'floor(x)')\\
+\verb'frac'& Fractional portion of x.  (eg: \verb'frac(x)')\\
+\verb'hypot'& $\sqrt{x^2+y^2}$\  (eg: \verb'hypot(x,y) = sqrt(x*x + y*y)')\\
+\verb'iclamp'& Inverse-clamp x outside of the range r0 and r1. Where
+r0 < r1. If x is within the range it will snap to the closest
+bound. (eg: \verb'iclamp(r0,x,r1)'
+\begin{math}
+=\left\{\begin{array}{ccc}
+r0 & \mathrm{if} & x\le r0\\
+x & \mathrm{if} & r0\le x \le r1\\
+r1 & \mathrm{if} & x\ge r1\\
+\end{array}\right.
+\end{math}
+)\\
+\verb'inrange'&  In-range returns 'true' when $x$\  is within the range $[r_0,r_1]$. Where $r_0 < r_1$.  (eg: \verb'inrange(r0,x,r1)')\\
+\verb'log'& Natural logarithm $\ln x$.  (eg: \verb'log(x)')\\
+\verb'log10'& $\log_{10}x$.  (eg: \verb'log10(x)')\\
+\verb'log1p'& $\ln (1+x)$, where $x$\  is very small. (eg: \verb'log1p(x)')\\
+\verb'log2'& $\log_2x$.  (eg: \verb'log2(x)')\\
+\verb'logn'& $\log_nx$, where $n$\  is a positive integer. (eg: \verb'logn(x,8)')\\
+\verb'max'& Largest value of all the inputs. (eg: \verb'max(x,y,z,w,u,v)')\\
+\verb'min'& Smallest value of all the inputs. (eg: \verb'min(x,y,z,w,u)')\\
+\verb'mul'& Product of all the inputs. (eg: \verb'mul(x,y,z,w,u,v,t) == (x * y * z * w * u * v * t)') \\
+\verb'ncdf'& Normal cumulative distribution function.  (eg: \verb'ncdf(x)')\\
+\verb'nequal'& Not-equal test between $x$\  and $y$\  using normalised epsilon\\
+\verb'pow'& $x^y$.  (eg: \verb'pow(x,y) == x ^ y')\\
+\verb'root'&  $\sqrt[n]{x}$, where $n$\  is a positive integer. (eg: \verb'root(x,3) == x^(1/3)')\\
+\verb'round'& Round $x$\  to the nearest integer.  (eg: \verb'round(x)')\\
+\verb'roundn'& Round $x$\  to $n$\  decimal places  (eg: \verb'roundn(x,3)')
+ where $n > 0$\  is an integer. (eg: \verb'roundn(1.2345678,4) == 1.2346')\\\verb'sgn'& Sign of $x$, $-1$\  where $x < 0$, +1 where $x > 0$, else zero.
+ (eg: \verb'sgn(x)')\\
+\verb'sqrt'& $\sqrt{x}$, where $x >= 0$.  (eg: \verb'sqrt(x)')\\
+\verb'sum'& Sum of all the inputs. (eg: \verb'sum(x,y,z,w,u,v,t) == (x + y + z + w + u + v + t)')\\
+\verb'swap'\\\verb'<=>'& Swap the values of the variables x and y and return the current value of y.  (eg: \verb'swap(x,y)' or \verb'x <=> y')\\
+\verb'trunc'& Integer portion of x.  (eg: \verb'trunc(x)')\\
+\hline
+\end{tabular}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlfigureA{tabular4832}%
+\begin{tabular}{|c|p{0.8\textwidth}|}
+\hline
+FUNCTION & DEFINITION\\
+\hline
+\verb'acos'& Arc cosine of x expressed in radians. Interval $[-1,+1]$
+(eg: \verb'acos(x)')\\
+\verb'acosh'& Inverse hyperbolic cosine of x expressed in radians. (eg: \verb'acosh(x)')\\
+\verb'asin'& Arc sine of x expressed in radians. Interval $[-1,+1]$\  (eg: \verb'asin(x)')\\
+\verb'asinh'& Inverse hyperbolic sine of x expressed in radians. (eg:
+\verb'asinh(x)')\\
+\verb'atan'& Arc tangent of x expressed in radians. Interval $[-1,+1]$
+(eg: \verb'atan(x)')\\
+\verb'atan2'& Arc tangent of $(x / y)$\  expressed in
+radians. $[-\pi,+\pi]$\  (eg: \verb'atan2(x,y)')\\
+\verb'atanh'& Inverse hyperbolic tangent of $x$\  expressed in radians. (eg: \verb'atanh(x)')\\
+\verb'cos'& Cosine of $x$.  (eg: \verb'cos(x)')\\
+\verb'cosh'& Hyperbolic cosine of $x$.  (eg: \verb'cosh(x)')\\
+\verb'cot'& Cotangent of $x$.  (eg: \verb'cot(x)')\\
+\verb'csc'& Cosecant of $x$.  (eg: \verb'csc(x)')\\
+\verb'sec'& Secant of $x$.  (eg: \verb'sec(x)')\\
+\verb'sin'& Sine of $x$.  (eg: \verb'sin(x)')\\
+\verb'sinc'& Sine cardinal of $x$.  (eg: \verb'sinc(x)')\\
+\verb'sinh'& Hyperbolic sine of $x$.  (eg: \verb'sinh(x)')\\
+\verb'tan'& Tangent of $x$.  (eg: \verb'tan(x)')\\
+\verb'tanh'& Hyperbolic tangent of $x$.  (eg: \verb'tanh(x)')\\
+\verb'deg2rad'& Convert $x$\  from degrees to radians.  (eg: \verb'deg2rad(x)')\\
+\verb'deg2grad'& Convert $x$\  from degrees to gradians.  (eg: \verb'deg2grad(x)')\\
+\verb'rad2deg'& Convert $x$\  from radians to degrees.  (eg: \verb'rad2deg(x)')\\
+\verb'grad2deg'& Convert $x$\  from gradians to degrees.  (eg: \verb'grad2deg(x)')\\
+\hline
+\end{tabular}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlfigureA{tabular4836}%
+\begin{tabular}{|c|p{0.8\textwidth}|}
+\hline
+FUNCTION& DEFINITION\\
+\verb'=' , \verb'==', \verb'!=', \verb'<>', \verb'<=', \verb'>=', \verb'<' , \verb'>'& All common equality/inequality operators are applicable to strings and are applied in a case sensitive manner. In the following example x, y and z are of type string. (eg: \verb"not((x <= 'AbC') and ('1x2y3z' <> y)) or (z == x)")\\
+\verb'in'& True only if $x$\  is a substring of $y$. (eg: \verb'x in y' or \verb"'abc' in 'abcdefgh'")\\
+\verb'like'& True only if the string x matches the pattern y.  Available wildcard characters are `*' and `?' denoting  zero or more and zero or one matches respectively.   (eg: \verb'x like y' or \verb"'abcdefgh' like 'a?d*h'")\\
+\verb'ilike'& True only if the string x matches the pattern y in a case insensitive manner. Available wildcard characters are '*' and '?' denoting zero or more and zero or one  matches respectively. (eg: \verb'x ilike y' or \verb"'a1B2c3D4e5F6g7H' ilike 'a?d*h'")\\
+\verb'[r0:r1]'& The closed interval $[r0,r1]$\  of the specified string.
+eg: Given a string x with a value of 'abcdefgh' then:
+\begin{enumerate}
+\item \verb"x[1:4] == 'bcde'"
+\item \verb"x[ :5] == x[:10 / 2] == 'abcdef'"
+\item \verb"x[2 + 1: ] == x[3:] =='defgh'"
+\item \verb"x[ : ] == x[:] == 'abcdefgh'"
+\item \verb"x[4/2:3+2] == x[2:5] == 'cdef'"
+\end{enumerate}
+ Note: Both r0 and r1 are assumed to be integers, where r0 <= r1. They
+ may also be the result of an expression, in the event they have
+ fractional components truncation will be performed. (eg: $1.67
+                \rightarrow 1$)\\
+\verb':='& Assign the value of x to y. Where y is a mutable string  or
+ string range and x is either a string or a string  range. eg:
+ \begin{enumerate}
+\item\verb'y := x'
+\item\verb"y := 'abc'"
+\item\verb'y := x[:i + j]'
+\item\verb"y := '0123456789'[2:7]"
+\item\verb"y := '0123456789'[2i + 1:7]"
+\item\verb"y := (x := '0123456789'[2:7])"
+\item\verb"y[i:j] := x"
+\item\verb"y[i:j] := (x + 'abcdefg'[8 / 4:5])[m:n]"
+\end{enumerate}
+\par Note: For options 7 and 8 the shorter of the two ranges 
+will denote the number characters that are to be copied.\\
+\verb'+'&  Concatenation of x and y. Where x and y are strings or  
+ string ranges. eg
+ \begin{enumerate}
+\item\verb"x + y"
+\item\verb"x + 'abc'"
+\item\verb"x + y[:i + j]"
+\item\verb"x[i:j] + y[2:3] + '0123456789'[2:7]"
+\item\verb"'abc' + x + y"
+\item\verb"'abc' + '1234567'"
+\item\verb"(x + 'a1B2c3D4' + y)[i:2j]"
+\end{enumerate}\\
+\verb'+='& Append to x the value of y. Where x is a mutable string 
+and y is either a string or a string range. eg:
+\begin{enumerate}
+\item\verb"x += y"                  
+\item\verb"x += 'abc'"              
+\item\verb"x += y[:i + j] + 'abc'"
+\item\verb"x += '0123456789'[2:7]"
+\end{enumerate}
+\\
+\verb'<=>'&  Swap the values of x and y. Where x and y are mutable   
+            strings.  (eg: \verb'x <=> y')\\
+\verb'[]'& The string size operator returns the size of the string 
+ being actioned. eg:
+\begin{enumerate}
+\item\verb"'abc'[] == 3"
+\item\verb"var max_str_length := max(s0[],s1[],s2[],s3[]"
+\item\verb"('abc' + 'xyz')[] == 6"
+\item\verb"(('abc' + 'xyz')[1:4])[] == 4"
+\end{enumerate}\\
+  \hline
+\end{tabular}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlfigureA{tabular4850}%
+\begin{tabular}{|c|p{0.8\textwidth}|}
+  \hline
+STRUCTURE & DEFINITION\\
+\verb'if'& If x is true then return y else return z.eg:
+\begin{enumerate}
+\item\verb"if (x, y, z)" 
+\item\verb"if ((x + 1) > 2y, z + 1, w / v)"
+\item\verb"if (x > y) z;"
+\item\verb"if (x <= 2*y) { z + w };"
+\end{enumerate}\\
+\verb'if-else'& The if-else/else-if statement. Subject to the condition 
+branch the statement will return either the value of the consequent or
+the alternative branch. eg:
+\begin{enumerate}
+\item\verb"if (x > y) z; else w;"
+\item\verb"if (x > y) z; else if (w != u) v;"
+\item\verb"if (x < y) { z; w + 1; } else u;"
+\item
+\begin{verbatim}
+
+if ((x != y) and (z > w))
+{   
+  y := sin(x) / u;
+  z := w + 1;     
+}                  
+else if (x > (z + 1))
+{                    
+  w := abs (x - y) + z;
+  u := (x + 1) > 2y ? 2u : 3u;
+}\end{verbatim}
+
+\end{enumerate}\\
+\par\verb'switch'& The first true case condition that is encountered will 
+determine the result of the switch. If none of the case
+conditions hold true, the default action is assumed as 
+the final return value. This is sometimes also known as
+a multi-way branch mechanism.                          
+eg:
+\begin{verbatim}
+
+switch                                                 
+{                                                      
+  case x > (y + z) : 2 * x / abs(y - z);               
+  case x < 3       : sin(x + y);                       
+  default          : 1 + x;                            
+}\end{verbatim}
+
+\\
+\verb'while'& The structure will repeatedly evaluate the internal     
+statement(s) 'while' the condition is true. The final  
+statement in the final iteration will be used as the   
+return value of the loop.                              
+eg:                                                    
+\begin{verbatim}
+
+while ((x -= 1) > 0)                                   
+{                                                      
+  y := x + z;                                          
+  w := u + y;                                          
+}\end{verbatim}
+
+  \\
+\verb'repeat/until'& The structure will repeatedly evaluate the internal
+statement(s) 'until' the condition is true. The final
+statement in the final iteration will be used as the 
+return value of the loop.                            
+eg:
+\begin{verbatim}
+
+repeat                                               
+  y := x + z;                                        
+  w := u + y;                                        
+until ((x += 1) > 100)\end{verbatim}
+
+\\
+\verb'for'& The structure will repeatedly evaluate the internal    
+statement(s) while the condition is true. On each loop
+iteration, an 'incrementing' expression is evaluated. 
+The conditional is mandatory whereas the initialiser  
+and incrementing expressions are optional.            
+eg:                                                   
+\begin{verbatim}
+
+for (var x := 0; (x < n) and (x != y); x += 1)        
+{                                                     
+  y := y + x / 2 - z;                                 
+  w := u + y;                                         
+}\end{verbatim}
+
+\\
+\verb'break/break[]'& Break terminates the execution of the nearest enclosed 
+loop, allowing for the execution to continue on external
+to the loop. The default break statement will set the   
+return value of the loop to NaN, where as the return    
+based form will set the value to that of the break      
+expression.                                             
+eg:
+\begin{verbatim}
+
+while ((i += 1) < 10)                                   
+{                                                       
+  if (i < 5)                                            
+    j -= i + 2;                                         
+  else if (i % 2 == 0)                                  
+    break;                                              
+  else                                                  
+    break[2i + 3];                                      
+}\end{verbatim}
+
+\\
+\verb'continue'& Continue results in the remaining portion of the nearest
+enclosing loop body to be skipped.
+eg:
+\begin{verbatim}
+
+for (var i := 0; i < 10; i += 1)  
+{                                 
+  if (i < 5)                      
+    continue;                     
+  j -= i + 2;                     
+}\end{verbatim}
+
+  \\
+\verb'return'& Return immediately from within the current expression.
+With the option of passing back a variable number of
+values (scalar, vector or string). eg:
+\begin{enumerate}
+\item\verb"return [1]; "                                     
+\item\verb"return [x, 'abx'];"                              
+\item\verb"return [x, x + y,'abx'];"                         
+\item\verb"return [];"                                       
+\item
+\begin{verbatim}
+
+if (x < y)                                       
+    return [x, x - y, 'result-set1', 123.456];      
+   else                                             
+    return [y, x + y, 'result-set2'];\end{verbatim}
+
+\end{enumerate}
+\\
+\verb'?:'& Ternary conditional statement, similar to that of the
+above denoted if-statement.                     
+eg:
+\begin{enumerate}
+\item\verb"x ? y : z"                                    
+\item\verb"x + 1 > 2y ? z + 1 : (w / v)"                 
+\item\verb"min(x,y) > z ? (x < y + 1) ? x : y : (w * v)"
+\end{enumerate}
+\\
+\verb'~'& Evaluate each sub-expression, then return as the result 
+the value of the last sub-expression. This is sometimes
+known as multiple sequence point evaluation.           
+eg:                                                    
+\begin{verbatim}
+
+~(i := x + 1, j := y / z, k := sin(w/u)) == (sin(w/u)))
+~{i := x + 1; j := y / z; k := sin(w/u)} == (sin(w/u)))\end{verbatim}
+
+\\
+\verb'[*]'& Evaluate any consequent for which its case statement is 
+true. The return value will be either zero or the result
+of the last consequent to have been evaluated.          
+eg:
+\begin{verbatim}
+
+[*]                                                     
+{                                                       
+  case (x + 1) > (y - 2)    : x := z / 2 + sin(y / pi); 
+  case (x + 2) < abs(y + 3) : w / 4 + min(5y,9);        
+  case (x + 3) == (y * 4)   : y := abs(z / 6) + 7y;     
+}\end{verbatim}
+
+\\
+\verb'[]'& The vector size operator returns the size of the vector 
+being actioned.                         
+eg:
+\begin{enumerate}
+\item\verb"v[]"                                 
+\item\verb"max_size := max(v0[],v1[],v2[],v3[])"
+\end{enumerate}
+\\
+\hline
+\end{tabular}%
+\lthtmlfigureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{section}
+\stepcounter{chapter}
+\stepcounter{section}
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmldisplayA{displaymath5427}%
+\begin{displaymath}
+\begin{array}{c}
+\frac{d}{dt}Rabbits=r\times Rabbits\\
+\frac{d}{dt}Foxes=-f\times Foxes
+\end{array}
+\end{displaymath}%
+\lthtmldisplayZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline5437}%
+$\left(\rho\right)$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline5441}%
+$\left(\phi\right)$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmldisplayA{displaymath5428}%
+\begin{displaymath}
+\begin{array}{c}
+\frac{d}{dt}Rabbits=\left(r-\rho\times Foxes\right)\times Rabbits\\
+\frac{d}{dt}Foxes=\left(-f+\phi\times Rabbits\right)\times Foxes
+\end{array}
+\end{displaymath}%
+\lthtmldisplayZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmldisplayA{displaymath5429}%
+\begin{displaymath}
+\begin{array}{c}
+Rabbit_{Eq}=\frac{f}{\phi}\\
+Fox_{Eq}=\frac{r}{\rho}
+\end{array}
+\end{displaymath}%
+\lthtmldisplayZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmldisplayA{displaymath5430}%
+\begin{displaymath}
+\begin{array}{c}
+Rabbits=Rabbits_{0}+\int\left(\left(r-\rho\times Foxes\right)\times Rabbits\right)\\
+Foxes=Foxes_{0}+\int\left(\left(-f+\phi\times Rabbits\right)\times Foxes\right)
+\end{array}
+\end{displaymath}%
+\lthtmldisplayZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline5443}%
+$Rabbits_{0}$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline5445}%
+$Foxes_{0}$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9271}%
+\includegraphics[width=\textwidth]{images/PredatorPreyRabbitsFoxes}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{section}
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline5447}%
+$\left(CR\right)$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline5449}%
+$\left(DR\right)$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline5451}%
+$\left(+\right)$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline5453}%
+$\left(-\right)$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmldisplayA{eqnarraystar5176}%
+\begin{eqnarray*}
+\mathrm{Consume}&=&0\\
+\mathrm{Wages}&=&0\\
+\mathrm{Tax}&=&0\\
+\mathrm{Spend}_{G}&=&0\\
+\mathrm{Spend}_{B}&=&0\\
+\mathrm{Int}_{L}&=&0\\
+\mathrm{Int}_{B^{\mathrm{{NB}}}}&=&0\\
+\mathrm{Int}_{B^{B}}&=&0\\
+\mathrm{Credit}&=&0\\
+\mathrm{BondSale}_{T^{B}}&=&0\\
+\mathrm{BondSale}_{B^{\mathrm{{NB}}}}&=&0\\
+\mathrm{Banks}_{E}(0)&=&0\\
+\frac{ d \mathrm{Banks}_{E}}{dt} &=&\mathrm{Int}_{L}+\mathrm{Int}_{B^{B}}-\mathrm{Spend}_{B}\\
+\mathrm{Bonds}_{B}(0)&=&0\\
+\frac{ d \mathrm{Bonds}_{B}}{dt} &=&\mathrm{BondSale}_{T^{B}}-\mathrm{BondSale}_{B^{\mathrm{{NB}}}}\\
+\mathrm{Consumers}(0)&=&0\\
+\frac{ d \mathrm{Consumers}}{dt} &=&\mathrm{Wages}+0.6\times
+                                     \mathrm{Spend}_{G}+0.2\times
+                                     \mathrm{Int}_{B^{\mathrm{{NB}}}}-\\
+  &&\left(0.7\times \mathrm{Tax}+0.2\times \mathrm{BondSale}_{B^{\mathrm{{NB}}}}+\mathrm{Consume}\right)\\
+\mathrm{Firms}(0)&=&0\\
+\frac{ d \mathrm{Firms}}{dt} &=&\mathrm{Credit}+0.4\times
+                                 \mathrm{Spend}_{G}+0.8\times
+                                 \mathrm{Int}_{B^{\mathrm{{NB}}}}+\mathrm{Consume}+\mathrm{Spend}_{B}-\\
+  &&\left(\mathrm{Int}_{L}+\mathrm{Wages}+0.3\times \mathrm{Tax}+0.8\times \mathrm{BondSale}_{B^{\mathrm{{NB}}}}\right)\\
+\mathrm{Loans}(0)&=&0\\
+\frac{ d \mathrm{Loans}}{dt} &=&\mathrm{Credit}\\
+\mathrm{Reserves}(0)&=&0\\
+\frac{ d \mathrm{Reserves}}{dt} &=&\mathrm{Spend}_{G}+\mathrm{Int}_{B^{B}}+\mathrm{Int}_{B^{\mathrm{{NB}}}}-\left(\mathrm{Tax}+\mathrm{BondSale}_{T^{B}}\right)\\
+\end{eqnarray*}%
+\lthtmldisplayZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline5459}%
+$(Assets=Liabilities+Equity)$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9274}%
+\includegraphics[width=\textwidth]{images/GodleyTableSingle}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9275}%
+\includegraphics[width=\textwidth]{images/GodleyTableSecondIncomplete}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9277}%
+\includegraphics[width=\textwidth]{images/GodleyTableSecondComplete}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline5461}%
+$\left(r-\rho\times Foxes\right)$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlinlinemathA{tex2html_wrap_inline5463}%
+$\left(-f+\phi\times Rabbits\right)$%
+\lthtmlindisplaymathZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9280}%
+\includegraphics{images/PredatorPreyRabbitsFoxesIntegralsOnly}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9281}%
+\includegraphics{images/PredatorPreyRabbitsFoxes02}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9282}%
+\includegraphics[width=\textwidth]{images/PredatorPreyRabbitsFoxes03ParametersAdded}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9283}%
+\includegraphics[width=\textwidth]{images/PredatorPreyRabbitsFoxes04Equations}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9284}%
+\includegraphics[width=\textwidth]{images/PredatorPreyRabbitsFoxes05Grouping}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9286}%
+\includegraphics{images/MonetaryModel01GodleyTable01}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+\stepcounter{subsubsection}
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap5619}%
+\resizebox{!}{2ex}{\includegraphics{images/multiply}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap5633}%
+\resizebox{!}{2ex}{\includegraphics{images/plotWidget}}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9288}%
+\includegraphics[width=\textwidth]{images/MonetaryModel01GodleyTable02}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9289}%
+\includegraphics[width=\textwidth]{images/MonetaryModel01GodleyTable03InitialConditions}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9290}%
+\includegraphics[width=\textwidth]{images/MonetaryModel01GodleyTable04AddFlows}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9291}%
+\includegraphics[width=\textwidth]{images/MonetaryModel01GodleyTable05DefineFlows01}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9292}%
+\includegraphics[width=\textwidth]{images/MonetaryModel01GodleyTable05DefineFlows05}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9293}%
+\includegraphics[width=\textwidth]{images/MonetaryModel01GodleyTable06Simulate01}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+{\newpage\clearpage
+\lthtmlpictureA{tex2html_wrap9294}%
+\includegraphics[width=\textwidth]{images/MonetaryModel01GodleyTable07GDP}%
+\lthtmlpictureZ
+\lthtmlcheckvsize\clearpage}
+
+
+\end{document}

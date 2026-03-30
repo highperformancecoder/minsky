@@ -553,6 +553,9 @@ doc/Ravel/labels.pl: $(wildcard doc/*.tex)
 install-manual: doc/Ravel/labels.pl
 	rsync -r -z --progress --delete doc/minsky.html doc/Ravel $(SF_WEB)/manual
 
+desktop-manual:
+	rsync -r --delete doc/minsky.html doc/Ravel gui-js/minsky-docs
+
 # run this after every full release
 install-release: install-doxydoc install-manual upload-schema
 
