@@ -409,7 +409,7 @@ namespace MathDAG
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0] &&
         arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
       return o<<"{\\mathrm{bLinReg}\\left("<<arguments[0][0]->latex()<<
-        ","<<arguments[1][0]<<"\\right)";
+        ","<<arguments[1][0]->latex()<<"\\right)}";
     return o<<"0";
   }
 

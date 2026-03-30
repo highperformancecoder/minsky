@@ -1220,6 +1220,7 @@ namespace minsky
                       const ITensor::Args& args) override
     {
       LinearRegression::setArguments(y,x,args);
+      if (!y) return;
       hypercube(y->hypercube());
     }
 
@@ -1251,6 +1252,7 @@ namespace minsky
                       const ITensor::Args& args) override
     {
       LinearRegression::setArguments(y,x,args);
+      if (!y) return;
       if (dimension>=y->rank())
         throw_error("Need to specify axis");
       auto hc=y->hypercube();
