@@ -5,7 +5,7 @@
 }
 
 @if (!loading) {
-  @if (router.url.includes('headless') || router.url.includes('login')) {
+  @if (router.url.includes('headless')) {
     <router-outlet></router-outlet>
   }
   @else {

@@ -135,7 +135,7 @@ export class ApplicationMenuManager {
               height: 500,
               title: 'Login',
               modal: false,
-              url: '#/login',
+              url: '#/headless/login',
             });
           },
         },

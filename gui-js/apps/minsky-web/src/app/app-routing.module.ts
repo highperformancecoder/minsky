@@ -151,7 +151,7 @@ const routes: Routes = [
     component: VariablePaneComponent,
   },
   {
-    path: 'login',
+    path: 'headless/login',
     component: LoginComponent,
   },
   {
