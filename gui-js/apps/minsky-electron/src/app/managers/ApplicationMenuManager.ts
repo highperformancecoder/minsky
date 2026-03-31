@@ -130,13 +130,13 @@ export class ApplicationMenuManager {
         {
           label: 'Login via Clerk',
           click() {
-            let window=WindowManager.createWindow({
+            WindowManager.createPopupWindowWithRouting({
               width: 420,
               height: 500,
-              title: '',
+              title: 'Login',
               modal: false,
+              url: '#/login',
             });
-            window.loadURL('#/login');
           },
         },
         
