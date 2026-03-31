@@ -4,8 +4,19 @@ DEBUG=1
 ECOLAB_HOME=../ecolab
 
 ifneq ($(MAKECMDGOALS),clean)
-include $(ECOLAB_HOME)/include/Makefile
+ifneq ($(COMPILER),"")
+# rewrite CPLUSPLUS after clobber in Makefile
+CPLUSPLUS:=$(COMPILER)
+$(warning $(CPLUSPLUS) , $(COMPILER))
 endif
+include $(ECOLAB_HOME)/include/Makefile
+ifneq ($(COMPILER),"")
+# rewrite CPLUSPLUS after clobber in Makefile
+CPLUSPLUS=$(COMPILER)
+$(warning $(COMPILER))
+endif
+endif
+
 # link statically to ecolab (needed until all bugs in EcoLab 6 ironed out)
 LIBS:=$(subst -lecolab,$(ECOLAB_HOME)/lib/libecolab.a,$(LIBS)) 
 

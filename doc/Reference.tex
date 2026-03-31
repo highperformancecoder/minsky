@@ -1468,11 +1468,18 @@ arguments. The correlation coefficient is defined as
 
 This operation performs linear regression of the inputs along a named
 dimension. The output has the same rank and x-vector as the $x$ input,
-and consists of the linear fitted $y$ values.
+or the x-vector of the $y$ input, and consists of the linear fitted $y$ values.
 
 The slope and intercept of the fitted line is available as a tooltip.
 
 \noindent\includegraphics[width=\textwidth]{images/linearRegression}
+
+\subsubsection{Bulk Linear Regression}\label{Operation:bulkLinearRegression}
+
+This operation performs elementwise linear regression of the inputs
+along a named dimension. The output has length along the named
+dimension, reporting the slope and intercept of the fitted line, but
+otherwise has the same dimensionality as the $x$ input.
 
 \subsection{Switch}
 
