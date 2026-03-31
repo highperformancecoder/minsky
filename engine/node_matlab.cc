@@ -352,6 +352,16 @@ namespace MathDAG
   }
 
   template <>
+  ostream& OperationDAG<OperationType::bulkLinearRegression>::matlab(ostream& o) const
+  {
+    if (!arguments.empty() && !arguments[0].empty() && arguments[0][0] &&
+        arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
+      return o<<"bLinReg("<<arguments[0][0]->matlab()<<"," <<
+        arguments[1][0]->matlab()<<")";
+    return o<<"0";
+  }
+
+  template <>
   ostream& OperationDAG<OperationType::size>::matlab(ostream& o) const
   {
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
