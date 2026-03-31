@@ -288,3 +288,12 @@ ipcMain.handle(events.OPEN_URL, (event,options)=> {
   let window=WindowManager.createWindow(options);
   window.loadURL(options.url);
 });
+
+ipcMain.handle(events.SET_AUTH_TOKEN, async (event, token: string | null) => {
+  if (token) {
+    StoreManager.store.set('authToken', token);
+  } else {
+    StoreManager.store.delete('authToken');
+  }
+  return { success: true };
+});

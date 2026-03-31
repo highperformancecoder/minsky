@@ -1,0 +1,35 @@
+<div class="login-container">
+  <h2>Sign In</h2>
+
+  <div *ngIf="isAuthenticated; else loginFormTemplate">
+    <p class="signed-in-message">You are signed in.</p>
+    <button mat-raised-button color="warn" (click)="onSignOut()" [disabled]="isLoading">
+      <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
+      Sign Out
+    </button>
+  </div>
+
+  <ng-template #loginFormTemplate>
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Email</mat-label>
+        <input matInput type="email" formControlName="email" autocomplete="email" />
+        <mat-error *ngIf="email?.hasError('required')">Email is required.</mat-error>
+        <mat-error *ngIf="email?.hasError('email')">Enter a valid email address.</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Password</mat-label>
+        <input matInput type="password" formControlName="password" autocomplete="current-password" />
+        <mat-error *ngIf="password?.hasError('required')">Password is required.</mat-error>
+      </mat-form-field>
+
+      <p *ngIf="errorMessage" class="error-message">{{ errorMessage }}</p>
+
+      <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid || isLoading" class="full-width">
+        <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
+        Sign In
+      </button>
+    </form>
+  </ng-template>
+</div>

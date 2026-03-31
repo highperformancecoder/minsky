@@ -19,6 +19,7 @@ interface MinskyStore {
   defaultModelDirectory: string;
   defaultDataDirectory: string;
   ravelPlugin: string; // used for post installation installation of Ravel
+  authToken?: string;
 }
 
 class StoreManager {

@@ -1,6 +1,6 @@
 {
   "name": "ravel",
-  "version":"3.25.1",
+  "version": "3.25.1",
   "author": "High Performance Coders",
   "description": "Graphical dynamical systems simulator oriented towards economics",
   "repository": {
@@ -23,10 +23,14 @@
     },
     "win": {
       "icon": "apps/minsky-electron/src/assets/RavelLogo.ico",
-      "target": [{
-        "target": "nsis",
-        "arch": ["x64"]
-      }],
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
       "verifyUpdateCodeSignature": false
     },
     "nsis": {
@@ -186,6 +190,8 @@
     "@angular/forms": "^20.3.17",
     "@angular/platform-browser-dynamic": "^20.3.17",
     "@angular/router": "^20.3.17",
+    "@clerk/clerk-js": "^6.3.3",
+    "JSONStream": "^1.3.5",
     "bindings": "^1.5.0",
     "call-bind-apply-helpers": "^1.0.2",
     "decompress": "^4.2.1",
@@ -194,7 +200,6 @@
     "electron-store": "^8.2.0",
     "fullname": "^5.0.0",
     "glob": "^11.1.0",
-    "JSONStream": "^1.3.5",
     "mathjax": "^3.2.2",
     "readable-stream": "^4.7.0",
     "typescript": "5.8.3",
