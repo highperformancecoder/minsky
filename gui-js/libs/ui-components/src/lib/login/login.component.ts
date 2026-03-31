@@ -6,6 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ClerkService } from '@minsky/core';
+import { ElectronService } from '@minsky/core';
 
 @Component({
   selector: 'minsky-login',
@@ -31,7 +32,7 @@ export class LoginComponent implements OnInit {
   errorMessage = '';
   isAuthenticated = false;
 
-  constructor(private clerkService: ClerkService) {}
+  constructor(private clerkService: ClerkService, private electronService: ElectronService) {}
 
   async ngOnInit() {
     try {
@@ -68,6 +69,7 @@ export class LoginComponent implements OnInit {
     } finally {
       this.isLoading = false;
     }
+    this.electronService.closeWindow();
   }
 
   async onSignOut() {
@@ -81,5 +83,6 @@ export class LoginComponent implements OnInit {
     } finally {
       this.isLoading = false;
     }
+    this.electronService.closeWindow();
   }
 }
