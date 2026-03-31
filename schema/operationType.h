@@ -52,7 +52,7 @@ namespace minsky
                // other tensor ops
                innerProduct, outerProduct, index, gather, meld, merge, slice, size, shape, 
                // statistics
-               mean, median, stdDev, moment, histogram, covariance, correlation, linearRegression,
+               mean, median, stdDev, moment, histogram, covariance, correlation, linearRegression, bulkLinearRegression,
                numOps // last operation, for iteration purposes
     };
     /// return the symbolic name of \a type

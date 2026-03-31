@@ -1,142 +1,124 @@
 
-<!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
-<HTML>
+<!--Converted with LaTeX2HTML 2025 (Released January 1, 2025) -->
+<HTML lang="en">
 <HEAD>
-<TITLE>Importing data into a parameter from a CSV file</TITLE>
-<META NAME="description" CONTENT="Importing data into a parameter from a CSV file">
-<META NAME="keywords" CONTENT="Ravel">
-<META NAME="resource-type" CONTENT="document">
-<META NAME="distribution" CONTENT="global">
+<TITLE>Linking Ravels </TITLE>
 
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-15">
-<META NAME="Generator" CONTENT="LaTeX2HTML v2017.2">
-<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+<META NAME="viewport" CONTENT="width=device-width, initial-scale=1.0">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2025">
 
 <LINK REL="STYLESHEET" HREF="Ravel.css">
 
-<LINK REL="next" HREF="node194.html">
-<LINK REL="previous" HREF="node174.html">
-<LINK REL="up" HREF="node44.html">
+<LINK REL="previous" HREF="node187.html">
 <LINK REL="next" HREF="node190.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html2948"
-  HREF="node190.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html2944"
-  HREF="node44.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html2938"
-  HREF="node188.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html2946"
+<A
+ HREF="node190.html">
+<IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
+<A
+ HREF="node175.html">
+<IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
+<A
+ HREF="node188.html">
+<IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A> 
+<A ID="tex2html1114"
   HREF="Ravel.html">
-<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
+<IMG WIDTH="65" HEIGHT="24" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html2949"
-  HREF="node190.html">Data selection</A>
-<B> Up:</B> <A NAME="tex2html2945"
-  HREF="node44.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html2939"
-  HREF="node188.html">Linking Ravels</A>
- &nbsp; <B>  <A NAME="tex2html2947"
+<B> Next:</B> <A
+ HREF="node190.html">Importing data into a</A>
+<B> Up:</B> <A
+ HREF="node175.html">Ravel</A>
+<B> Previous:</B> <A
+ HREF="node188.html">Apply Lock state to</A>
+ &nbsp; <B>  <A ID="tex2html1115"
   HREF="Ravel.html">Contents</A></B> 
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION004150000000000000000">
-Importing data into a parameter from a CSV file</A>
-</H1>
+<H2><A ID="SECTION004146000000000000000"></A><A ID="Linking-Ravels"></A>
+<BR>
+Linking Ravels 
+</H2>
 
 <P>
-<A NAME="CSV_import"></A> <A NAME="2211"></A><A NAME="Operation:csvImport"></A>
-<P>
-After creating a parameter from the ``Variable'' drop-down in the
-``Insert'' menu, right-clicking the parameter and selecting the
-option to ``Import CSV'', will open a dialogue box that allows you
-to select a CSV file. Upon selecting the file, a dialog is opened,
-allowing you to specify assorted encoding parameters.
+When Ravels share dimensions, it is possible to link them together
+so that what is done to one Ravel&mdash;plotting, selecting data, rotating
+axes, etc.&mdash;is done to the other Ravel. This is very useful when
+you wish to examine relations between different sets of data.
 
 <P>
-An alternative is to click on the ImportData icon 
-  <IMG
- ALIGN="BOTTOM" SRC="img43.png"
- ALT="\resizebox{!}{2ex}{\includegraphics{images/importData.eps}}% WIDTH=12 HEIGHT=12 ">
-  ,
-which will create a new parameter for you to import the data into.
+Ravels are linked by dragging the mouse to select the desired Ravels,
+then choosing ``Link selected Ravels'' from the context menu when
+the mouse is hovering over the canvas.
 
 <P>
-The dialog looks somewhat like this (developments in the import routine
-may change some layout details):
+In the next figure, the two Ravels whose borders are highlighted in
+brown have been linked. When the country ``United States'' is chosen
+for the Ravel containing house price data, the same selection is made
+for the Ravel containing household debt data. The plot and the regression
+analysis therefore compare United States house price changes to the
+change in the change in household debt.
 
 <P>
-
 <IMG
- ALIGN="BOTTOM" SRC="img276.png"
- ALT="\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialog}}% WIDTH=555 HEIGHT=268 ">
+  STYLE="height: 83.58ex; vertical-align: -0.12ex; " SRC="img274.png"
+ ALT="\includegraphics[width=\textwidth]{images/RavelLinking}% WIDTH=527 HEIGHT=574 ">
 
 <P>
-It has 4 tabs, which lead you through the import process. The first
-tab is for selecting the source, which may be a file, one of the
-included examples, or a URL to a remote file (possibly zipped).
+When the selector dot for Country is moved to another country, the
+graph and the correlation result for household debt and house prices
+for that country replaces the information shown for the USA.
 
 <P>
-Once the file is loaded, the form automatically advances to the CSV
-setting tab. For conformant CSV files, only the separator character
-and quote are important. Some nonconformant files use an escape
-character such as `to mark the following character as a literal,
-and if using space separated data, you may want to treat successive
-separators as a single separator, in which case, select ``Merge
-delimiters''. If loading European data, you may need to set the decimal
-separator to `,'.
-
-<P>
-
 <IMG
- ALIGN="BOTTOM" SRC="img277.png"
- ALT="\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialog-CSVSettings}}% WIDTH=555 HEIGHT=268 ">
+  STYLE="height: 83.58ex; vertical-align: -0.12ex; " SRC="img275.png"
+ ALT="\includegraphics[width=\textwidth]{images/RavelLinking2ndCountry}% WIDTH=527 HEIGHT=574 ">
 
 <P>
-<BR><HR>
-<!--Table of Child-Links-->
-<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
+Linking can be refined using the context menu for Ravels&mdash;rather
+than for the canvas. If your mouse is over one of the selected Ravels
+rather than the canvas, the context menu option is ``Lock specific
+handles''. That brings up the detailed lock menu:
 
-<UL>
-<LI><A NAME="tex2html2950"
-  HREF="node190.html">Data selection</A>
-<LI><A NAME="tex2html2951"
-  HREF="node191.html">Quick instructions for the Data selection form</A>
-<LI><A NAME="tex2html2952"
-  HREF="node192.html">Temporal data</A>
-<LI><A NAME="tex2html2953"
-  HREF="node193.html">Import settings</A>
-</UL>
-<!--End of Table of Child-Links-->
+<P>
+<IMG
+  STYLE="" SRC="./RavelLockSpecificHandles.png"
+ ALT="Image RavelLockSpecificHandles%  WIDTH=1236 HEIGHT=329 ">
+
+<P>
+It is thus possible to turn on or off selecting of the same slices,
+arrow orientation, calipers and sort order if desired, while still
+linking the Ravels on other characteristics.
+
+<P>
 <HR>
 <!--Navigation Panel-->
-<A NAME="tex2html2948"
-  HREF="node190.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html2944"
-  HREF="node44.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html2938"
-  HREF="node188.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html2946"
+<A
+ HREF="node190.html">
+<IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
+<A
+ HREF="node175.html">
+<IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
+<A
+ HREF="node188.html">
+<IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A> 
+<A ID="tex2html1114"
   HREF="Ravel.html">
-<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
+<IMG WIDTH="65" HEIGHT="24" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html2949"
-  HREF="node190.html">Data selection</A>
-<B> Up:</B> <A NAME="tex2html2945"
-  HREF="node44.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html2939"
-  HREF="node188.html">Linking Ravels</A>
- &nbsp; <B>  <A NAME="tex2html2947"
+<B> Next:</B> <A
+ HREF="node190.html">Importing data into a</A>
+<B> Up:</B> <A
+ HREF="node175.html">Ravel</A>
+<B> Previous:</B> <A
+ HREF="node188.html">Apply Lock state to</A>
+ &nbsp; <B>  <A ID="tex2html1115"
   HREF="Ravel.html">Contents</A></B> 
 <!--End of Navigation Panel-->
 
