@@ -1,17 +1,14 @@
 /* eslint-disable */
+import { createRequire } from 'module';
+const require = createRequire(import.meta.url);
+
 export default {
   displayName: 'minsky-electron',
   preset: '../../jest.preset.js',
   setupFilesAfterEnv: ['<rootDir>/src/test-setup.ts'],
   coverageDirectory: '../../coverage/apps/minsky-electron',
   transform: {
-    '^.+\\.(ts|mjs|js|html)$': [
-      'jest-preset-angular',
-      {
-        tsconfig: '<rootDir>/tsconfig.spec.json',
-        stringifyContentPathRegex: '\\.(html|svg)$',
-      },
-    ],
+    '^.+\\.[tj]s$': require.resolve('ts-jest'),
   },
   transformIgnorePatterns: ['node_modules/(?!.*\\.mjs$)'],
   snapshotSerializers: [

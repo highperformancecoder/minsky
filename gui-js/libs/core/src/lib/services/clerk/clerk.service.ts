@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { ElectronService } from '../electron/electron.service';
 import { events } from '@minsky/shared';
+import { Clerk } from '@clerk/clerk-js';
+//    const { default: Clerk } = await import('@clerk/clerk-js');
 
 @Injectable({
   providedIn: 'root',
@@ -26,7 +28,6 @@ export class ClerkService {
       return;
     }
 
-    const { default: Clerk } = await import('@clerk/clerk-js');
     this.clerk = new Clerk(publishableKey);
     await this.clerk.load();
     this.initialized = true;
