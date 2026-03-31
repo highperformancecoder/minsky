@@ -1,61 +1,124 @@
 
-<!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
-<HTML>
+<!--Converted with LaTeX2HTML 2025 (Released January 1, 2025) -->
+<HTML lang="en">
 <HEAD>
-<TITLE>Initial Conditions</TITLE>
-<META NAME="description" CONTENT="Initial Conditions">
-<META NAME="keywords" CONTENT="Ravel">
-<META NAME="resource-type" CONTENT="document">
-<META NAME="distribution" CONTENT="global">
+<TITLE>Defining Stocks and Flows</TITLE>
 
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-15">
-<META NAME="Generator" CONTENT="LaTeX2HTML v2017.2">
-<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+<META NAME="viewport" CONTENT="width=device-width, initial-scale=1.0">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2025">
 
 <LINK REL="STYLESHEET" HREF="Ravel.css">
 
+<LINK REL="next" HREF="node136.html">
 <LINK REL="previous" HREF="node134.html">
-<LINK REL="up" HREF="node133.html">
 <LINK REL="next" HREF="node136.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html2276"
-  HREF="node136.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html2272"
-  HREF="node133.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html2268"
-  HREF="node134.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html2274"
+<A
+ HREF="node136.html">
+<IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
+<A
+ HREF="node134.html">
+<IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
+<A
+ HREF="node134.html">
+<IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A> 
+<A ID="tex2html958"
   HREF="Ravel.html">
-<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
+<IMG WIDTH="65" HEIGHT="24" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html2277"
-  HREF="node136.html">Editor Mode</A>
-<B> Up:</B> <A NAME="tex2html2273"
-  HREF="node133.html">Open Godley Table</A>
-<B> Previous:</B> <A NAME="tex2html2269"
-  HREF="node134.html">Defining Stocks and Flows</A>
- &nbsp; <B>  <A NAME="tex2html2275"
+<B> Next:</B> <A
+ HREF="node136.html">Initial Conditions</A>
+<B> Up:</B> <A
+ HREF="node134.html">Open Godley Table</A>
+<B> Previous:</B> <A
+ HREF="node134.html">Open Godley Table</A>
+ &nbsp; <B>  <A ID="tex2html959"
   HREF="Ravel.html">Contents</A></B> 
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H4><A NAME="SECTION004217320000000000000">
-Initial Conditions</A>
+<H4><A ID="SECTION004217310000000000000">
+Defining Stocks and Flows</A>
 </H4>
 
 <P>
-These are the values which the stocks take at the beginning of a simulation.
-This row must also sum to zero, to ensure stock-flow consistency.
+A Stock is defined by entering its name in the row on which the label
+<I>Flows/Stock Vars</I> is shown.
+Normally these stocks will be bank accounts, though Godley Tables
+can be used to model any dynamic system in which the stocks define
+exclusive categories&mdash;such as a epidemiological model of disease
+transmission, in which the population is divided into mutually exclusive
+categories such as Infected or Uninfected, in Hospital or Not in Hospital,
+etc.
 
 <P>
-<BR><HR>
+Stocks are classified as either <I>Assets</I>, <I>Liabilities </I>or
+<I>Equity</I>, and the default form enables the entry of only one
+Asset, Liability and Equity (similarly, there is only one row for
+recording flows on the default form). To add more columns for accounts,
+click on the + key below the relevant class (similarly, additional
+rows for financial transactions are added by clicking on the + key
+next to a row). This creates an additional column for entering stock
+names. The - key deletes a stock, and the arrow keys move stocks right
+and left as desired. 
+
+<P>
+If you press the leftarrow key on the first entry in Liabilities,
+<I>Minsky</I> will warn you that this will change the classification
+of the stock from a Liability to an Asset.
+
+<P>
+The final column in the Table, labeled <IMG
+ STYLE="height: 1.68ex; vertical-align: -0.15ex; " SRC="img213.png"
+ ALT="$A-L-E$% WIDTH=153 HEIGHT=24 ">, checks whether the
+row sums to zero&mdash;which it must do to obey the rules of accounting.
+The entries in the columns, and the sum itself, are <I>symbolic</I>:
+words are entered rather than numbers. The sum of that row must be
+zero according to this formula. Normally this will involve two entries
+of the same word&mdash;for example, <I>Lending</I>&mdash;though fractional
+entries are possible: <IMG
+ STYLE="height: 2.10ex; vertical-align: -0.57ex; " SRC="img214.png"
+ ALT="$Lending-0.7Lending-0.3Lending$% WIDTH=535 HEIGHT=30 "> still sums
+to zero.
+
+<P>
+Three stocks and flows have been defined in the following figure. 
+
+<P>
+<IMG
+  STYLE="height: 23.57ex; vertical-align: -0.12ex; " SRC="img215.png"
+ ALT="\includegraphics[width=\textwidth]{images/GodleyTableEditMode3StocksAndFlows}% WIDTH=527 HEIGHT=162 ">
+
+<P>
+<HR>
+<!--Navigation Panel-->
+<A
+ HREF="node136.html">
+<IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
+<A
+ HREF="node134.html">
+<IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
+<A
+ HREF="node134.html">
+<IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A> 
+<A ID="tex2html958"
+  HREF="Ravel.html">
+<IMG WIDTH="65" HEIGHT="24" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A
+ HREF="node136.html">Initial Conditions</A>
+<B> Up:</B> <A
+ HREF="node134.html">Open Godley Table</A>
+<B> Previous:</B> <A
+ HREF="node134.html">Open Godley Table</A>
+ &nbsp; <B>  <A ID="tex2html959"
+  HREF="Ravel.html">Contents</A></B> 
+<!--End of Navigation Panel-->
 
 </BODY>
 </HTML>
