@@ -128,6 +128,19 @@ export class ApplicationMenuManager {
           },
         },
         {
+          label: 'Login via Clerk',
+          click() {
+            let window=WindowManager.createWindow({
+              width: 420,
+              height: 500,
+              title: '',
+              modal: false,
+            });
+            window.loadURL('#/login');
+          },
+        },
+        
+        {
           label: 'New System',
           accelerator: 'CmdOrCtrl + Shift + N',
           async click() {
