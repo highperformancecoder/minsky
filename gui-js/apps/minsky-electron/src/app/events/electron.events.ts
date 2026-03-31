@@ -39,6 +39,38 @@ export default class ElectronEvents {
   }
 }
 
+// Pending resolver for the auth-token promise created by openLoginWindow()
+let _resolveAuthToken: ((token: string | null) => void) | null = null;
+
+/**
+ * Open the Clerk login popup and return a Promise that resolves with the JWT
+ * token once the user successfully authenticates (or null if the window is
+ * closed before authentication completes).
+ */
+export function openLoginWindow(): Promise<string | null> {
+  const promise = new Promise<string | null>((resolve) => {
+    _resolveAuthToken = resolve;
+  });
+
+  const loginWindow = WindowManager.createPopupWindowWithRouting({
+    width: 420,
+    height: 500,
+    title: 'Login',
+    modal: false,
+    url: '#/headless/login',
+  });
+
+  // Resolve with null if the user closes the window before authenticating
+  loginWindow.once('closed', () => {
+    if (_resolveAuthToken) {
+      _resolveAuthToken(null);
+      _resolveAuthToken = null;
+    }
+  });
+
+  return promise;
+}
+
 ipcMain.handle(events.LOG_MESSAGE, async (event, message: string)=>{
   return await CppClass.logMessage(message);
 });
@@ -294,6 +326,10 @@ ipcMain.handle(events.SET_AUTH_TOKEN, async (event, token: string | null) => {
     StoreManager.store.set('authToken', token);
   } else {
     StoreManager.store.delete('authToken');
+  }
+  if (_resolveAuthToken) {
+    _resolveAuthToken(token);
+    _resolveAuthToken = null;
   }
   return { success: true };
 });

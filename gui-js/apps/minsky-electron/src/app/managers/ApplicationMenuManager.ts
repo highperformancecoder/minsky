@@ -17,6 +17,7 @@ import { StoreManager } from './StoreManager';
 import { WindowManager } from './WindowManager';
 import { BookmarkManager } from './BookmarkManager';
 import { RecordingManager } from './RecordingManager';
+import { openLoginWindow } from '../events/electron.events';
 
 //TODO:: Remove hardcoding of popup dimensions
 
@@ -129,14 +130,8 @@ export class ApplicationMenuManager {
         },
         {
           label: 'Login via Clerk',
-          click() {
-            WindowManager.createPopupWindowWithRouting({
-              width: 420,
-              height: 500,
-              title: 'Login',
-              modal: false,
-              url: '#/headless/login',
-            });
+          async click() {
+            await openLoginWindow();
           },
         },
         
