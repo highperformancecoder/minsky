@@ -28,6 +28,8 @@ export class WindowManager {
   static canvasWidth: number;
   static scaleFactor: number;
   static currentTab=minsky.canvas as RenderNativeWindow;
+  // Pending resolver for the auth-token promise created by openLoginWindow()
+  static _resolveAuthToken: ((token: string | null) => void) | null = null;
   
   static activeWindows = new Map<number, ActiveWindow>();
   private static uidToWindowMap = new Map<string, ActiveWindow>();
@@ -381,4 +383,29 @@ export class WindowManager {
         catch (err) {} // absorb any exceptions due to windows disappearing
       }
   }
+
+  static async openLoginWindow() {
+  const promise = new Promise<string | null>((resolve) => {
+    WindowManager._resolveAuthToken = resolve;
+  });
+
+  const loginWindow = WindowManager.createPopupWindowWithRouting({
+    width: 420,
+    height: 500,
+    title: 'Login',
+    modal: false,
+    url: '#/headless/login',
+  });
+
+  // Resolve with null if the user closes the window before authenticating
+  loginWindow.once('closed', () => {
+    if (WindowManager._resolveAuthToken) {
+      WindowManager._resolveAuthToken(null);
+      WindowManager._resolveAuthToken = null;
+    }
+  });
+
+  return promise;
+}
+
 }

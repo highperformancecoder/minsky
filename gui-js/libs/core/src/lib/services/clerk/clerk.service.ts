@@ -15,17 +15,7 @@ export class ClerkService {
   async initialize(): Promise<void> {
     if (this.initialized) return;
 
-    const publishableKey = (window as any).__clerkPublishableKey
-      ?? (typeof process !== 'undefined' && process.env?.['CLERK_PUBLISHABLE_KEY'])
-      ?? '';
-
-    if (!publishableKey) {
-      console.warn(
-        'ClerkService: No publishable key found in window.__clerkPublishableKey or ' +
-        'CLERK_PUBLISHABLE_KEY environment variable. Authentication will not be available.'
-      );
-      return;
-    }
+    const publishableKey = 'pk_test_cG9zaXRpdmUtcGhvZW5peC04NS5jbGVyay5hY2NvdW50cy5kZXYk';
 
     this.clerk = new Clerk(publishableKey);
     await this.clerk.load();
