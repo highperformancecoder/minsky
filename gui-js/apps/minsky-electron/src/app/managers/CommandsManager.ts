@@ -1196,11 +1196,8 @@ export class CommandsManager {
     RecentFilesManager.updateNumberOfRecentFilesToDisplay();
   }
 
-  //static activeDownloads=new Set();
-  
   // handler for downloading Ravel and installing it
   static downloadRavel(event,item,webContents) {
-    //CommandsManager.activeDownloads.add(item);
     
     switch (process.platform) {
     case 'win32':
@@ -1223,7 +1220,6 @@ export class CommandsManager {
     // handler for when download completed
     item.once('done', (event,state)=>{
       progress.close();
-      //CommandsManager.activeDownloads.delete(item);
       
       if (state==='completed') {
         dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
