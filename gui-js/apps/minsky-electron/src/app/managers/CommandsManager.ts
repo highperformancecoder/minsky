@@ -1497,7 +1497,7 @@ export class CommandsManager {
       await WindowManager.openLoginWindow();
     let token=StoreManager.store.get('authToken');
 
-    const window=WindowManager.getMainWindow();//this.createDownloadWindow();
+    const window=WindowManager.getMainWindow();
     let minskyAsset;
     if (installCase===InstallCase.theLot)
       minskyAsset=await CommandsManager.getRelease('minsky', false, token);
@@ -1520,7 +1520,6 @@ export class CommandsManager {
         "If you're trying to download the Ravel plugin, please ensure you are logged into an account subscribed to Ravel Fan or Explorer tiers.",
       type: 'info',
     });
-    //window.close();
   }
 
 }
