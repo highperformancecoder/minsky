@@ -128,12 +128,14 @@ export class ApplicationMenuManager {
           },
         },
         {
-          label: 'Login via Clerk',
-          async click() {
-            await WindowManager.openLoginWindow();
-          },
+          label: 'Upgrade via Clerk',
+          click() {CommandsManager.upgradeUsingClerk();},
         },
-        
+         {
+          label: 'Logout Clerk',
+          click() {WindowManager.openLoginWindow();},
+        },
+       
         {
           label: 'New System',
           accelerator: 'CmdOrCtrl + Shift + N',
