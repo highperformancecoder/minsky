@@ -1,0 +1,71 @@
+:host {
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+.mycanvas {
+    height: 100%;
+    flex: 1;
+}
+
+.toolbar {
+    fill: rgb(207, 224, 235);
+    fill-opacity: 0.75;
+}
+
+.greenthing {
+    fill: #19d3a2;
+    fill-opacity: 0.3;
+    stroke-width: 2;
+}
+
+.constant {
+    fill: #1c19d3;
+    fill-opacity: 0.3;
+    stroke-width: 2;
+}
+
+.variable {
+    fill: #d32519;
+    fill-opacity: 0.3;
+    stroke-width: 2;
+}
+
+.mainsvg {
+    z-index: 0;
+}
+
+.latex {
+    overflow: visible;
+}
+
+.connection {
+    stroke: black;
+    fill-opacity: 0;
+}
+
+.valueline {
+    opacity: 0.5;
+}
+
+.instructions {
+    position: absolute;
+    background-color: rgb(188, 211, 224);
+    top: 100px;
+    right: 10px;
+    padding: 10px;
+    opacity: 0.67;
+}
+
+.instructions > div {
+    margin: 5px 10px;
+}
+
+.questionmark {
+    background-color: rgb(188, 211, 224);
+    color: rgb(0, 110, 173);
+    padding: 5px;
+    text-align: center;
+}

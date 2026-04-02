@@ -76,5 +76,6 @@
     "@nx/angular:component": {
       "style": "scss"
     }
-  }
+  },
+  "analytics": false
 }
