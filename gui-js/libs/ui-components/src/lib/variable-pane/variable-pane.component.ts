@@ -96,7 +96,8 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
     this.variablePane.updateWithHeight(this.height);
     // set initial value of form elements from C++
     let selected=await this.variablePane.selection.properties();
-    for (let i of ['flow','parameter','stock','integral'])
+    const supportedTypes = ['flow','parameter','stock','integral'];
+    for (let i of supportedTypes)
       document.forms['variablePane']['variablePane::'+i].checked=selected.includes(i);
 
     this.allSvgData = [];
@@ -105,6 +106,7 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
     for(let i = 0; i < varKeys.length; i++) {
       const varValue: VariableValue = varValues.elem(varKeys[i]);
       const typeName = await varValue.type();
+      if(!supportedTypes.some(t => t === typeName)) continue;
       let trimmedName;
       if(typeName === 'constant') {
         continue;
