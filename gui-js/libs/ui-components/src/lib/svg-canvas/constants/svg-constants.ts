@@ -55,7 +55,7 @@ export class SvgVariableTypes {
         },
         stroke: '#d32519',
         class: {'variable': true}
-        };
+    };
     public static stock = {
         name: 'stock',
         points: (x: number, y: number, width: number, height: number) => {
@@ -84,8 +84,36 @@ export class SvgVariableTypes {
         },
         stroke: '#d32519',
         class: {'variable': true}
-        };
-        
+    };
+    public static integral = {
+        name: 'integral',
+        points: (x: number, y: number, width: number, height: number) => {
+            return `${x-width},${y-height} ${x+width*0.75},${y-height} ${x+width},${y} ${x+width*0.75},${y+height} ${x-width},${y+height}`;
+        },
+        connectors: [
+            {
+            type: 'out',
+            position: (x: number, y: number, width: number, height: number) => [x+width,y,0]
+            },
+            {
+            type: 'in',
+            position: (x: number, y: number, width: number, height: number) => [x-width,y,Math.PI]
+            }
+        ],
+        getDimensions(length: number) {
+            const lengthPart = length / 12;
+            return {
+                length: length,
+                boundingbox: [-lengthPart * 4,-25,lengthPart * 8,50],
+                labelbox: [-lengthPart * 4,-22.5,lengthPart * 6,45],
+                valuebox: [lengthPart * 1,-20,lengthPart * 6,25],
+                exponentbox: [lengthPart * 1,5,lengthPart * 6,25],
+                valueline: [[-lengthPart * 4,-25],[lengthPart * 3,-25]]
+            };
+        },
+        stroke: '#d32519',
+        class: {'variable': true}
+    }; 
     public static parameter = {
         name: 'parameter',
         points: (x: number, y: number, width: number, height: number) => {
