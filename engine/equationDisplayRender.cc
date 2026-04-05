@@ -1009,7 +1009,7 @@ namespace MathDAG
           parenthesise(surf, [&](Surface& surf){
             arguments[0][0]->render(surf);
             print(surf.cairo(),",",Anchor::nw);
-            arguments[0][1]->render(surf);
+            arguments[1][0]->render(surf);
           });
         }
       else
@@ -1026,7 +1026,7 @@ namespace MathDAG
           parenthesise(surf, [&](Surface& surf){
             arguments[0][0]->render(surf);
             print(surf.cairo(),",",Anchor::nw);
-            arguments[0][1]->render(surf);
+            arguments[1][0]->render(surf);
           });
         }
       else
@@ -1043,7 +1043,24 @@ namespace MathDAG
           parenthesise(surf, [&](Surface& surf){
             arguments[0][0]->render(surf);
             print(surf.cairo(),",",Anchor::nw);
-            arguments[0][1]->render(surf);
+            arguments[1][0]->render(surf);
+          });
+        }
+      else
+        print(surf.cairo(),"0",Anchor::nw);
+  }      
+
+  template <>
+  void OperationDAG<OperationType::bulkLinearRegression>::render(Surface& surf) const 
+  {
+      if (!arguments.empty() && !arguments[0].empty() && arguments[0][0] &&	  
+          arguments.size()>1 && !arguments[1].empty() && arguments[1][0])
+        {
+          print(surf.cairo(),"bLinReg",Anchor::nw);
+          parenthesise(surf, [&](Surface& surf){
+            arguments[0][0]->render(surf);
+            print(surf.cairo(),",",Anchor::nw);
+            arguments[1][0]->render(surf);
           });
         }
       else

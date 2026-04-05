@@ -1,81 +1,139 @@
 
-<!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
-<HTML>
+<!--Converted with LaTeX2HTML 2025 (Released January 1, 2025) -->
+<HTML lang="en">
 <HEAD>
-<TITLE>Data selection</TITLE>
-<META NAME="description" CONTENT="Data selection">
-<META NAME="keywords" CONTENT="Ravel">
-<META NAME="resource-type" CONTENT="document">
-<META NAME="distribution" CONTENT="global">
+<TITLE>Importing data into a parameter from a CSV file</TITLE>
 
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-15">
-<META NAME="Generator" CONTENT="LaTeX2HTML v2017.2">
-<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+<META NAME="viewport" CONTENT="width=device-width, initial-scale=1.0">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2025">
 
 <LINK REL="STYLESHEET" HREF="Ravel.css">
 
-<LINK REL="next" HREF="node191.html">
-<LINK REL="previous" HREF="node189.html">
-<LINK REL="up" HREF="node189.html">
+<LINK REL="next" HREF="node195.html">
+<LINK REL="previous" HREF="node175.html">
 <LINK REL="next" HREF="node191.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html2964"
-  HREF="node191.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html2960"
-  HREF="node189.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html2954"
-  HREF="node189.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html2962"
+<A
+ HREF="node191.html">
+<IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
+<A
+ HREF="node44.html">
+<IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
+<A
+ HREF="node189.html">
+<IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A> 
+<A ID="tex2html1116"
   HREF="Ravel.html">
-<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
+<IMG WIDTH="65" HEIGHT="24" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html2965"
-  HREF="node191.html">Quick instructions for the</A>
-<B> Up:</B> <A NAME="tex2html2961"
-  HREF="node189.html">Importing data into a</A>
-<B> Previous:</B> <A NAME="tex2html2955"
-  HREF="node189.html">Importing data into a</A>
- &nbsp; <B>  <A NAME="tex2html2963"
+<B> Next:</B> <A
+ HREF="node191.html">Data selection</A>
+<B> Up:</B> <A
+ HREF="node44.html">Reference</A>
+<B> Previous:</B> <A
+ HREF="node189.html">Linking Ravels</A>
+ &nbsp; <B>  <A ID="tex2html1117"
   HREF="Ravel.html">Contents</A></B> 
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H2><A NAME="SECTION004151000000000000000">
-Data selection</A>
-</H2>
+<H1><A ID="SECTION004150000000000000000">
+Importing data into a parameter from a CSV file</A>
+</H1>
 
 <P>
-Once the CSV settings are chosen, then you can move to the next stage,
-which is to choose which columns describe the axes of the data, and
-which contain the data.
+<A ID="CSV_import"></A> <A ID="2213"></A><A ID="Operation:csvImport"></A>
+<P>
+After creating a parameter from the ``Variable'' drop-down in the
+``Insert'' menu, right-clicking the parameter and selecting the
+option to ``Import CSV'', will open a dialogue box that allows you
+to select a CSV file. Upon selecting the file, a dialog is opened,
+allowing you to specify assorted encoding parameters.
+
+<P>
+An alternative is to click on the ImportData icon 
+  <IMG
+  STYLE="height: 1.82ex; vertical-align: -0.02ex; " SRC="img43.png"
+ ALT="\resizebox{!}{2ex}{\includegraphics{images/importData.eps}}% WIDTH=12 HEIGHT=12 ">
+  ,
+which will create a new parameter for you to import the data into.
+
+<P>
+The dialog looks somewhat like this (developments in the import routine
+may change some layout details):
 
 <P>
 
 <IMG
- ALIGN="BOTTOM" SRC="img278.png"
- ALT="\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialog-DataSelection}}% WIDTH=555 HEIGHT=268 ">
+  STYLE="height: 38.68ex; vertical-align: -0.12ex; " SRC="img276.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialog}}% WIDTH=527 HEIGHT=265 ">
 
 <P>
-The system will try to automatically guess which columns are axes and
-which are data. Generally speaking, columns consisting entirely of
-numbers are considered data, and the other columns axes. Empty columns
-are set to ``ignore''. However, this may not always be correct -- for
-example if a numerical code is used for classification, or the
-numerical data contains currency specifiers like $ or <IMG
- ALIGN="BOTTOM" SRC="img279.png"
- ALT="$\pounds$% WIDTH=16 HEIGHT=15 ">. You
-can override the automatic classification by selecting the
-``Dimension'' drop down in each column.
+It has 4 tabs, which lead you through the import process. The first
+tab is for selecting the source, which may be a file, one of the
+included examples, or a URL to a remote file (possibly zipped).
+
+<P>
+Once the file is loaded, the form automatically advances to the CSV
+setting tab. For conformant CSV files, only the separator character
+and quote are important. Some nonconformant files use an escape
+character such as `t&#x301;o mark the following character as a literal,
+and if using space separated data, you may want to treat successive
+separators as a single separator, in which case, select ``Merge
+delimiters''. If loading European data, you may need to set the decimal
+separator to `,'.
+
+<P>
+
+<IMG
+  STYLE="height: 38.68ex; vertical-align: -0.12ex; " SRC="img277.png"
+ ALT="\resizebox{\textwidth}{!}{\includegraphics{images/CSVimportDialog-CSVSettings}}% WIDTH=527 HEIGHT=265 ">
 
 <P>
 <BR><HR>
+<!--Table of Child-Links-->
+<A ID="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
+
+<UL>
+<LI><A ID="tex2html1118"
+  HREF="node191.html">Data selection</A>
+<LI><A ID="tex2html1119"
+  HREF="node192.html">Quick instructions for the Data selection form</A>
+<LI><A ID="tex2html1120"
+  HREF="node193.html">Temporal data</A>
+<LI><A ID="tex2html1121"
+  HREF="node194.html">Import settings</A>
+</UL>
+<!--End of Table of Child-Links-->
+<HR>
+<!--Navigation Panel-->
+<A
+ HREF="node191.html">
+<IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
+<A
+ HREF="node44.html">
+<IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
+<A
+ HREF="node189.html">
+<IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A> 
+<A ID="tex2html1116"
+  HREF="Ravel.html">
+<IMG WIDTH="65" HEIGHT="24" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A
+ HREF="node191.html">Data selection</A>
+<B> Up:</B> <A
+ HREF="node44.html">Reference</A>
+<B> Previous:</B> <A
+ HREF="node189.html">Linking Ravels</A>
+ &nbsp; <B>  <A ID="tex2html1117"
+  HREF="Ravel.html">Contents</A></B> 
+<!--End of Navigation Panel-->
 
 </BODY>
 </HTML>

@@ -1,78 +1,148 @@
 
-<!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
-<HTML>
+<!--Converted with LaTeX2HTML 2025 (Released January 1, 2025) -->
+<HTML lang="en">
 <HEAD>
-<TITLE>Minsky-specific commands</TITLE>
-<META NAME="description" CONTENT="Minsky-specific commands">
-<META NAME="keywords" CONTENT="Ravel">
-<META NAME="resource-type" CONTENT="document">
-<META NAME="distribution" CONTENT="global">
+<TITLE>Import settings</TITLE>
 
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-15">
-<META NAME="Generator" CONTENT="LaTeX2HTML v2017.2">
-<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+<META NAME="viewport" CONTENT="width=device-width, initial-scale=1.0">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2025">
 
 <LINK REL="STYLESHEET" HREF="Ravel.css">
 
-<LINK REL="previous" HREF="node189.html">
-<LINK REL="up" HREF="node44.html">
+<LINK REL="previous" HREF="node193.html">
 <LINK REL="next" HREF="node195.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html3008"
-  HREF="node195.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html3004"
-  HREF="node44.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html3000"
-  HREF="node193.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html3006"
+<A
+ HREF="node195.html">
+<IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
+<A
+ HREF="node190.html">
+<IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
+<A
+ HREF="node193.html">
+<IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A> 
+<A ID="tex2html1128"
   HREF="Ravel.html">
-<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
+<IMG WIDTH="65" HEIGHT="24" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html3009"
-  HREF="node195.html">File Menu Minsky commands</A>
-<B> Up:</B> <A NAME="tex2html3005"
-  HREF="node44.html">Reference</A>
-<B> Previous:</B> <A NAME="tex2html3001"
-  HREF="node193.html">Import settings</A>
- &nbsp; <B>  <A NAME="tex2html3007"
+<B> Next:</B> <A
+ HREF="node195.html">Minsky-specific commands</A>
+<B> Up:</B> <A
+ HREF="node190.html">Importing data into a</A>
+<B> Previous:</B> <A
+ HREF="node193.html">Temporal data</A>
+ &nbsp; <B>  <A ID="tex2html1129"
   HREF="Ravel.html">Contents</A></B> 
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H1><A NAME="SECTION004160000000000000000">
-Minsky-specific commands</A>
-</H1>
+<H2><A ID="SECTION004154000000000000000">
+Import settings</A>
+</H2>
 
 <P>
-<BR><HR>
-<!--Table of Child-Links-->
-<A NAME="CHILD_LINKS"><STRONG>Subsections</STRONG></A>
+The final tab allows a few more options. The first line allows setting
+the name, short and long description of the parameter the data is
+being imported into. These could also be changed after the data is
+imported, so is largely a convenience option.
 
-<UL>
-<LI><A NAME="tex2html3010"
-  HREF="node195.html">File Menu Minsky commands</A>
-<LI><A NAME="tex2html3011"
-  HREF="node196.html">Options Menu Commands</A>
-<LI><A NAME="tex2html3012"
-  HREF="node197.html">Simulation Menu Commands</A>
-<LI><A NAME="tex2html3013"
-  HREF="node198.html">Record/Replay Buttons</A>
-<LI><A NAME="tex2html3014"
-  HREF="node199.html">Run Buttons</A>
-<LI><A NAME="tex2html3015"
-  HREF="node200.html">Speed slider</A>
-<LI><A NAME="tex2html3016"
-  HREF="node201.html">Simulation time</A>
-</UL>
-<!--End of Table of Child-Links-->
-<BR><HR>
+<P>
+The second line has options for the import process.
+
+<P>
+<DL>
+<DT><STRONG>Don't fail on invalid data</STRONG></DT>
+<DD>If selected, Ravel will simply
+    ignore any data it cannot understand &mdash; eg malformed dates etc
+  
+</DD>
+<DT><STRONG>Missing value</STRONG></DT>
+<DD>&mdash; the default is ``NaN'', which stands for
+    <EM>not a number</EM>, a special IEEE floating point value that Ravel
+    understands to be missing data. You can choose to override it, if
+    that suits your purpose &mdash; eg substituting 0 for missing data in
+    the file.
+  
+</DD>
+<DT><STRONG>Duplicate keys</STRONG></DT>
+<DD><P>
+In a hypercube, data is indexed by a list of indices, collectively
+    known as a key. The indices may be strings, integers or date/time
+    values. If more than one value exists in the CSV file for a given
+    key, Ravel throws a ``Duplicate key'' exception. This exception
+    gives you the option of writing a report, which is basically a sorted
+    version of the original CSV file, with the errors listed at the beginning.
+    You can open this report in a spreadsheet to see if data needs to
+    be corrected or removed.
+
+<P>
+Duplicates will arise if you load data from a transactional database
+    which stores the exact time of every transaction. Here the correct
+    choice on ``Duplicate Key Action'' is to sum the entries so that
+    all sales for a particular day (or month, quarter, or year) are aggregated
+    for analysis of trends in the data.
+
+<P>
+</DD>
+<DT><STRONG>Counter mode</STRONG></DT>
+<DD><A ID="counter"></A>
+<P>
+As mentioned previously, Ravel is designed to work with numerical
+  data. However, it is possible to work with purely symbolic data by
+  using <EM>counter mode</EM><A ID="2269"></A>. This mode counts the
+  number of times a key is present in the data file &mdash; either zero or
+  one, or in the case of duplicate keys, a value greater than one. You
+  can feed this into a Ravel and perform rollups to analyse the symbols
+  statistically, for example as histograms.
+
+<P>
+To select counter mode, select the ``counter'' check box in the input
+  dialog form. If no data columns are present at all, Ravel
+  automatically selects counter mode.
+</DD>
+</DL>
+
+<P>
+Even in the current settings, you may still get a message ``exhausted
+memory &mdash; try reducing the rank'', or a similar message about hitting
+a 20% of physical memory threshold. In some cases, ``titles'' and
+``addresses'' might be pretty much unique for each record, leading
+to a large, but very sparse hypercube. If you remove those columns,
+then you may encounter the ``Duplicate key'' message. In this case,
+you can aggregate over these records&mdash;which is desirable anyway
+to analyse trends in aggregate data. You do this by setting ``Duplicate
+Key Action'' to sum (or perhaps average for this example).
+
+<P>
+<HR>
+<!--Navigation Panel-->
+<A
+ HREF="node195.html">
+<IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
+<A
+ HREF="node190.html">
+<IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
+<A
+ HREF="node193.html">
+<IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A> 
+<A ID="tex2html1128"
+  HREF="Ravel.html">
+<IMG WIDTH="65" HEIGHT="24" ALT="contents" SRC="contents.png"></A>  
+<BR>
+<B> Next:</B> <A
+ HREF="node195.html">Minsky-specific commands</A>
+<B> Up:</B> <A
+ HREF="node190.html">Importing data into a</A>
+<B> Previous:</B> <A
+ HREF="node193.html">Temporal data</A>
+ &nbsp; <B>  <A ID="tex2html1129"
+  HREF="Ravel.html">Contents</A></B> 
+<!--End of Navigation Panel-->
 
 </BODY>
 </HTML>
