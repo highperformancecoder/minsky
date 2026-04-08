@@ -47,8 +47,8 @@ export class CommunicationService {
 
   currentTab = MainRenderingTabs.canvas as string;
   showPlayButton$ = new BehaviorSubject<boolean>(true);
-  t = '0';
-  deltaT = '0';
+  t$ = new BehaviorSubject<string>('0');
+  deltaT$ = new BehaviorSubject<string>('0');
 
   mouseX: number;
   mouseY: number;
@@ -282,13 +282,13 @@ export class CommunicationService {
   }
 
   private updateSimulationTime(t: number, deltaT: number) {
-    if (Number(this.t) >= this.runUntilTime) {
+    if (Number(this.t$.value) >= this.runUntilTime) {
       this.showPlayButton$.next(true);
     }
 
-    this.t = t.toFixed(2);
+    this.t$.next(t.toFixed(2));
 
-    this.deltaT = deltaT.toFixed(2);
+    this.deltaT$.next(deltaT.toFixed(2));
 
   }
 

@@ -21,6 +21,8 @@ export class HeaderComponent implements OnInit, OnDestroy {
   isRecordingOn = false;
   isReplayRecordingOn = false;
   showPlayButton = false;
+  t = '0';
+  deltaT = '0';
 
   destroy$ = new Subject<{}>();
 
@@ -73,6 +75,16 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
       this.commService.showPlayButton$.pipe(takeUntil(this.destroy$)).subscribe((showPlayButton) => {
         this.showPlayButton = showPlayButton;
+        this.changeDetectorRef.detectChanges();
+      });
+
+      this.commService.t$.pipe(takeUntil(this.destroy$)).subscribe((t) => {
+        this.t = t;
+        this.changeDetectorRef.detectChanges();
+      });
+
+      this.commService.deltaT$.pipe(takeUntil(this.destroy$)).subscribe((deltaT) => {
+        this.deltaT = deltaT;
         this.changeDetectorRef.detectChanges();
       });
 
