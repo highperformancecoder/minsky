@@ -278,7 +278,7 @@ export class CommunicationService {
   }
 
   private updateSimulationTime(tdt: number[]) {
-    if (Number(this.tdt$.value[0]) >= this.runUntilTime) {
+    if (Number(tdt[0]) >= this.runUntilTime) {
       this.showPlayButton$.next(true);
     }
 
