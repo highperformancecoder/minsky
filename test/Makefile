@@ -4,10 +4,16 @@ DEBUG=1
 ECOLAB_HOME=../ecolab
 
 ifneq ($(MAKECMDGOALS),clean)
+ifneq ($(COMPILER),"")
+# rewrite CPLUSPLUS after clobber in Makefile
+CPLUSPLUS:=$(COMPILER)
+$(warning $(CPLUSPLUS) , $(COMPILER))
+endif
 include $(ECOLAB_HOME)/include/Makefile
 ifneq ($(COMPILER),"")
 # rewrite CPLUSPLUS after clobber in Makefile
 CPLUSPLUS=$(COMPILER)
+$(warning $(COMPILER))
 endif
 endif
 

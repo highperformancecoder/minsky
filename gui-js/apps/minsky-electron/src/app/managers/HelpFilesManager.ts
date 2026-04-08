@@ -5,6 +5,7 @@ abstract class HelpFilesManager {
   private static topicNodeMap: Record<string, string> = {};
 
   public static getHelpFileForType(type: string): string {
+    console.log(this.topicNodeMap);
     if (type in this.topicNodeMap) {
       return this.topicNodeMap[type];
     }
@@ -46,7 +47,7 @@ abstract class HelpFilesManager {
     const buffer = await fsPromises.readFile(fName);
     if (buffer) {
       const contents = buffer.toString();
-      const matches = contents.matchAll(/<A[ \t]+NAME="([^"]*)"/g);
+      const matches = contents.matchAll(/<A[ \t]+ID="([^"]*)"/g);
       for (const match of matches) {
         this.topicNodeMap[match[1]] = `minsky.html?Ravel/${path.basename(fName)}`;
       }

@@ -1111,8 +1111,7 @@ namespace minsky
     }
   };
 
-  // OperationType template parameter is arbitrary, its going to be overridden anyway
-  template <> struct GeneralTensorOp<OperationType::linearRegression>: public ITensor, public OpState
+  struct LinearRegression: public ITensor, public OpState
   {
     TensorPtr x, y;
     std::size_t dimension;
@@ -1151,11 +1150,9 @@ namespace minsky
           hypercube({});
           return;
         }
-      m_index=y->index();
-      hypercube(y->hypercube());
 
       {
-        auto& xv=m_hypercube.xvectors;
+        auto& xv=y->hypercube().xvectors;
         dimension=rank()>1? rank(): 0;
         for (auto i=xv.begin(); i!=xv.end(); ++i)
           if (i->name==args.dimension)
@@ -1171,7 +1168,7 @@ namespace minsky
         }
       else
         {
-          if (rank()>1 && dimension>=rank()) return;
+          if (rank()>1 && dimension>=y->rank()) return;
           // construct x from y's x-vector
           auto tv=make_shared<TensorVal>();
           spreadX=tv;
@@ -1206,14 +1203,33 @@ namespace minsky
       
       assert(sumx.hypercube()==sumy.hypercube());
       assert(sumx.index()==sumy.index());
-
+      this->x=spreadX;
+      this->y=y;
       scale.index(sumx.index());
       scale.hypercube(sumx.hypercube());
       offset.index(sumx.index());
       offset.hypercube(sumx.hypercube());
+    }
 
-      this->x=spreadX;
-      this->y=y;
+    civita::ITensor::Timestamp timestamp() const override {
+      if (!y) return {};
+      if (!x) return y->timestamp();
+      return std::max(x->timestamp(), y->timestamp());
+    }
+ 
+    
+  };
+
+  // OperationType template parameter is arbitrary, its going to be overridden anyway
+  template <> struct GeneralTensorOp<OperationType::linearRegression>: public LinearRegression
+  {
+    void setArguments(const TensorPtr& y, const TensorPtr& x,
+                      const ITensor::Args& args) override
+    {
+      LinearRegression::setArguments(y,x,args);
+      if (!y) return;
+      hypercube(y->hypercube());
+      m_index=y->index();
     }
 
     double operator[](size_t i) const override
@@ -1235,12 +1251,51 @@ namespace minsky
       return scale[0]* (*x)[i]  + offset[0];
     }
 
-    civita::ITensor::Timestamp timestamp() const override {return std::max(x->timestamp(), y->timestamp());}
- 
-    
   };
 
-  
+  // OperationType template parameter is arbitrary, its going to be overridden anyway
+  template <> struct GeneralTensorOp<OperationType::bulkLinearRegression>: public LinearRegression
+  {
+    void setArguments(const TensorPtr& y, const TensorPtr& x,
+                      const ITensor::Args& args) override
+    {
+      LinearRegression::setArguments(y,x,args);
+      if (!y) return;
+      if (dimension>=y->rank())
+        throw_error("Need to specify axis");
+      auto hc=y->hypercube();
+      hc.xvectors[dimension]=civita::XVector("Linear Parameters",{},{"Slope","Intercept"});
+      hypercube(hc);
+      m_index.clear();
+    }
+    
+    double operator[](size_t i) const override
+    {
+      if (rank()>1 && dimension>=rank())
+        throw_error("Need to specify axis");
+      if (!x) return nan("");
+      assert(dimension<rank() || scale.size()==1);
+
+      if (timestamp()>m_timestamp) computeScaleAndOffset();
+
+      size_t param=i, hcIdx=0;
+      if (dimension<rank())
+        {
+          auto splitted=hypercube().splitIndex(i);
+          param=splitted[dimension];
+          splitted.erase(splitted.begin()+dimension);
+          hcIdx=scale.hypercube().linealIndex(splitted);
+        }
+      switch (param)
+        {
+        case 0: return scale.atHCIndex(hcIdx);
+        case 1: return offset.atHCIndex(hcIdx);
+        default: return nan("");
+        }
+    }
+
+  };
+
   template <> struct GeneralTensorOp<OperationType::mean>: public civita::Average {};
   template <> struct GeneralTensorOp<OperationType::stdDev>: public civita::StdDeviation {};
   
