@@ -9,6 +9,7 @@
   },
   "dependencies": {
     "bindings": "^1.5.0",
+    "nx": "^22.6.3",
     "typescript": "^5.8.3"
   },
   "devDependencies": {

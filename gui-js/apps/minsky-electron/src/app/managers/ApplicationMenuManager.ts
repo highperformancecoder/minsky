@@ -435,9 +435,10 @@ export class ApplicationMenuManager {
           click() {
             WindowManager.createPopupWindowWithRouting({
               title: 'Variables',
-              url: "#/headless/variable-pane",
+              url: '#/headless/variable-pane',
               width: 400,
               height: 450,
+              minWidth: 350,
               alwaysOnTop: true,
               modal: false,
             });

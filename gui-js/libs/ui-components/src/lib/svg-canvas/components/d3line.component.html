@@ -1,0 +1,7 @@
+<svg:path #linepath [style.display]="invisibleLine ? 'none' : 'inherit'"></svg:path>
+
+<svg:circle #startpoint [attr.cx]="start[0]" [attr.cy]="start[1]" r="0.00001"></svg:circle>
+<svg:circle #endpoint [attr.cx]="end[0]" [attr.cy]="end[1]" r="0.00001"></svg:circle>
+
+<svg:circle #midpoint dragdrop *ngFor="let p of dotPositions; let i = index"
+[dragfunctions]="dragfunctions(p, i)" [attr.cx]="p.x" [attr.cy]="p.y" r="7"></svg:circle>
