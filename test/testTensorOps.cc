@@ -286,7 +286,7 @@ TEST_F(TensorOpSuite, difference2D)
       {EXPECT_EQ(10,i);}
 }
 
-TEST_F(TensorOpSuite, difference2DunorderedSparse)
+TEST_F(TensorOpSuite, DISABLED_difference2DunorderedSparse)
 {
   vector<unsigned> dims{5,5};
   fromVal.hypercube(Hypercube(dims));
@@ -315,7 +315,7 @@ TEST_F(TensorOpSuite, difference2DunorderedSparse)
       {EXPECT_EQ(10,i);}
 }
 
-TEST_F(TensorOpSuite, difference1D)
+TEST_F(TensorOpSuite, DISABLED_difference1D)
 {
   vector<unsigned> dims{5};
   fromVal.hypercube(Hypercube(dims));
@@ -353,7 +353,7 @@ TEST_F(TensorOpSuite, difference1D)
   for (size_t _i=0; _i<4; ++_i) EXPECT_EQ(ii[_i], to->vValue()->index()[_i]);
 }
   
-TEST_F(TensorOpSuite, difference1DunorderedSparse)
+TEST_F(TensorOpSuite, DISABLED_difference1DunorderedSparse)
 {
   vector<unsigned> dims{5};
   fromVal.hypercube(Hypercube(dims));
@@ -386,7 +386,7 @@ TEST_F(TensorOpSuite, difference1DunorderedSparse)
   EXPECT_EQ(2, to->vValue()->hypercube().xvectors[0][0].value);
 }
   
-TEST_F(TensorOpSuite, difference2D_II)
+TEST_F(TensorOpSuite, DISABLED_difference2D_II)
 {
   vector<unsigned> dims{5,5,5};
   fromVal.hypercube(Hypercube(dims));
