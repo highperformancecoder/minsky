@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
@@ -35,7 +35,8 @@ export class EditUserFunctionComponent implements OnInit {
 
   constructor(
     private electronService: ElectronService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdRef: ChangeDetectorRef
   ) {
     this.form = new FormGroup({
       name: new FormControl(''),
@@ -61,6 +62,7 @@ export class EditUserFunctionComponent implements OnInit {
     this.name.setValue(this.itemName);
     this.rotation.setValue(await this.udf.rotation());
     this.expression.setValue(await this.udf.expression());
+    this.cdRef.detectChanges();
   }
 
   async handleSave() {
