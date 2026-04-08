@@ -78,16 +78,11 @@ export class HeaderComponent implements OnInit, OnDestroy {
         this.changeDetectorRef.detectChanges();
       });
 
-      this.commService.t$.pipe(takeUntil(this.destroy$)).subscribe((t) => {
-        this.t = t;
+      this.commService.tdt$.pipe(takeUntil(this.destroy$)).subscribe((tdt) => {
+        this.t=tdt[0].toFixed(2);
+        this.deltaT = tdt[1].toFixed(2);
         this.changeDetectorRef.detectChanges();
       });
-
-      this.commService.deltaT$.pipe(takeUntil(this.destroy$)).subscribe((deltaT) => {
-        this.deltaT = deltaT;
-        this.changeDetectorRef.detectChanges();
-      });
-
     }
   }
 
