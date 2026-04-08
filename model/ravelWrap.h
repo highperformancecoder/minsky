@@ -82,6 +82,7 @@ namespace minsky
     classdesc::pack_t lastState;
     civita::TensorPtr cachedDbResult; ///< cache of database query result
     ravel::Op::ReductionOp m_nextReduction=ravel::Op::sum;
+
   public:
     static SVGRenderer svgRenderer; ///< SVG icon to display when not in editor mode
     RavelPopup popup; ///< popup Ravel control window

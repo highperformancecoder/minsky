@@ -3,6 +3,7 @@
 from sys import argv
 from pyminsky import minsky
 from timeit import timeit
+from os import path
 try:
     minsky.load(argv[1])
 except:
@@ -14,4 +15,4 @@ def reset():
     except:
         pass
 
-print(argv[1],timeit(reset,globals=globals(),number=1),sep=',')
+print(path.basename(argv[1]),timeit(reset,globals=globals(),number=1),sep=',')

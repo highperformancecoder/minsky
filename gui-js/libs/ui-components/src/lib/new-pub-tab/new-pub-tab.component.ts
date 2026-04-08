@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
@@ -23,7 +23,8 @@ export class NewPubTabComponent implements OnInit {
   editDescriptionForm: FormGroup;
   constructor(
     private route: ActivatedRoute,
-    private electronService: ElectronService
+    private electronService: ElectronService,
+    private cdRef: ChangeDetectorRef
   ) {}
 
   async ngOnInit() {
@@ -36,6 +37,7 @@ export class NewPubTabComponent implements OnInit {
     });
     if (this.type==='rename')
       this.editDescriptionForm.get('description').setValue(await this.pubTab.name());
+    this.cdRef.detectChanges();
   }
 
   async handleSave() {

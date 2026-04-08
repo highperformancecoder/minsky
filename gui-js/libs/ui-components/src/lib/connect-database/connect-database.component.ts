@@ -33,6 +33,7 @@ export class ConnectDatabaseComponent {
 
   async ngOnInit() {
     this.backends=await this.ravel.db.backends();
+    this.cdRef.detectChanges();
   }
 
   setDbType(event) {

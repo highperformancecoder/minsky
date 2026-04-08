@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ElectronService } from '@minsky/core';
 import { dateTimeFormats } from '@minsky/shared';
@@ -44,7 +44,7 @@ export class DimensionsComponent implements OnInit {
     return this.form.get('dimensions') as FormArray;
   }
 
-  constructor(private electronService: ElectronService) {
+  constructor(private electronService: ElectronService, private cdRef: ChangeDetectorRef) {
     this.form = new FormGroup({ dimensions: new FormArray([]) });
   }
 
@@ -58,6 +58,7 @@ export class DimensionsComponent implements OnInit {
           this.originalDimensionNames.push(key);
           this.dimensions.push(this.createDimension(key, args));
         }
+        this.cdRef.detectChanges();
       }
     })();
   }

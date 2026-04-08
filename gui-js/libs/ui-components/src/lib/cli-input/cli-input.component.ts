@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, Validators, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ElectronService } from '@minsky/core';
 import { CppClass, unExposedTerminalCommands } from '@minsky/shared';
@@ -44,7 +44,7 @@ export class CliInputComponent implements OnInit, OnDestroy {
     return this.form.get('args');
   }
 
-  constructor(private electronService: ElectronService) {}
+  constructor(private electronService: ElectronService, private cdRef: ChangeDetectorRef) {}
 
   async ngOnInit() {
     this.form = new FormGroup({
@@ -68,6 +68,7 @@ export class CliInputComponent implements OnInit, OnDestroy {
 
       this.commands = [..._commands, ...unExposedTerminalCommands];
     }
+    this.cdRef.detectChanges();
   }
 
   async handleSubmit() {
