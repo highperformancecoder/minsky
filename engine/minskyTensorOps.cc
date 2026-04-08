@@ -486,39 +486,38 @@ namespace minsky
       return abs(ssize_t(i)-ssize_t(j))<ssize_t(outerStride); // simpler version of above
     }
     
-    void computeTensor(size_t idx) const override
+    void computeTensor(/*size_t idx*/) const override
     {
       if (!arg) throw_error("input unwired");
       if (!errorMsg.empty()) throw_error(errorMsg);
       if (!argIndices.empty())
         {
           assert(argIndices.size()==size());
-          //size_t idx=0;
-          //for (auto i: argIndices)
+          for (auto idx: argIndices)
             {
               checkCancel();
               cachedResult[idx]=arg->atHCIndex(argIndices[idx])-arg->atHCIndex(argIndices[idx]-delta);
             }
         }
       else if (delta>=0)
-        //for (size_t i=0; i<cachedResult.size(); checkCancel(), ++i)
+        for (size_t idx=0; idx<cachedResult.size(); checkCancel(), ++idx)
           {
             auto ai=arg->hypercube().linealIndex(cachedResult.hypercube().splitIndex(idx));
             auto t=ai+delta*innerStride;
             if (sameSlice(t, ai))
               cachedResult[idx]=arg->atHCIndex(t)-arg->atHCIndex(ai);
             else
-              cachedResult[idx]=civita::missing();
+              cachedResult[idx]=nan(""); //civita::missing();
           }
       else // with -ve delta, origin of result is shifted
-        //for (size_t i=0; i<size(); checkCancel(), ++i)
+        for (size_t idx=0; idx<size(); checkCancel(), ++idx)
           {
             auto ai=arg->hypercube().linealIndex(cachedResult.hypercube().splitIndex(idx));
             auto t=ai-delta;
             if (sameSlice(t,ai))
               cachedResult[idx]=arg->atHCIndex(ai)-arg->atHCIndex(t);
             else
-              cachedResult[idx]=civita::missing();
+              cachedResult[idx]=nan(""); //civita::missing();
           }
     }
 
@@ -539,7 +538,7 @@ namespace minsky
   struct GeneralTensorOp<OperationType::innerProduct>: public civita::CachedTensorOp, public OpState
   {
     std::shared_ptr<ITensor> arg1, arg2;
-    void computeTensor(size_t idx) const override {
+    void computeTensor(/*size_t idx*/) const override {
       if (!arg1 || !arg2) return;
       if (arg1->rank()!=0 && arg2->rank()!=0 &&
           arg1->hypercube().dims()[arg1->rank()-1]!=arg2->hypercube().dims()[0])
@@ -556,11 +555,11 @@ namespace minsky
   	
       const size_t stride=arg2->rank()>0? arg2->hypercube().dims()[0]: 1;	 	 
       double tmpSum;
-      //for (size_t i=0; i< m; i++)
-      //  for (size_t j=0; j< n; j++)
+      for (size_t i=0; i< m; i++)
+        for (size_t j=0; j< n; j++)
           {
-            auto r=div(ssize_t(idx),ssize_t(m));
-            auto i=r.rem, j=r.quot;
+//            auto r=div(ssize_t(idx),ssize_t(m));
+//            auto i=r.rem, j=r.quot;
             tmpSum=0;
             for (size_t k=0; k<stride; checkCancel(), k++)  
               {
@@ -588,21 +587,21 @@ namespace minsky
   struct GeneralTensorOp<OperationType::outerProduct>: public civita::CachedTensorOp
   {
     std::shared_ptr<ITensor> arg1, arg2;
-    void computeTensor(size_t idx) const override {
+    void computeTensor(/*size_t idx*/) const override {
       if (!arg1 || !arg2) return;
       const size_t m=arg1->size(), n=arg2->size();   
       assert(cachedResult.size()==m*n);
 	
-      //      for (size_t i=0; i< m; i++)
+      for (size_t i=0; i< m; i++)
        {
-         auto r=div(ssize_t(idx),ssize_t(m));
-         auto i=r.rem;
-         auto j=r.quot;
+//         auto r=div(ssize_t(idx),ssize_t(m));
+//         auto i=r.rem;
+//         auto j=r.quot;
          auto v1=(*arg1)[i];  			
-         //  for (size_t j=0; j< n; checkCancel(), j++) 
+         for (size_t j=0; j< n; checkCancel(), j++) 
          {
             auto v2=(*arg2)[j];			
-            cachedResult[idx]=v1*v2;			
+            cachedResult[/*idx*/ j*m+i]=v1*v2;			
  	 }
        }	     
     }
@@ -645,7 +644,7 @@ namespace minsky
   struct GeneralTensorOp<OperationType::index>: public civita::CachedTensorOp
   {
     std::shared_ptr<ITensor> arg;
-    void computeTensor(size_t) const override {
+    void computeTensor(/*size_t*/) const override {
       size_t i=0, j=0;
       for (; i<arg->size(); checkCancel(), ++i)
         if ((*arg)[i]>0.5)
@@ -707,7 +706,7 @@ namespace minsky
       return (1-s)*lv + s*gv;
     }
 
-    void computeTensor(size_t) const override
+    void computeTensor(/*size_t*/) const override
     {
       if (arg1->rank()==0)
         throw_error("Cannot apply gather to a scalar");
@@ -1308,7 +1307,7 @@ namespace minsky
       cachedResult.hypercube(std::move(hc));
     }
 
-    void computeTensor(size_t) const override
+    void computeTensor(/*size_t*/) const override
     {
       // first compute max/min over the whole dataset
       double min=numeric_limits<double>::max(), max=-numeric_limits<double>::max();
