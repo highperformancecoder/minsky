@@ -321,11 +321,11 @@ ifeq ($(OS),CYGWIN)
 FLAGS+=-Wa,-mbig-obj -Wl,-x -Wl,--oformat,pe-bigobj-x86-64
 endif
 
-LIBS+=-LRavelCAPI -lravelCAPI -LRavelCAPI/civita -lcivita  -lboost_date_time$(BOOST_EXT) -lgsl -lgslcblas -lssl -lcrypto
+LIBS:=-LRavelCAPI -lravelCAPI -LRavelCAPI/civita -lcivita  -lboost_date_time$(BOOST_EXT) -lgsl -lgslcblas -lssl -lcrypto $(LIBS)
 
 # Some boost installations require linking to boost_system/thread, others don't have the library installed
-LIBS+=$(if $(call search,lib*/libboost_system.so),-lboost_system$(BOOST_EXT))
 LIBS+=$(if $(call search,lib*/libboost_thread.so),-lboost_thread$(BOOST_EXT))
+LIBS+=$(if $(call search,lib*/libboost_system.so),-lboost_system$(BOOST_EXT))
 
 ifdef MXE
 LIBS+=-lgdi32 -lcrypt32 -lbcrypt -lshcore
