@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -7,6 +7,8 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ClerkService } from '@minsky/core';
 import { ElectronService } from '@minsky/core';
+import { ActivatedRoute } from '@angular/router';
+import { Subject, take } from 'rxjs';
 
 @Component({
   selector: 'minsky-login',
@@ -22,7 +24,7 @@ import { ElectronService } from '@minsky/core';
     MatProgressSpinnerModule,
   ],
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
   loginForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required]),
@@ -32,15 +34,38 @@ export class LoginComponent implements OnInit {
   errorMessage = '';
   isAuthenticated = false;
 
-  constructor(private clerkService: ClerkService, private electronService: ElectronService) {}
+  private destroy$ = new Subject<void>();
+
+  constructor(
+    private clerkService: ClerkService,
+    private electronService: ElectronService,
+    private route: ActivatedRoute
+  ) {}
 
   async ngOnInit() {
+    this.route.queryParams.pipe(take(1)).subscribe((params) => {
+      this.initializeSession(params['authToken']);
+    });
+  }
+
+  private async initializeSession(authToken: string | undefined) {
     try {
       await this.clerkService.initialize();
+
+      if (authToken) {
+        await this.clerkService.setSession(authToken);
+      }
+
       this.isAuthenticated = await this.clerkService.isSignedIn();
     } catch (err) {
-      this.errorMessage = 'Failed to initialize authentication.';
+      this.errorMessage = 'Session expired. Please sign in again.';
+      this.isAuthenticated = false;
     }
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
   }
 
   get email() {

@@ -389,12 +389,14 @@ export class WindowManager {
     WindowManager._resolveAuthToken = resolve;
   });
 
+  const existingToken = StoreManager.store.get('authToken') || '';
+
   const loginWindow = WindowManager.createPopupWindowWithRouting({
     width: 420,
     height: 500,
     title: 'Login',
     modal: false,
-    url: '#/headless/login',
+    url: `#/headless/login?authToken=${encodeURIComponent(existingToken)}`,
   });
 
   // Resolve with null if the user closes the window before authenticating
