@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { ElectronService } from '../electron/electron.service';
 import { events } from '@minsky/shared';
 import { Clerk } from '@clerk/clerk-js';
+import { AppConfig } from '@minsky/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -15,9 +16,7 @@ export class ClerkService {
   async initialize(): Promise<void> {
     if (this.initialized) return;
 
-    const publishableKey = 'pk_test_cG9zaXRpdmUtcGhvZW5peC04NS5jbGVyay5hY2NvdW50cy5kZXYk';
-
-    this.clerk = new Clerk(publishableKey);
+    this.clerk = new Clerk(AppConfig.clerkPublishableKey);
     await this.clerk.load();
     this.initialized = true;
   }
@@ -41,6 +40,7 @@ export class ClerkService {
     });
     if (result.status === 'complete') {
       await this.clerk.setActive({ session: result.createdSessionId });
+      await this.sendTokenToElectron();
     } else {
       throw new Error('Sign-in was not completed. Additional steps may be required.');
     }

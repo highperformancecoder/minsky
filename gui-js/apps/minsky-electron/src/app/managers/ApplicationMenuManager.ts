@@ -132,7 +132,7 @@ export class ApplicationMenuManager {
           click() {CommandsManager.upgradeUsingClerk();},
         },
          {
-          label: 'Logout Clerk',
+          label: 'Manage Clerk Session',
           click() {WindowManager.openLoginWindow();},
         },
        

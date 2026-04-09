@@ -64,12 +64,12 @@ export class LoginComponent implements OnInit {
       );
       this.isAuthenticated = true;
       await this.clerkService.sendTokenToElectron();
+      this.electronService.closeWindow();
     } catch (err: any) {
       this.errorMessage = err?.errors?.[0]?.message ?? err?.message ?? 'Authentication failed.';
     } finally {
       this.isLoading = false;
     }
-    this.electronService.closeWindow();
   }
 
   async onSignOut() {

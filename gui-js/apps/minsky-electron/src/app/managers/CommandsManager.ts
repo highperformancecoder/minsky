@@ -26,7 +26,7 @@ import ProgressBar from 'electron-progressbar';
 import {exec,spawn} from 'child_process';
 import decompress from 'decompress';
 import {promisify} from 'util';
-import {net} from 'electron';
+import {net, safeStorage } from 'electron';
 
 function semVer(version: string) {
   const pattern=/(\d+)\.(\d+)\.(\d+)/;
@@ -1382,7 +1382,7 @@ export class CommandsManager {
     case 'darwin':
       state={system: 'macos', distro: '', version: '', arch: `${process.arch}`, previous: ''};
       break;
-    case 'linux':
+    case 'linux': {
       state={system: 'linux', distro: '', version: '',arch:'', previous: ''};
       // figure out distro and version from /etc/os-release
       let aexec=promisify(exec);
@@ -1396,15 +1396,14 @@ export class CommandsManager {
       distroInfo=await aexec(`grep ^VERSION_ID= ${osRelease}`);
       state.version=extractor.exec(distroInfo.stdout)[1];
       break;
+    }
     default:
       dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
             message: `In app update is not available for your operating system yet, please check back later`,
             type: 'error',
       });
-      window.close();
-      return;
-      break;
-    }
+      return null;
+   }
     if (await minsky.ravelAvailable() && previous) 
       state.previous=/[^:]*/.exec(await minsky.ravelVersion())[0];
     return state;
@@ -1458,8 +1457,13 @@ export class CommandsManager {
       }
     });
 
+    let state=await CommandsManager.buildState(installCase==InstallCase.previousRavel);
+    if (!state) {
+      window.close();
+      return;
+    }
     let clientId='-PiL7snNmZL_BlLJTPm62SHBcFTMG5d46m2336r118mfrp6sz4ty0g-thbKAs76c';
-    let encodedState=encodeURI(JSON.stringify(await CommandsManager.buildState(installCase==InstallCase.previousRavel)));
+    let encodedState=encodeURI(JSON.stringify(state));
     // load patreon's login page
     window.loadURL(`https://www.patreon.com/oauth2/authorize?response_type=code&client_id=${clientId}&redirect_uri=https://ravelation.net/ravel-downloader.cgi&scope=identity%20identity%5Bemail%5D&state=${encodedState}`);
   }
@@ -1468,54 +1472,79 @@ export class CommandsManager {
   // gets release URL for current system from Ravelation.net backend
   static async getRelease(product: string, previous: boolean, token: string) {
     let state=await CommandsManager.buildState(previous);
+    if (!state) return '';
     let query=`product=${product}&os=${state.system}&arch=${state.arch}&distro=${state.distro}&distro_version=${state.version}`;
-    try {
-      if (previous) {
-        let releases=JSON.parse(await callBackendAPI(`${backendAPI}/releases?${query}`, token));
-        let prevRelease;
-        for (let release of releases) 
-          if (semVerLess(release.version, state.previous))
-            prevRelease=release;
-        if (prevRelease) return prevRelease.download_url;
-        // if not, then treat the request as latest
-      }
-      let release=JSON.parse(await callBackendAPI(`${backendAPI}/releases/latest?${query}`, token));
-      return release?.release?.download_url;
+    if (previous) {
+      let releases=JSON.parse(await callBackendAPI(`${backendAPI}/releases?${query}`, token));
+      let prevRelease;
+      for (let release of releases) 
+        if (semVerLess(release.version, state.previous))
+          prevRelease=release;
+      if (prevRelease) return prevRelease.download_url;
+      // if not, then treat the request as latest
     }
-    catch (error) {
-      console.error(error);
-      return "";
+    let release=JSON.parse(await callBackendAPI(`${backendAPI}/releases/latest?${query}`, token));
+    return release?.release?.download_url;
+  }
+
+  static stashClerkToken(token: string) {
+    if (token) {
+      if (safeStorage.isEncryptionAvailable()) {
+        const encrypted = safeStorage.encryptString(token);
+        StoreManager.store.set('authToken', encrypted.toString('latin1'));
+      } else
+        // fallback: store plaintext
+        StoreManager.store.set('authToken', token);
+    } else {
+      StoreManager.store.delete('authToken');
     }
   }
   
   static async upgradeUsingClerk(installCase: InstallCase=InstallCase.theLot) {
     while (!StoreManager.store.get('authToken'))
-      await WindowManager.openLoginWindow();
+      if (!await WindowManager.openLoginWindow()) {
+        let response=await dialog.showMessageBox(WindowManager.getMainWindow(),{
+          message: 'Login failed',
+          type: 'error',
+          buttons: ['Cancel','Try again'],
+          title: 'Login failed',
+        });
+        if (response.response===0) break;
+      }
     let token=StoreManager.store.get('authToken');
+    // decrypt token if encrypted
+    if (safeStorage.isEncryptionAvailable())
+      token=safeStorage.decryptString(Buffer.from(token, 'latin1'));
 
     const window=WindowManager.getMainWindow();
     let minskyAsset;
-    if (installCase===InstallCase.theLot)
-      minskyAsset=await CommandsManager.getRelease('minsky', false, token);
-    let ravelAsset=await CommandsManager.getRelease('ravel', installCase===InstallCase.previousRavel, token);
+    try {
+      if (installCase===InstallCase.theLot)
+        minskyAsset=await CommandsManager.getRelease('minsky', false, token);
+      let ravelAsset=await CommandsManager.getRelease('ravel', installCase===InstallCase.previousRavel, token);
 
-    if (minskyAsset) {
-      if (ravelAsset) { // stash ravel upgrade to be installed on next startup
-        StoreManager.store.set('ravelPlugin',await getFinalUrl(ravelAsset));
+      if (minskyAsset) {
+        if (ravelAsset) { // stash ravel upgrade to be installed on next startup
+          StoreManager.store.set('ravelPlugin',await getFinalUrl(ravelAsset,token));
+        }
+        window.webContents.session.on('will-download',this.downloadMinsky);
+        window.webContents.downloadURL(await getFinalUrl(minskyAsset,token));
+        return;
+      } else if (ravelAsset) {
+        window.webContents.session.on('will-download',this.downloadRavel);
+        window.webContents.downloadURL(await getFinalUrl(ravelAsset,token));
+        return;
       }
-      window.webContents.session.on('will-download',this.downloadMinsky);
-      window.webContents.downloadURL(await getFinalUrl(minskyAsset,token));
-      return;
-    } else if (ravelAsset) {
-      window.webContents.session.on('will-download',this.downloadRavel);
-      window.webContents.downloadURL(await getFinalUrl(ravelAsset,token));
-      return;
+      dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
+        message: "Everything's up to date, nothing to do.\n"+
+          "If you're trying to download the Ravel plugin, please ensure you are logged into an account subscribed to Ravel Fan or Explorer tiers.",
+        type: 'info',
+      });
     }
-    dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
-      message: "Everything's up to date, nothing to do.\n"+
-        "If you're trying to download the Ravel plugin, please ensure you are logged into an account subscribed to Ravel Fan or Explorer tiers.",
-      type: 'info',
-    });
+    catch (error) {
+      dialog.showErrorBox('Error', error.toString());
+    }
+
   }
 
 }
