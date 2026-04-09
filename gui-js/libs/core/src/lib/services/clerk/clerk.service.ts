@@ -59,4 +59,18 @@ export class ClerkService {
     const token = await this.getToken();
     await this.electronService.invoke(events.SET_AUTH_TOKEN, token);
   }
+
+  async setSession(token: string): Promise<void> {
+    if (!this.clerk) throw new Error('Clerk not initialized');
+    // clerk.load() in initialize() restores the session from browser storage if still valid.
+    // If no session is active but sessions exist on the client, activate the first available one.
+    // The token parameter is a hint that the user previously authenticated.
+    if (!token) return;
+    if (!this.clerk.session && this.clerk.client?.sessions?.length > 0) {
+      await this.clerk.setActive({ session: this.clerk.client.sessions[0].id });
+    }
+    if (!this.clerk.session) {
+      throw new Error('Session expired or invalid');
+    }
+  }
 }
