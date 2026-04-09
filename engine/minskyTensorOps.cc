@@ -1200,7 +1200,7 @@ namespace minsky
       auto maskedY=make_shared<BinOp>(fx,y,spreadX);
       sumx.setArgument(maskedX,args);
       sumy.setArgument(maskedY,args);
-      sumyy.setArgument(make_shared<BinOp>(fxy,y,y),args);
+      sumyy.setArgument(make_shared<BinOp>(fxy,maskedY,y),args);
       sumxx.setArgument(make_shared<BinOp>(fxy,maskedX,spreadX),args);
       sumxy.setArgument(make_shared<BinOp>(fxy,y,spreadX),args);
       count.setArgument(make_shared<BinOp>(mask,y,spreadX),args);
