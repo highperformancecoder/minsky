@@ -1844,6 +1844,28 @@ TEST_F(CorrelationSuite,xvectorValueLinearRegression)
   for (size_t _i=0; _i<toVal.size(); ++_i) EXPECT_NEAR(result[_i], toVal[_i], 1e-4);
 }
 
+TEST_F(CorrelationSuite,xvectorValueLinearRegressionSparse)
+{
+  // y = x + 1, but with NaN/Inf interspersed. Regression should use only finite (x,y) pairs.
+  Hypercube hc;
+  hc.xvectors.emplace_back("0", Dimension(Dimension::value,""), vector<civita::any>{0,1,2,3,4,5});
+  TensorVal y(hc); y=vector<double>{1, std::numeric_limits<double>::quiet_NaN(), 3, 4,
+                                    std::numeric_limits<double>::infinity(), 6};
+  fromVal=y;
+
+  // finite pairs: (x=0,y=1),(x=2,y=3),(x=3,y=4),(x=5,y=6) => line y=x+1
+  vector<double> result={1,2,3,4,5,6};
+
+  OperationPtr op(OperationType::linearRegression);
+  g->addItem(op);
+  Wire w1(from->ports(0),op->ports(1)), w3(op->ports(0),to->ports(1));
+  Eval(*to, op)();
+
+  auto& toVal=*to->vValue();
+  EXPECT_EQ(result.size(), toVal.size());
+  for (size_t _i=0; _i<toVal.size(); ++_i) EXPECT_NEAR(result[_i], toVal[_i], 1e-4);
+}
+
 TEST_F(CorrelationSuite,xvectorTimeLinearRegression)
 {
   Hypercube hc;
