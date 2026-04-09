@@ -1160,7 +1160,6 @@ namespace minsky
             dimension=i-xv.begin();
       }
       
-      sumy.setArgument(y,args);
       TensorPtr spreadX;
       if (x)
         {
@@ -1195,10 +1194,12 @@ namespace minsky
             }
         }
       auto mask=[](double x, double y){return isfinite(x) && isfinite(y);};
-      auto fx=[](double x, double y){return isfinite(x) && isfinite(y)? x:0;};
-      auto fxy=[](double x, double y){return isfinite(x) && isfinite(y)? x*y: 0;};
+      auto fx=[mask](double x, double y){return mask(x,y)? x:0;};
+      auto fxy=[mask](double x, double y){return mask(x,y)? x*y: 0;};
       auto maskedX=make_shared<BinOp>(fx,spreadX,y);
+      auto maskedY=make_shared<BinOp>(fx,y,spreadX);
       sumx.setArgument(maskedX,args);
+      sumy.setArgument(maskedY,args);
       sumyy.setArgument(make_shared<BinOp>(fxy,y,y),args);
       sumxx.setArgument(make_shared<BinOp>(fxy,maskedX,spreadX),args);
       sumxy.setArgument(make_shared<BinOp>(fxy,y,spreadX),args);
