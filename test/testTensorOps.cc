@@ -1862,7 +1862,7 @@ TEST_F(CorrelationSuite,xvectorValueLinearRegressionSparse)
   Eval(*to, op)();
 
   auto& toVal=*to->vValue();
-  EXPECT_EQ(result.size(), toVal.size());
+  ASSERT_EQ(result.size(), toVal.size());
   for (size_t _i=0; _i<toVal.size(); ++_i) EXPECT_NEAR(result[_i], toVal[_i], 1e-4);
 }
 
