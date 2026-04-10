@@ -24,7 +24,7 @@ import { Subject, take } from 'rxjs';
     MatProgressSpinnerModule,
   ],
 })
-export class LoginComponent implements OnInit, OnDestroy {
+export class LoginComponent implements OnInit {
   loginForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required]),
@@ -33,8 +33,6 @@ export class LoginComponent implements OnInit, OnDestroy {
   isLoading = false;
   errorMessage = '';
   isAuthenticated = false;
-
-  private destroy$ = new Subject<void>();
 
   constructor(
     private clerkService: ClerkService,
@@ -61,11 +59,6 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.errorMessage = 'Session expired. Please sign in again.';
       this.isAuthenticated = false;
     }
-  }
-
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
   }
 
   get email() {
