@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -8,7 +8,7 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ClerkService } from '@minsky/core';
 import { ElectronService } from '@minsky/core';
 import { ActivatedRoute } from '@angular/router';
-import { Subject, take } from 'rxjs';
+import { take } from 'rxjs';
 
 @Component({
   selector: 'minsky-login',
