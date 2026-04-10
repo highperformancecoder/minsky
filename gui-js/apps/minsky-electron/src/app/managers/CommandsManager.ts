@@ -1502,15 +1502,8 @@ export class CommandsManager {
   
   static async upgradeUsingClerk(installCase: InstallCase=InstallCase.theLot) {
     while (!StoreManager.store.get('authToken'))
-      if (!await WindowManager.openLoginWindow()) {
-        let response=await dialog.showMessageBox(WindowManager.getMainWindow(),{
-          message: 'Login failed',
-          type: 'error',
-          buttons: ['Cancel','Try again'],
-          title: 'Login failed',
-        });
-        if (response.response===0) break;
-      }
+      if (!await WindowManager.openLoginWindow()) return;
+
     let token=StoreManager.store.get('authToken');
     // decrypt token if encrypted
     if (safeStorage.isEncryptionAvailable())

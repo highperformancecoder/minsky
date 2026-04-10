@@ -70,6 +70,8 @@ export class ClerkService {
       await this.clerk.setActive({ session: this.clerk.client.sessions[0].id });
     }
     if (!this.clerk.session) {
+      if (this.electronService.isElectron) 
+        await this.electronService.invoke(events.SET_AUTH_TOKEN, null);
       throw new Error('Session expired or invalid');
     }
   }
