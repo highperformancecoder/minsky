@@ -290,14 +290,6 @@ ipcMain.handle(events.OPEN_URL, (event,options)=> {
 });
 
 ipcMain.handle(events.SET_AUTH_TOKEN, async (event, token: string | null) => {
-  if (token) {
-    StoreManager.store.set('authToken', token);
-  } else {
-    StoreManager.store.delete('authToken');
-  }
-  if (WindowManager._resolveAuthToken) {
-    WindowManager._resolveAuthToken(token);
-    WindowManager._resolveAuthToken = null;
-  }
+  CommandsManager.stashClerkToken(token);
   return { success: true };
 });

@@ -385,29 +385,21 @@ export class WindowManager {
   }
 
   static async openLoginWindow() {
-  const promise = new Promise<string | null>((resolve) => {
-    WindowManager._resolveAuthToken = resolve;
-  });
-
-  const existingToken = StoreManager.store.get('authToken') || '';
-
-  const loginWindow = WindowManager.createPopupWindowWithRouting({
-    width: 420,
-    height: 500,
-    title: 'Login',
-    modal: false,
-    url: `#/headless/login?authToken=${encodeURIComponent(existingToken)}`,
-  });
-
-  // Resolve with null if the user closes the window before authenticating
-  loginWindow.once('closed', () => {
-    if (WindowManager._resolveAuthToken) {
-      WindowManager._resolveAuthToken(null);
-      WindowManager._resolveAuthToken = null;
-    }
-  });
-
-  return promise;
-}
+    const existingToken = StoreManager.store.get('authToken') || '';
+    const loginWindow = WindowManager.createPopupWindowWithRouting({
+      width: 420,
+      height: 500,
+      title: 'Login',
+      modal: false,
+      url: `#/headless/login?authToken=${encodeURIComponent(existingToken)}`,
+    });
+    
+    return new Promise<string>((resolve)=>{
+      // Resolve with null if the user closes the window before authenticating
+      loginWindow.once('closed', () => {
+        resolve(StoreManager.store.get('authToken'));
+      });
+    });
+  }
 
 }
