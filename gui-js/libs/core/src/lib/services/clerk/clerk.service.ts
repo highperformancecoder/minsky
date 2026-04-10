@@ -8,7 +8,7 @@ import { AppConfig } from '@minsky/environment';
   providedIn: 'root',
 })
 export class ClerkService {
-  private clerk: any = null;
+  private clerk: Clerk;
   private initialized = false;
 
   constructor(private electronService: ElectronService) {}
