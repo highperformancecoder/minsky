@@ -1125,9 +1125,14 @@ namespace minsky
           scale[i]=(n*sumxy[i] - sx*sumy[i])/(n*sumxx[i]-sx*sx);
           offset[i]=sumy[i]/n-scale[i]*sx/n;
         }
-      if (state && scale.size()==1 &&
+      if (state &&
           (state->tooltip().empty()||state->tooltip().starts_with("y=")))
-          state->tooltip("y="+to_string(scale[0])+"x + "+to_string(offset[0]));
+        {
+          if (scale.size()==1 )
+            state->tooltip("y="+to_string(scale[0])+"x + "+to_string(offset[0]));
+          else
+            state->tooltip("");
+        }
       m_timestamp=timestamp();
     }
     
@@ -1155,7 +1160,6 @@ namespace minsky
             dimension=i-xv.begin();
       }
       
-      sumy.setArgument(y,args);
       TensorPtr spreadX;
       if (x)
         {
@@ -1164,7 +1168,7 @@ namespace minsky
         }
       else
         {
-          if (rank()>1 && dimension>=y->rank()) return;
+          if (y->rank()>1 && dimension>=y->rank()) return;
           // construct x from y's x-vector
           auto tv=make_shared<TensorVal>();
           spreadX=tv;
@@ -1189,13 +1193,17 @@ namespace minsky
                 }
             }
         }
-      sumx.setArgument(spreadX,args);
-      auto fxy=[](double x, double y){return isfinite(x) && isfinite(y)? x*y: 0;};
-      sumyy.setArgument(make_shared<BinOp>(fxy,y,y),args);
-      sumxx.setArgument(make_shared<BinOp>(fxy,spreadX,spreadX),args);
+      auto mask=[](double x, double y){return isfinite(x) && isfinite(y);};
+      auto fx=[mask](double x, double y){return mask(x,y)? x:0;};
+      auto fxy=[mask](double x, double y){return mask(x,y)? x*y: 0;};
+      auto maskedX=make_shared<BinOp>(fx,spreadX,y);
+      auto maskedY=make_shared<BinOp>(fx,y,spreadX);
+      sumx.setArgument(maskedX,args);
+      sumy.setArgument(maskedY,args);
+      sumyy.setArgument(make_shared<BinOp>(fxy,maskedY,y),args);
+      sumxx.setArgument(make_shared<BinOp>(fxy,maskedX,spreadX),args);
       sumxy.setArgument(make_shared<BinOp>(fxy,y,spreadX),args);
-      count.setArgument
-        (make_shared<BinOp>([](double x,double y) {return isfinite(x)*isfinite(y);},y,spreadX),args);
+      count.setArgument(make_shared<BinOp>(mask,y,spreadX),args);
       
       assert(sumx.hypercube()==sumy.hypercube());
       assert(sumx.index()==sumy.index());
