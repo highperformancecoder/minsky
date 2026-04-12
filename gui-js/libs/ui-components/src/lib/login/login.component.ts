@@ -60,9 +60,17 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   private async initializeSession(authToken: string | undefined) {
+    // Keep initialize() errors separate: if Clerk itself fails to load we
+    // cannot show the sign-in UI and must bail out early.
     try {
       await this.clerkService.initialize();
+    } catch (err) {
+      this.errorMessage = 'Authentication service failed to load. Please restart the application.';
+      this.isLoading = false;
+      return;
+    }
 
+    try {
       if (authToken) {
         await this.clerkService.setSession(authToken);
       }
@@ -90,7 +98,12 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   private mountClerkUI() {
-    this.clerkService.mountSignIn(this._clerkSignInEl.nativeElement);
+    try {
+      this.clerkService.mountSignIn(this._clerkSignInEl.nativeElement);
+    } catch (err: any) {
+      this.errorMessage = err?.message ?? 'Failed to load sign-in UI.';
+      return;
+    }
     this.unsubscribeClerk = this.clerkService.addListener(async ({ session }) => {
       if (session) {
         await this.clerkService.sendTokenToElectron();

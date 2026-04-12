@@ -17,7 +17,11 @@ export class ClerkService {
     if (this.initialized) return;
 
     this.clerk = new Clerk(AppConfig.clerkPublishableKey);
-    await this.clerk.load();
+    // standardBrowser: true forces the UI component renderer to initialise even
+    // in non-standard browser contexts such as Electron (where environment
+    // detection may otherwise return false and leave #componentControls null,
+    // causing mountSignIn() to throw "Clerk was not loaded with Ui components").
+    await this.clerk.load({ standardBrowser: true });
     this.initialized = true;
   }
 
