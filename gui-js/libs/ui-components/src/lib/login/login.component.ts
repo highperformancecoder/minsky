@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, ElementRef, ViewChild, AfterViewInit } from '@angular/core';
+import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { MatButtonModule } from '@angular/material/button';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -18,8 +18,23 @@ import { take } from 'rxjs';
     MatProgressSpinnerModule,
   ],
 })
-export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
-  @ViewChild('clerkSignIn') clerkSignInEl!: ElementRef<HTMLDivElement>;
+export class LoginComponent implements OnInit, OnDestroy {
+  // Use a setter so mountClerkUI() fires as soon as *ngIf renders the div,
+  // regardless of whether initializeSession has already finished or not.
+  @ViewChild('clerkSignIn')
+  set clerkSignInEl(el: ElementRef<HTMLDivElement>) {
+    if (el && this.pendingMount) {
+      this.pendingMount = false;
+      this._clerkSignInEl = el;
+      this.mountClerkUI();
+    } else {
+      this._clerkSignInEl = el;
+    }
+  }
+  get clerkSignInEl(): ElementRef<HTMLDivElement> {
+    return this._clerkSignInEl;
+  }
+  private _clerkSignInEl: ElementRef<HTMLDivElement>;
 
   isLoading = true;
   errorMessage = '';
@@ -38,13 +53,6 @@ export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
     this.route.queryParams.pipe(take(1)).subscribe((params) => {
       this.initializeSession(params['authToken']);
     });
-  }
-
-  ngAfterViewInit() {
-    if (this.pendingMount) {
-      this.mountClerkUI();
-      this.pendingMount = false;
-    }
   }
 
   ngOnDestroy() {
@@ -74,7 +82,7 @@ export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private scheduleOrMountUI() {
-    if (this.clerkSignInEl) {
+    if (this._clerkSignInEl) {
       this.mountClerkUI();
     } else {
       this.pendingMount = true;
@@ -82,7 +90,7 @@ export class LoginComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   private mountClerkUI() {
-    this.clerkService.mountSignIn(this.clerkSignInEl.nativeElement);
+    this.clerkService.mountSignIn(this._clerkSignInEl.nativeElement);
     this.unsubscribeClerk = this.clerkService.addListener(async ({ session }) => {
       if (session) {
         await this.clerkService.sendTokenToElectron();
