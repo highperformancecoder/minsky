@@ -46,6 +46,15 @@ export class ClerkService {
     }
   }
 
+  async signInWithOAuth(provider: 'oauth_github' | 'oauth_google'): Promise<void> {
+    if (!this.clerk) throw new Error('Clerk is not initialized.');
+    await this.clerk.client.signIn.authenticateWithRedirect({
+      strategy: provider,
+      redirectUrl: AppConfig.clerkOAuthRedirectUrl,
+      redirectUrlComplete: AppConfig.clerkOAuthRedirectUrl,
+    });
+  }
+
   async signOut(): Promise<void> {
     if (!this.clerk) throw new Error('Clerk is not initialized.');
     await this.clerk.signOut();

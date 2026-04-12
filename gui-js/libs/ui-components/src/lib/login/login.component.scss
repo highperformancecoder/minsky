@@ -29,3 +29,43 @@ mat-spinner {
   display: inline-block;
   margin-right: 8px;
 }
+
+.show-password-checkbox {
+  margin-bottom: 12px;
+  align-self: flex-start;
+}
+
+.oauth-divider {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  margin: 12px 0;
+
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    border-bottom: 1px solid #ccc;
+  }
+
+  span {
+    padding: 0 8px;
+    color: #666;
+    font-size: 0.85em;
+  }
+}
+
+.oauth-button {
+  margin-bottom: 8px;
+  justify-content: center;
+}
+
+.github-button {
+  border-color: #333;
+  color: #333;
+}
+
+.google-button {
+  border-color: #4285f4;
+  color: #4285f4;
+}

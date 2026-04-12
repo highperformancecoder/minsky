@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
@@ -19,6 +20,7 @@ import { take } from 'rxjs';
     CommonModule,
     ReactiveFormsModule,
     MatButtonModule,
+    MatCheckboxModule,
     MatInputModule,
     MatFormFieldModule,
     MatProgressSpinnerModule,
@@ -33,6 +35,8 @@ export class LoginComponent implements OnInit {
   isLoading = false;
   errorMessage = '';
   isAuthenticated = false;
+  showPassword = false;
+  isOAuthLoading: 'github' | 'google' | null = null;
 
   constructor(
     private clerkService: ClerkService,
@@ -69,6 +73,10 @@ export class LoginComponent implements OnInit {
     return this.loginForm.get('password');
   }
 
+  togglePasswordVisibility() {
+    this.showPassword = !this.showPassword;
+  }
+
   async onSubmit() {
     if (this.loginForm.invalid) return;
 
@@ -86,6 +94,30 @@ export class LoginComponent implements OnInit {
       this.errorMessage = err?.errors?.[0]?.message ?? err?.message ?? 'Authentication failed.';
     } finally {
       this.isLoading = false;
+    }
+  }
+
+  async onSignInWithGitHub() {
+    this.isOAuthLoading = 'github';
+    this.errorMessage = '';
+    try {
+      await this.clerkService.signInWithOAuth('oauth_github');
+    } catch (err: any) {
+      this.errorMessage = err?.errors?.[0]?.message ?? err?.message ?? 'GitHub sign-in failed.';
+    } finally {
+      this.isOAuthLoading = null;
+    }
+  }
+
+  async onSignInWithGoogle() {
+    this.isOAuthLoading = 'google';
+    this.errorMessage = '';
+    try {
+      await this.clerkService.signInWithOAuth('oauth_google');
+    } catch (err: any) {
+      this.errorMessage = err?.errors?.[0]?.message ?? err?.message ?? 'Google sign-in failed.';
+    } finally {
+      this.isOAuthLoading = null;
     }
   }
 

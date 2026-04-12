@@ -20,9 +20,11 @@
 
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Password</mat-label>
-        <input matInput type="password" formControlName="password" autocomplete="current-password" />
+        <input matInput [type]="showPassword ? 'text' : 'password'" formControlName="password" autocomplete="current-password" />
         <mat-error *ngIf="password?.hasError('required')">Password is required.</mat-error>
       </mat-form-field>
+
+      <mat-checkbox class="show-password-checkbox" [checked]="showPassword" (change)="togglePasswordVisibility()">Show password</mat-checkbox>
 
       <p *ngIf="errorMessage" class="error-message" role="alert">{{ errorMessage }}</p>
 
@@ -31,5 +33,19 @@
         Sign In
       </button>
     </form>
+
+    <div class="oauth-divider">
+      <span>or</span>
+    </div>
+
+    <button mat-stroked-button class="full-width oauth-button github-button" (click)="onSignInWithGitHub()" [disabled]="isOAuthLoading !== null" [attr.aria-label]="isOAuthLoading === 'github' ? 'Signing in with GitHub...' : 'Sign in with GitHub'">
+      <mat-spinner *ngIf="isOAuthLoading === 'github'" diameter="20"></mat-spinner>
+      Sign in with GitHub
+    </button>
+
+    <button mat-stroked-button class="full-width oauth-button google-button" (click)="onSignInWithGoogle()" [disabled]="isOAuthLoading !== null" [attr.aria-label]="isOAuthLoading === 'google' ? 'Signing in with Google...' : 'Sign in with Google'">
+      <mat-spinner *ngIf="isOAuthLoading === 'google'" diameter="20"></mat-spinner>
+      Sign in with Google
+    </button>
   </ng-template>
 </div>
