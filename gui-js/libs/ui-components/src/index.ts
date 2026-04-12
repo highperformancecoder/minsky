@@ -31,4 +31,5 @@ export * from './lib/rename-all-instances/rename-all-instances.component';
 export * from './lib/summary/summary.component';
 export * from './lib/variable-pane/variable-pane.component';
 export * from './lib/wiring/wiring.component';
+export * from './lib/login/login.component';
 

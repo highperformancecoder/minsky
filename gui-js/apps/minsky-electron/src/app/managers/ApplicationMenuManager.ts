@@ -128,6 +128,15 @@ export class ApplicationMenuManager {
           },
         },
         {
+          label: 'Upgrade via Clerk',
+          click() {CommandsManager.upgradeUsingClerk();},
+        },
+         {
+          label: 'Manage Clerk Session',
+          click() {WindowManager.openLoginWindow();},
+        },
+       
+        {
           label: 'New System',
           accelerator: 'CmdOrCtrl + Shift + N',
           async click() {

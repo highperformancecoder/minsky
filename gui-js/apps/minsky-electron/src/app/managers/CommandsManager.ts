@@ -26,6 +26,67 @@ import ProgressBar from 'electron-progressbar';
 import {exec,spawn} from 'child_process';
 import decompress from 'decompress';
 import {promisify} from 'util';
+import {net, safeStorage } from 'electron';
+
+function semVer(version: string) {
+  const pattern=/(\d+)\.(\d+)\.(\d+)/;
+  let [,major,minor,patch]=pattern.exec(version);
+  return {major: +major,minor: +minor, patch: +patch};
+}
+function semVerLess(x: string, y: string): boolean {
+  let xver=semVer(x), yver=semVer(y);
+  return xver.major<yver.major ||
+    xver.major===yver.major && (
+      xver.minor<yver.minor ||
+        xver.minor===yver.minor && xver.patch<yver.patch
+    );
+}
+
+const backendAPI='https://minskybe-x7dj1.sevalla.app/api';
+// perform a call on the backend API, returning the JSON encoded result
+// options is passed to the constructor of a ClienRequest object https://www.electronjs.org/docs/latest/api/client-request#requestendchunk-encoding-callback
+async function callBackendAPI(options: string|Object, token: string) {
+  return new Promise<string>((resolve, reject)=> {
+    let request=net.request(options);
+    request.setHeader('Authorization',`Bearer ${token}`);
+    request.on('response', (response)=>{
+      let chunks=[];
+      response.on('data', (chunk)=>{chunks.push(chunk);});
+      response.on('end', ()=>resolve(Buffer.concat(chunks).toString()));
+      response.on('error',()=>reject(response.statusMessage));
+    });
+    request.on('error',(err)=>reject(err.toString()));
+    request.end();
+  });
+}
+
+// to handle redirects
+async function getFinalUrl(initialUrl, token) {
+try {
+    const response = await fetch(initialUrl, {
+      method: 'GET',
+      headers: {
+        'Authorization': `Bearer ${token}`
+      },
+      redirect: 'manual' // This tells fetch NOT to follow the link automatically
+    });
+
+    // In 'manual' mode, a redirect returns an 'opaqueredirect' type or status 302
+    if (response.status >= 300 && response.status < 400) {
+      const redirectUrl = response.headers.get('location');
+      if (redirectUrl) return redirectUrl;
+    }
+
+    if (response.ok) return initialUrl;
+    
+    throw new Error(`Server responded with ${response.status}`);
+  } catch (error) {
+    // If redirect: 'manual' is used, fetch might throw a 'TypeError' 
+    // when it hits the redirect—this is actually what we want to catch.
+    console.error("Fetch encountered the redirect/error:", error);
+    throw error;
+  }
+}
 
 export class CommandsManager {
   static activeGodleyWindowItems = new Map<string, CanvasItem>();
@@ -1137,6 +1198,7 @@ export class CommandsManager {
 
   // handler for downloading Ravel and installing it
   static downloadRavel(event,item,webContents) {
+    
     switch (process.platform) {
     case 'win32':
       const savePath=dirname(process.execPath)+'/libravel.dll';
@@ -1158,7 +1220,7 @@ export class CommandsManager {
     // handler for when download completed
     item.once('done', (event,state)=>{
       progress.close();
-
+      
       if (state==='completed') {
         dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
           message: 'Ravel plugin updated successfully - restart Ravel to use',
@@ -1308,6 +1370,44 @@ export class CommandsManager {
       modal: false,
     });
   }
+
+  // return information about the current system
+  static async buildState(previous: boolean) {
+    // need to pass what platform we are
+    let state;
+    switch (process.platform) {
+    case 'win32':
+      state={system: 'windows', distro: '', version: '', arch:'', previous: ''};
+      break;
+    case 'darwin':
+      state={system: 'macos', distro: '', version: '', arch: `${process.arch}`, previous: ''};
+      break;
+    case 'linux': {
+      state={system: 'linux', distro: '', version: '',arch:'', previous: ''};
+      // figure out distro and version from /etc/os-release
+      let aexec=promisify(exec);
+      let osRelease='/etc/os-release';
+      if (existsSync(process.resourcesPath+'/os-release'))
+        osRelease=process.resourcesPath+'/os-release';
+      let distroInfo=await aexec(`grep ^ID= ${osRelease}`);
+      // value may or may not be quoted
+      let extractor=/.*=['"]?([^'"\n]*)['"]?/;
+      state.distro=extractor.exec(distroInfo.stdout)[1];
+      distroInfo=await aexec(`grep ^VERSION_ID= ${osRelease}`);
+      state.version=extractor.exec(distroInfo.stdout)[1];
+      break;
+    }
+    default:
+      dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
+            message: `In app update is not available for your operating system yet, please check back later`,
+            type: 'error',
+      });
+      return null;
+   }
+    if (await minsky.ravelAvailable() && previous) 
+      state.previous=/[^:]*/.exec(await minsky.ravelVersion())[0];
+    return state;
+  }
   
   static async upgrade(installCase: InstallCase=InstallCase.theLot) {
     const window=this.createDownloadWindow();
@@ -1344,7 +1444,7 @@ export class CommandsManager {
         }
         if (ravelFile) {
           // currently on latest, so reinstall ravel
-          window.webContents.session.on('will-download',this.downloadRavel);      
+          window.webContents.session.on('will-download',this.downloadRavel);
           window.webContents.downloadURL(ravelFile);
           return;
         }
@@ -1357,44 +1457,87 @@ export class CommandsManager {
       }
     });
 
-    let clientId='-PiL7snNmZL_BlLJTPm62SHBcFTMG5d46m2336r118mfrp6sz4ty0g-thbKAs76c';
-    // need to pass what platform we are
-    let state;
-    switch (process.platform) {
-    case 'win32':
-      state={system: 'windows', distro: '', version: '', arch:'', previous: ''};
-      break;
-    case 'darwin':
-      state={system: 'macos', distro: '', version: '', arch: `${process.arch}`, previous: ''};
-      break;
-    case 'linux':
-      state={system: 'linux', distro: '', version: '',arch:'', previous: ''};
-      // figure out distro and version from /etc/os-release
-      let aexec=promisify(exec);
-      let osRelease='/etc/os-release';
-      if (existsSync(process.resourcesPath+'/os-release'))
-        osRelease=process.resourcesPath+'/os-release';
-      let distroInfo=await aexec(`grep ^ID= ${osRelease}`);
-      // value may or may not be quoted
-      let extractor=/.*=['"]?([^'"\n]*)['"]?/;
-      state.distro=extractor.exec(distroInfo.stdout)[1];
-      distroInfo=await aexec(`grep ^VERSION_ID= ${osRelease}`);
-      state.version=extractor.exec(distroInfo.stdout)[1];
-      break;
-    default:
-      dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
-            message: `In app update is not available for your operating system yet, please check back later`,
-            type: 'error',
-      });
+    let state=await CommandsManager.buildState(installCase==InstallCase.previousRavel);
+    if (!state) {
       window.close();
       return;
-      break;
     }
-    if (await minsky.ravelAvailable() && installCase===InstallCase.previousRavel) 
-      state.previous=/[^:]*/.exec(await minsky.ravelVersion())[0];
+    let clientId='-PiL7snNmZL_BlLJTPm62SHBcFTMG5d46m2336r118mfrp6sz4ty0g-thbKAs76c';
     let encodedState=encodeURI(JSON.stringify(state));
     // load patreon's login page
     window.loadURL(`https://www.patreon.com/oauth2/authorize?response_type=code&client_id=${clientId}&redirect_uri=https://ravelation.net/ravel-downloader.cgi&scope=identity%20identity%5Bemail%5D&state=${encodedState}`);
   }
+
+
+  // gets release URL for current system from Ravelation.net backend
+  static async getRelease(product: string, previous: boolean, token: string) {
+    let state=await CommandsManager.buildState(previous);
+    if (!state) return '';
+    let query=`product=${product}&os=${state.system}&arch=${state.arch}&distro=${state.distro}&distro_version=${state.version}`;
+    if (previous) {
+      let releases=JSON.parse(await callBackendAPI(`${backendAPI}/releases?${query}`, token));
+      let prevRelease;
+      for (let release of releases) 
+        if (semVerLess(release.version, state.previous))
+          prevRelease=release;
+      if (prevRelease) return prevRelease.download_url;
+      // if not, then treat the request as latest
+    }
+    let release=JSON.parse(await callBackendAPI(`${backendAPI}/releases/latest?${query}`, token));
+    return release?.release?.download_url;
+  }
+
+  static stashClerkToken(token: string) {
+    if (token) {
+      if (safeStorage.isEncryptionAvailable()) {
+        const encrypted = safeStorage.encryptString(token);
+        StoreManager.store.set('authToken', encrypted.toString('latin1'));
+      } else
+        // fallback: store plaintext
+        StoreManager.store.set('authToken', token);
+    } else {
+      StoreManager.store.delete('authToken');
+    }
+  }
   
+  static async upgradeUsingClerk(installCase: InstallCase=InstallCase.theLot) {
+    while (!StoreManager.store.get('authToken'))
+      if (!await WindowManager.openLoginWindow()) return;
+
+    let token=StoreManager.store.get('authToken');
+    // decrypt token if encrypted
+    if (safeStorage.isEncryptionAvailable())
+      token=safeStorage.decryptString(Buffer.from(token, 'latin1'));
+
+    const window=WindowManager.getMainWindow();
+    let minskyAsset;
+    try {
+      if (installCase===InstallCase.theLot)
+        minskyAsset=await CommandsManager.getRelease('minsky', false, token);
+      let ravelAsset=await CommandsManager.getRelease('ravel', installCase===InstallCase.previousRavel, token);
+
+      if (minskyAsset) {
+        if (ravelAsset) { // stash ravel upgrade to be installed on next startup
+          StoreManager.store.set('ravelPlugin',await getFinalUrl(ravelAsset,token));
+        }
+        window.webContents.session.on('will-download',this.downloadMinsky);
+        window.webContents.downloadURL(await getFinalUrl(minskyAsset,token));
+        return;
+      } else if (ravelAsset) {
+        window.webContents.session.on('will-download',this.downloadRavel);
+        window.webContents.downloadURL(await getFinalUrl(ravelAsset,token));
+        return;
+      }
+      dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
+        message: "Everything's up to date, nothing to do.\n"+
+          "If you're trying to download the Ravel plugin, please ensure you are logged into an account subscribed to Ravel Fan or Explorer tiers.",
+        type: 'info',
+      });
+    }
+    catch (error) {
+      dialog.showErrorBox('Error', error.toString());
+    }
+
+  }
+
 }

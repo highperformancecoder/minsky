@@ -17,6 +17,7 @@
     "useDefineForClassFields": false,
     "baseUrl": ".",
     "paths": {
+      "@minsky/environment": ["apps/minsky-web/src/environments/environment.ts"],
       "@minsky/menu": ["libs/menu/src/index.ts"],
       "@minsky/core": ["libs/core/src/index.ts"],
       "@minsky/shared": ["libs/shared/src/index.ts"],
