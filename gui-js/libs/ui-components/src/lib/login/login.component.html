@@ -1,51 +1,17 @@
 <div class="login-container">
-  <h2>Sign In</h2>
-
-  <div *ngIf="isAuthenticated; else loginFormTemplate">
-    <p class="signed-in-message">You are signed in.</p>
-    <button mat-raised-button color="warn" (click)="onSignOut()" [disabled]="isLoading">
-      <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
-      Sign Out
-    </button>
+  <div *ngIf="isLoading" class="loading-spinner">
+    <mat-spinner diameter="40"></mat-spinner>
   </div>
 
-  <ng-template #loginFormTemplate>
-    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Email</mat-label>
-        <input matInput type="email" formControlName="email" autocomplete="email" />
-        <mat-error *ngIf="email?.hasError('required')">Email is required.</mat-error>
-        <mat-error *ngIf="email?.hasError('email')">Enter a valid email address.</mat-error>
-      </mat-form-field>
-
-      <mat-form-field appearance="outline" class="full-width">
-        <mat-label>Password</mat-label>
-        <input matInput [type]="showPassword ? 'text' : 'password'" formControlName="password" autocomplete="current-password" />
-        <mat-error *ngIf="password?.hasError('required')">Password is required.</mat-error>
-      </mat-form-field>
-
-      <mat-checkbox class="show-password-checkbox" [checked]="showPassword" (change)="togglePasswordVisibility()">Show password</mat-checkbox>
-
-      <p *ngIf="errorMessage" class="error-message" role="alert">{{ errorMessage }}</p>
-
-      <button mat-raised-button color="primary" type="submit" [disabled]="loginForm.invalid || isLoading" class="full-width">
-        <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
-        Sign In
-      </button>
-    </form>
-
-    <div class="oauth-divider">
-      <span>or</span>
+  <ng-container *ngIf="!isLoading">
+    <div *ngIf="isAuthenticated; else signInTemplate">
+      <p class="signed-in-message">You are signed in.</p>
+      <button mat-raised-button color="warn" (click)="onSignOut()">Sign Out</button>
     </div>
 
-    <button mat-stroked-button class="full-width oauth-button github-button" (click)="onSignInWithGitHub()" [disabled]="isOAuthLoading !== null" [attr.aria-label]="isOAuthLoading === 'github' ? 'Signing in with GitHub...' : 'Sign in with GitHub'">
-      <mat-spinner *ngIf="isOAuthLoading === 'github'" diameter="20"></mat-spinner>
-      Sign in with GitHub
-    </button>
-
-    <button mat-stroked-button class="full-width oauth-button google-button" (click)="onSignInWithGoogle()" [disabled]="isOAuthLoading !== null" [attr.aria-label]="isOAuthLoading === 'google' ? 'Signing in with Google...' : 'Sign in with Google'">
-      <mat-spinner *ngIf="isOAuthLoading === 'google'" diameter="20"></mat-spinner>
-      Sign in with Google
-    </button>
-  </ng-template>
+    <ng-template #signInTemplate>
+      <p *ngIf="errorMessage" class="error-message" role="alert">{{ errorMessage }}</p>
+      <div #clerkSignIn></div>
+    </ng-template>
+  </ng-container>
 </div>

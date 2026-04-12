@@ -31,6 +31,16 @@ export class ClerkService {
     return await this.clerk.session.getToken();
   }
 
+  mountSignIn(element: HTMLElement): void {
+    if (!this.clerk) throw new Error('Clerk is not initialized.');
+    this.clerk.mountSignIn(element);
+  }
+
+  addListener(callback: (resources: { session: { id: string } | null }) => void): () => void {
+    if (!this.clerk) throw new Error('Clerk is not initialized.');
+    return this.clerk.addListener(callback);
+  }
+
   async signInWithEmailPassword(email: string | null | undefined, password: string | null | undefined): Promise<void> {
     if (!this.clerk) throw new Error('Clerk is not initialized.');
     if (!email || !password) throw new Error('Email and password are required.');
@@ -44,15 +54,6 @@ export class ClerkService {
     } else {
       throw new Error('Sign-in was not completed. Additional steps may be required.');
     }
-  }
-
-  async signInWithOAuth(provider: 'oauth_github' | 'oauth_google'): Promise<void> {
-    if (!this.clerk) throw new Error('Clerk is not initialized.');
-    await this.clerk.client.signIn.authenticateWithRedirect({
-      strategy: provider,
-      redirectUrl: AppConfig.clerkOAuthRedirectUrl,
-      redirectUrlComplete: AppConfig.clerkOAuthRedirectUrl,
-    });
   }
 
   async signOut(): Promise<void> {
