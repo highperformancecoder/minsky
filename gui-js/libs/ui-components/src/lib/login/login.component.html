@@ -11,7 +11,20 @@
 
     <ng-template #signInTemplate>
       <p *ngIf="errorMessage" class="error-message" role="alert">{{ errorMessage }}</p>
-      <div #clerkSignIn></div>
+      <form class="sign-in-form" (ngSubmit)="onSignIn()" #signInForm="ngForm" novalidate>
+        <mat-form-field appearance="outline">
+          <mat-label>Email</mat-label>
+          <input matInput type="email" [(ngModel)]="email" name="email" autocomplete="email" required>
+        </mat-form-field>
+        <mat-form-field appearance="outline">
+          <mat-label>Password</mat-label>
+          <input matInput type="password" [(ngModel)]="password" name="password" autocomplete="current-password" required>
+        </mat-form-field>
+        <button mat-raised-button color="primary" type="submit" [disabled]="isSigningIn || !email || !password">
+          <mat-spinner *ngIf="isSigningIn" diameter="20" class="button-spinner"></mat-spinner>
+          {{ isSigningIn ? 'Signing in…' : 'Sign In' }}
+        </button>
+      </form>
     </ng-template>
   </ng-container>
 </div>

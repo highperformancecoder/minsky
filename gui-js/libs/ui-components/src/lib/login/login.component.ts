@@ -1,6 +1,9 @@
-import { Component, OnInit, OnDestroy, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ClerkService } from '@minsky/core';
 import { ElectronService } from '@minsky/core';
@@ -14,35 +17,20 @@ import { take } from 'rxjs';
   standalone: true,
   imports: [
     CommonModule,
+    FormsModule,
     MatButtonModule,
+    MatFormFieldModule,
+    MatInputModule,
     MatProgressSpinnerModule,
   ],
 })
-export class LoginComponent implements OnInit, OnDestroy {
-  // Use a setter so mountClerkUI() fires as soon as *ngIf renders the div,
-  // regardless of whether initializeSession has already finished or not.
-  // The call is deferred via Promise.resolve().then() to avoid NG0100
-  // (ExpressionChangedAfterItHasBeenCheckedError) because the setter may fire
-  // during Angular's change-detection pass.
-  @ViewChild('clerkSignIn')
-  set clerkSignInEl(el: ElementRef<HTMLDivElement>) {
-    this._clerkSignInEl = el;
-    if (el && this.pendingMount) {
-      this.pendingMount = false;
-      Promise.resolve().then(() => this.mountClerkUI());
-    }
-  }
-  get clerkSignInEl(): ElementRef<HTMLDivElement> | undefined {
-    return this._clerkSignInEl;
-  }
-  private _clerkSignInEl: ElementRef<HTMLDivElement> | undefined;
-
+export class LoginComponent implements OnInit {
   isLoading = true;
+  isSigningIn = false;
   errorMessage = '';
   isAuthenticated = false;
-
-  private unsubscribeClerk: (() => void) | null = null;
-  private pendingMount = false;
+  email = '';
+  password = '';
 
   constructor(
     private clerkService: ClerkService,
@@ -56,13 +44,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy() {
-    this.unsubscribeClerk?.();
-  }
-
   private async initializeSession(authToken: string | undefined) {
-    // Keep initialize() errors separate: if Clerk itself fails to load we
-    // cannot show the sign-in UI and must bail out early.
     try {
       await this.clerkService.initialize();
     } catch (err) {
@@ -75,43 +57,27 @@ export class LoginComponent implements OnInit, OnDestroy {
       if (authToken) {
         await this.clerkService.setSession(authToken);
       }
-
       this.isAuthenticated = await this.clerkService.isSignedIn();
-
-      if (!this.isAuthenticated) {
-        this.scheduleOrMountUI();
-      }
     } catch (err) {
       this.errorMessage = 'Session expired. Please sign in again.';
       this.isAuthenticated = false;
-      this.scheduleOrMountUI();
     } finally {
       this.isLoading = false;
     }
   }
 
-  private scheduleOrMountUI() {
-    if (this._clerkSignInEl) {
-      this.mountClerkUI();
-    } else {
-      this.pendingMount = true;
-    }
-  }
-
-  private mountClerkUI() {
-    if (!this._clerkSignInEl) return;
+  async onSignIn() {
+    this.isSigningIn = true;
+    this.errorMessage = '';
     try {
-      this.clerkService.mountSignIn(this._clerkSignInEl.nativeElement);
+      await this.clerkService.signInWithEmailPassword(this.email, this.password);
+      this.isAuthenticated = true;
+      this.electronService.closeWindow();
     } catch (err: any) {
-      this.errorMessage = err?.message ?? 'Failed to load sign-in UI.';
-      return;
+      this.errorMessage = err?.message ?? 'Sign in failed.';
+    } finally {
+      this.isSigningIn = false;
     }
-    this.unsubscribeClerk = this.clerkService.addListener(async ({ session }) => {
-      if (session) {
-        await this.clerkService.sendTokenToElectron();
-        this.electronService.closeWindow();
-      }
-    });
   }
 
   async onSignOut() {
