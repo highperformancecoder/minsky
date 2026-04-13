@@ -32,7 +32,10 @@ export class ClerkService {
     // (React-based pre-built components) from the same CDN origin, enabling
     // mountSignIn() to work correctly.
     await this.loadClerkBrowserBundle();
-    this.clerk = window.Clerk!;
+    if (!window.Clerk) {
+      throw new Error('Clerk failed to initialize: window.Clerk is not set after loading the browser bundle');
+    }
+    this.clerk = window.Clerk;
     await this.clerk.load();
     this.initialized = true;
   }
@@ -63,7 +66,7 @@ export class ClerkService {
       }
 
       const script = document.createElement('script');
-      script.src = `https://${frontendApi}/npm/@clerk/clerk-js@latest/dist/clerk.browser.js`;
+      script.src = `https://${frontendApi}/npm/@clerk/clerk-js@6.6.0/dist/clerk.browser.js`;
       script.setAttribute('data-clerk-publishable-key', pk);
       script.async = true;
       script.onload = () => resolve();
