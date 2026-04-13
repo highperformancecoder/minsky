@@ -132,10 +132,12 @@ export class ApplicationMenuManager {
           click() {CommandsManager.upgradeUsingClerk();},
         },
          {
-          label: 'Manage Clerk Session',
-          click() {WindowManager.openLoginWindow();},
+          label: 'Logout Clerk Session',
+           click() {
+             CommandsManager.stashClerkToken(null);
+             WindowManager.clerkLogout();
+           },
         },
-       
         {
           label: 'New System',
           accelerator: 'CmdOrCtrl + Shift + N',

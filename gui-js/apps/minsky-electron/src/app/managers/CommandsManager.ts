@@ -1501,6 +1501,7 @@ export class CommandsManager {
   }
   
   static async upgradeUsingClerk(installCase: InstallCase=InstallCase.theLot) {
+    console.log('authToken:',StoreManager.store.get('authToken'));
     while (!StoreManager.store.get('authToken'))
       if (!await WindowManager.openLoginWindow()) return;
 
@@ -1540,4 +1541,12 @@ export class CommandsManager {
 
   }
 
+  static clerkLogout() {
+    console.log(WindowManager.clerkApi());
+    net.fetch(`https://${WindowManager.clerkApi()}/sign-out`);
+    CommandsManager.stashClerkToken(null);
+  }
+
+
+  
 }

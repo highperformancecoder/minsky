@@ -385,6 +385,32 @@ export class WindowManager {
       }
   }
 
+  // Derive the Clerk frontendApi hostname from the publishable key.
+  // Key format: pk_<type>_<base64(frontendApi + '$')>
+  static clerkApi(): string {
+//    const encoded = CLERK_PUBLISHABLE_KEY.split('_')[2] ?? '';
+//    const padded = encoded + '='.repeat((4 - (encoded.length % 4)) % 4);
+//    return Buffer.from(padded, 'base64').toString('utf8').replace(/\$$/, '');
+    return 'positive-phoenix-85.accounts.dev';
+  }
+
+  static clerkLogout() {
+    const loginWindow = new BrowserWindow({
+      width: 480,
+      height: 640,
+      title: 'Sign In',
+      parent: WindowManager.getMainWindow(),
+      modal: false,
+      webPreferences: {
+        contextIsolation: true,
+        nodeIntegration: false,
+      },
+      icon: __dirname + '/assets/favicon.png',
+    });
+    console.log(`https://${WindowManager.clerkApi()}/sign-out`);
+    loginWindow.loadURL(`https://${WindowManager.clerkApi()}/sign-out`);
+  }
+  
   static async openLoginWindow(): Promise<string | null> {
     // Open Clerk's Accounts Portal sign-in page in a dedicated BrowserWindow.
     // Passing __publishable_key tells Clerk which app to authenticate against —
@@ -397,9 +423,23 @@ export class WindowManager {
     // ('minsky://signed-in').  We intercept that navigation with will-navigate,
     // execute JS in the still-live sign-in page to obtain a JWT from
     // window.Clerk.session.getToken(), stash it, and close the window.
-    const redirectUrl = 'minsky://signed-in';
-    const signInUrl = `https://accounts.clerk.com/sign-in?__publishable_key=${encodeURIComponent(CLERK_PUBLISHABLE_KEY)}&redirect_url=${encodeURIComponent(redirectUrl)}`;
 
+    // This is a dummy URL. It needs to be something like this form for Clerk to redirect back to here
+    const redirectUrl = '/headless/sign-in';
+    let frontendApi: string;
+    try {
+      frontendApi = WindowManager.clerkApi();
+    } catch {
+      log.error('WindowManager.openLoginWindow: invalid Clerk publishable key');
+      return Promise.resolve(null);
+    }
+    
+    //https://positive-phoenix-85.accounts.dev 
+
+    const signInUrl = `https://${frontendApi}/sign-in?&redirect_url=${encodeURIComponent(redirectUrl)}`;
+    //const signInUrl = `https://${frontendApi}/sign-in`;
+
+    console.log(signInUrl);
     return new Promise<string>((resolve) => {
       const loginWindow = new BrowserWindow({
         width: 480,
@@ -418,7 +458,8 @@ export class WindowManager {
       loginWindow.once('ready-to-show', () => loginWindow.show());
 
       loginWindow.webContents.on('will-navigate', async (event, url) => {
-        if (url.startsWith('minsky://')) {
+        console.log('will-navigate',url);
+        /*if (url.startsWith('https://explore'))*/ {
           // The sign-in page is about to redirect to our custom scheme, meaning
           // sign-in completed successfully. Prevent the navigation (the minsky://
           // scheme is not registered as a real protocol), then extract the JWT
