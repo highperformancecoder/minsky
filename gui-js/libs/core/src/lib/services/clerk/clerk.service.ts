@@ -16,13 +16,13 @@ export class ClerkService {
   async initialize(): Promise<void> {
     if (this.initialized) return;
 
-    // Use the headless Clerk JS package (no React/ClerkUI dependency).
-    // Pre-built UI components (mountSignIn etc.) require @clerk/ui which loads
-    // React chunks lazily from Clerk's CDN. Electron blocks those requests, so
-    // mountSignIn() always throws "Clerk was not loaded with Ui components".
-    // Authentication is performed directly via clerk.client.signIn.create().
-    // standardBrowser: false uses the lightweight non-cookie path appropriate
-    // for Electron's renderer process.
+    // The npm dist build of @clerk/clerk-js is headless: it deliberately omits
+    // the React-based pre-built UI components (mountSignIn etc.) to keep the
+    // bundle small. In Electron the login window is Clerk's own hosted sign-in
+    // page opened by the main process in a dedicated BrowserWindow, so this
+    // renderer-side Clerk instance is only used for session queries (isSignedIn,
+    // getToken, setSession, signOut). standardBrowser:false selects the
+    // lightweight non-cookie path appropriate for Electron's renderer process.
     this.clerk = new Clerk(AppConfig.clerkPublishableKey);
     await this.clerk.load({ standardBrowser: false });
     this.initialized = true;
@@ -36,21 +36,6 @@ export class ClerkService {
   async getToken(): Promise<string | null> {
     if (!this.clerk?.session) return null;
     return await this.clerk.session.getToken();
-  }
-
-  async signInWithEmailPassword(email: string | null | undefined, password: string | null | undefined): Promise<void> {
-    if (!this.clerk) throw new Error('Clerk is not initialized.');
-    if (!email || !password) throw new Error('Email and password are required.');
-    const result = await this.clerk.client.signIn.create({
-      identifier: email,
-      password,
-    });
-    if (result.status === 'complete') {
-      await this.clerk.setActive({ session: result.createdSessionId });
-      await this.sendTokenToElectron();
-    } else {
-      throw new Error('Sign-in was not completed. Additional steps may be required.');
-    }
   }
 
   async signOut(): Promise<void> {
@@ -77,7 +62,7 @@ export class ClerkService {
       await this.clerk.setActive({ session: this.clerk.client.sessions[0].id });
     }
     if (!this.clerk.session) {
-      if (this.electronService.isElectron) 
+      if (this.electronService.isElectron)
         await this.electronService.invoke(events.SET_AUTH_TOKEN, null);
       throw new Error('Session expired or invalid');
     }

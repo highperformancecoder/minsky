@@ -2,6 +2,7 @@ import {
   ActiveWindow,
   AppLayoutPayload,
   CreateWindowPayload,
+  CLERK_PUBLISHABLE_KEY,
   events,
   Functions,
   minsky,
@@ -12,7 +13,7 @@ import {
   Utility,
 } from '@minsky/shared';
 import { StoreManager } from './StoreManager';
-import { BrowserWindow, dialog, Menu, OpenDialogOptions, SaveDialogOptions, screen } from 'electron';
+import { BrowserWindow, dialog, Menu, OpenDialogOptions, SaveDialogOptions, safeStorage, screen } from 'electron';
 import log from 'electron-log';
 import os from 'os';
 import { join, dirname } from 'path';
@@ -384,21 +385,82 @@ export class WindowManager {
       }
   }
 
-  static async openLoginWindow() {
-    const existingToken = StoreManager.store.get('authToken') || '';
-    const loginWindow = WindowManager.createPopupWindowWithRouting({
-      width: 420,
-      height: 500,
-      title: 'Login',
-      modal: false,
-      url: `#/headless/login?authToken=${encodeURIComponent(existingToken)}`,
-    });
-    
-    return new Promise<string>((resolve)=>{
-      // Resolve with null if the user closes the window before authenticating
-      loginWindow.once('closed', () => {
-        resolve(StoreManager.store.get('authToken'));
+  static async openLoginWindow(): Promise<string | null> {
+    // Derive the Clerk frontendApi hostname from the publishable key.
+    // Key format: pk_<type>_<base64(frontendApi + '$')>
+    const encoded = CLERK_PUBLISHABLE_KEY.split('_')[2] ?? '';
+    const padded = encoded + '='.repeat((4 - (encoded.length % 4)) % 4);
+    let frontendApi: string;
+    try {
+      frontendApi = Buffer.from(padded, 'base64').toString('utf8').replace(/\$$/, '');
+    } catch {
+      log.error('WindowManager.openLoginWindow: invalid Clerk publishable key');
+      return Promise.resolve(null);
+    }
+
+    // Open Clerk's hosted sign-in page in a dedicated BrowserWindow.
+    // Because this window loads from HTTPS (not file://), Clerk's CDN
+    // resources and React UI components load normally — the full standard
+    // Clerk sign-in UI is displayed, including every configured OAuth provider.
+    // This mirrors the approach used by @clerk/electron without requiring that
+    // package.
+    //
+    // After successful sign-in, Clerk redirects to redirect_url ('minsky://signed-in').
+    // We intercept that navigation with will-navigate, execute JS in the still-live
+    // sign-in page to obtain a JWT from window.Clerk.session.getToken(), stash it,
+    // and close the window.
+    const redirectUrl = 'minsky://signed-in';
+    const signInUrl = `https://${frontendApi}/sign-in?redirect_url=${encodeURIComponent(redirectUrl)}`;
+
+    return new Promise<string>((resolve) => {
+      const loginWindow = new BrowserWindow({
+        width: 480,
+        height: 640,
+        title: 'Sign In',
+        parent: WindowManager.getMainWindow(),
+        modal: false,
+        webPreferences: {
+          contextIsolation: true,
+          nodeIntegration: false,
+        },
+        icon: __dirname + '/assets/favicon.png',
       });
+
+      loginWindow.setMenu(null);
+      loginWindow.once('ready-to-show', () => loginWindow.show());
+
+      loginWindow.webContents.on('will-navigate', async (event, url) => {
+        if (url.startsWith('minsky://')) {
+          // The sign-in page is about to redirect to our custom scheme, meaning
+          // sign-in completed successfully. Prevent the navigation (the minsky://
+          // scheme is not registered as a real protocol), then extract the JWT
+          // from window.Clerk.session in the still-live sign-in page context.
+          event.preventDefault();
+          try {
+            const token: string | null = await loginWindow.webContents.executeJavaScript(
+              '(async () => { try { return await window.Clerk?.session?.getToken() ?? null; } catch(e) { return null; } })()'
+            );
+            if (token) {
+              // Inline token stash (mirrors CommandsManager.stashClerkToken).
+              if (safeStorage.isEncryptionAvailable()) {
+                const encrypted = safeStorage.encryptString(token);
+                StoreManager.store.set('authToken', encrypted.toString('latin1'));
+              } else {
+                StoreManager.store.set('authToken', token);
+              }
+            }
+          } catch (err) {
+            log.error('WindowManager.openLoginWindow: failed to retrieve Clerk token', err);
+          }
+          loginWindow.close();
+        }
+      });
+
+      loginWindow.once('closed', () => {
+        resolve(StoreManager.store.get('authToken') as string | null ?? null);
+      });
+
+      loginWindow.loadURL(signInUrl);
     });
   }
 

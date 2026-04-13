@@ -3,6 +3,10 @@ export const rendererAppURL = `http://localhost:${rendererAppPort}`;
 export const rendererAppName = 'minsky-web';
 export const electronAppName = 'minsky-electron';
 export const backgroundColor = '#c1c1c1';
+
+// Clerk publishable key — used in both the Angular renderer and the Electron main process.
+// The frontendApi hostname is base64-encoded in the third segment of the key.
+export const CLERK_PUBLISHABLE_KEY = 'pk_test_cG9zaXRpdmUtcGhvZW5peC04NS5jbGVyay5hY2NvdW50cy5kZXYk';
 export const updateServerUrl = 'https://deployment-server-url.com'; // TODO: insert your update server url here
 
 export const defaultBackgroundColor = '#ffffff';

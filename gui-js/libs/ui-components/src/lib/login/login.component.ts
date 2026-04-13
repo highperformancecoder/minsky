@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { ClerkService } from '@minsky/core';
 import { ElectronService } from '@minsky/core';
@@ -17,20 +14,14 @@ import { take } from 'rxjs';
   standalone: true,
   imports: [
     CommonModule,
-    FormsModule,
     MatButtonModule,
-    MatFormFieldModule,
-    MatInputModule,
     MatProgressSpinnerModule,
   ],
 })
 export class LoginComponent implements OnInit {
   isLoading = true;
-  isSigningIn = false;
   errorMessage = '';
   isAuthenticated = false;
-  email = '';
-  password = '';
 
   constructor(
     private clerkService: ClerkService,
@@ -63,20 +54,6 @@ export class LoginComponent implements OnInit {
       this.isAuthenticated = false;
     } finally {
       this.isLoading = false;
-    }
-  }
-
-  async onSignIn() {
-    this.isSigningIn = true;
-    this.errorMessage = '';
-    try {
-      await this.clerkService.signInWithEmailPassword(this.email, this.password);
-      this.isAuthenticated = true;
-      this.electronService.closeWindow();
-    } catch (err: any) {
-      this.errorMessage = err?.message ?? 'Sign in failed.';
-    } finally {
-      this.isSigningIn = false;
     }
   }
 
