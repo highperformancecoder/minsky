@@ -18,3 +18,27 @@
 .signed-in-message {
   margin-bottom: 16px;
 }
+
+.sign-in-form {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 320px;
+  gap: 8px;
+
+  mat-form-field {
+    width: 100%;
+  }
+
+  button[type='submit'] {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+  }
+}
+
+.button-spinner {
+  display: inline-flex;
+}
