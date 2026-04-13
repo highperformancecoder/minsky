@@ -386,31 +386,19 @@ export class WindowManager {
   }
 
   static async openLoginWindow(): Promise<string | null> {
-    // Derive the Clerk frontendApi hostname from the publishable key.
-    // Key format: pk_<type>_<base64(frontendApi + '$')>
-    const encoded = CLERK_PUBLISHABLE_KEY.split('_')[2] ?? '';
-    const padded = encoded + '='.repeat((4 - (encoded.length % 4)) % 4);
-    let frontendApi: string;
-    try {
-      frontendApi = Buffer.from(padded, 'base64').toString('utf8').replace(/\$$/, '');
-    } catch {
-      log.error('WindowManager.openLoginWindow: invalid Clerk publishable key');
-      return Promise.resolve(null);
-    }
-
-    // Open Clerk's hosted sign-in page in a dedicated BrowserWindow.
-    // Because this window loads from HTTPS (not file://), Clerk's CDN
-    // resources and React UI components load normally — the full standard
-    // Clerk sign-in UI is displayed, including every configured OAuth provider.
-    // This mirrors the approach used by @clerk/electron without requiring that
-    // package.
+    // Open Clerk's Accounts Portal sign-in page in a dedicated BrowserWindow.
+    // Passing __publishable_key tells Clerk which app to authenticate against —
+    // no hostname derivation required.  Because this window loads from HTTPS
+    // (not file://), Clerk's CDN resources and React UI components load
+    // normally — the full standard Clerk sign-in UI is displayed, including
+    // every configured OAuth provider.
     //
-    // After successful sign-in, Clerk redirects to redirect_url ('minsky://signed-in').
-    // We intercept that navigation with will-navigate, execute JS in the still-live
-    // sign-in page to obtain a JWT from window.Clerk.session.getToken(), stash it,
-    // and close the window.
+    // After successful sign-in, Clerk redirects to redirect_url
+    // ('minsky://signed-in').  We intercept that navigation with will-navigate,
+    // execute JS in the still-live sign-in page to obtain a JWT from
+    // window.Clerk.session.getToken(), stash it, and close the window.
     const redirectUrl = 'minsky://signed-in';
-    const signInUrl = `https://${frontendApi}/sign-in?redirect_url=${encodeURIComponent(redirectUrl)}`;
+    const signInUrl = `https://accounts.clerk.com/sign-in?__publishable_key=${encodeURIComponent(CLERK_PUBLISHABLE_KEY)}&redirect_url=${encodeURIComponent(redirectUrl)}`;
 
     return new Promise<string>((resolve) => {
       const loginWindow = new BrowserWindow({
