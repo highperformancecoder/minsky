@@ -1,8 +1,15 @@
 import { Injectable } from '@angular/core';
 import { ElectronService } from '../electron/electron.service';
 import { events } from '@minsky/shared';
-import { Clerk } from '@clerk/clerk-js';
+import type { Clerk } from '@clerk/clerk-js';
 import { AppConfig } from '@minsky/environment';
+
+declare global {
+  interface Window {
+    Clerk?: Clerk;
+    __clerk_publishable_key?: string;
+  }
+}
 
 @Injectable({
   providedIn: 'root',
@@ -16,15 +23,57 @@ export class ClerkService {
   async initialize(): Promise<void> {
     if (this.initialized) return;
 
-    // Use the headless Clerk JS package (no React/ClerkUI dependency).
-    // Pre-built UI components (mountSignIn etc.) require @clerk/ui which is a
-    // React package and cannot be used in Angular. Authentication is performed
-    // directly via clerk.client.signIn.create() instead.
-    // standardBrowser: false uses the lightweight non-cookie path that is
-    // appropriate for Electron's renderer process.
-    this.clerk = new Clerk(AppConfig.clerkPublishableKey);
-    await this.clerk.load({ standardBrowser: false });
+    // Load Clerk via its CDN browser bundle rather than the npm-imported module.
+    // The npm dist files (clerk.js / clerk.mjs) do not bundle the ClerkUI
+    // implementation, so clerk.mountSignIn() would always throw
+    // "Clerk was not loaded with Ui components" when called on an instance
+    // created with `new Clerk(key)` from the npm package.
+    // The browser bundle served from Clerk's CDN lazily loads the UI chunks
+    // (React-based pre-built components) from the same CDN origin, enabling
+    // mountSignIn() to work correctly.
+    await this.loadClerkBrowserBundle();
+    if (!window.Clerk) {
+      throw new Error('Clerk failed to initialize: window.Clerk is not set after loading the browser bundle');
+    }
+    this.clerk = window.Clerk;
+    await this.clerk.load();
     this.initialized = true;
+  }
+
+  /**
+   * Dynamically injects Clerk's CDN browser bundle script into the document.
+   * The CDN URL is derived from the publishable key's embedded frontendApi.
+   * Returns a Promise that resolves once the script has loaded and
+   * window.Clerk has been set by the bundle.
+   */
+  private loadClerkBrowserBundle(): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      if (window.Clerk) {
+        resolve();
+        return;
+      }
+
+      const pk = AppConfig.clerkPublishableKey;
+      // Publishable key format: pk_<type>_<base64(frontendApi + '$')>
+      const encoded = pk.split('_')[2] ?? '';
+      const padded = encoded + '='.repeat((4 - (encoded.length % 4)) % 4);
+      let frontendApi: string;
+      try {
+        frontendApi = atob(padded).replace(/\$$/, '');
+      } catch {
+        reject(new Error('Invalid Clerk publishable key'));
+        return;
+      }
+
+      const script = document.createElement('script');
+      script.src = `https://${frontendApi}/npm/@clerk/clerk-js@6.6.0/dist/clerk.browser.js`;
+      script.setAttribute('data-clerk-publishable-key', pk);
+      script.async = true;
+      script.onload = () => resolve();
+      script.onerror = () =>
+        reject(new Error('Failed to load Clerk authentication service'));
+      document.head.appendChild(script);
+    });
   }
 
   async isSignedIn(): Promise<boolean> {
@@ -38,26 +87,13 @@ export class ClerkService {
   }
 
   mountSignIn(element: HTMLDivElement): void {
-    // mountSignIn requires @clerk/ui (a React package) which is not available
-    // in this Angular application. Use signInWithEmailPassword() instead.
-    throw new Error(
-      'mountSignIn is not supported. Use signInWithEmailPassword() for email/password authentication.',
-    );
+    if (!this.clerk) throw new Error('Clerk is not initialized.');
+    this.clerk.mountSignIn(element);
   }
 
-  async signInWithEmailPassword(email: string | null | undefined, password: string | null | undefined): Promise<void> {
+  addListener(callback: (resources: { session: { id: string } | null }) => void): () => void {
     if (!this.clerk) throw new Error('Clerk is not initialized.');
-    if (!email || !password) throw new Error('Email and password are required.');
-    const result = await this.clerk.client.signIn.create({
-      identifier: email,
-      password,
-    });
-    if (result.status === 'complete') {
-      await this.clerk.setActive({ session: result.createdSessionId });
-      await this.sendTokenToElectron();
-    } else {
-      throw new Error('Sign-in was not completed. Additional steps may be required.');
-    }
+    return this.clerk.addListener(callback);
   }
 
   async signOut(): Promise<void> {
