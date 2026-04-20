@@ -96,6 +96,15 @@ export class ClerkService {
     // handleRedirectCallback is a public Clerk method but is not in the @clerk/clerk-js
     // TypeScript type definitions in v6. Cast to any is required to call it.
     await (this.clerk as any).handleRedirectCallback();
+    // handleRedirectCallback completes the OAuth sign-in but may not automatically mark a
+    // session as active (the reactive clerk.session getter may still be null immediately
+    // after the call). Explicitly activate the newest available session if needed.
+    if (!this.clerk.session && this.clerk.client?.sessions?.length > 0) {
+      await this.clerk.setActive({ session: this.clerk.client.sessions[0].id });
+    }
+    if (!this.clerk.session) {
+      throw new Error('OAuth sign-in completed but no active session was established.');
+    }
     await this.sendTokenToElectron();
   }
 
