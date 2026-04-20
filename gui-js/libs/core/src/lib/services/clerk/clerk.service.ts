@@ -87,18 +87,27 @@ export class ClerkService {
     return redirectUrl;
   }
 
-  async handleOAuthCallback(callbackUrl: string): Promise<void> {
+  async handleOAuthCallback(_callbackUrl: string): Promise<void> {
     if (!this.clerk) throw new Error('Clerk not initialized');
-    // Point window.location so Clerk's URL parser picks up the callback params,
-    // then call handleRedirectCallback which reads the pending sign-in from localStorage
-    const url = new URL(callbackUrl);
-    window.history.replaceState({}, '', url.pathname + url.search + url.hash);
-    // handleRedirectCallback is a public Clerk method but is not in the @clerk/clerk-js
-    // TypeScript type definitions in v6. Cast to any is required to call it.
-    await (this.clerk as any).handleRedirectCallback();
-    // handleRedirectCallback completes the OAuth sign-in but may not automatically mark a
-    // session as active (the reactive clerk.session getter may still be null immediately
-    // after the call). Explicitly activate the newest available session if needed.
+    // After the OAuth popup completes, Clerk's servers mark the sign-in as 'complete' and
+    // create a new session. The local SignIn object (from getOAuthRedirectUrl → signIn.create())
+    // still holds the old 'needs_external_account' status.
+    //
+    // Clerk's _handleRedirectCallback reads this.client.signIn.status — NOT window.location.
+    // Passing { reloadResource: 'signIn' } causes it to call signIn.reload() first, which
+    // fetches the current completed state from Clerk's servers. It then sees status === 'complete'
+    // and calls setActive() with the new session ID.
+    //
+    // In Electron, window.opener is always null for the login window, so the reloadResource
+    // branch is taken. A no-op customNavigate is passed as the second argument to suppress
+    // Clerk's default post-callback page navigation (we close the window ourselves).
+    await (this.clerk as any).handleRedirectCallback(
+      { reloadResource: 'signIn' },
+      async (_to: string) => { /* suppress post-callback navigation */ },
+    );
+    // Belt-and-suspenders: if handleRedirectCallback set the session via setActive(),
+    // clerk.session is now populated. If it's still null but sessions exist (edge case),
+    // activate the first available one.
     if (!this.clerk.session && this.clerk.client?.sessions?.length > 0) {
       await this.clerk.setActive({ session: this.clerk.client.sessions[0].id });
     }
