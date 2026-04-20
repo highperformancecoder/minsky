@@ -293,3 +293,7 @@ ipcMain.handle(events.SET_AUTH_TOKEN, async (event, token: string | null) => {
   CommandsManager.stashClerkToken(token);
   return { success: true };
 });
+
+ipcMain.handle(events.OAUTH_OPEN_POPUP, (event, oauthUrl: string) => {
+  WindowManager.openOAuthPopup(oauthUrl);
+});

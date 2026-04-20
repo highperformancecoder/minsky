@@ -29,3 +29,84 @@ mat-spinner {
   display: inline-block;
   margin-right: 8px;
 }
+
+.oauth-section {
+  width: 100%;
+  margin-bottom: 8px;
+}
+
+.oauth-btn {
+  width: 100%;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 14px;
+  height: 40px;
+  border-radius: 4px;
+}
+
+.oauth-btn-github {
+  background-color: #24292e;
+  color: #ffffff;
+  border-color: #24292e;
+
+  &:hover:not([disabled]) {
+    background-color: #2f363d;
+  }
+}
+
+.oauth-btn-google {
+  background-color: #ffffff;
+  color: #3c4043;
+  border-color: #dadce0;
+
+  &:hover:not([disabled]) {
+    background-color: #f8f9fa;
+  }
+}
+
+.oauth-btn-apple {
+  background-color: #000000;
+  color: #ffffff;
+  border-color: #000000;
+
+  &:hover:not([disabled]) {
+    background-color: #1a1a1a;
+  }
+}
+
+.oauth-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 18px;
+  height: 18px;
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.oauth-icon-google {
+  color: #4285F4;
+  font-family: 'Google Sans', Arial, sans-serif;
+  font-weight: 700;
+}
+
+.divider-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0;
+  width: 100%;
+
+  mat-divider {
+    flex: 1;
+  }
+
+  .divider-label {
+    color: #757575;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+}

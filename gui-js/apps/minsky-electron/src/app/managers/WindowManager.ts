@@ -33,6 +33,8 @@ export class WindowManager {
   
   static activeWindows = new Map<number, ActiveWindow>();
   private static uidToWindowMap = new Map<string, ActiveWindow>();
+  private static _loginWindow: BrowserWindow | null = null;
+  private static _oauthPopup: BrowserWindow | null = null;
 
   static getWindowByUid(uid: string): ActiveWindow {
     return WindowManager.uidToWindowMap.get(uid);
@@ -388,12 +390,17 @@ export class WindowManager {
     const existingToken = StoreManager.store.get('authToken') || '';
     const loginWindow = WindowManager.createPopupWindowWithRouting({
       width: 420,
-      height: 500,
+      height: 620,
       title: 'Login',
       modal: false,
       url: `#/headless/login?authToken=${encodeURIComponent(existingToken)}`,
     });
-    
+
+    WindowManager._loginWindow = loginWindow;
+    loginWindow.once('closed', () => {
+      WindowManager._loginWindow = null;
+    });
+
     return new Promise<string>((resolve)=>{
       // Resolve with null if the user closes the window before authenticating
       loginWindow.once('closed', () => {
@@ -402,4 +409,30 @@ export class WindowManager {
     });
   }
 
+  static openOAuthPopup(oauthUrl: string): void {
+    if (WindowManager._oauthPopup && !WindowManager._oauthPopup.isDestroyed()) {
+      WindowManager._oauthPopup.focus();
+      return;
+    }
+    const popup = WindowManager.createWindow({
+      width: 600,
+      height: 700,
+      title: 'Sign In',
+      modal: false,
+    });
+    WindowManager._oauthPopup = popup;
+    popup.loadURL(oauthUrl);
+    popup.on('closed', () => { WindowManager._oauthPopup = null; });
+  }
+
+  static closeOAuthPopup(): void {
+    if (WindowManager._oauthPopup && !WindowManager._oauthPopup.isDestroyed()) {
+      WindowManager._oauthPopup.close();
+    }
+    WindowManager._oauthPopup = null;
+  }
+
+  static getLoginWindow(): BrowserWindow | null {
+    return WindowManager._loginWindow;
+  }
 }

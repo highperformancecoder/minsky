@@ -54,6 +54,29 @@ export class ClerkService {
     }
   }
 
+  async getOAuthRedirectUrl(strategy: 'oauth_github' | 'oauth_google' | 'oauth_apple'): Promise<string> {
+    if (!this.clerk) throw new Error('Clerk not initialized');
+    const result = await this.clerk.client.signIn.create({
+      strategy,
+      redirectUrl: 'minsky://oauth-callback',
+      actionCompleteRedirectUrl: 'minsky://oauth-callback',
+    });
+    const redirectUrl = (result as any).firstFactorVerification?.externalVerificationRedirectURL?.href
+      ?? (result as any).verifications?.externalAccount?.redirectUrl;
+    if (!redirectUrl) throw new Error('OAuth redirect URL not available from Clerk');
+    return redirectUrl;
+  }
+
+  async handleOAuthCallback(callbackUrl: string): Promise<void> {
+    if (!this.clerk) throw new Error('Clerk not initialized');
+    // Point window.location so Clerk's URL parser picks up the callback params,
+    // then call handleRedirectCallback which reads the pending sign-in from localStorage
+    const url = new URL(callbackUrl);
+    window.history.replaceState({}, '', url.pathname + url.search + url.hash);
+    await (this.clerk as any).handleRedirectCallback();
+    await this.sendTokenToElectron();
+  }
+
   async sendTokenToElectron(): Promise<void> {
     if (!this.electronService.isElectron) return;
     const token = await this.getToken();

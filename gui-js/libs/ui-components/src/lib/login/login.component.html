@@ -10,6 +10,29 @@
   </div>
 
   <ng-template #loginFormTemplate>
+    <div class="oauth-section">
+      <button mat-stroked-button class="oauth-btn oauth-btn-github"
+              (click)="onOAuthSignIn('oauth_github')" [disabled]="isLoading">
+        <span class="oauth-icon oauth-icon-github">&#xe900;</span>
+        Continue with GitHub
+      </button>
+      <button mat-stroked-button class="oauth-btn oauth-btn-google"
+              (click)="onOAuthSignIn('oauth_google')" [disabled]="isLoading">
+        <span class="oauth-icon oauth-icon-google">G</span>
+        Continue with Google
+      </button>
+      <button mat-stroked-button class="oauth-btn oauth-btn-apple"
+              (click)="onOAuthSignIn('oauth_apple')" [disabled]="isLoading">
+        <span class="oauth-icon oauth-icon-apple">&#xf179;</span>
+        Continue with Apple
+      </button>
+      <div class="divider-row">
+        <mat-divider></mat-divider>
+        <span class="divider-label">or</span>
+        <mat-divider></mat-divider>
+      </div>
+    </div>
+
     <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
       <mat-form-field appearance="outline" class="full-width">
         <mat-label>Email</mat-label>
