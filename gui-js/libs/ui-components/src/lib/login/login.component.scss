@@ -30,74 +30,57 @@ mat-spinner {
   margin-right: 8px;
 }
 
-.oauth-section {
-  width: 100%;
-  margin-bottom: 8px;
-}
-
-.oauth-btn {
-  width: 100%;
-  margin-bottom: 10px;
+// Social icon buttons — a horizontal row of circular icon-only buttons
+.social-row {
   display: flex;
-  align-items: center;
+  flex-direction: row;
   justify-content: center;
-  gap: 8px;
-  font-size: 14px;
-  height: 40px;
-  border-radius: 4px;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  width: 100%;
 }
 
-.oauth-btn-github {
-  background-color: #24292e;
-  color: #ffffff;
-  border-color: #24292e;
-
-  &:hover:not([disabled]) {
-    background-color: #2f363d;
-  }
-}
-
-.oauth-btn-google {
-  background-color: #ffffff;
-  color: #3c4043;
-  border-color: #dadce0;
-
-  &:hover:not([disabled]) {
-    background-color: #f8f9fa;
-  }
-}
-
-.oauth-btn-apple {
-  background-color: #000000;
-  color: #ffffff;
-  border-color: #000000;
-
-  &:hover:not([disabled]) {
-    background-color: #1a1a1a;
-  }
-}
-
-.oauth-icon {
+.social-btn {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  width: 18px;
-  height: 18px;
-  font-size: 16px;
-  font-weight: bold;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1.5px solid #d1d5db;
+  background: #ffffff;
+  cursor: pointer;
+  padding: 0;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+  color: #111;
+
+  &:hover:not([disabled]) {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  svg {
+    display: block;
+  }
 }
 
-.oauth-icon-google {
-  color: #4285F4;
-  font-family: 'Google Sans', Arial, sans-serif;
-  font-weight: 700;
+.social-fallback-initial {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1;
 }
 
 .divider-row {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin: 12px 0;
+  margin: 4px 0 16px;
   width: 100%;
 
   mat-divider {
@@ -105,7 +88,7 @@ mat-spinner {
   }
 
   .divider-label {
-    color: #757575;
+    color: #9ca3af;
     font-size: 12px;
     white-space: nowrap;
   }

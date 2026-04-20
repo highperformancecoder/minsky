@@ -9,7 +9,7 @@ import {
   version,
   Utility,
 } from '@minsky/shared';
-import { BrowserWindow, dialog, protocol, screen } from 'electron';
+import { BrowserWindow, dialog, screen } from 'electron';
 import log from 'electron-log';
 import { isAbsolute, join } from 'path';
 import { format } from 'url';
@@ -39,17 +39,6 @@ export default class App {
     // This method will be called when Electron has finished
     // initialization and is ready to create browser windows.
     // Some APIs can only be used after this event occurs.
-
-    // Handle the minsky:// custom protocol (used for OAuth callbacks)
-    protocol.handle('minsky', (request) => {
-      const callbackUrl = request.url;
-      WindowManager.closeOAuthPopup();
-      WindowManager.getLoginWindow()?.webContents.send(events.OAUTH_CALLBACK, callbackUrl);
-      return new Response(
-        '<html><body>Authentication complete. You may close this window.</body></html>',
-        { headers: { 'Content-Type': 'text/html' } }
-      );
-    });
 
     const helpFilesFolder = Utility.isPackaged()
       ? join(process.resourcesPath, 'minsky-docs')
@@ -264,12 +253,6 @@ export default class App {
     loadResources();
     sanityCheck();
     
-    // Register minsky:// as a privileged custom protocol for OAuth callbacks.
-    // Must be called synchronously before app.ready fires.
-    protocol.registerSchemesAsPrivileged([
-      { scheme: 'minsky', privileges: { secure: true, standard: true, supportFetchAPI: true } },
-    ]);
-
     App.application.on('window-all-closed', App.onWindowAllClosed); // Quit when all windows are closed.
     App.application.on('ready', App.onReady); // App is ready to load data
     App.application.on('activate', App.onActivate); // App is activated

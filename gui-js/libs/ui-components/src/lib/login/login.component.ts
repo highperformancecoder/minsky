@@ -6,6 +6,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatDividerModule } from '@angular/material/divider';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { ClerkService } from '@minsky/core';
 import { ElectronService } from '@minsky/core';
 import { events } from '@minsky/shared';
@@ -25,6 +26,7 @@ import { take } from 'rxjs';
     MatFormFieldModule,
     MatProgressSpinnerModule,
     MatDividerModule,
+    MatTooltipModule,
   ],
 })
 export class LoginComponent implements OnInit, OnDestroy {
@@ -36,6 +38,18 @@ export class LoginComponent implements OnInit, OnDestroy {
   isLoading = false;
   errorMessage = '';
   isAuthenticated = false;
+  oauthStrategies: string[] = [];
+
+  private readonly PROVIDER_LABELS: Record<string, string> = {
+    oauth_github: 'GitHub',
+    oauth_google: 'Google',
+    oauth_apple: 'Apple',
+    oauth_microsoft: 'Microsoft',
+    oauth_facebook: 'Facebook',
+    oauth_twitter: 'X / Twitter',
+    oauth_linkedin: 'LinkedIn',
+    oauth_discord: 'Discord',
+  };
 
   private oauthCallbackListener: ((_event: any, callbackUrl: string) => void) | null = null;
 
@@ -83,10 +97,16 @@ export class LoginComponent implements OnInit, OnDestroy {
       }
 
       this.isAuthenticated = await this.clerkService.isSignedIn();
+      this.oauthStrategies = this.clerkService.getSupportedOAuthStrategies();
     } catch (err) {
       this.errorMessage = 'Session expired. Please sign in again.';
       this.isAuthenticated = false;
     }
+  }
+
+  getProviderLabel(strategy: string): string {
+    return this.PROVIDER_LABELS[strategy]
+      ?? strategy.replace(/^oauth_/, '').replace(/_/g, ' ');
   }
 
   get email() {
@@ -117,7 +137,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
   }
 
-  async onOAuthSignIn(strategy: 'oauth_github' | 'oauth_google' | 'oauth_apple') {
+  async onOAuthSignIn(strategy: string) {
     this.isLoading = true;
     this.errorMessage = '';
     try {

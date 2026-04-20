@@ -54,12 +54,30 @@ export class ClerkService {
     }
   }
 
-  async getOAuthRedirectUrl(strategy: 'oauth_github' | 'oauth_google' | 'oauth_apple'): Promise<string> {
+  getSupportedOAuthStrategies(): string[] {
+    if (!this.clerk) return [];
+    // Try Clerk's internal environment (may vary across SDK versions)
+    const env = (this.clerk as any).__unstable__environment;
+    if (env?.userSettings?.social) {
+      const social = env.userSettings.social as Record<string, { enabled: boolean }>;
+      const enabled = Object.entries(social)
+        .filter(([, s]) => s.enabled)
+        .map(([name]) => `oauth_${name}`);
+      if (enabled.length > 0) return enabled;
+    }
+    // Fallback: common providers
+    return ['oauth_github', 'oauth_google', 'oauth_apple', 'oauth_microsoft'];
+  }
+
+  async getOAuthRedirectUrl(strategy: string): Promise<string> {
     if (!this.clerk) throw new Error('Clerk not initialized');
     const result = await this.clerk.client.signIn.create({
-      strategy,
-      redirectUrl: 'minsky://oauth-callback',
-      actionCompleteRedirectUrl: 'minsky://oauth-callback',
+      strategy: strategy as any,
+      // Use a localhost URL — Clerk's SDK only accepts http/https schemes.
+      // The Electron main process intercepts this navigation via will-navigate/will-redirect
+      // on the popup window's webContents before any request is actually made to localhost.
+      redirectUrl: 'http://localhost/oauth-callback',
+      actionCompleteRedirectUrl: 'http://localhost/oauth-callback',
     });
     // Clerk v6's TypeScript types don't expose firstFactorVerification directly on the SignIn
     // return type, but it is present at runtime. We cast to any to access this internal property.

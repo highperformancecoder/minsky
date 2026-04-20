@@ -421,6 +421,24 @@ export class WindowManager {
       modal: false,
     });
     WindowManager._oauthPopup = popup;
+
+    // Intercept the OAuth callback redirect. Clerk redirects the popup to
+    // http://localhost/oauth-callback?... when authentication completes.
+    // We catch it before the browser makes any request to localhost, then
+    // forward the full URL to the login window renderer for session finalisation.
+    const CALLBACK_PREFIX = 'http://localhost/oauth-callback';
+    let callbackCaptured = false;
+    const handleCallbackNavigation = (event: Electron.Event, url: string) => {
+      if (!callbackCaptured && url.startsWith(CALLBACK_PREFIX)) {
+        callbackCaptured = true;
+        event.preventDefault();
+        WindowManager.getLoginWindow()?.webContents.send(events.OAUTH_CALLBACK, url);
+        setTimeout(() => WindowManager.closeOAuthPopup(), 0);
+      }
+    };
+    popup.webContents.on('will-navigate', handleCallbackNavigation as any);
+    popup.webContents.on('will-redirect', handleCallbackNavigation as any);
+
     popup.loadURL(oauthUrl);
     popup.on('closed', () => { WindowManager._oauthPopup = null; });
   }
