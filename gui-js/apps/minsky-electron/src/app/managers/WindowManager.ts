@@ -33,6 +33,8 @@ export class WindowManager {
   
   static activeWindows = new Map<number, ActiveWindow>();
   private static uidToWindowMap = new Map<string, ActiveWindow>();
+  private static _loginWindow: BrowserWindow | null = null;
+  private static _oauthPopup: BrowserWindow | null = null;
 
   static getWindowByUid(uid: string): ActiveWindow {
     return WindowManager.uidToWindowMap.get(uid);
@@ -388,12 +390,17 @@ export class WindowManager {
     const existingToken = StoreManager.store.get('authToken') || '';
     const loginWindow = WindowManager.createPopupWindowWithRouting({
       width: 420,
-      height: 500,
+      height: 620,
       title: 'Login',
       modal: false,
       url: `#/headless/login?authToken=${encodeURIComponent(existingToken)}`,
     });
-    
+
+    WindowManager._loginWindow = loginWindow;
+    loginWindow.once('closed', () => {
+      WindowManager._loginWindow = null;
+    });
+
     return new Promise<string>((resolve)=>{
       // Resolve with null if the user closes the window before authenticating
       loginWindow.once('closed', () => {
@@ -402,4 +409,48 @@ export class WindowManager {
     });
   }
 
+  static openOAuthPopup(oauthUrl: string): void {
+    if (WindowManager._oauthPopup && !WindowManager._oauthPopup.isDestroyed()) {
+      WindowManager._oauthPopup.focus();
+      return;
+    }
+    const popup = WindowManager.createWindow({
+      width: 600,
+      height: 700,
+      title: 'Sign In',
+      modal: false,
+    });
+    WindowManager._oauthPopup = popup;
+
+    // Intercept the OAuth callback redirect. Clerk redirects the popup to
+    // http://localhost/oauth-callback?... when authentication completes.
+    // We catch it before the browser makes any request to localhost, then
+    // forward the full URL to the login window renderer for session finalisation.
+    const CALLBACK_PREFIX = 'http://localhost/oauth-callback';
+    let callbackCaptured = false;
+    const handleCallbackNavigation = (event: Electron.Event, url: string) => {
+      if (!callbackCaptured && url.startsWith(CALLBACK_PREFIX)) {
+        callbackCaptured = true;
+        event.preventDefault();
+        WindowManager.getLoginWindow()?.webContents.send(events.OAUTH_CALLBACK, url);
+        setTimeout(() => WindowManager.closeOAuthPopup(), 0);
+      }
+    };
+    popup.webContents.on('will-navigate', handleCallbackNavigation as any);
+    popup.webContents.on('will-redirect', handleCallbackNavigation as any);
+
+    popup.loadURL(oauthUrl);
+    popup.on('closed', () => { WindowManager._oauthPopup = null; });
+  }
+
+  static closeOAuthPopup(): void {
+    if (WindowManager._oauthPopup && !WindowManager._oauthPopup.isDestroyed()) {
+      WindowManager._oauthPopup.close();
+    }
+    WindowManager._oauthPopup = null;
+  }
+
+  static getLoginWindow(): BrowserWindow | null {
+    return WindowManager._loginWindow;
+  }
 }

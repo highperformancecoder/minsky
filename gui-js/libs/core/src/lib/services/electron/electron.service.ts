@@ -13,6 +13,7 @@ export class ElectronService {
   isElectron = isElectron? isElectron(): false;
   minsky: Minsky;
   on: (channel: string, listener) => void;
+  removeListener: (channel: string, listener) => void;
   
   constructor() {
     this.minsky=new Minsky("minsky");
@@ -21,6 +22,7 @@ export class ElectronService {
       this.ipcRenderer = window['electron'].ipcRenderer;
       this.platform = window['electron'].platform;
       this.on = window['electron'].ipcRendererOn;
+      this.removeListener = window['electron'].ipcRendererOff;
       
       CppClass.backend=async (...args)=>{
         return await this.ipcRenderer.invoke(events.BACKEND, ...args);
@@ -32,8 +34,10 @@ export class ElectronService {
         return await this.ipcRenderer.invoke(events.LOG_MESSAGE, message);
       }
     }
-    else
+    else {
       this.on = (...args)=>{};
+      this.removeListener = (...args)=>{};
+    }
   }
 
   send(channel: string,...args) {return this.ipcRenderer.send(channel,...args);}
