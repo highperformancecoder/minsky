@@ -144,7 +144,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       const oauthUrl = await this.clerkService.getOAuthRedirectUrl(strategy);
       await this.electronService.invoke(events.OAUTH_OPEN_POPUP, oauthUrl);
     } catch (err: any) {
-      this.errorMessage = err?.message ?? 'OAuth sign-in failed.';
+      this.errorMessage = err?.errors?.[0]?.long_message ?? err?.errors?.[0]?.message ?? err?.message ?? 'OAuth sign-in failed.';
       this.isLoading = false;
     }
     // isLoading intentionally left true while popup is open; cleared in callback handler
