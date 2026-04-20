@@ -12,18 +12,21 @@
   <ng-template #loginFormTemplate>
     <div class="oauth-section">
       <button mat-stroked-button class="oauth-btn oauth-btn-github"
-              (click)="onOAuthSignIn('oauth_github')" [disabled]="isLoading">
-        <span class="oauth-icon oauth-icon-github">&#xe900;</span>
+              (click)="onOAuthSignIn('oauth_github')" [disabled]="isLoading"
+              aria-label="Continue with GitHub">
+        <span class="oauth-icon oauth-icon-github" aria-hidden="true">&#xe900;</span>
         Continue with GitHub
       </button>
       <button mat-stroked-button class="oauth-btn oauth-btn-google"
-              (click)="onOAuthSignIn('oauth_google')" [disabled]="isLoading">
-        <span class="oauth-icon oauth-icon-google">G</span>
+              (click)="onOAuthSignIn('oauth_google')" [disabled]="isLoading"
+              aria-label="Continue with Google">
+        <span class="oauth-icon oauth-icon-google" aria-hidden="true">G</span>
         Continue with Google
       </button>
       <button mat-stroked-button class="oauth-btn oauth-btn-apple"
-              (click)="onOAuthSignIn('oauth_apple')" [disabled]="isLoading">
-        <span class="oauth-icon oauth-icon-apple">&#xf179;</span>
+              (click)="onOAuthSignIn('oauth_apple')" [disabled]="isLoading"
+              aria-label="Continue with Apple">
+        <span class="oauth-icon oauth-icon-apple" aria-hidden="true">&#xf179;</span>
         Continue with Apple
       </button>
       <div class="divider-row">

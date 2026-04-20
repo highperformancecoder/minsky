@@ -61,6 +61,8 @@ export class ClerkService {
       redirectUrl: 'minsky://oauth-callback',
       actionCompleteRedirectUrl: 'minsky://oauth-callback',
     });
+    // Clerk v6's TypeScript types don't expose firstFactorVerification directly on the SignIn
+    // return type, but it is present at runtime. We cast to any to access this internal property.
     const redirectUrl = (result as any).firstFactorVerification?.externalVerificationRedirectURL?.href
       ?? (result as any).verifications?.externalAccount?.redirectUrl;
     if (!redirectUrl) throw new Error('OAuth redirect URL not available from Clerk');
@@ -73,6 +75,8 @@ export class ClerkService {
     // then call handleRedirectCallback which reads the pending sign-in from localStorage
     const url = new URL(callbackUrl);
     window.history.replaceState({}, '', url.pathname + url.search + url.hash);
+    // handleRedirectCallback is a public Clerk method but is not in the @clerk/clerk-js
+    // TypeScript type definitions in v6. Cast to any is required to call it.
     await (this.clerk as any).handleRedirectCallback();
     await this.sendTokenToElectron();
   }
