@@ -45,8 +45,6 @@ namespace minsky
     void setResource(const std::string& resource);
     /// render SVG into region of size \a width \a height
     void render(cairo_t*, double width, double height) const;
-    /// get the internal RsvgHandle reference for use with ICairoShim
-    //RsvgHandle& handle() const {return const_cast<RsvgHandle&>(*svg);}
   };
 
   
