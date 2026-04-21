@@ -135,6 +135,12 @@ export interface CreateWindowPayload {
   raiseIfPresent?: boolean; ///< if true, then raise an existing window instead of creating a duplicate
 }
 
+export interface DownloadDetails {
+  download_url: string;
+  signature?: string;
+  signature_algorithm?: string;
+}
+
 
 export interface TypeValueName {
   type : string,
