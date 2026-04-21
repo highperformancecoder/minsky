@@ -135,6 +135,7 @@ export interface CreateWindowPayload {
   raiseIfPresent?: boolean; ///< if true, then raise an existing window instead of creating a duplicate
 }
 
+// note these are snake_case to match nackend API
 export interface DownloadDetails {
   download_url: string;
   signature?: string;

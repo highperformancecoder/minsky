@@ -95,7 +95,7 @@ const publicKey=Buffer.from('\n-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA3v8Oy
 
 async function verifyFile(filePath: string,  signature: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
-    // 1. Create a SHA-512 hash stream (Standard for Ed25519ph)
+    // 1. Create a SHA-512 hash stream (pure Ed25519 over SHA-512 digest)
     const hash = createHash('sha512');
     const stream = createReadStream(filePath);
 
@@ -105,8 +105,7 @@ async function verifyFile(filePath: string,  signature: string): Promise<boolean
     stream.on('end', () => {
       const digest = hash.digest();
       
-      // 2. Verify using the 'ed25519' algorithm with the digest
-      // In Node.js, for Ed25519ph, we pass the digest and set dsaEncoding
+      // 2. Verify using the 'ed25519ph' algorithm with the digest
       const isValid = verify(
         undefined, 
         digest, 
@@ -1255,20 +1254,20 @@ export class CommandsManager {
     item.once('done', async (event,state)=>{
       progress.close();
       
-       // validate signature
-      if (asset &&
-          (!asset.signature || asset.signature_algorithm!=='ed25519' ||
-           !await verifyFile(item.getSavePath(), asset.signature))) {
-        await rmSync(item.getSavePath()); // failed validation, remove
-        dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
-          message: 'Download has invalid signature, removed for safety',
-          type: 'error',
-        });
-        webContents.close();
-        return;
-      }
-
      if (state==='completed') {
+       // validate signature
+       if (asset &&
+           (!asset.signature || asset.signature_algorithm!=='ed25519' ||
+            !await verifyFile(item.getSavePath(), asset.signature))) {
+         rmSync(item.getSavePath(), { force: true }); // failed validation, remove
+         dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
+           message: 'Download has invalid signature, removed for safety',
+           type: 'error',
+         });
+         webContents.close();
+         return;
+       }
+
         dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
           message: 'Ravel plugin updated successfully - restart Ravel to use',
           type: 'info',
@@ -1315,8 +1314,13 @@ export class CommandsManager {
         if (asset &&
             (!asset.signature || asset.signature_algorithm!=='ed25519' ||
              !await verifyFile(item.getSavePath(), asset.signature))) {
-          await rmSync(item.getSavePath()); // failed validation, remove
-          throw 'Download has invalid signature, removed for safety';
+          rmSync(item.getSavePath(), {force: true }); // failed validation, remove
+          dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
+            message: 'Download has invalid signature, removed for safety',
+            type: 'error',
+          });
+          webContents.close();
+          return;
         }
 
         switch (process.platform) {
@@ -1527,7 +1531,7 @@ export class CommandsManager {
 
 
   // gets release URL for current system from Ravelation.net backend
-  static async getRelease(product: string, previous: boolean, token: string): Promise<DownloadDetails> {
+  static async getRelease(product: string, previous: boolean, token: string): Promise<DownloadDetails|null> {
     let state=await CommandsManager.buildState(previous);
     if (!state) return null;
     let query=`product=${product}&os=${state.system}&arch=${state.arch}&distro=${state.distro}&distro_version=${state.version}`;

@@ -18,7 +18,7 @@ interface MinskyStore {
   preferences: MinskyPreferences;
   defaultModelDirectory: string;
   defaultDataDirectory: string;
-  ravelPlugin: DownloadDetails; // used for post installation installation of Ravel
+  ravelPlugin: DownloadDetails|null; // used for post installation installation of Ravel
   authToken?: string;
 }
 

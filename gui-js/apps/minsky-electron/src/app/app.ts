@@ -50,11 +50,11 @@ export default class App {
     let ravelPlugin=StoreManager.store.get('ravelPlugin');
     if (ravelPlugin?.download_url) {
       // if this is set (after a full reinstall of Minsky, kick off updating the Ravel plugin)
-      App.mainWindow.webContents.downloadURL(ravelPlugin.download_url);
       App.mainWindow.webContents.session.on('will-download',(event,item,webContents)=>{
           CommandsManager.downloadRavel(event,item,webContents,ravelPlugin);
         });
-      StoreManager.store.set('ravelPlugin','');
+      App.mainWindow.webContents.downloadURL(ravelPlugin.download_url);
+      StoreManager.store.delete('ravelPlugin');
     }
     // check if ravel is approaching its expiry date, and nag user to upgrade if so
     let daysLeft=await minsky.daysUntilRavelExpires();
