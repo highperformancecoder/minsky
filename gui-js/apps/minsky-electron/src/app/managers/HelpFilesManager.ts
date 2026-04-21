@@ -5,7 +5,6 @@ abstract class HelpFilesManager {
   private static topicNodeMap: Record<string, string> = {};
 
   public static getHelpFileForType(type: string): string {
-    console.log(this.topicNodeMap);
     if (type in this.topicNodeMap) {
       return this.topicNodeMap[type];
     }

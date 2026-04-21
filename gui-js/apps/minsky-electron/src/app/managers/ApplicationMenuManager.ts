@@ -98,44 +98,67 @@ export class ApplicationMenuManager {
           },
         },
         {
-          label: 'Upgrade',
-          click() {CommandsManager.upgrade();},
-        },
-        {
-          label: ravelUpgradeLabel,
+          label: 'Upgrade via Patreon',
           submenu: [
             {
-              label: 'Latest Ravel',
-              click() {CommandsManager.upgrade(InstallCase.latestRavel);},
+              label: 'Upgrade',
+              click() {CommandsManager.upgrade();},
             },
             {
-              label: 'Previous Ravel',
-              enabled: ravelAvailable,
-              click() {CommandsManager.upgrade(InstallCase.previousRavel)},
+              label: ravelUpgradeLabel,
+              submenu: [
+                {
+                  label: 'Latest Ravel',
+                  click() {CommandsManager.upgrade(InstallCase.latestRavel);},
+                },
+                {
+                  label: 'Previous Ravel',
+                  enabled: ravelAvailable,
+                  click() {CommandsManager.upgrade(InstallCase.previousRavel)},
+                },
+              ],
             },
+            {
+              label: 'Logout from Patreon',
+              click() {
+                let window=WindowManager.createWindow({
+                  width: 420,
+                  height: 500,
+                  title: '',
+                  modal: false,
+                });
+                window.loadURL('https://www.patreon.com/logout');
+              },
+            }
           ],
         },
         {
-          label: 'Logout from Patreon',
-          click() {
-            let window=WindowManager.createWindow({
-              width: 420,
-              height: 500,
-              title: '',
-              modal: false,
-            });
-            window.loadURL('https://www.patreon.com/logout');
-          },
-        },
-        {
           label: 'Upgrade via Clerk',
-          click() {CommandsManager.upgradeUsingClerk();},
+          submenu: [
+            {
+              label: 'Upgrade',
+              click() {CommandsManager.upgradeUsingClerk();},
+            },
+            {
+              label: ravelUpgradeLabel,
+              submenu: [
+                {
+                  label: 'Latest Ravel',
+                  click() {CommandsManager.upgradeUsingClerk(InstallCase.latestRavel);},
+                },
+                {
+                  label: 'Previous Ravel',
+                  enabled: ravelAvailable,
+                  click() {CommandsManager.upgradeUsingClerk(InstallCase.previousRavel)},
+                },
+              ],
+            },
+             {
+              label: 'Logout',
+              click() {StoreManager.store.set('authToken',null);},
+            },
+          ],
         },
-         {
-          label: 'Manage Clerk Session',
-          click() {WindowManager.openLoginWindow();},
-        },
-       
         {
           label: 'New System',
           accelerator: 'CmdOrCtrl + Shift + N',
