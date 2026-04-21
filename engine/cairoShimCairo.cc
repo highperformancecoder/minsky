@@ -148,16 +148,15 @@ namespace minsky
   // SVG rendering support
   void CairoShimCairo::renderSVG(const SVGRenderer& svgRenderer, double width, double height) const
   {
-    RsvgHandle& svg = svgRenderer.handle();
 #ifdef MXE // MXE doesn't currently have a Rust compiler, so librsvg can be no later than 2.40.21
     RsvgDimensionData dims;
-    rsvg_handle_get_dimensions(&svg, &dims);
+    rsvg_handle_get_dimensions(svgRenderer.svg, &dims);
     cairo_scale(cairo, width/dims.width, height/dims.height);
     rsvg_handle_render_cairo(&svg, cairo);
 #else
     GError* err=nullptr;
     const RsvgRectangle rect{0,0,width,height};
-    rsvg_handle_render_document(&svg, cairo, &rect, &err);
+    rsvg_handle_render_document(svgRenderer.svg, cairo, &rect, &err);
     if (err)
       g_error_free(err);
 #endif

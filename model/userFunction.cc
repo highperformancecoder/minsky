@@ -70,6 +70,8 @@ namespace minsky
 
   template <> void Operation<OperationType::userFunction>::iconDraw(cairo_t*) const
   {assert(false);}
+  template <> void Operation<OperationType::userFunction>::iconDraw(const ICairoShim&) const
+  {assert(false);}
 
 #ifdef NO_EXPRTK
   // dummy implementations to satisfy the linker

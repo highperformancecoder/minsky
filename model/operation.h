@@ -47,6 +47,7 @@ namespace minsky
     typedef OperationType::Type Type;
     Type type() const override {return T;}
     void iconDraw(cairo_t *) const override;
+    void iconDraw(const ICairoShim&) const override;
     std::size_t numPorts() const override 
     {return OperationTypeInfo::numArguments<T>()+1;}
     Operation() {

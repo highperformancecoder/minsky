@@ -443,9 +443,10 @@ namespace minsky
     
     cairoShim.setSourceRGB(0,0,1);
     cairoShim.strokePreserve();
-        
-    cairo::Path clipPath(cairo);
-    
+
+    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
+    cairo::Path clipPath(shimImpl._internalGetCairoContext());
+
     // compute port coordinates relative to the icon's
     // point of reference. Move outport 2 pixels right for ticket For ticket 362.
     double x0=r, y0=0, x1=l, y1=numPorts() > 2? -h+3: 0, 
@@ -494,8 +495,8 @@ namespace minsky
         if (onResizeHandles) drawResizeHandles(cairoShim);
       }
           
-    cairoShim.newPath();          
-    clipPath.appendToCurrent(cairo);          
+    cairoShim.newPath();
+    clipPath.appendToCurrent(shimImpl._internalGetCairoContext());
     cairoShim.clip();          
     if (selected) drawSelected(cairoShim);          
   }    
@@ -774,8 +775,7 @@ namespace minsky
   }
   template <> void Operation<OperationType::constant>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    assert(false); //shouldn't be here
   }
 
 
@@ -785,8 +785,7 @@ namespace minsky
   }
   template <> void Operation<OperationType::ravel>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    assert(false); //shouldn't be here
   }
 
 
@@ -807,78 +806,98 @@ namespace minsky
   }
   template <> void Operation<OperationType::data>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.translate(-1,0);
+    cairoShim.scale(1.5*sf,0.75*sf);
+    cairoShim.arc(0,-3,3,0,2*M_PI);
+    cairoShim.arc(0,3,3,0,M_PI);
+    cairoShim.moveTo(-3,3);
+    cairoShim.lineTo(-3,-3);
+    cairoShim.moveTo(3,3);
+    cairoShim.lineTo(3,-3);
+    cairoShim.identityMatrix();
+    cairoShim.setLineWidth(1.0);
+    cairoShim.stroke();
   }
 
 
   template <> void Operation<OperationType::time>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor();  
-    cairo_scale(cairo,sf,sf);	  	  
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_move_to(cairo,-4,2);
     cairo_show_text(cairo,"t");
   }
   template <> void Operation<OperationType::time>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.moveTo(-4,2);
+    cairoShim.showText("t");
   }
 
-  
+
   template <> void Operation<OperationType::euler>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor();  
-    cairo_scale(cairo,sf,sf);		  
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_move_to(cairo,-4,2);
     cairo_show_text(cairo,"e");
   }
   template <> void Operation<OperationType::euler>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.moveTo(-4,2);
+    cairoShim.showText("e");
   }
 
-  
+
   template <> void Operation<OperationType::pi>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor();  
-    cairo_scale(cairo,sf,sf);		  
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_move_to(cairo,-4,2);
     cairo_show_text(cairo,"π");
-  }           
+  }
   template <> void Operation<OperationType::pi>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.moveTo(-4,2);
+    cairoShim.showText("π");
   }
 
-   
+
   template <> void Operation<OperationType::zero>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor();  
-    cairo_scale(cairo,sf,sf);		  
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_move_to(cairo,-4,2);
     cairo_show_text(cairo,"0");
   }
   template <> void Operation<OperationType::zero>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.moveTo(-4,2);
+    cairoShim.showText("0");
   }
 
-  
+
   template <> void Operation<OperationType::one>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor();  
-    cairo_scale(cairo,sf,sf);		  
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_move_to(cairo,-4,2);
     cairo_show_text(cairo,"1");
   }
   template <> void Operation<OperationType::one>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.moveTo(-4,2);
+    cairoShim.showText("1");
   }
 
   
@@ -892,48 +911,60 @@ namespace minsky
   }
   template <> void Operation<OperationType::inf>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    auto& pango = cairoShim.pango();
+    pango.setMarkup("∞");
+    pango.setFontSize(9);
+    cairoShim.moveTo(-4,-10);
+    cairoShim.scale(sf,sf);
+    pango.show();
   }
 
 
   template <> void Operation<OperationType::percent>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
+    const double sf = scaleFactor();
     cairo_move_to(cairo,-4,-7);
     setCachedText(cairo,"%",7);
-    cairo_scale(cairo,sf,sf);		  
+    cairo_scale(cairo,sf,sf);
     cachedPango->show();
-  }   
+  }
   template <> void Operation<OperationType::percent>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    auto& pango = cairoShim.pango();
+    pango.setMarkup("%");
+    pango.setFontSize(7);
+    cairoShim.moveTo(-4,-7);
+    cairoShim.scale(sf,sf);
+    pango.show();
   }
 
 
   template <> void Operation<OperationType::copy>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor();  	  	  
+    const double sf = scaleFactor();
     cairo_move_to(cairo,-4,-5);
     setCachedText(cairo, "→",7);
-    cairo_scale(cairo,sf,sf);		  
+    cairo_scale(cairo,sf,sf);
     cachedPango->show();
   }
   template <> void Operation<OperationType::copy>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    auto& pango = cairoShim.pango();
+    pango.setMarkup("→");
+    pango.setFontSize(7);
+    cairoShim.moveTo(-4,-5);
+    cairoShim.scale(sf,sf);
+    pango.show();
   }
 
 
   template <> void Operation<OperationType::integrate>::iconDraw(cairo_t* cairo) const
   {/* moved to IntOp::draw() but needs to be here, and is actually called */}
   template <> void Operation<OperationType::integrate>::iconDraw(const ICairoShim& cairoShim) const
-  {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
-  }
+  {/* moved to IntOp::draw() but needs to be here, and is actually called */}
 
   
   template <> void Operation<OperationType::differentiate>::iconDraw(cairo_t* cairo) const
@@ -951,36 +982,55 @@ namespace minsky
   }
   template <> void Operation<OperationType::differentiate>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    cairoShim.save();
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.moveTo(-7,-1);
+    cairoShim.setFontSize(8);
+    cairoShim.showText("d");
+    cairoShim.moveTo(-7,0); cairoShim.lineTo(2,0);
+    cairoShim.setLineWidth(0.5); cairoShim.stroke();
+    cairoShim.moveTo(-7,7);
+    cairoShim.showText("dt");
+    cairoShim.restore();
   }
 
 
   template <> void Operation<OperationType::sqrt>::iconDraw(cairo_t* cairo) const
-  {	  
+  {
     const CairoSave cs(cairo);
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);	  
-    cairo_set_font_size(cairo,10);   
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
+    cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-7,6);
     cairo_show_text(cairo,"\xE2\x88\x9a");
     cairo_set_line_width(cairo,0.5);
     cairo_rel_move_to(cairo,0,-9);
     cairo_rel_line_to(cairo,5,0);
     cairo_set_source_rgb(cairo,0,0,0);
-    cairo_stroke(cairo);    
+    cairo_stroke(cairo);
   }
   template <> void Operation<OperationType::sqrt>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    cairoShim.save();
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.setFontSize(10);
+    cairoShim.moveTo(-7,6);
+    cairoShim.showText("\xE2\x88\x9a");
+    cairoShim.setLineWidth(0.5);
+    cairoShim.relMoveTo(0,-9);
+    cairoShim.relLineTo(5,0);
+    cairoShim.setSourceRGB(0,0,0);
+    cairoShim.stroke();
+    cairoShim.restore();
   }
 
 
   template <> void Operation<OperationType::exp>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);	    
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_move_to(cairo,-7,3);
     cairo_show_text(cairo,"e");
     cairo_rel_move_to(cairo,0,-4);
@@ -989,8 +1039,13 @@ namespace minsky
   }
   template <> void Operation<OperationType::exp>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.moveTo(-7,3);
+    cairoShim.showText("e");
+    cairoShim.relMoveTo(0,-4);
+    cairoShim.setFontSize(7);
+    cairoShim.showText("x");
   }
 
 
@@ -1014,15 +1069,28 @@ namespace minsky
   }
   template <> void Operation<OperationType::pow>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.moveTo(-6,3);
+    cairoShim.showText("x");
+    cairoShim.relMoveTo(0,-4);
+    cairoShim.setFontSize(7);
+    cairoShim.showText("y");
+    DrawBinOpShim d(cairoShim);
+#ifdef DISPLAY_POW_UPSIDE_DOWN
+    d.drawPort([&](){d.drawSymbol("y");}, l, -h, rotation());
+    d.drawPort([&](){d.drawSymbol("x");}, l, h, rotation());
+#else
+    d.drawPort([&](){d.drawSymbol("x");}, l, -h, rotation());
+    d.drawPort([&](){d.drawSymbol("y");}, l, h, rotation());
+#endif
   }
 
 
   template <> void Operation<OperationType::le>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);	 	  
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"x≤y");
     DrawBinOp d(cairo);
@@ -1031,15 +1099,20 @@ namespace minsky
   }
   template <> void Operation<OperationType::le>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.moveTo(-9,3);
+    cairoShim.showText("x≤y");
+    DrawBinOpShim d(cairoShim);
+    d.drawPort([&](){d.drawSymbol("x");}, l, -h, rotation());
+    d.drawPort([&](){d.drawSymbol("y");}, l, h, rotation());
   }
 
 
   template <> void Operation<OperationType::lt>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);	 	  
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"x<y");
     DrawBinOp d(cairo);
@@ -1048,15 +1121,20 @@ namespace minsky
   }
   template <> void Operation<OperationType::lt>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.moveTo(-9,3);
+    cairoShim.showText("x<y");
+    DrawBinOpShim d(cairoShim);
+    d.drawPort([&](){d.drawSymbol("x");}, l, -h, rotation());
+    d.drawPort([&](){d.drawSymbol("y");}, l, h, rotation());
   }
 
 
   template <> void Operation<OperationType::eq>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);	 	  
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"x=y");
     DrawBinOp d(cairo);
@@ -1065,44 +1143,53 @@ namespace minsky
   }
   template <> void Operation<OperationType::eq>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.moveTo(-9,3);
+    cairoShim.showText("x=y");
+    DrawBinOpShim d(cairoShim);
+    d.drawPort([&](){d.drawSymbol("x");}, l, -h, rotation());
+    d.drawPort([&](){d.drawSymbol("y");}, l, h, rotation());
   }
 
 
   template <> void Operation<OperationType::min>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);	   
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"min");
   }
   template <> void Operation<OperationType::min>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.moveTo(-9,3);
+    cairoShim.showText("min");
   }
 
 
   template <> void Operation<OperationType::max>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);	  
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"max");
   }
   template <> void Operation<OperationType::max>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.moveTo(-9,3);
+    cairoShim.showText("max");
   }
 
 
   template <> void Operation<OperationType::and_>::iconDraw(cairo_t* cairo) const
-  {	  
+  {
     const CairoSave cs(cairo);
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);	   
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_set_source_rgb(cairo,0,0,0);
     cairo_move_to(cairo,-4,3);
     cairo_line_to(cairo,-1,-3);
@@ -1111,16 +1198,23 @@ namespace minsky
   }
   template <> void Operation<OperationType::and_>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    cairoShim.save();
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.setSourceRGB(0,0,0);
+    cairoShim.moveTo(-4,3);
+    cairoShim.lineTo(-1,-3);
+    cairoShim.lineTo(2,3);
+    cairoShim.stroke();
+    cairoShim.restore();
   }
 
 
   template <> void Operation<OperationType::or_>::iconDraw(cairo_t* cairo) const
-  {  
+  {
     const CairoSave cs(cairo);
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);	 
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_set_source_rgb(cairo,0,0,0);
     cairo_move_to(cairo,-4,-3);
     cairo_line_to(cairo,-1,3);
@@ -1129,22 +1223,31 @@ namespace minsky
   }
   template <> void Operation<OperationType::or_>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    cairoShim.save();
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.setSourceRGB(0,0,0);
+    cairoShim.moveTo(-4,-3);
+    cairoShim.lineTo(-1,3);
+    cairoShim.lineTo(2,-3);
+    cairoShim.stroke();
+    cairoShim.restore();
   }
 
 
   template <> void Operation<OperationType::not_>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf); 
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_move_to(cairo,-6,3);
     cairo_show_text(cairo,"¬");
   }
   template <> void Operation<OperationType::not_>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.moveTo(-6,3);
+    cairoShim.showText("¬");
   }
 
   
@@ -1157,28 +1260,32 @@ namespace minsky
   }
   template <> void Operation<OperationType::covariance>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf*.7,sf);
+    cairoShim.moveTo(-16,3);
+    cairoShim.showText("<ΔxΔy>");
   }
 
-  
+
   template <> void Operation<OperationType::correlation>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf); 
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_move_to(cairo,-3,3);
     cairo_show_text(cairo,"ρ");
   }
   template <> void Operation<OperationType::correlation>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.moveTo(-3,3);
+    cairoShim.showText("ρ");
   }
 
 
   template <> void Operation<OperationType::linearRegression>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
+    const double sf = scaleFactor();
     cairo_scale(cairo,sf,sf);
     cairo_move_to(cairo,-7,7);
     cairo_line_to(cairo,7,-7);
@@ -1192,28 +1299,39 @@ namespace minsky
   }
   template <> void Operation<OperationType::linearRegression>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.moveTo(-7,7);
+    cairoShim.lineTo(7,-7);
+    cairoShim.stroke();
+    cairoShim.arc(-4,0,0.2,0,2*M_PI);
+    cairoShim.stroke();
+    cairoShim.arc(3,3,0.2,0,2*M_PI);
+    cairoShim.stroke();
+    cairoShim.arc(4,-6,0.2,0,2*M_PI);
+    cairoShim.stroke();
   }
 
   template <> void Operation<OperationType::ln>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf); 
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo," ln");
   }
   template <> void Operation<OperationType::ln>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.moveTo(-9,3);
+    cairoShim.showText(" ln");
   }
 
 
   template <> void Operation<OperationType::log>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);	  
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"log");
     DrawBinOp d(cairo);
@@ -1222,8 +1340,13 @@ namespace minsky
   }
   template <> void Operation<OperationType::log>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.moveTo(-9,3);
+    cairoShim.showText("log");
+    DrawBinOpShim d(cairoShim);
+    d.drawPort([&](){d.drawSymbol("x");}, l, -h, rotation());
+    d.drawPort([&](){d.drawSymbol("b");}, l, h, rotation());
   }
 
 
@@ -1237,45 +1360,54 @@ namespace minsky
   }
   template <> void Operation<OperationType::sin>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.setFontSize(10);
+    cairoShim.moveTo(-9,3);
+    cairoShim.showText("sin");
   }
 
 
   template <> void Operation<OperationType::cos>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);	  
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"cos");
   }
   template <> void Operation<OperationType::cos>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.setFontSize(10);
+    cairoShim.moveTo(-9,3);
+    cairoShim.showText("cos");
   }
 
 
   template <> void Operation<OperationType::tan>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf); 
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"tan");
   }
   template <> void Operation<OperationType::tan>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.setFontSize(10);
+    cairoShim.moveTo(-9,3);
+    cairoShim.showText("tan");
   }
 
 
   template <> void Operation<OperationType::asin>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf); 
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_set_font_size(cairo,9);
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"sin");
@@ -1286,15 +1418,22 @@ namespace minsky
   }
   template <> void Operation<OperationType::asin>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.setFontSize(9);
+    cairoShim.moveTo(-9,3);
+    cairoShim.showText("sin");
+    cairoShim.relMoveTo(0,-3);
+    cairoShim.setFontSize(7);
+    cairoShim.showText("-1");
+    cairoShim.relMoveTo(0,-2);
   }
 
 
   template <> void Operation<OperationType::acos>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);  
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_set_font_size(cairo,9);
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"cos");
@@ -1305,15 +1444,22 @@ namespace minsky
   }
   template <> void Operation<OperationType::acos>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.setFontSize(9);
+    cairoShim.moveTo(-9,3);
+    cairoShim.showText("cos");
+    cairoShim.relMoveTo(0,-3);
+    cairoShim.setFontSize(7);
+    cairoShim.showText("-1");
+    cairoShim.relMoveTo(0,-2);
   }
 
 
   template <> void Operation<OperationType::atan>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);  
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_set_font_size(cairo,9);
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"tan");
@@ -1324,68 +1470,87 @@ namespace minsky
   }
   template <> void Operation<OperationType::atan>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.setFontSize(9);
+    cairoShim.moveTo(-9,3);
+    cairoShim.showText("tan");
+    cairoShim.relMoveTo(0,-3);
+    cairoShim.setFontSize(7);
+    cairoShim.showText("-1");
+    cairoShim.relMoveTo(0,-2);
   }
 
 
   template <> void Operation<OperationType::sinh>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);	  
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_set_font_size(cairo,8);
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"sinh");
   }
   template <> void Operation<OperationType::sinh>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.setFontSize(8);
+    cairoShim.moveTo(-9,3);
+    cairoShim.showText("sinh");
   }
 
 
   template <> void Operation<OperationType::cosh>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);  
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_set_font_size(cairo,8);
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"cosh");
   }
   template <> void Operation<OperationType::cosh>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.setFontSize(8);
+    cairoShim.moveTo(-9,3);
+    cairoShim.showText("cosh");
   }
 
 
   template <> void Operation<OperationType::tanh>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);	  
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_set_font_size(cairo,8);
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"tanh");
   }
   template <> void Operation<OperationType::tanh>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.setFontSize(8);
+    cairoShim.moveTo(-9,3);
+    cairoShim.showText("tanh");
   }
 
 
   template <> void Operation<OperationType::abs>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);	  
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_set_font_size(cairo,9);
     cairo_move_to(cairo,-6,3);
     cairo_show_text(cairo,"|x|");
   }
   template <> void Operation<OperationType::abs>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.setFontSize(9);
+    cairoShim.moveTo(-6,3);
+    cairoShim.showText("|x|");
   }
 
   template <> void Operation<OperationType::floor>::iconDraw(cairo_t* cairo) const
@@ -1407,41 +1572,58 @@ namespace minsky
   }
   template <> void Operation<OperationType::floor>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    auto& pango = cairoShim.pango();
+    pango.setMarkup("x");
+    pango.setFontSize(7);
+    cairoShim.moveTo(-5,-5);
+    cairoShim.scale(sf,sf);
+    pango.show();
+    cairoShim.moveTo(-5,-4);
+    cairoShim.relLineTo(0,pango.height()-2);
+    cairoShim.relLineTo(1,0);
+    cairoShim.moveTo(-5+pango.width(),-4);
+    cairoShim.relLineTo(0,pango.height()-2);
+    cairoShim.relLineTo(-1,0);
+    cairoShim.stroke();
   }
 
   template <> void Operation<OperationType::frac>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf); 
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_set_font_size(cairo,8);
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"frac");
   }
   template <> void Operation<OperationType::frac>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.setFontSize(8);
+    cairoShim.moveTo(-9,3);
+    cairoShim.showText("frac");
   }
 
   template <> void Operation<OperationType::Gamma>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf); 	  
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_move_to(cairo,-6,3);
     cairo_show_text(cairo,"Γ");
-  }     
+  }
   template <> void Operation<OperationType::Gamma>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.moveTo(-6,3);
+    cairoShim.showText("Γ");
   }
 
   template <> void Operation<OperationType::polygamma>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf); 	  
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_move_to(cairo,-7,3);
     cairo_show_text(cairo,"ψ");
     cairo_rel_move_to(cairo,0,-3);
@@ -1453,30 +1635,42 @@ namespace minsky
     DrawBinOp d(cairo);
     d.drawPort([&](){d.drawSymbol("x");}, l, -h, rotation());
     d.drawPort([&](){d.drawSymbol("n");}, l, h, rotation());
-  }     
+  }
   template <> void Operation<OperationType::polygamma>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.moveTo(-7,3);
+    cairoShim.showText("ψ");
+    cairoShim.relMoveTo(0,-3);
+    cairoShim.setFontSize(7);
+    const std::string order="("+to_string(static_cast<unsigned>(m_ports[2]->value()))+")";
+    cairoShim.showText(order);
+    cairoShim.relMoveTo(0,-2);
+    DrawBinOpShim d(cairoShim);
+    d.drawPort([&](){d.drawSymbol("x");}, l, -h, rotation());
+    d.drawPort([&](){d.drawSymbol("n");}, l, h, rotation());
   }
 
   template <> void Operation<OperationType::fact>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf); 	  
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_move_to(cairo,-3,3);
     cairo_show_text(cairo,"!");
-  }      
+  }
   template <> void Operation<OperationType::fact>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.moveTo(-3,3);
+    cairoShim.showText("!");
   }
 
   template <> void Operation<OperationType::add>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf); 	  
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     DrawBinOp d(cairo);
     d.drawPlus();
     d.drawPort([&](){d.drawPlus();}, l, h, rotation());
@@ -1484,15 +1678,19 @@ namespace minsky
   }
   template <> void Operation<OperationType::add>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    DrawBinOpShim d(cairoShim);
+    d.drawPlus();
+    d.drawPort([&](){d.drawPlus();}, l, h, rotation());
+    d.drawPort([&](){d.drawPlus();}, l, -h, rotation());
   }
 
 
   template <> void Operation<OperationType::subtract>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);	  
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     DrawBinOp d(cairo);
     d.drawMinus();
     d.drawPort([&](){d.drawPlus();}, l, -h, rotation());
@@ -1500,15 +1698,19 @@ namespace minsky
   }
   template <> void Operation<OperationType::subtract>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    DrawBinOpShim d(cairoShim);
+    d.drawMinus();
+    d.drawPort([&](){d.drawPlus();}, l, -h, rotation());
+    d.drawPort([&](){d.drawMinus();}, l, h, rotation());
   }
 
 
   template <> void Operation<OperationType::multiply>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);  
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     DrawBinOp d(cairo);
     d.drawMultiply();
     d.drawPort([&](){d.drawMultiply();}, l, h, rotation());
@@ -1516,15 +1718,19 @@ namespace minsky
   }
   template <> void Operation<OperationType::multiply>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    DrawBinOpShim d(cairoShim);
+    d.drawMultiply();
+    d.drawPort([&](){d.drawMultiply();}, l, h, rotation());
+    d.drawPort([&](){d.drawMultiply();}, l, -h, rotation());
   }
 
 
   template <> void Operation<OperationType::divide>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);	  
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     DrawBinOp d(cairo);
     d.drawDivide();
     d.drawPort([&](){d.drawMultiply();}, l, -h, rotation());
@@ -1532,8 +1738,12 @@ namespace minsky
   }
   template <> void Operation<OperationType::divide>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    DrawBinOpShim d(cairoShim);
+    d.drawDivide();
+    d.drawPort([&](){d.drawMultiply();}, l, -h, rotation());
+    d.drawPort([&](){d.drawDivide();}, l, h, rotation());
   }
 
 
@@ -1547,29 +1757,39 @@ namespace minsky
   }
   template <> void Operation<OperationType::sum>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    auto& pango = cairoShim.pango();
+    pango.setMarkup("∑");
+    pango.setFontSize(7);
+    cairoShim.moveTo(-4,-7);
+    cairoShim.scale(sf,sf);
+    pango.show();
   }
 
 
   template <> void Operation<OperationType::product>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
+    const double sf = scaleFactor();
     cairo_move_to(cairo,-4,-7);
     setCachedText(cairo, "∏",7);
-    cairo_scale(cairo,sf,sf);		  
+    cairo_scale(cairo,sf,sf);
     cachedPango->show();
   }
   template <> void Operation<OperationType::product>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    auto& pango = cairoShim.pango();
+    pango.setMarkup("∏");
+    pango.setFontSize(7);
+    cairoShim.moveTo(-4,-7);
+    cairoShim.scale(sf,sf);
+    pango.show();
   }
 
 
   template <> void Operation<OperationType::infimum>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
+    const double sf = scaleFactor();
     cairo_scale(cairo,sf,sf);
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-9,3);
@@ -1577,190 +1797,225 @@ namespace minsky
   }
   template <> void Operation<OperationType::infimum>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.setFontSize(10);
+    cairoShim.moveTo(-9,3);
+    cairoShim.showText("inf");
   }
 
 
   template <> void Operation<OperationType::supremum>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);  
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"sup");
   }
   template <> void Operation<OperationType::supremum>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.setFontSize(10);
+    cairoShim.moveTo(-9,3);
+    cairoShim.showText("sup");
   }
 
-  
+
   template <> void Operation<OperationType::infIndex>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);	  
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"infi");
   }
   template <> void Operation<OperationType::infIndex>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.setFontSize(10);
+    cairoShim.moveTo(-9,3);
+    cairoShim.showText("infi");
   }
 
 
   template <> void Operation<OperationType::supIndex>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);  
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"supi");
   }
   template <> void Operation<OperationType::supIndex>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.setFontSize(10);
+    cairoShim.moveTo(-9,3);
+    cairoShim.showText("supi");
   }
 
 
   template <> void Operation<OperationType::any>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf); 
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"any");
   }
   template <> void Operation<OperationType::any>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.setFontSize(10);
+    cairoShim.moveTo(-9,3);
+    cairoShim.showText("any");
   }
 
 
   template <> void Operation<OperationType::all>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);	  
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"all");
   }
   template <> void Operation<OperationType::all>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.setFontSize(10);
+    cairoShim.moveTo(-9,3);
+    cairoShim.showText("all");
   }
 
 
-  
-  
-   template <> void Operation<OperationType::size>::iconDraw(cairo_t* cairo) const
+  template <> void Operation<OperationType::size>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);	  
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"nᵢ");
   }
-   template <> void Operation<OperationType::size>::iconDraw(const ICairoShim& cairoShim) const
-   {
-     auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-     iconDraw(shimImpl._internalGetCairoContext());
-   }
+  template <> void Operation<OperationType::size>::iconDraw(const ICairoShim& cairoShim) const
+  {
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.setFontSize(10);
+    cairoShim.moveTo(-9,3);
+    cairoShim.showText("nᵢ");
+  }
 
 
   template <> void Operation<OperationType::shape>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);	  
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"{nᵢ}");
   }
   template <> void Operation<OperationType::shape>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.setFontSize(10);
+    cairoShim.moveTo(-9,3);
+    cairoShim.showText("{nᵢ}");
   }
 
 
   template <> void Operation<OperationType::mean>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);	  
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-8,3);
     cairo_show_text(cairo,"<x>");
   }
   template <> void Operation<OperationType::mean>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.setFontSize(10);
+    cairoShim.moveTo(-8,3);
+    cairoShim.showText("<x>");
   }
 
 
   template <> void Operation<OperationType::median>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);	  
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-3,3);
     cairo_show_text(cairo,"x");
     cairo_move_to(cairo,-4,-1);
     cairo_show_text(cairo,"~");
- }
+  }
   template <> void Operation<OperationType::median>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.setFontSize(10);
+    cairoShim.moveTo(-3,3);
+    cairoShim.showText("x");
+    cairoShim.moveTo(-4,-1);
+    cairoShim.showText("~");
   }
 
 
   template <> void Operation<OperationType::stdDev>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);	  
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-3,3);
     cairo_show_text(cairo,"σ");
   }
   template <> void Operation<OperationType::stdDev>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.setFontSize(10);
+    cairoShim.moveTo(-3,3);
+    cairoShim.showText("σ");
   }
 
 
   template <> void Operation<OperationType::moment>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf*.85,sf);	  
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf*.85,sf);
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-12,3);
     cairo_show_text(cairo,"<Δxᵏ>");
   }
   template <> void Operation<OperationType::moment>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf*.85,sf);
+    cairoShim.setFontSize(10);
+    cairoShim.moveTo(-12,3);
+    cairoShim.showText("<Δxᵏ>");
   }
 
 
   template <> void Operation<OperationType::histogram>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
     cairo_translate(cairo,-0.5*iWidth(),-0.5*iHeight());
     cminsky().histogramResource.render(cairo,iWidth(),iHeight());
   }
   template <> void Operation<OperationType::histogram>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    cairoShim.translate(-0.5*iWidth(),-0.5*iHeight());
+    cairoShim.renderSVG(cminsky().histogramResource, iWidth(), iHeight());
   }
 
 
@@ -1776,94 +2031,123 @@ namespace minsky
   }
   template <> void Operation<OperationType::runningSum>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    auto& pango = cairoShim.pango();
+    pango.setMarkup("∑+");
+    pango.setFontSize(7);
+    cairoShim.moveTo(-7,-7);
+    cairoShim.scale(sf,sf);
+    pango.show();
   }
 
 
   template <> void Operation<OperationType::runningAv>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
+    const double sf = scaleFactor();
     cairo_move_to(cairo,-7,-7);
     setCachedText(cairo, "av+",7);
-    cairo_scale(cairo,sf,sf);	  
+    cairo_scale(cairo,sf,sf);
     cachedPango->show();
   }
   template <> void Operation<OperationType::runningAv>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    auto& pango = cairoShim.pango();
+    pango.setMarkup("av+");
+    pango.setFontSize(7);
+    cairoShim.moveTo(-7,-7);
+    cairoShim.scale(sf,sf);
+    pango.show();
   }
 
 
   template <> void Operation<OperationType::runningProduct>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
+    const double sf = scaleFactor();
     cairo_move_to(cairo,-6,-7);
     setCachedText(cairo, "∏×",7);
-    cairo_scale(cairo,sf,sf);	  
+    cairo_scale(cairo,sf,sf);
     cachedPango->show();
   }
   template <> void Operation<OperationType::runningProduct>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    auto& pango = cairoShim.pango();
+    pango.setMarkup("∏×");
+    pango.setFontSize(7);
+    cairoShim.moveTo(-6,-7);
+    cairoShim.scale(sf,sf);
+    pango.show();
   }
 
 
   template <> void Operation<OperationType::difference>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
+    const double sf = scaleFactor();
     cairo_move_to(cairo,-4,-7);
     setCachedText(cairo, "Δ<sup>-</sup>",7);
-    cairo_scale(cairo,sf,sf);	  
+    cairo_scale(cairo,sf,sf);
     cachedPango->show();
   }
   template <> void Operation<OperationType::difference>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    auto& pango = cairoShim.pango();
+    pango.setMarkup("Δ<sup>-</sup>");
+    pango.setFontSize(7);
+    cairoShim.moveTo(-4,-7);
+    cairoShim.scale(sf,sf);
+    pango.show();
   }
 
 
   template <> void Operation<OperationType::differencePlus>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
+    const double sf = scaleFactor();
     cairo_move_to(cairo,-4,-7);
     setCachedText(cairo, "Δ<sup>+</sup>",7);
-    cairo_scale(cairo,sf,sf);	  
+    cairo_scale(cairo,sf,sf);
     cachedPango->show();
   }
   template <> void Operation<OperationType::differencePlus>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    auto& pango = cairoShim.pango();
+    pango.setMarkup("Δ<sup>+</sup>");
+    pango.setFontSize(7);
+    cairoShim.moveTo(-4,-7);
+    cairoShim.scale(sf,sf);
+    pango.show();
   }
 
 
   template <> void Operation<OperationType::innerProduct>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
+    const double sf = scaleFactor();
     cairo_move_to(cairo,-4,-10);
     setCachedText(cairo, "·",14);
-    cairo_scale(cairo,sf,sf);	  
+    cairo_scale(cairo,sf,sf);
     cachedPango->show();
   }
   template <> void Operation<OperationType::innerProduct>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    auto& pango = cairoShim.pango();
+    pango.setMarkup("·");
+    pango.setFontSize(14);
+    cairoShim.moveTo(-4,-10);
+    cairoShim.scale(sf,sf);
+    pango.show();
   }
 
 
   template <> void Operation<OperationType::outerProduct>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_move_to(cairo,-4,-10);
+    const double sf = scaleFactor();
     // this is the character we want, but draw it explicitly because
-    //of Windows' deficient fontsets.
+    // of Windows' deficient fontsets.
     // setCachedText(cairo, "⊗",10);
-    cairo_scale(cairo,sf,sf);	  
+    cairo_scale(cairo,sf,sf);
     constexpr const double r=6;
     static const double d=0.5*r*std::sqrt(2);
     cairo_move_to(cairo,d,d);
@@ -1876,29 +2160,41 @@ namespace minsky
   }
   template <> void Operation<OperationType::outerProduct>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    constexpr const double r=6;
+    static const double d=0.5*r*std::sqrt(2);
+    cairoShim.moveTo(d,d);
+    cairoShim.lineTo(-d,-d);
+    cairoShim.moveTo(-d,d);
+    cairoShim.lineTo(d,-d);
+    cairoShim.moveTo(r,0);
+    cairoShim.arc(0,0,r,0,2*M_PI);
+    cairoShim.stroke();
   }
 
 
   template <> void Operation<OperationType::index>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
-    cairo_scale(cairo,sf,sf);  
+    const double sf = scaleFactor();
+    cairo_scale(cairo,sf,sf);
     cairo_set_font_size(cairo,10);
     cairo_move_to(cairo,-9,3);
     cairo_show_text(cairo,"idx");
   }
   template <> void Operation<OperationType::index>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.setFontSize(10);
+    cairoShim.moveTo(-9,3);
+    cairoShim.showText("idx");
   }
 
 
   template <> void Operation<OperationType::gather>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
+    const double sf = scaleFactor();
     cairo_scale(cairo,sf,sf);
     cairo_set_font_size(cairo,8);
     cairo_move_to(cairo,-7,3);
@@ -1909,17 +2205,22 @@ namespace minsky
   }
   template <> void Operation<OperationType::gather>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.scale(sf,sf);
+    cairoShim.setFontSize(8);
+    cairoShim.moveTo(-7,3);
+    cairoShim.showText("x[i]");
+    DrawBinOpShim drawBinOp(cairoShim);
+    drawBinOp.drawPort([&](){drawBinOp.drawSymbol("x");},l,-h,rotation());
+    drawBinOp.drawPort([&](){drawBinOp.drawSymbol("i");},l,h,rotation());
   }
 
 
   template <> void Operation<OperationType::meld>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
+    const double sf = scaleFactor();
     cairo_move_to(cairo,-4,-5);
-    //setCachedText(cairo, "⭄",10);
-    cairo_scale(cairo,sf,sf);  
+    cairo_scale(cairo,sf,sf);
     cairo_rel_line_to(cairo,4,0);
     cairo_rel_line_to(cairo,2,5);
     cairo_rel_line_to(cairo,-2,5);
@@ -1930,17 +2231,24 @@ namespace minsky
   }
   template <> void Operation<OperationType::meld>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.moveTo(-4,-5);
+    cairoShim.scale(sf,sf);
+    cairoShim.relLineTo(4,0);
+    cairoShim.relLineTo(2,5);
+    cairoShim.relLineTo(-2,5);
+    cairoShim.relLineTo(-4,0);
+    cairoShim.moveTo(-4,0);
+    cairoShim.relLineTo(10,0);
+    cairoShim.stroke();
   }
 
 
   template <> void Operation<OperationType::merge>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
+    const double sf = scaleFactor();
     cairo_move_to(cairo,-4,-3);
-    //setCachedText(cairo, "⫤",10);
-    cairo_scale(cairo,sf,sf);  
+    cairo_scale(cairo,sf,sf);
     cairo_rel_line_to(cairo,8,0);
     cairo_move_to(cairo,-4,3);
     cairo_rel_line_to(cairo,8,0);
@@ -1950,17 +2258,24 @@ namespace minsky
   }
   template <> void Operation<OperationType::merge>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    cairoShim.moveTo(-4,-3);
+    cairoShim.scale(sf,sf);
+    cairoShim.relLineTo(8,0);
+    cairoShim.moveTo(-4,3);
+    cairoShim.relLineTo(8,0);
+    cairoShim.relMoveTo(0,-10);
+    cairoShim.relLineTo(0,14);
+    cairoShim.stroke();
   }
 
 
   template <> void Operation<OperationType::slice>::iconDraw(cairo_t* cairo) const
   {
-    const double sf = scaleFactor(); 	     
+    const double sf = scaleFactor();
     cairo_move_to(cairo,-10,-10);
     setCachedText(cairo, "[...",10);
-    cairo_scale(cairo,sf,sf);  
+    cairo_scale(cairo,sf,sf);
     cachedPango->show();
     cairo_move_to(cairo,-10+cachedPango->width(),-9);
     cairo_rel_line_to(cairo,0,cachedPango->height()-2);
@@ -1968,20 +2283,23 @@ namespace minsky
   }
   template <> void Operation<OperationType::slice>::iconDraw(const ICairoShim& cairoShim) const
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
+    const double sf = scaleFactor();
+    auto& pango = cairoShim.pango();
+    pango.setMarkup("[...");
+    pango.setFontSize(10);
+    cairoShim.moveTo(-10,-10);
+    cairoShim.scale(sf,sf);
+    pango.show();
+    cairoShim.moveTo(-10+pango.width(),-9);
+    cairoShim.relLineTo(0,pango.height()-2);
+    cairoShim.stroke();
   }
 
-
-  
 
   template <> void Operation<OperationType::numOps>::iconDraw(cairo_t* cairo) const
   {/* needs to be here, and is actually called */}
   template <> void Operation<OperationType::numOps>::iconDraw(const ICairoShim& cairoShim) const
-  {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    iconDraw(shimImpl._internalGetCairoContext());
-  }
+  {/* needs to be here, and is actually called */}
 
 
 }

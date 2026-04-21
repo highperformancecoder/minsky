@@ -141,7 +141,7 @@ export class OperationBase extends Item {
   async drawResizeHandles(...args: any[]): Promise<void> {return this.$callMethod('drawResizeHandles',...args);}
   async drawUserFunction(...args: any[]): Promise<void> {return this.$callMethod('drawUserFunction',...args);}
   async h(...args: number[]): Promise<number> {return this.$callMethod('h',...args);}
-  async iconDraw(a1: minsky__dummy): Promise<void> {return this.$callMethod('iconDraw',a1);}
+  async iconDraw(...args: any[]): Promise<void> {return this.$callMethod('iconDraw',...args);}
   async l(...args: number[]): Promise<number> {return this.$callMethod('l',...args);}
   async multiWire(): Promise<boolean> {return this.$callMethod('multiWire');}
   async numPorts(): Promise<number> {return this.$callMethod('numPorts');}
