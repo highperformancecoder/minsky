@@ -95,28 +95,30 @@ const publicKey=Buffer.from('\n-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA3v8Oy
 
 async function verifyFile(filePath: string,  signature: string): Promise<boolean> {
   return new Promise((resolve, reject) => {
-    // 1. Create a SHA-512 hash stream (pure Ed25519 over SHA-512 digest)
+    // Create a SHA-512 hash stream (pure Ed25519 over SHA-512 digest)
     const hash = createHash('sha512');
     const stream = createReadStream(filePath);
 
     stream.on('data', (chunk) => hash.update(chunk));
-    stream.on('error', (err) => reject(err));
+    stream.on('error', (err) => resolve(false)); // deal with any errors as failing validation
     
     stream.on('end', () => {
       const digest = hash.digest();
       
-      // 2. Verify using the 'ed25519ph' algorithm with the digest
-      const isValid = verify(
-        undefined, 
-        digest, 
-        {
-          key: publicKey,
-          format: 'pem',
-        },
-        Buffer.from(signature,'base64')
-      );
-      
-      resolve(isValid);
+      try {
+        const isValid = verify(
+          undefined, 
+          digest, 
+          {
+            key: publicKey,
+            format: 'pem',
+          },
+          Buffer.from(signature,'base64')
+        );
+        resolve(isValid);
+      } catch (err) {
+        resolve(false);  // deal with any errors as failing validation
+      }
     });
   });
 }
