@@ -1222,7 +1222,10 @@ namespace minsky
         cairo_translate(cairo,xEdge,yOff);
         // cairo context is already rotated, so antirotate
         cairo_rotate(cairo,-angle);
-        v->draw(cairo);
+        {
+          CairoShimCairo shim(cairo);
+          v->draw(shim);
+        }
 
         if (i == 0)
           {

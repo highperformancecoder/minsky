@@ -54,6 +54,7 @@ namespace minsky
       return r;
     }
     void draw(cairo_t*);
+    void draw(const ICairoShim&);
   };
 
   

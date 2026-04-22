@@ -50,6 +50,26 @@ namespace minsky
     Wire::draw(cairo,value>=0);
   }
 
+  void PhillipsFlow::draw(const ICairoShim& cairoShim)
+  {
+    cairoShim.save();
+    const double value=this->value();
+    double& maxV=maxFlow[units()];
+    if (abs(value)>maxV) maxV=abs(value);
+    double lineWidth=1;
+    if (maxV>0)
+      {
+        const double lw=5*abs(value)/maxV;
+        lineWidth=std::max(1.0, lw);
+        static const double dashLength=3;
+        if (lw<1)
+          cairoShim.setDash(&dashLength,1,0);
+      }
+    cairoShim.setLineWidth(lineWidth);
+    Wire::draw(cairoShim, value>=0);
+    cairoShim.restore();
+  }
+
   void PhillipsStock::draw(cairo_t* cairo) const
   {
     StockVar::draw(cairo);
@@ -117,10 +137,14 @@ namespace minsky
         const CairoSave cs(cairo);
         cairo_identity_matrix(cairo);
         cairo_translate(cairo,i.second.x()+x, i.second.y()+y);
-        i.second.draw(cairo);
+        CairoShimCairo shim(cairo);
+        i.second.draw(shim);
       }
     for (auto& i: flows)
-      i.second.draw(cairo);
+      {
+        CairoShimCairo shim(cairo);
+        i.second.draw(shim);
+      }
     return true;
   }
 

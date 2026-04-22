@@ -20,6 +20,7 @@
 #include "cairoItems.h"
 #include "minsky.h"
 #include "item.h"
+#include "../engine/cairoShimCairo.h"
 #include "group.h"
 #include "zoom.h"
 #include "variable.h"
@@ -60,7 +61,8 @@ namespace minsky
       {
         const cairo::CairoSave cs(surf.cairo());
         cairo_rotate(surf.cairo(),-x.rotation()*M_PI/180);
-        x.draw(surf.cairo());
+        CairoShimCairo shim(surf.cairo());
+        x.draw(shim);
       }
 #ifndef NDEBUG
     catch (const std::exception& e) 
@@ -481,7 +483,8 @@ namespace minsky
   void Item::dummyDraw() const
   {
     const ecolab::cairo::Surface s(cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
-    draw(s.cairo());
+    CairoShimCairo shim(s.cairo());
+    draw(shim);
   }
 
   void Item::displayTooltip(cairo_t* cairo, const std::string& tooltip) const

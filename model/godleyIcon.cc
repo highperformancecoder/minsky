@@ -72,6 +72,26 @@ namespace minsky
       }
     };
 
+    struct DrawVarsShim
+    {
+      const ICairoShim& cairoShim;
+      float x, y;
+      DrawVarsShim(const ICairoShim& cairoShim, float x, float y):
+        cairoShim(cairoShim), x(x), y(y) {}
+
+      void operator()(const GodleyIcon::Variables& vars) const
+      {
+        for (const auto& v: vars)
+          {
+            cairoShim.save();
+            const VariableBase& vv=*v;
+            cairoShim.translate(vv.x()-x, vv.y()-y);
+            vv.draw(cairoShim);
+            cairoShim.restore();
+          }
+      }
+    };
+
     // determine the width and maximum height on screen of variables in vars
     void accumulateWidthHeight(const GodleyIcon::Variables& vars,
                                float& height, float& width)
@@ -547,14 +567,11 @@ namespace minsky
         cairoShim.translate(left+border*z+leftMargin(),top+border*z+titleOffs()/* space for title*/);
         // render to a recording surface to determine size of editor table
         // TODO - maybe move this stuff into update()
-        // GodleyTableEditor needs cairo_t* for now
-        auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-        cairo_t* cairo = shimImpl._internalGetCairoContext();
         const Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR, nullptr));
         const_cast<GodleyTableEditor&>(editor).zoomFactor=1;
         const_cast<GodleyTableEditor&>(editor).draw(surf.cairo());
         const_cast<GodleyTableEditor&>(editor).zoomFactor=min((w-leftMargin()-2*border*z)/surf.width(),(h-bottomMargin()-2*border*z-titleOffs())/surf.height());
-        const_cast<GodleyTableEditor&>(editor).draw(cairo);
+        const_cast<GodleyTableEditor&>(editor).draw(cairoShim);
         titley=-0.5*h;
         w+=2*border*z;
         h+=2*border*z;
@@ -587,11 +604,10 @@ namespace minsky
 
     if (m_variableDisplay && (!m_editorMode || wiresAttached()))
       {
-        // render the variables - DrawVars needs cairo_t*
-        auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-        const DrawVars drawVars(shimImpl._internalGetCairoContext(),x(),y());
-        drawVars(m_flowVars); 
-        drawVars(m_stockVars); 
+        // render the variables
+        const DrawVarsShim drawVars(cairoShim,x(),y());
+        drawVars(m_flowVars);
+        drawVars(m_stockVars);
       }
     
     if (mouseFocus)

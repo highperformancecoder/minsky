@@ -28,6 +28,7 @@
 #include "minsky.h"
 
 #include "cairoItems.h"
+#include "../engine/cairoShimCairo.h"
 #include "operation.h"
 #include "latexMarkup.h"
 #include <arrays.h>
@@ -83,8 +84,8 @@ RenderVariable::RenderVariable(const VariableBase& var, cairo_t* cairo):
 
 void RenderVariable::draw()
 {
-  var.draw(cairo);
-
+  CairoShimCairo shim(cairo);
+  var.draw(shim);
 }
 
 bool RenderVariable::inImage(float x, float y)
