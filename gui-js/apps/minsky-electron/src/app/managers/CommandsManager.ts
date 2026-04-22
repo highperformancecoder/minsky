@@ -2,6 +2,7 @@ import {
   CanvasItem,
   ClassType,
   CSVDialog,
+  DownloadDetails,
   events,
   Functions,
   HandleDimensionPayload,
@@ -27,6 +28,8 @@ import {exec,spawn} from 'child_process';
 import decompress from 'decompress';
 import {promisify} from 'util';
 import {net, safeStorage } from 'electron';
+import { createReadStream, rmSync } from 'fs';
+import { createHash, verify } from 'crypto';
 
 function semVer(version: string) {
   const pattern=/(\d+)\.(\d+)\.(\d+)/;
@@ -86,6 +89,38 @@ try {
     console.error("Fetch encountered the redirect/error:", error);
     throw error;
   }
+}
+
+const publicKey=Buffer.from('\n-----BEGIN PUBLIC KEY-----\nMCowBQYDK2VwAyEA3v8OynE8ZrGrXR062RtF37xLxRBlvBEy8/6os7Z7P1c=\n-----END PUBLIC KEY-----');
+
+async function verifyFile(filePath: string,  signature: string): Promise<boolean> {
+  return new Promise((resolve, reject) => {
+    // Create a SHA-512 hash stream (pure Ed25519 over SHA-512 digest)
+    const hash = createHash('sha512');
+    const stream = createReadStream(filePath);
+
+    stream.on('data', (chunk) => hash.update(chunk));
+    stream.on('error', (err) => resolve(false)); // deal with any errors as failing validation
+    
+    stream.on('end', () => {
+      const digest = hash.digest();
+      
+      try {
+        const isValid = verify(
+          undefined, 
+          digest, 
+          {
+            key: publicKey,
+            format: 'pem',
+          },
+          Buffer.from(signature,'base64')
+        );
+        resolve(isValid);
+      } catch (err) {
+        resolve(false);  // deal with any errors as failing validation
+      }
+    });
+  });
 }
 
 export class CommandsManager {
@@ -1197,7 +1232,7 @@ export class CommandsManager {
   }
 
   // handler for downloading Ravel and installing it
-  static downloadRavel(event,item,webContents) {
+  static downloadRavel(event,item,webContents,asset: DownloadDetails=null) {
     
     switch (process.platform) {
     case 'win32':
@@ -1218,10 +1253,23 @@ export class CommandsManager {
     let progress=new ProgressBar({text:"Downloading Ravel",value: 0, indeterminate:false, closeOnComplete: true,});
 
     // handler for when download completed
-    item.once('done', (event,state)=>{
+    item.once('done', async (event,state)=>{
       progress.close();
       
-      if (state==='completed') {
+     if (state==='completed') {
+       // validate signature
+       if (asset &&
+           (!asset.signature || asset.signature_algorithm!=='ed25519' ||
+            !await verifyFile(item.getSavePath(), asset.signature))) {
+         rmSync(item.getSavePath(), { force: true }); // failed validation, remove
+         dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
+           message: 'Download has invalid signature, removed for safety',
+           type: 'error',
+         });
+         webContents.close();
+         return;
+       }
+
         dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
           message: 'Ravel plugin updated successfully - restart Ravel to use',
           type: 'info',
@@ -1252,16 +1300,31 @@ export class CommandsManager {
   }
 
   // handler for downloading Minsky
-  static downloadMinsky(event,item,webContents) {
+  static downloadMinsky(event,item,webContents,asset: DownloadDetails=null) {
     item.setSavePath(join(tmpdir(),item.getFilename()));
 
     let progress=new ProgressBar({text:"Downloading Ravel application",value: 0, indeterminate:false, closeOnComplete: true,});
 
     // handler for when download completed
-    item.once('done', (event,state)=>{
+    item.once('done', async (event,state)=>{
       progress.close();
 
+      
       if (state==='completed') {
+        
+        // validate signature
+        if (asset &&
+            (!asset.signature || asset.signature_algorithm!=='ed25519' ||
+             !await verifyFile(item.getSavePath(), asset.signature))) {
+          rmSync(item.getSavePath(), {force: true }); // failed validation, remove
+          dialog.showMessageBoxSync(WindowManager.getMainWindow(),{
+            message: 'Download has invalid signature, removed for safety',
+            type: 'error',
+          });
+          webContents.close();
+          return;
+        }
+
         switch (process.platform) {
         case 'win32':
           spawn(item.getSavePath(),{detached: true, stdio: 'ignore'});
@@ -1470,9 +1533,9 @@ export class CommandsManager {
 
 
   // gets release URL for current system from Ravelation.net backend
-  static async getRelease(product: string, previous: boolean, token: string) {
+  static async getRelease(product: string, previous: boolean, token: string): Promise<DownloadDetails|null> {
     let state=await CommandsManager.buildState(previous);
-    if (!state) return '';
+    if (!state) return null;
     let query=`product=${product}&os=${state.system}&arch=${state.arch}&distro=${state.distro}&distro_version=${state.version}`;
     if (previous) {
       let releases=JSON.parse(await callBackendAPI(`${backendAPI}/releases?${query}`, token));
@@ -1480,11 +1543,11 @@ export class CommandsManager {
       for (let release of releases) 
         if (semVerLess(release.version, state.previous))
           prevRelease=release;
-      if (prevRelease) return prevRelease.download_url;
+      if (prevRelease) return prevRelease;
       // if not, then treat the request as latest
     }
     let release=JSON.parse(await callBackendAPI(`${backendAPI}/releases/latest?${query}`, token));
-    return release?.release?.download_url;
+    return release?.release;
   }
 
   static stashClerkToken(token: string) {
@@ -1510,22 +1573,33 @@ export class CommandsManager {
       token=safeStorage.decryptString(Buffer.from(token, 'latin1'));
 
     const window=WindowManager.getMainWindow();
-    let minskyAsset;
     try {
+      let minskyAsset;
       if (installCase===InstallCase.theLot)
         minskyAsset=await CommandsManager.getRelease('minsky', false, token);
       let ravelAsset=await CommandsManager.getRelease('ravel', installCase===InstallCase.previousRavel, token);
 
-      if (minskyAsset) {
-        if (ravelAsset) { // stash ravel upgrade to be installed on next startup
-          StoreManager.store.set('ravelPlugin',await getFinalUrl(ravelAsset,token));
+      // rewrite any redirect
+      if (ravelAsset?.download_url)
+        ravelAsset.download_url=await getFinalUrl(ravelAsset.download_url,token);
+
+      
+      if (minskyAsset?.download_url) {
+        if (ravelAsset?.download_url) {
+          // stash ravel upgrade to be installed on next startup
+          StoreManager.store.set('ravelPlugin',ravelAsset);
         }
-        window.webContents.session.on('will-download',this.downloadMinsky);
-        window.webContents.downloadURL(await getFinalUrl(minskyAsset,token));
+
+        window.webContents.session.on('will-download',(event,item,webContents)=>{
+          this.downloadMinsky(event,item,webContents,minskyAsset);
+        });
+        window.webContents.downloadURL(await getFinalUrl(minskyAsset.download_url,token));
         return;
-      } else if (ravelAsset) {
-        window.webContents.session.on('will-download',this.downloadRavel);
-        window.webContents.downloadURL(await getFinalUrl(ravelAsset,token));
+      } else if (ravelAsset?.download_url) {
+        window.webContents.session.on('will-download',(event,item,webContents)=>{
+          this.downloadRavel(event,item,webContents,ravelAsset);
+        });
+        window.webContents.downloadURL(ravelAsset.download_url);
         return;
       }
       dialog.showMessageBoxSync(WindowManager.getMainWindow(),{

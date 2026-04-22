@@ -1,4 +1,4 @@
-import { defaultBackgroundColor } from '@minsky/shared';
+import { defaultBackgroundColor, DownloadDetails } from '@minsky/shared';
 import Store from 'electron-store';
 import {homedir} from 'node:os';
 
@@ -18,7 +18,7 @@ interface MinskyStore {
   preferences: MinskyPreferences;
   defaultModelDirectory: string;
   defaultDataDirectory: string;
-  ravelPlugin: string; // used for post installation installation of Ravel
+  ravelPlugin: DownloadDetails|null; // used for post installation installation of Ravel
   authToken?: string;
 }
 
@@ -39,7 +39,7 @@ class StoreManager {
         font: "",
         numBackups: 1,
       },
-      ravelPlugin: '',
+      ravelPlugin: null,
     },
   });
 }
