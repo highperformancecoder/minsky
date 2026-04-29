@@ -1844,6 +1844,28 @@ TEST_F(CorrelationSuite,xvectorValueLinearRegression)
   for (size_t _i=0; _i<toVal.size(); ++_i) EXPECT_NEAR(result[_i], toVal[_i], 1e-4);
 }
 
+TEST_F(CorrelationSuite,xvectorValueLinearRegressionSparse)
+{
+  // y = x + 1, but with NaN/Inf interspersed. Regression should use only finite (x,y) pairs.
+  Hypercube hc;
+  hc.xvectors.emplace_back("0", Dimension(Dimension::value,""), vector<civita::any>{0,1,2,3,4,5});
+  TensorVal y(hc); y=vector<double>{1, std::numeric_limits<double>::quiet_NaN(), 3, 4,
+                                    std::numeric_limits<double>::infinity(), 6};
+  fromVal=y;
+
+  // finite pairs: (x=0,y=1),(x=2,y=3),(x=3,y=4),(x=5,y=6) => line y=x+1
+  vector<double> result={1,2,3,4,5,6};
+
+  OperationPtr op(OperationType::linearRegression);
+  g->addItem(op);
+  Wire w1(from->ports(0),op->ports(1)), w3(op->ports(0),to->ports(1));
+  Eval(*to, op)();
+
+  auto& toVal=*to->vValue();
+  ASSERT_EQ(result.size(), toVal.size());
+  for (size_t _i=0; _i<toVal.size(); ++_i) EXPECT_NEAR(result[_i], toVal[_i], 1e-4);
+}
+
 TEST_F(CorrelationSuite,xvectorTimeLinearRegression)
 {
   Hypercube hc;
@@ -1957,6 +1979,64 @@ TEST_F(CorrelationSuite,allMatrixLinearRegression)
   for (size_t _i=0; _i<toVal.size(); ++_i) EXPECT_NEAR(result[_i], toVal[_i], 1e-4);
   EXPECT_EQ(x.rank(), toVal.rank());
   for (size_t _i=0; _i<x.rank(); ++_i) EXPECT_EQ(x.hypercube().dims()[_i], toVal.hypercube().dims()[_i]);
+}
+
+// bulkLinearRegression tests: output replaces the regression axis with {Slope,Intercept}
+
+TEST_F(CorrelationSuite,vectorBulkLinearRegression)
+{
+  // y = x + 1  => slope=1, intercept=1
+  TensorVal x(vector<unsigned>{6}); x=vector<double>{0,1,2,3,4,5};
+  TensorVal y(vector<unsigned>{6}); y=vector<double>{1,2,3,4,5,6};
+  fromVal=y;
+  from1Val=x;
+
+  OperationPtr op(OperationType::bulkLinearRegression);
+  op->axis="0";
+  g->addItem(op);
+  Wire w1(from->ports(0),op->ports(1)), w2(from1->ports(0),op->ports(2)), w3(op->ports(0),to->ports(1));
+  Eval(*to, op)();
+
+  auto& toVal=*to->vValue();
+  // output should be rank-1 with 2 elements: [Slope, Intercept]
+  EXPECT_EQ(1u, toVal.rank());
+  EXPECT_EQ(2u, toVal.size());
+  EXPECT_EQ("Linear Parameters", toVal.hypercube().xvectors[0].name);
+  EXPECT_EQ(2u, toVal.hypercube().dims()[0]);
+  EXPECT_NEAR(1.0, toVal[0], 1e-4); // slope
+  EXPECT_NEAR(1.0, toVal[1], 1e-4); // intercept
+}
+
+TEST_F(CorrelationSuite,matrixBulkLinearRegression)
+{
+  // two columns: col0 has y=x+1 (slope=1, intercept=1), col1 has y=2x+2 (slope=2, intercept=2)
+  // x and y shape: {8,2}; each x-value is repeated to create paired observations
+  // Memory layout (first-dimension-major): first 8 values = col0, next 8 values = col1
+  TensorVal x(vector<unsigned>{8,2}); x=vector<double>{0,0,1,1,2,2,3,3,0,0,1,1,2,2,3,3};
+  TensorVal y(vector<unsigned>{8,2}); y=vector<double>{1,1,2,2,3,3,4,4,2,2,4,4,6,6,8,8};
+  fromVal=y;
+  from1Val=x;
+
+  OperationPtr op(OperationType::bulkLinearRegression);
+  op->axis="0";
+  g->addItem(op);
+  Wire w1(from->ports(0),op->ports(1)), w2(from1->ports(0),op->ports(2)), w3(op->ports(0),to->ports(1));
+  Eval(*to, op)();
+
+  auto& toVal=*to->vValue();
+  // output shape: {2 (Slope/Intercept), 2 (columns)} = 4 elements
+  // Linear index order (first-dimension-major): slope_col0, intercept_col0, slope_col1, intercept_col1
+  EXPECT_EQ(2u, toVal.rank());
+  EXPECT_EQ(4u, toVal.size());
+  EXPECT_EQ("Linear Parameters", toVal.hypercube().xvectors[0].name);
+  EXPECT_EQ(2u, toVal.hypercube().dims()[0]); // Slope, Intercept
+  EXPECT_EQ(2u, toVal.hypercube().dims()[1]); // columns
+  // column 0: y = x+1 => slope=1, intercept=1
+  EXPECT_NEAR(1.0, toVal[0], 1e-4); // slope col0
+  EXPECT_NEAR(1.0, toVal[1], 1e-4); // intercept col0
+  // column 1: y = 2x+2 => slope=2, intercept=2
+  EXPECT_NEAR(2.0, toVal[2], 1e-4); // slope col1
+  EXPECT_NEAR(2.0, toVal[3], 1e-4); // intercept col1
 }
 
 

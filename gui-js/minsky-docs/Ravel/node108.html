@@ -1,66 +1,61 @@
 
-<!--Converted with LaTeX2HTML 2017.2 (Released Jan 23, 2017) -->
-<HTML>
+<!--Converted with LaTeX2HTML 2025 (Released January 1, 2025) -->
+<HTML lang="en">
 <HEAD>
 <TITLE>running product </TITLE>
-<META NAME="description" CONTENT="running product ">
-<META NAME="keywords" CONTENT="Ravel">
-<META NAME="resource-type" CONTENT="document">
-<META NAME="distribution" CONTENT="global">
 
 <META HTTP-EQUIV="Content-Type" CONTENT="text/html; charset=iso-8859-15">
-<META NAME="Generator" CONTENT="LaTeX2HTML v2017.2">
-<META HTTP-EQUIV="Content-Style-Type" CONTENT="text/css">
+<META NAME="viewport" CONTENT="width=device-width, initial-scale=1.0">
+<META NAME="Generator" CONTENT="LaTeX2HTML v2025">
 
 <LINK REL="STYLESHEET" HREF="Ravel.css">
 
 <LINK REL="next" HREF="node109.html">
 <LINK REL="previous" HREF="node107.html">
-<LINK REL="up" HREF="node98.html">
 <LINK REL="next" HREF="node109.html">
 </HEAD>
 
 <BODY  bgcolor="#ffffff">
 <!--Navigation Panel-->
-<A NAME="tex2html1936"
-  HREF="node109.html">
-<IMG WIDTH="37" HEIGHT="24" ALIGN="BOTTOM" ALT="next" SRC="next.png"></A> 
-<A NAME="tex2html1932"
-  HREF="node98.html">
-<IMG WIDTH="26" HEIGHT="24" ALIGN="BOTTOM" ALT="up" SRC="up.png"></A> 
-<A NAME="tex2html1926"
-  HREF="node107.html">
-<IMG WIDTH="63" HEIGHT="24" ALIGN="BOTTOM" ALT="previous" SRC="prev.png"></A> 
-<A NAME="tex2html1934"
+<A
+ HREF="node109.html">
+<IMG WIDTH="37" HEIGHT="24" ALT="next" SRC="next.png"></A> 
+<A
+ HREF="node98.html">
+<IMG WIDTH="26" HEIGHT="24" ALT="up" SRC="up.png"></A> 
+<A
+ HREF="node107.html">
+<IMG WIDTH="63" HEIGHT="24" ALT="previous" SRC="prev.png"></A> 
+<A ID="tex2html881"
   HREF="Ravel.html">
-<IMG WIDTH="65" HEIGHT="24" ALIGN="BOTTOM" ALT="contents" SRC="contents.png"></A>  
+<IMG WIDTH="65" HEIGHT="24" ALT="contents" SRC="contents.png"></A>  
 <BR>
-<B> Next:</B> <A NAME="tex2html1937"
-  HREF="node109.html">difference</A>
-<B> Up:</B> <A NAME="tex2html1933"
-  HREF="node98.html">Tensor operations</A>
-<B> Previous:</B> <A NAME="tex2html1927"
-  HREF="node107.html">running sum</A>
- &nbsp; <B>  <A NAME="tex2html1935"
+<B> Next:</B> <A
+ HREF="node109.html">difference</A>
+<B> Up:</B> <A
+ HREF="node98.html">Tensor operations</A>
+<B> Previous:</B> <A
+ HREF="node107.html">running sum</A>
+ &nbsp; <B>  <A ID="tex2html882"
   HREF="Ravel.html">Contents</A></B> 
 <BR>
 <BR>
 <!--End of Navigation Panel-->
 
-<H3><A NAME="SECTION0042131000000000000000">
+<H3><A ID="SECTION0042131000000000000000">
 running product <IMG
- ALIGN="MIDDLE" SRC="img21.png"
- ALT="$\prod +$% WIDTH=34 HEIGHT=31 "></A>
+ STYLE="height: 2.38ex; vertical-align: -0.70ex; " SRC="img21.png"
+ ALT="$\prod +$% WIDTH=60 HEIGHT=34 "></A>
 </H3>
 
 <P>
 
     <IMG
- ALIGN="BOTTOM" SRC="img148.png"
- ALT="\includegraphics[height=10mm]{images/runningProduct}% WIDTH=49 HEIGHT=46 ">
+  STYLE="height: 6.50ex; vertical-align: -0.12ex; " SRC="img148.png"
+ ALT="\includegraphics[height=10mm]{images/runningProduct}% WIDTH=48 HEIGHT=45 ">
 
 <P>
-<A NAME="Operation:runningProduct"></A> Computes the running product of
+<A ID="Operation:runningProduct"></A> Computes the running product of
 the input tensor along a given axis.
 
 <P>
@@ -74,7 +69,7 @@ The operator can be placed on the canvas in two ways:
 <UL>
 <LI>From the <I>Scan Operations (``scan'')</I> toolbar 
   <IMG
- ALIGN="BOTTOM" SRC="img143.png"
+  STYLE="height: 2.03ex; vertical-align: -0.12ex; " SRC="img143.png"
  ALT="\resizebox{!}{2ex}{\includegraphics{images/runningSum}}% WIDTH=15 HEIGHT=14 ">
   ;
 or 
@@ -87,14 +82,14 @@ For example, take this rank 2 tensor:
 
 <P>
 <IMG
- SRC="img144.png"
+ STYLE="height: 8.46ex; " SRC="img144.png"
  ALT="\begin{displaymath}
 \left(\begin{array}{cccc}
 1 &amp; 2 &amp; 3 &amp; 4\\
 5 &amp; 4 &amp; 3 &amp; 2\\
 8 &amp; 7 &amp; 6 &amp; 5
 \end{array}\right)
-\end{displaymath}% WIDTH=337 HEIGHT=64 ">
+\end{displaymath}% WIDTH=239 HEIGHT=121 ">
 
 <P>
 The running product of this tensor, along the horizontal dimension,
@@ -102,14 +97,14 @@ is:
 
 <P>
 <IMG
- SRC="img147.png"
+ STYLE="height: 8.46ex; " SRC="img147.png"
  ALT="\begin{displaymath}
 \left(\begin{array}{cccc}
 1 &amp; 2 &amp; 6 &amp; 24\\
 5 &amp; 20 &amp; 60 &amp; 120\\
 8 &amp; 56 &amp; 336 &amp; 1680
 \end{array}\right)
-\end{displaymath}% WIDTH=360 HEIGHT=64 ">
+\end{displaymath}% WIDTH=339 HEIGHT=121 ">
 
 <P>
 Running product will normally be applied to a Ravel or a variable

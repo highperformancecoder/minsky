@@ -83,6 +83,9 @@ MAC_DIST_DIR=minsky.app/Contents/MacOS
 # default min version is the machine doing the building.
 MACOSX_MIN_VERSION=$(shell sw_vers|grep ProductVersion|tr -s '\t'|cut -f2)
 LIBS+=-framework AppKit
+FLAGS+=-std=c++20
+# add in MacPorts prefix, in case Node is installed through MacPorts
+DIRS+=/opt/local
 endif
 export GCOV
 export CLASSDESC=$(shell pwd)/ecolab/classdesc/classdesc
@@ -119,8 +122,9 @@ ifneq ($(MAKECMDGOALS),clean)
   $(warning have node=$(HAVE_NODE))
   ifeq ($(HAVE_NODE),1)
     NODE_API=
+    nsearch=$(firstword $(foreach dir,$(DIRS) /usr,$(wildcard $(dir)/$(1))))
     ifeq ($(OS),Darwin)
-      NODE_HEADER=/usr/local/include/node
+      NODE_HEADER=$(call nsearch,include/node)
     else
       ifdef MXE
         NODE_API+=node-api.o
@@ -129,7 +133,6 @@ ifneq ($(MAKECMDGOALS),clean)
         NODE_API+=node-api.o
       endif
       NODE_VERSION=$(shell node -v|sed -E -e 's/[^0-9]*([0-9]*).*/\1/')
-      nsearch=$(firstword $(foreach dir,$(DIRS) /usr,$(wildcard $(dir)/$(1))))
       NODE_HEADER=$(call nsearch,include/node$(NODE_VERSION))
       ifeq ($(NODE_HEADER),) # Ubuntu stashes node headers at /usr/include/nodejs, also if node version doesn't match, create a link in your include search path (eg ~/usr/include/node
         NODE_HEADER=$(call nsearch,include/node)
@@ -485,9 +488,6 @@ node-api.o: node-api.cc
 
 $(EXES):
 
-$(warning $(CPLUSPLUS) , $(COMPILER))
-
-
 tests: $(EXES)
 	cd test; $(MAKE)
 
@@ -555,6 +555,9 @@ doc/Ravel/labels.pl: $(wildcard doc/*.tex)
 # upload manual to SF
 install-manual: doc/Ravel/labels.pl
 	rsync -r -z --progress --delete doc/minsky.html doc/Ravel $(SF_WEB)/manual
+
+desktop-manual:
+	rsync -r --delete doc/minsky.html doc/Ravel gui-js/minsky-docs
 
 # run this after every full release
 install-release: install-doxydoc install-manual upload-schema
