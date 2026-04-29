@@ -77,6 +77,7 @@ namespace minsky
 
     // Pango support
     ecolab::Pango& pango() const override;
+    ecolab::Pango& newPango() const override;
     
     // SVG rendering support
     void renderSVG(const SVGRenderer& svgRenderer, double width, double height) const override;

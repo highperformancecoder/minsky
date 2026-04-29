@@ -516,7 +516,7 @@ namespace minsky
     if (!tooltip.empty() || !unitstr.empty())
       {
         cairoShim.save();
-        auto& pango = cairoShim.pango();
+        auto& pango = cairoShim.newPango();
         string toolTipText=latexToPango(tooltip);
         if (!unitstr.empty())
           toolTipText+=" Units:"+latexToPango(unitstr);

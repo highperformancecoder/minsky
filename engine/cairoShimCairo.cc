@@ -140,8 +140,12 @@ namespace minsky
   // Pango support
   ecolab::Pango& CairoShimCairo::pango() const
   {
-    if (!m_pango)
-      m_pango.reset(new ecolab::Pango(cairo));
+    if (!m_pango) newPango();
+    return *m_pango;
+  }
+  ecolab::Pango& CairoShimCairo::newPango() const
+  {
+    m_pango.reset(new ecolab::Pango(cairo));
     return *m_pango;
   }
 

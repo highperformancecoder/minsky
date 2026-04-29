@@ -819,7 +819,7 @@ export class GodleyTableEditor extends CppClass {
   async deleteStockVar(a1: number): Promise<void> {return this.$callMethod('deleteStockVar',a1);}
   async deleteStockVarByCol(a1: number): Promise<void> {return this.$callMethod('deleteStockVarByCol',a1);}
   async disableButtons(): Promise<void> {return this.$callMethod('disableButtons');}
-  async draw(a1: minsky__dummy): Promise<void> {return this.$callMethod('draw',a1);}
+  async draw(...args: any[]): Promise<void> {return this.$callMethod('draw',...args);}
   async drawButtons(...args: boolean[]): Promise<boolean> {return this.$callMethod('drawButtons',...args);}
   async enableButtons(): Promise<void> {return this.$callMethod('enableButtons');}
   async godleyIcon(): Promise<GodleyIcon> {return this.$callMethod('godleyIcon');}

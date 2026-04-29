@@ -90,9 +90,12 @@ namespace minsky
     // Tolerance
     virtual void setTolerance(double tolerance) const = 0;
 
+    // TODO: this needs to be fixed with a proper text rendering interface.
+    // For now use a newPango call that resets the pango
     // Pango support for text rendering
     virtual ecolab::Pango& pango() const = 0;
-
+    virtual ecolab::Pango& newPango() const = 0;
+    
     // SVG rendering support
     /// Render an SVG resource into a region of size width x height
     /// @param svgRenderer - Reference to SVGRenderer containing the loaded SVG resource
@@ -100,6 +103,8 @@ namespace minsky
     /// @param height - target height for rendering
     virtual void renderSVG(const SVGRenderer& svgRenderer, double width, double height) const = 0;
   };
+
+  
 }
 
 #include "ICairoShim.xcd"
