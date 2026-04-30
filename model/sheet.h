@@ -46,6 +46,7 @@ namespace minsky
     size_t scrollOffset=0, scrollMax=1;
     size_t scrollDelta=0;
     std::string sliceIndicator;
+    void draw(cairo_t* cairoShim) const;
   public:
     Sheet();
 
@@ -55,7 +56,6 @@ namespace minsky
     Sheet(const Sheet&) {}
     
     bool onResizeHandle(float x, float y) const override;
-    void drawResizeHandles(cairo_t* cairo) const override;
 
     bool onRavelButton(float, float) const;
     bool inRavel(float, float) const;
@@ -70,8 +70,8 @@ namespace minsky
     /// @return sliceIndicator
     const std::string& setSliceIndicator();
     
-    void draw(cairo_t* cairo) const override;
     void draw(const ICairoShim& cairoShim) const override;
+    void drawResizeHandles(const ICairoShim& cairo) const override;
     
     /// calculates the input value
     void computeValue();

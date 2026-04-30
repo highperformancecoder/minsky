@@ -198,19 +198,21 @@ namespace minsky
         cairo_rectangle(cairo,x-0.5*width,y-0.5*height,width,height);
       }
     cs.restore();
+
+    CairoShimCairo cairoShim(cairo);
     if (mouseFocus)
       {
-        drawPorts(cairo);
-        displayTooltip(cairo,tooltip());
+        drawPorts(cairoShim);
+        displayTooltip(cairoShim,tooltip());
         // Resize handles always visible on mousefocus. For ticket 92.
-        drawResizeHandles(cairo);   
+        drawResizeHandles(cairoShim);   
       }
     justDataChanged=false;
     
     cairo_new_path(cairo);  
     cairo_rectangle(cairo,-0.5*w,-0.5*h,w,h);
     cairo_clip(cairo);
-    if (selected) drawSelected(cairo);
+    if (selected) drawSelected(cairoShim);
 
   }
 

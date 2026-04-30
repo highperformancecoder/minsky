@@ -19,6 +19,8 @@
 
 #ifndef SLIDER_H
 #define SLIDER_H
+#include <math.h>
+
 namespace minsky
 {
   constexpr float sliderHandleRadius=3;

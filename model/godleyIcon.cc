@@ -51,27 +51,6 @@ namespace minsky
       {assert(x&&y); return x->valueId() < y->valueId();} 
     };
 
-    struct DrawVars
-    {
-      cairo_t* cairo;
-      float x, y; // position of this icon
-      DrawVars(cairo_t* cairo, float x, float y): 
-        cairo(cairo), x(x), y(y) {}
-      
-      void operator()(const GodleyIcon::Variables& vars) const
-      {
-        for (GodleyIcon::Variables::const_iterator v=vars.begin(); 
-             v!=vars.end(); ++v)
-          {
-            const ecolab::cairo::CairoSave cs(cairo);
-            const VariableBase& vv=**v;
-            // coordinates of variable within the cairo context
-            cairo_translate(cairo, vv.x()-x, vv.y()-y);
-            vv.draw(cairo);
-          }
-      }
-    };
-
     struct DrawVarsShim
     {
       const ICairoShim& cairoShim;
@@ -457,87 +436,6 @@ namespace minsky
       if (auto p=v->ports(0).lock())
         r|=p->wires().size();
     return r;
-  }
-
-  
-  void GodleyIcon::draw(cairo_t* cairo) const
-  {
-    positionVariables();
-    const float z=zoomFactor()*scaleFactor();
-    float w=iWidth()*z+leftMargin(), h=iHeight()*z+bottomMargin(), left=-0.5*w, top=-0.5*h;
-    double titley;
-    
-    if (m_editorMode)
-      {
-        const CairoSave cs(cairo);
-        cairo_rectangle(cairo, left, top, w, h);
-        cairo_rectangle(cairo, left-border*z, top-border*z, w+2*border*z, h+2*border*z);
-        cairo_stroke_preserve(cairo);
-        if (onBorder)
-          { // shadow the border when mouse is over it
-            const cairo::CairoSave cs(cairo);
-            cairo_set_source_rgba(cairo,0.5,0.5,0.5,0.5);
-            cairo_set_fill_rule(cairo,CAIRO_FILL_RULE_EVEN_ODD);
-            cairo_fill(cairo);
-          }
-        cairo_new_path(cairo);
-        cairo_rectangle(cairo, left, top, w, h);
-        cairo_clip(cairo);
-        cairo_translate(cairo,left+border*z+leftMargin(),top+border*z+titleOffs()/* space for title*/);
-        // render to a recording surface to determine size of editor table
-        // TODO - maybe move this stuff into update()
-        const Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR, nullptr));
-        const_cast<GodleyTableEditor&>(editor).zoomFactor=1;
-        const_cast<GodleyTableEditor&>(editor).draw(surf.cairo());
-        const_cast<GodleyTableEditor&>(editor).zoomFactor=min((w-leftMargin()-2*border*z)/surf.width(),(h-bottomMargin()-2*border*z-titleOffs())/surf.height());
-        const_cast<GodleyTableEditor&>(editor).draw(cairo);
-        titley=-0.5*h;
-        w+=2*border*z;
-        h+=2*border*z;
-        left-=border*z;
-        top-=border*z;
-      }
-    else
-      {
-        const CairoSave cs(cairo);
-        cairo_translate(cairo,left+leftMargin(),top);
-        svgRenderer.render(cairo, w-leftMargin(), h-bottomMargin());
-        titley=top+0.1*(h-bottomMargin());
-      }
-    
-    if (!table.title.empty())
-      {
-        const CairoSave cs(cairo);
-        Pango pango(cairo);
-        pango.setMarkup("<b>"+latexToPango(table.title)+"</b>");
-        pango.setFontSize(titleOffs());
-        cairo_move_to(cairo,-0.5*(pango.width()-leftMargin()), titley);
-        pango.show();
-      }
-      
-          
-
-    if (m_variableDisplay && (!m_editorMode || wiresAttached()))
-      {
-        // render the variables
-        const DrawVars drawVars(cairo,x(),y());
-        drawVars(m_flowVars); 
-        drawVars(m_stockVars); 
-      }
-    
-    if (mouseFocus)
-      {
-        drawPorts(cairo);
-        displayTooltip(cairo,tooltip());
-        drawResizeHandles(cairo);
-      }
-      
-    cairo_rectangle(cairo, left,top, w, h);    
-    cairo_clip(cairo);
-    if (selected)
-      {
-        drawSelected(cairo);
-      }
   }
 
   void GodleyIcon::draw(const ICairoShim& cairoShim) const

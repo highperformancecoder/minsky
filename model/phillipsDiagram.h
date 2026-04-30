@@ -70,7 +70,6 @@ namespace minsky
     }
     static std::map<Units, double> maxStock;
     std::size_t numPorts() const override {return 2;}
-    void draw(cairo_t* cairo) const override;
     void draw(const ICairoShim& cairoShim) const override;
   };
   

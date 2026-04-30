@@ -268,7 +268,6 @@ namespace minsky
     /// Make all variables not present in outerscope local to this group
     void makeSubroutine();
     
-    void draw(cairo_t*) const override;
     void draw(const ICairoShim&) const override;
 
     /// draw representations of edge variables around group icon

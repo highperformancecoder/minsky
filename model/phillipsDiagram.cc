@@ -70,32 +70,6 @@ namespace minsky
     cairoShim.restore();
   }
 
-  void PhillipsStock::draw(cairo_t* cairo) const
-  {
-    StockVar::draw(cairo);
-    // colocate input and output ports on the input side
-    m_ports[0]->moveTo(m_ports[1]->x(), m_ports[1]->y());
-    auto maxV=maxStock[units()];
-    if (maxV>0)
-      {
-        const CairoSave cs(cairo);
-        auto w=width()*zoomFactor(); 
-        auto h=height()*zoomFactor();
-        auto f=value()/maxV;
-        if (f>=0)
-          {
-            cairo_set_source_rgba(cairo,0,0,1,0.3);
-            cairo_rectangle(cairo,-0.6*w,0.5*h,1.2*w,-f*h);
-          }
-        else
-          {
-            cairo_set_source_rgba(cairo,1,0,0,0.3);
-            cairo_rectangle(cairo,-0.6*w,-0.5*h,1.2*w,-f*h);
-          }
-        cairo_fill(cairo);
-      }
-  }
-
   void PhillipsStock::draw(const ICairoShim& cairoShim) const
   {
     // Call parent draw (VariableBase still uses _internalGetCairoContext internally)

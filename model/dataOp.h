@@ -31,12 +31,6 @@ namespace minsky
     CLASSDESC_ACCESS(DataOp);
     friend struct SchemaHelper;
     void updateBB() override {bb.update(*this);}
-    void draw(cairo_t* cairo) const override {
-      if (description().empty())
-        OperationBase::draw(cairo);
-      else
-        drawUserFunction(cairo);
-    }
     void draw(const ICairoShim& cairoShim) const override {
       if (description().empty())
         OperationBase::draw(cairoShim);

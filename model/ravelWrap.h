@@ -109,7 +109,6 @@ namespace minsky
     void leaveLockGroup();
     void broadcastStateToLockGroup() const;
     
-    void draw(cairo_t* cairo) const override;
     void draw(const ICairoShim& cairoShim) const override;
     void resize(const LassoBox&) override;
     bool inItem(float x, float y) const override;

@@ -83,65 +83,6 @@ namespace minsky
     wrappedRavel.setOutputHandleIds({0,2});
   }
 
-  void Ravel::draw(cairo_t* cairo) const
-  {
-    const double  z=zoomFactor(), r=m_editorMode? 1.1*z*wrappedRavel.radius(): 30*z;
-    if (flipped)
-      {
-        m_ports[0]->moveTo(x()-1.1*r, y());
-        m_ports[1]->moveTo(x()+1.1*r, y());
-        drawTriangle(cairo,m_ports[1]->x()-x(),m_ports[1]->y()-y(),{0,0,0,1},M_PI);
-      }
-    else
-      {
-        m_ports[0]->moveTo(x()+1.1*r, y());
-        m_ports[1]->moveTo(x()-1.1*r, y());
-        drawTriangle(cairo,m_ports[1]->x()-x(),m_ports[1]->y()-y(),{0,0,0,1},0);
-      }
-    if (mouseFocus)
-      {
-        drawPorts(cairo);
-        displayTooltip(cairo,tooltip().empty()? explanation: tooltip());
-        // Resize handles always visible on mousefocus. For ticket 92.
-        if (m_editorMode) drawResizeHandles(cairo);
-      }
-    cairo_rectangle(cairo,-r,-r,2*r,2*r);
-    cairo_rectangle(cairo,-1.1*r,-1.1*r,2.2*r,2.2*r);
-    cairo_stroke_preserve(cairo);
-    if (onBorder || lockGroup)
-      { // shadow the border when mouse is over it
-        const cairo::CairoSave cs(cairo);
-        cairo::Colour c{1,1,1,0};
-        if (lockGroup)
-          c=palette[ lockGroup->colour() % paletteSz ];
-        c.r*=0.5; c.g*=0.5; c.b*=0.5;
-        c.a=onBorder? 0.5:0.3;
-        cairo_set_source_rgba(cairo,c.r,c.g,c.b,c.a);
-        cairo_set_fill_rule(cairo,CAIRO_FILL_RULE_EVEN_ODD);
-        cairo_fill_preserve(cairo);
-      }
-    
-    cairo_clip(cairo);
-
-    {
-      const cairo::CairoSave cs(cairo);
-      cairo_rectangle(cairo,-r,-r,2*r,2*r);
-      cairo_clip(cairo);
-      if (m_editorMode)
-        {
-          cairo_scale(cairo,z,z);
-          CairoRenderer cr(cairo);
-          wrappedRavel.render(cr);
-        }
-      else
-        {
-          cairo_translate(cairo,-r,-r);
-          svgRenderer.render(cairo,2*r,2*r);
-        }
-    }        
-    if (selected) drawSelected(cairo);
-  }
-
   void Ravel::draw(const ICairoShim& cairoShim) const
   {
     const double  z=zoomFactor(), r=m_editorMode? 1.1*z*wrappedRavel.radius(): 30*z;

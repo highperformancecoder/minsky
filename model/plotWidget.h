@@ -78,6 +78,7 @@ namespace minsky
 
     bool clearPensOnLabelling=false;
     
+    void draw(cairo_t* cairoShim) const;
   public:
     using Item::x;
     using Item::y;
@@ -166,7 +167,6 @@ namespace minsky
     void connectVar(const std::shared_ptr<VariableValue>& var, unsigned port);
     void disconnectAllVars();
     using ecolab::Plot::draw;
-    void draw(cairo_t* cairo) const override;
     void draw(const ICairoShim& cairoShim) const override;
     void requestRedraw(); ///< redraw plot using current data to all open windows
     void redrawWithBounds() override {redraw(0,0,500,500);}    

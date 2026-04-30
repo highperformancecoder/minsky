@@ -317,6 +317,7 @@ int main()
   cout << "class classdesc__pack_t {}\n";
   cout << "class classdesc__RESTProcess_t {}\n";
   cout << "class ecolab__cairo__Surface {}\n";
+  cout << "class ICairoShim {}\n";
   cout<<endl;
   
   // these need to be declared in a specific order
