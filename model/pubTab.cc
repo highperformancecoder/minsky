@@ -21,6 +21,7 @@
 #include "minsky.h"
 #include "cairoItems.h"
 #include "pubTab.h"
+#include "../engine/cairoShimCairo.h"
 #include "publication.rcd"
 #include "pubTab.xcd"
 #include "pubTab.rcd"
@@ -159,7 +160,8 @@ namespace minsky
         try
           {
             const EnsureEditorMode ensureEditorMode(i);
-            i.itemRef->draw(cairo);
+            CairoShimCairo shim(cairo);
+            i.itemRef->draw(shim);
           }
         catch (...) {}
       }

@@ -28,6 +28,7 @@
 #include "minsky.h"
 
 #include "cairoItems.h"
+#include "../engine/cairoShimCairo.h"
 #include "operation.h"
 #include "latexMarkup.h"
 #include <arrays.h>
@@ -83,8 +84,8 @@ RenderVariable::RenderVariable(const VariableBase& var, cairo_t* cairo):
 
 void RenderVariable::draw()
 {
-  var.draw(cairo);
-
+  CairoShimCairo shim(cairo);
+  var.draw(shim);
 }
 
 bool RenderVariable::inImage(float x, float y)
@@ -119,5 +120,20 @@ void minsky::drawTriangle
   cairo_line_to(cairo,0,-3);
   cairo_line_to(cairo,0,3);
   cairo_fill(cairo);
+}
+
+void minsky::drawTriangle
+(const ICairoShim& cairoShim, double x, double y, const cairo::Colour& col, double angle)
+{
+  cairoShim.save();
+  cairoShim.newPath();
+  cairoShim.setSourceRGBA(col.r,col.g,col.b,col.a);
+  cairoShim.translate(x,y);
+  cairoShim.rotate(angle);
+  cairoShim.moveTo(10,0);
+  cairoShim.lineTo(0,-3);
+  cairoShim.lineTo(0,3);
+  cairoShim.fill();
+  cairoShim.restore();
 }
 

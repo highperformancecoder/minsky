@@ -24,6 +24,7 @@
 #include "dimension.h"
 #include "minskyTensorOps.h"
 #include "pango.h"
+#include "../engine/cairoShimCairo.h"
 
 #include "capiRenderer.xcd"
 #include "CSVTools.xcd"
@@ -82,63 +83,68 @@ namespace minsky
     wrappedRavel.setOutputHandleIds({0,2});
   }
 
-  void Ravel::draw(cairo_t* cairo) const
+  void Ravel::draw(const ICairoShim& cairoShim) const
   {
     const double  z=zoomFactor(), r=m_editorMode? 1.1*z*wrappedRavel.radius(): 30*z;
     if (flipped)
       {
         m_ports[0]->moveTo(x()-1.1*r, y());
         m_ports[1]->moveTo(x()+1.1*r, y());
-        drawTriangle(cairo,m_ports[1]->x()-x(),m_ports[1]->y()-y(),{0,0,0,1},M_PI);
+        drawTriangle(cairoShim,m_ports[1]->x()-x(),m_ports[1]->y()-y(),{0,0,0,1},M_PI);
       }
     else
       {
         m_ports[0]->moveTo(x()+1.1*r, y());
         m_ports[1]->moveTo(x()-1.1*r, y());
-        drawTriangle(cairo,m_ports[1]->x()-x(),m_ports[1]->y()-y(),{0,0,0,1},0);
+        drawTriangle(cairoShim,m_ports[1]->x()-x(),m_ports[1]->y()-y(),{0,0,0,1},0);
       }
     if (mouseFocus)
       {
-        drawPorts(cairo);
-        displayTooltip(cairo,tooltip().empty()? explanation: tooltip());
+        drawPorts(cairoShim);
+        displayTooltip(cairoShim,tooltip().empty()? explanation: tooltip());
         // Resize handles always visible on mousefocus. For ticket 92.
-        if (m_editorMode) drawResizeHandles(cairo);
+        if (m_editorMode) drawResizeHandles(cairoShim);
       }
-    cairo_rectangle(cairo,-r,-r,2*r,2*r);
-    cairo_rectangle(cairo,-1.1*r,-1.1*r,2.2*r,2.2*r);
-    cairo_stroke_preserve(cairo);
+    cairoShim.rectangle(-r,-r,2*r,2*r);
+    cairoShim.rectangle(-1.1*r,-1.1*r,2.2*r,2.2*r);
+    cairoShim.strokePreserve();
     if (onBorder || lockGroup)
       { // shadow the border when mouse is over it
-        const cairo::CairoSave cs(cairo);
+        cairoShim.save();
         cairo::Colour c{1,1,1,0};
         if (lockGroup)
           c=palette[ lockGroup->colour() % paletteSz ];
         c.r*=0.5; c.g*=0.5; c.b*=0.5;
         c.a=onBorder? 0.5:0.3;
-        cairo_set_source_rgba(cairo,c.r,c.g,c.b,c.a);
-        cairo_set_fill_rule(cairo,CAIRO_FILL_RULE_EVEN_ODD);
-        cairo_fill_preserve(cairo);
+        cairoShim.setSourceRGBA(c.r,c.g,c.b,c.a);
+        cairoShim.setFillRule(CAIRO_FILL_RULE_EVEN_ODD);
+        cairoShim.fillPreserve();
+        cairoShim.restore();
       }
     
-    cairo_clip(cairo);
+    cairoShim.clip();
 
     {
-      const cairo::CairoSave cs(cairo);
-      cairo_rectangle(cairo,-r,-r,2*r,2*r);
-      cairo_clip(cairo);
+      cairoShim.save();
+      cairoShim.rectangle(-r,-r,2*r,2*r);
+      cairoShim.clip();
       if (m_editorMode)
         {
-          cairo_scale(cairo,z,z);
-          CairoRenderer cr(cairo);
+          cairoShim.scale(z,z);
+          // TODO: CairoRenderer needs ICairoShim support
+          auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
+          CairoRenderer cr(shimImpl._internalGetCairoContext());
           wrappedRavel.render(cr);
         }
       else
         {
-          cairo_translate(cairo,-r,-r);
-          svgRenderer.render(cairo,2*r,2*r);
+          cairoShim.translate(-r,-r);
+          // Render SVG using ICairoShim abstraction
+          cairoShim.renderSVG(svgRenderer, 2*r, 2*r);
         }
+      cairoShim.restore();
     }        
-    if (selected) drawSelected(cairo);
+    if (selected) drawSelected(cairoShim);
   }
 
   void Ravel::resize(const LassoBox& b)
