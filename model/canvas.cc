@@ -26,6 +26,7 @@
 #include "ravelWrap.h"
 #include <cairo_base.h>
 
+#include "cairoShimCairo.h"
 #include "canvas.rcd"
 #include "canvas.xcd"
 #include "eventInterface.rcd"
@@ -852,7 +853,8 @@ namespace minsky
              cairo_translate(cairo,it.x(), it.y());
              try
                {
-                 it.draw(cairo);
+                 CairoShimCairo shim(cairo);
+                 it.draw(shim);
                }
              catch (const std::exception& ex)
                {
@@ -873,7 +875,10 @@ namespace minsky
              const CairoSave cs(cairo);
              cairo_identity_matrix(cairo);
              cairo_translate(cairo,it.x(), it.y());
-             it.draw(cairo);
+             {
+               CairoShimCairo shim(cairo);
+               it.draw(shim);
+             }
            }
          return false;
        });
@@ -885,7 +890,8 @@ namespace minsky
        {
          const Wire& w=**i;
          if (w.visible()) {
-           w.draw(cairo);
+           CairoShimCairo shim(cairo);
+           w.draw(shim);
          }
          return false;
        });

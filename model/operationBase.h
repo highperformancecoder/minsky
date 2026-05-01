@@ -62,7 +62,7 @@ namespace minsky
     OperationBase* operationCast() override {return this;}
 
     /// visual representation of operation on the canvas
-    virtual void iconDraw(cairo_t *) const=0;
+    virtual void iconDraw(const ICairoShim&) const=0;
 
     /// returns a list of values the ports currently have
     std::string portValues() const;
@@ -73,9 +73,9 @@ namespace minsky
     // manage the port structures associated with this operation
     virtual void addPorts();
 
-    void drawUserFunction(cairo_t* cairo) const;
+    void drawUserFunction(const ICairoShim& cairoShim) const;
     
-    void draw(cairo_t*) const override;
+    void draw(const ICairoShim&) const override;
     void resize(const LassoBox& b) override;
     float scaleFactor() const override;       
 
