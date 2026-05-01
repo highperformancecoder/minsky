@@ -101,7 +101,7 @@ endif
 
 ifndef MXE
 # libclipboard
-build_libclipboard:=$(shell cd libclipboard; if cmake -DBUILD_SHARED_LIBS=0 -DCMAKE_C_FLAGS=-fPIC .>build.log && $(MAKE) $(JOBS) >>build.log 2>&1; then echo "libclipboard built"; fi) 
+build_libclipboard:=$(shell cd libclipboard; if cmake -DBUILD_SHARED_LIBS=0 -DCMAKE_C_FLAGS=-fPIC . &>build.log && $(MAKE) $(JOBS) >>build.log 2>&1; then echo "libclipboard built"; fi) 
 $(warning $(build_libclipboard))
 ifneq ($(strip $(build_libclipboard)),libclipboard built)
 $(error Making libclipboard failed: check libclipboard/build.log)
@@ -518,6 +518,7 @@ clean:
 	-cd schema && $(BASIC_CLEAN)
 	-cd ecolab && $(MAKE) clean
 	-cd RavelCAPI && $(MAKE) clean
+	-cd libclipboard && $(MAKE) clean
 
 mac-dist:
 # force rebuild of the node file to force rewriting of dependent dylibs
