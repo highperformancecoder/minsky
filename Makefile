@@ -86,14 +86,26 @@ FLAGS+=-std=c++20
 # add in MacPorts prefix, in case Node is installed through MacPorts
 DIRS+=/opt/local
 endif
+
 export GCOV
 export CLASSDESC=$(shell pwd)/ecolab/classdesc/classdesc
 MAKEOVERRIDES+=FPIC=1 CLASSDESC=$(CLASSDESC)
 ifneq ($(MAKECMDGOALS),clean)
+
+# RavelCAPI
 build_ravelcapi:=$(shell cd RavelCAPI; if  $(MAKE) $(JOBS) $(MAKEOVERRIDES) >build.log 2>&1; then echo "ravelcapi built"; fi) 
 $(warning $(build_ravelcapi))
 ifneq ($(strip $(build_ravelcapi)),ravelcapi built)
 $(error Making RavelCAPI failed: check RavelCAPI/build.log)
+endif
+
+ifndef MXE
+# libclipboard
+build_libclipboard:=$(shell cd libclipboard; if cmake -DBUILD_SHARED_LIBS=0 -DCMAKE_C_FLAGS=-fPIC .>build.log && $(MAKE) $(JOBS) >>build.log 2>&1; then echo "libclipboard built"; fi) 
+$(warning $(build_libclipboard))
+ifneq ($(strip $(build_libclipboard)),libclipboard built)
+$(error Making libclipboard failed: check libclipboard/build.log)
+endif
 endif
 
 endif
@@ -217,7 +229,7 @@ ifdef CLASSDESC_ARITIES
 FLAGS+=-DUSE_UNROLLED -DCLASSDESC_ARITIES=$(CLASSDESC_ARITIES)
 endif
 
-FLAGS+=-UTR1 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -IRavelCAPI/civita -IRavelCAPI -DCLASSDESC $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-attributes -DCIVITA_ALLOCATOR=civita::LibCAllocator
+FLAGS+=-UTR1 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -IRavelCAPI/civita -IRavelCAPI -Ilibclipboard/include -DCLASSDESC $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-attributes -DCIVITA_ALLOCATOR=civita::LibCAllocator
 
 ifeq ($(CPLUSPLUS),clang++)
 # note some of these flags are disabling warnings that are invalid in some circumstances
@@ -331,7 +343,7 @@ LIBS+=$(if $(call search,lib*/libboost_system.so),-lboost_system$(BOOST_EXT)) -W
 ifdef MXE
 LIBS+=-lgdi32 -lcrypt32 -lbcrypt -lshcore
 else
-LIBS+=-lclipboard -lxcb -lX11 -ldl
+LIBS+=-Llibclipboard -lclipboard -lxcb -lX11 -ldl
 endif
 
 # RSVG dependencies calculated here
