@@ -1541,7 +1541,7 @@ export class CommandsManager {
       let releases=JSON.parse(await callBackendAPI(`${backendAPI}/releases?${query}`, token));
       let prevRelease;
       try {
-        for (let release of releases) 
+        for (let release of releases.releases) 
           if (semVerLess(release.version, state.previous))
             prevRelease=release;
       } catch (err) {
