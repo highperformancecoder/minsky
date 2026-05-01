@@ -8,7 +8,6 @@
     Sign Out
   </button>
   } @else {
-  <!-- no idea why oauthStrategies.length returns 0 here -->
   @if (oauthStrategies.length) {
   <div class="social-row">
     @for (strategy of oauthStrategies; track strategy) {
