@@ -156,7 +156,7 @@ namespace minsky
     RsvgDimensionData dims;
     rsvg_handle_get_dimensions(svgRenderer.svg, &dims);
     cairo_scale(cairo, width/dims.width, height/dims.height);
-    rsvg_handle_render_cairo(&svg, cairo);
+    rsvg_handle_render_cairo(svgRenderer.svg, cairo);
 #else
     GError* err=nullptr;
     const RsvgRectangle rect{0,0,width,height};

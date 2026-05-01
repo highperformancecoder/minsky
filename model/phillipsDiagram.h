@@ -53,8 +53,8 @@ namespace minsky
         r+=i.first*i.second.value();
       return r;
     }
-    void draw(cairo_t*);
-    void draw(const ICairoShim&);
+    //void draw(cairo_t*);
+    void draw(const ICairoShim&, bool) const override;
   };
 
   

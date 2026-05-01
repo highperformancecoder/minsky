@@ -31,26 +31,26 @@ namespace minsky
   std::map<Units, double> PhillipsFlow::maxFlow;
   std::map<Units, double> PhillipsStock::maxStock;
   
-  void PhillipsFlow::draw(cairo_t* cairo)
-  {
-    const CairoSave cs(cairo);
-    const double value=this->value();
-    double& maxV=maxFlow[units()];
-    if (abs(value)>maxV) maxV=abs(value);
-    double lineWidth=1;
-    if (maxV>0)
-      {
-        const double lw=5*abs(value)/maxV;
-        lineWidth=std::max(1.0, lw);
-        static const double dashLength=3;
-        if (lw<1)
-          cairo_set_dash(cairo,&dashLength,1,0);
-      }
-    cairo_set_line_width(cairo, lineWidth);
-    Wire::draw(cairo,value>=0);
-  }
+//  void PhillipsFlow::draw(cairo_t* cairo) const
+//  {
+//    const CairoSave cs(cairo);
+//    const double value=this->value();
+//    double& maxV=maxFlow[units()];
+//    if (abs(value)>maxV) maxV=abs(value);
+//    double lineWidth=1;
+//    if (maxV>0)
+//      {
+//        const double lw=5*abs(value)/maxV;
+//        lineWidth=std::max(1.0, lw);
+//        static const double dashLength=3;
+//        if (lw<1)
+//          cairo_set_dash(cairo,&dashLength,1,0);
+//      }
+//    cairo_set_line_width(cairo, lineWidth);
+//    Wire::draw(cairo,value>=0);
+//  }
 
-  void PhillipsFlow::draw(const ICairoShim& cairoShim)
+  void PhillipsFlow::draw(const ICairoShim& cairoShim, bool) const
   {
     cairoShim.save();
     const double value=this->value();
@@ -117,7 +117,7 @@ namespace minsky
     for (auto& i: flows)
       {
         CairoShimCairo shim(cairo);
-        i.second.draw(shim);
+        i.second.draw(shim,true);
       }
     return true;
   }
