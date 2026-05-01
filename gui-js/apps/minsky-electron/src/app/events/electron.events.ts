@@ -288,3 +288,12 @@ ipcMain.handle(events.OPEN_URL, (event,options)=> {
   let window=WindowManager.createWindow(options);
   window.loadURL(options.url);
 });
+
+ipcMain.handle(events.SET_AUTH_TOKEN, async (event, token: string | null) => {
+  CommandsManager.stashClerkToken(token);
+  return { success: true };
+});
+
+ipcMain.handle(events.OAUTH_OPEN_POPUP, (event, oauthUrl: string) => {
+  WindowManager.openOAuthPopup(oauthUrl);
+});
