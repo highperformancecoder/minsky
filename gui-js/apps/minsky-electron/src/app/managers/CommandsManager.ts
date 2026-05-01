@@ -1540,13 +1540,28 @@ export class CommandsManager {
     if (previous) {
       let releases=JSON.parse(await callBackendAPI(`${backendAPI}/releases?${query}`, token));
       let prevRelease;
-      for (let release of releases) 
-        if (semVerLess(release.version, state.previous))
-          prevRelease=release;
+      try {
+        for (let release of releases) 
+          if (semVerLess(release.version, state.previous))
+            prevRelease=release;
+      } catch (err) {
+        // an error here is probably due to a failure of the backend API, so surface that reason
+        if (releases?.detail) {
+          if (releases.detail==="Authentication failed: invalid token")
+            throw "Session expired, please logout and try again";
+          throw releases.detail;
+        }
+        throw err; // rethrow any other error
+      }
       if (prevRelease) return prevRelease;
       // if not, then treat the request as latest
     }
     let release=JSON.parse(await callBackendAPI(`${backendAPI}/releases/latest?${query}`, token));
+    if (release?.detail) {
+      if (release.detail==="Authentication failed: invalid token")
+        throw "Session expired, please logout and try again";
+      throw releases.detail;
+    }
     return release?.release;
   }
 
