@@ -1560,7 +1560,7 @@ export class CommandsManager {
     if (release?.detail) {
       if (release.detail==="Authentication failed: invalid token")
         throw "Session expired, please logout and try again";
-      throw releases.detail;
+      throw release.detail;
     }
     return release?.release;
   }
