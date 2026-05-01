@@ -57,6 +57,10 @@
       "title": "${productName}-${version}${arch}",
       "artifactName": "${productName}-${version}-${arch}.dmg"
     },
+    "asar": true,
+    "asarUnpack": [
+      "**/node_modules/@clerk/**"
+    ],
     "extraFiles": [
       {
         "from": "dynamic_libraries",
@@ -64,6 +68,11 @@
       }
     ],
     "extraResources": [
+      {
+        "from": "node_modules/@clerk",
+        "to": "node_modules/@clerk",
+        "filter": ["**/*"]
+      },
       {
         "from": "examples/data",
         "to": "examples/data"
@@ -163,12 +172,12 @@
     "@angular/material": "^20.0.0",
     "@ngx-translate/core": "^16.0.4",
     "@ngx-translate/http-loader": "^16.0.1",
-    "@nx/jest": "^22.0.0",
-    "@nx/js": "^22.0.0",
-    "@nx/workspace": "^22.0.0",
+    "@nx/jest": "^22.6.5",
+    "@nx/js": "^22.6.5",
+    "@nx/workspace": "^22.6.5",
     "@types/jest": "^29.0.0",
     "electron": "^37.0.0",
-    "electron-builder": "^26.7.0",
+    "electron-builder": "^24.13.3",
     "exitzero": "^1.0.1",
     "is-electron": "^2.2.2",
     "jest": "^30.2.0",
@@ -177,7 +186,7 @@
     "material-design-icons": "^3.0.1",
     "ngx-color-picker": "^20.0.0",
     "npm-run-all": "^4.1.5",
-    "nx": "^22.0.0",
+    "nx": "^22.6.5",
     "nx-electron": "^22.0.0",
     "wait-on": "^8.0.3"
   },
@@ -191,7 +200,8 @@
     "@angular/platform-browser": "^21.2.1",
     "@angular/platform-browser-dynamic": "^21.2.1",
     "@angular/router": "^21.2.1",
-    "bindings": "^1.5.0",
+    "@clerk/clerk-js": "^6.3.3",
+   "bindings": "^1.5.0",
     "call-bind-apply-helpers": "^1.0.2",
     "decompress": "^4.2.1",
     "electron-log": "^5.4.1",
