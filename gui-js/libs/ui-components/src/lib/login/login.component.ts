@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef,Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -56,7 +56,8 @@ export class LoginComponent implements OnInit, OnDestroy {
   constructor(
     private clerkService: ClerkService,
     private electronService: ElectronService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private changeDetectorRef: ChangeDetectorRef
   ) {}
 
   async ngOnInit() {
@@ -102,6 +103,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.errorMessage = 'Session expired. Please sign in again.';
       this.isAuthenticated = false;
     }
+    this.changeDetectorRef.detectChanges();
   }
 
   getProviderLabel(strategy: string): string {

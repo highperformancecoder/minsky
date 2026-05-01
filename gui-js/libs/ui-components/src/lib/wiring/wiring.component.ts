@@ -57,6 +57,7 @@ export class WiringComponent implements OnInit, OnDestroy {
     this.availableOperationsMapping = await this.electronService.minsky.availableOperationsMapping();
 
     setTimeout(async () => {minsky.canvas.requestRedraw();}, 1);
+    this.changeDetectorRef.detectChanges();
   }
 
   private setupEventListenersForCanvas(minskyCanvasContainer: HTMLElement) {
