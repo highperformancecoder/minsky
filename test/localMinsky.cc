@@ -26,6 +26,7 @@
 
 #include "minsky.h"
 #include "minsky_epilogue.h"
+#include <stdio.h>
 
 namespace minsky
 {
@@ -40,9 +41,13 @@ namespace minsky
   {
     static Minsky s_minsky;
     if (l_minsky.empty())
+    {
       return s_minsky;
+    }
     return *l_minsky.back();
   }
+
+
 
   LocalMinsky::LocalMinsky(Minsky& minsky) {l_minsky.push_back(&minsky);}
   LocalMinsky::~LocalMinsky() {l_minsky.pop_back();}
