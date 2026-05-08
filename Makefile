@@ -231,6 +231,13 @@ endif
 
 FLAGS+=-UTR1 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -IRavelCAPI/civita -IRavelCAPI -Ilibclipboard/include -DCLASSDESC $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-attributes -DCIVITA_ALLOCATOR=civita::LibCAllocator
 
+ifdef OBS
+# Fedora environments make duplicated macros a fatal error, and then
+# have conflicted macrso defined in the python headers vs system
+# headers :P
+FLAGS+=-Wno-macro-redefined
+endif
+
 ifeq ($(CPLUSPLUS),clang++)
 # note some of these flags are disabling warnings that are invalid in some circumstances
 FLAGS+=-std=c++20 -Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-defaulted-function-deleted -Wno-uninitialized
