@@ -134,6 +134,7 @@ export class ApplicationMenuManager {
         },
         {
           label: 'Upgrade via Clerk',
+          enabled: false,
           submenu: [
             {
               label: 'Upgrade',
