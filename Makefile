@@ -236,6 +236,10 @@ ifdef OBS
 # have conflicted macrso defined in the python headers vs system
 # headers :P
 FLAGS+=-Wno-macro-redefined
+# Some boost installations require linking to boost_system/thread, others don't have the library installed
+# -Wl,--no-as-needed suggested to solve Fedora linkage problems
+LIBS+=-Wl,--no-as-needed $(if $(call search,lib*/libboost_thread.so),-lboost_thread$(BOOST_EXT))
+LIBS+=$(if $(call search,lib*/libboost_system.so),-lboost_system$(BOOST_EXT)) -Wl,--as-needed
 endif
 
 ifeq ($(CPLUSPLUS),clang++)
@@ -340,17 +344,13 @@ ifeq ($(OS),CYGWIN)
 FLAGS+=-Wa,-mbig-obj -Wl,-x -Wl,--oformat,pe-bigobj-x86-64
 endif
 
-# -Wl,--no-as-needed suggested to solve Fedora linkage problems
 LIBS:=-LRavelCAPI -lravelCAPI -LRavelCAPI/civita -lcivita  -lboost_date_time$(BOOST_EXT) -lgsl -lgslcblas -lssl -lcrypto $(LIBS)
-
-# Some boost installations require linking to boost_system/thread, others don't have the library installed
-LIBS+=-Wl,--no-as-needed $(if $(call search,lib*/libboost_thread.so),-lboost_thread$(BOOST_EXT))
-LIBS+=$(if $(call search,lib*/libboost_system.so),-lboost_system$(BOOST_EXT)) -Wl,--as-needed
 
 ifdef MXE
 LIBS+=-lgdi32 -lcrypt32 -lbcrypt -lshcore
 else
 LIBS+=-Llibclipboard -lclipboard -lxcb -lX11 -ldl
+
 endif
 
 # RSVG dependencies calculated here
