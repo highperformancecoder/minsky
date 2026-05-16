@@ -26,12 +26,11 @@
 #include "geometry.h"
 #include "str.h"
 #include "polyRESTProcessBase.h"
+#include "ICairoShim.h"
 
 #include <json_pack_base.h>
 
-#include <cairo.h>
 #include <vector>
-#include <cairo_base.h>
 
 #include <iostream>
 #include <assert.h>
@@ -162,7 +161,7 @@ namespace minsky
       }
     } memoisedRotator;
 
-    static void drawResizeHandle(cairo_t* cairo, double x, double y, double sf, double angle);
+    static void drawResizeHandle(const ICairoShim& cairoShim, double x, double y, double sf, double angle);
     
 
   public:
@@ -288,7 +287,7 @@ namespace minsky
     void moveTo(float x, float y);
 
     /// draw this item into a cairo context
-    virtual void draw(cairo_t* cairo) const;
+    virtual void draw(const ICairoShim& cairoShim) const;
     /// resize this item on the canvas
     virtual void resize(const LassoBox& b);
     /// factor by which item has been resized
@@ -300,7 +299,7 @@ namespace minsky
     void dummyDraw() const;
 
     /// display tooltip text, eg on mouseover
-    virtual void displayTooltip(cairo_t*, const std::string&) const;
+    virtual void displayTooltip(const ICairoShim&, const std::string&) const;
     
     /// update display after a step()
     virtual void updateIcon(double t) {}
@@ -309,9 +308,9 @@ namespace minsky
     Item& operator=(const Item&)=default;
     virtual ~Item() {}
 
-    void drawPorts(cairo_t* cairo) const;
-    static void drawSelected(cairo_t* cairo);
-    virtual void drawResizeHandles(cairo_t* cairo) const;
+    void drawPorts(const ICairoShim& cairoShim) const;
+    static void drawSelected(const ICairoShim& cairoShim);
+    virtual void drawResizeHandles(const ICairoShim& cairoShim) const;
     
     /// returns the clicktype given a mouse click at \a x, \a y.
     virtual ClickType::Type clickType(float x, float y) const;
@@ -362,7 +361,7 @@ namespace minsky
   struct BottomRightResizerItem: public Item
   {
     bool onResizeHandle(float x, float y) const override; 
-    void drawResizeHandles(cairo_t* cairo) const override;
+    void drawResizeHandles(const ICairoShim& cairoShim) const override;
     /// returns coordinates of the resizer handle
     virtual Point resizeHandleCoords() const;
   };

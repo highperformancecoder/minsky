@@ -47,13 +47,13 @@
 </clipPath>
 </defs>
 <g fill="rgb(0%, 0%, 0%)" fill-opacity="1">
-<use xlink:href="#glyph-0-0" x="2" y="50.46875"/>
-<use xlink:href="#glyph-0-1" x="11" y="50.46875"/>
-<use xlink:href="#glyph-0-2" x="19" y="50.46875"/>
-<use xlink:href="#glyph-0-3" x="28" y="50.46875"/>
-<use xlink:href="#glyph-0-1" x="36" y="50.46875"/>
+<use xlink:href="#glyph-0-0" x="2" y="50.34375"/>
+<use xlink:href="#glyph-0-1" x="11" y="50.34375"/>
+<use xlink:href="#glyph-0-2" x="19" y="50.34375"/>
+<use xlink:href="#glyph-0-3" x="28" y="50.34375"/>
+<use xlink:href="#glyph-0-1" x="36" y="50.34375"/>
 </g>
-<path fill="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke="rgb(0%, 0%, 100%)" stroke-opacity="1" stroke-miterlimit="10" d="M -33 -13.375 L -33 13.375 L 33 13.375 L 35 0 L 33 -13.375 Z M -33 -13.375 " transform="matrix(1, 0, 0, 1, 34, 47)"/>
+<path fill="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke="rgb(0%, 0%, 100%)" stroke-opacity="1" stroke-miterlimit="10" d="M -33 -13.5 L -33 13.5 L 33 13.5 L 35 0 L 33 -13.5 Z M -33 -13.5 " transform="matrix(1, 0, 0, 1, 34, 47)"/>
 <path fill="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M -40 -40 L 40 -40 L 40 40 L -40 40 Z M -40 -40 " transform="matrix(1, 0, 0, 1, 208, 51)"/>
 <path fill="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke="rgb(0%, 0%, 0%)" stroke-opacity="1" stroke-miterlimit="10" d="M -40 -40 L 40 -40 L 40 40 L -40 40 Z M -50 -50 L 50 -50 L 50 50 L -50 50 Z M -50 -50 " transform="matrix(1, 0, 0, 1, 208, 51)"/>
 <g fill="rgb(0%, 0%, 0%)" fill-opacity="1">

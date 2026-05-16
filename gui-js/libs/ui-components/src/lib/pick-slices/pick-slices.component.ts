@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
 import { MessageBoxSyncOptions } from 'electron/renderer';
@@ -21,7 +21,8 @@ export class PickSlicesComponent implements OnInit {
   
   constructor(
     private route: ActivatedRoute,
-    private electronService: ElectronService
+    private electronService: ElectronService,
+    private cdRef: ChangeDetectorRef,
   ) {}
 
   ngOnInit(): void {
@@ -35,6 +36,8 @@ export class PickSlicesComponent implements OnInit {
           selected: pickedSliceLabels.includes(l),
           lastClicked: false
         }));
++      // Ensure UI updates even if backend calls resolve outside Angular's zone.
++      this.cdRef.detectChanges();
     });
   }
 

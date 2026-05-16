@@ -6,6 +6,7 @@ import { contextBridge, ipcRenderer } from 'electron';
 contextBridge.exposeInMainWorld('electron', {
   getAppVersion: () => ipcRenderer.invoke('get-app-version'),
   ipcRendererOn: (channel: string, listener) => ipcRenderer.on(channel,listener),
+  ipcRendererOff: (channel: string, listener) => ipcRenderer.removeListener(channel, listener),
   ipcRenderer: { ...ipcRenderer, send: ipcRenderer.send, sendSync: ipcRenderer.sendSync, invoke: ipcRenderer.invoke },
   platform: process.platform,
 });

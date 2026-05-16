@@ -82,6 +82,7 @@ namespace minsky
     classdesc::pack_t lastState;
     civita::TensorPtr cachedDbResult; ///< cache of database query result
     ravel::Op::ReductionOp m_nextReduction=ravel::Op::sum;
+
   public:
     static SVGRenderer svgRenderer; ///< SVG icon to display when not in editor mode
     RavelPopup popup; ///< popup Ravel control window
@@ -109,7 +110,7 @@ namespace minsky
     void leaveLockGroup();
     void broadcastStateToLockGroup() const;
     
-    void draw(cairo_t* cairo) const override;
+    void draw(const ICairoShim& cairoShim) const override;
     void resize(const LassoBox&) override;
     bool inItem(float x, float y) const override;
     void onMouseDown(float x, float y) override;

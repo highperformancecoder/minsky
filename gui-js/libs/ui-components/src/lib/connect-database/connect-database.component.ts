@@ -33,6 +33,7 @@ export class ConnectDatabaseComponent {
 
   async ngOnInit() {
     this.backends=await this.ravel.db.backends();
+    this.cdRef.detectChanges();
   }
 
   setDbType(event) {
@@ -44,6 +45,7 @@ export class ConnectDatabaseComponent {
   async getTables() {
     this.ravel.db.connect(this.dbType,this.connection,"");
     this.tables=await this.ravel.db.tableNames();
+    this.cdRef.detectChanges();
   }
   
   setTable(event: Event) {

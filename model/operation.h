@@ -46,7 +46,7 @@ namespace minsky
   public:
     typedef OperationType::Type Type;
     Type type() const override {return T;}
-    void iconDraw(cairo_t *) const override;
+    void iconDraw(const ICairoShim&) const override;
     std::size_t numPorts() const override 
     {return OperationTypeInfo::numArguments<T>()+1;}
     Operation() {
@@ -108,54 +108,54 @@ namespace minsky
 
   };
 
-  /// helper class to draw port label symbols
-  struct DrawBinOp
+  /// helper class to draw port label symbols using ICairoShim
+  struct DrawBinOpShim
   {
-    cairo_t *cairo;
+    const ICairoShim& cairoShim;
     double zoomFactor;
-    DrawBinOp(cairo_t *cairo, double z=1): cairo(cairo), zoomFactor(z) {}
+    DrawBinOpShim(const ICairoShim& cairoShim, double z=1): cairoShim(cairoShim), zoomFactor(z) {}
 
     void drawPlus() const
     {
-      cairo_move_to(cairo,0,-5);
-      cairo_line_to(cairo,0,5);
-      cairo_move_to(cairo,-5,0);
-      cairo_line_to(cairo,5,0);
-      cairo_stroke(cairo);
+      cairoShim.moveTo(0,-5);
+      cairoShim.lineTo(0,5);
+      cairoShim.moveTo(-5,0);
+      cairoShim.lineTo(5,0);
+      cairoShim.stroke();
     }
 
     void drawMinus() const
     {
-      cairo_move_to(cairo,-5,0);
-      cairo_line_to(cairo,5,0);
-      cairo_stroke(cairo);
+      cairoShim.moveTo(-5,0);
+      cairoShim.lineTo(5,0);
+      cairoShim.stroke();
     }
 
     void drawMultiply() const
     {
-      cairo_move_to(cairo,-5,-5);
-      cairo_line_to(cairo,5,5);
-      cairo_move_to(cairo,-5,5);
-      cairo_line_to(cairo,5,-5);
-      cairo_stroke(cairo);
+      cairoShim.moveTo(-5,-5);
+      cairoShim.lineTo(5,5);
+      cairoShim.moveTo(-5,5);
+      cairoShim.lineTo(5,-5);
+      cairoShim.stroke();
     }
 
     void drawDivide() const
     {
-      cairo_move_to(cairo,-5,0);
-      cairo_line_to(cairo,5,0);
-      cairo_new_sub_path(cairo);
-      cairo_arc(cairo,0,3,1,0,2*M_PI);
-      cairo_new_sub_path(cairo);
-      cairo_arc(cairo,0,-3,1,0,2*M_PI);
-      cairo_stroke(cairo);
+      cairoShim.moveTo(-5,0);
+      cairoShim.lineTo(5,0);
+      cairoShim.newSubPath();
+      cairoShim.arc(0,3,1,0,2*M_PI);
+      cairoShim.newSubPath();
+      cairoShim.arc(0,-3,1,0,2*M_PI);
+      cairoShim.stroke();
     }
 
     void drawSymbol(const char* s) const
     {
-      cairo_scale(cairo,zoomFactor,zoomFactor);
-      cairo_move_to(cairo,-5,0);
-      cairo_show_text(cairo,s);
+      cairoShim.scale(zoomFactor,zoomFactor);
+      cairoShim.moveTo(-5,0);
+      cairoShim.showText(s);
     }
   
     // puts a small symbol to identify port
@@ -163,19 +163,21 @@ namespace minsky
     template <class F>
     void drawPort(F f, float x, float y, float rotation)  const
     {
-      const ecolab::cairo::CairoSave cs(cairo);
+      cairoShim.save();
       
       const double angle=rotation * M_PI / 180.0;
       if (minsky::flipped(rotation))
         y=-y;
-      cairo_rotate(cairo, angle);
+      cairoShim.rotate(angle);
       
-      cairo_translate(cairo,0.7*x,0.6*y);
-      cairo_scale(cairo,0.5,0.5);
+      cairoShim.translate(0.7*x,0.6*y);
+      cairoShim.scale(0.5,0.5);
       
       // and counter-rotate
-      cairo_rotate(cairo, -angle);
+      cairoShim.rotate(-angle);
       f();
+      
+      cairoShim.restore();
     }
   };
 }

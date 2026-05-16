@@ -35,6 +35,7 @@ export class RavelSelectHorizontalDimComponent implements OnInit  {
 
   async ngOnInit() {
     this.dataCols=await this.ravel.db.numericalColumnNames();
+    this.cdRef.detectChanges();
   }
   
   clickDim(event: Event) {

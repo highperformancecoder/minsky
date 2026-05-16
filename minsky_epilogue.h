@@ -145,6 +145,18 @@ namespace classdesc_access
   
   template <>
   struct access_RESTProcess<civita::any,void>: public classdesc::NullDescriptor<classdesc::RESTProcess_t> {};
+
+#ifdef SVGITEM_H
+#define CLASSDESC_json_pack___RsvgHandle
+  template <> struct access_json_pack<RsvgHandle>:
+    classdesc::NullDescriptor<classdesc::json_pack_t> {};
+#define CLASSDESC_json_unpack___RsvgHandle
+  template <> struct access_json_unpack<RsvgHandle>:
+    classdesc::NullDescriptor<classdesc::json_unpack_t> {};
+#define CLASSDESC_RESTProcess___RsvgHandle
+  template <> struct access_RESTProcess<RsvgHandle>:
+    classdesc::NullDescriptor<classdesc::RESTProcess_t> {};
+#endif
 }
 
 #ifdef CIVITA_XVECTOR_H

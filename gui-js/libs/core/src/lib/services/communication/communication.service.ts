@@ -47,8 +47,7 @@ export class CommunicationService {
 
   currentTab = MainRenderingTabs.canvas as string;
   showPlayButton$ = new BehaviorSubject<boolean>(true);
-  t = '0';
-  deltaT = '0';
+  tdt$ = new BehaviorSubject<number[]>([0,0]);
 
   mouseX: number;
   mouseY: number;
@@ -244,9 +243,7 @@ export class CommunicationService {
   }
 
   private async stepSimulation() {
-    const [t, deltaT] = (await this.electronService.minsky.step());
-
-    this.updateSimulationTime(t, deltaT);
+    this.updateSimulationTime(await this.electronService.minsky.step());
   }
 
   private async initSimulation() {
@@ -263,8 +260,7 @@ export class CommunicationService {
   private simulate() {
     setTimeout(async () => {
       if (!this.showPlayButton$.value) {
-        const [t, deltaT] = await this.electronService.minsky.step();
-        this.updateSimulationTime(t, deltaT);
+        this.updateSimulationTime(await this.electronService.minsky.step());
         this.simulate();
       }
     }, this.delay);
@@ -278,18 +274,15 @@ export class CommunicationService {
 
     const t = await this.electronService.minsky.t();
     const deltaT = await this.electronService.minsky.deltaT();
-    this.updateSimulationTime(t, deltaT);
+    this.updateSimulationTime([t, deltaT]);
   }
 
-  private updateSimulationTime(t: number, deltaT: number) {
-    if (Number(this.t) >= this.runUntilTime) {
+  private updateSimulationTime(tdt: number[]) {
+    if (Number(tdt[0]) >= this.runUntilTime) {
       this.showPlayButton$.next(true);
     }
 
-    this.t = t.toFixed(2);
-
-    this.deltaT = deltaT.toFixed(2);
-
+    this.tdt$.next(tdt);
   }
 
   private async resetZoom(centerX: number, centerY: number) {

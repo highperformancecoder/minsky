@@ -25,6 +25,7 @@
 #include "autoLayout.h"
 #include "equations.h"
 #include <cairo_base.h>
+#include "../engine/cairoShimCairo.h"
 #include "group.rcd"
 #include "itemT.rcd"
 #include "bookmark.rcd"
@@ -926,7 +927,7 @@ namespace minsky
     return ClickType::outside;
   }
 
-  void Group::draw(cairo_t* cairo) const
+  void Group::draw(const ICairoShim& cairoShim) const
   {
     auto [angle,flipped]=rotationAsRadians();
 
@@ -937,47 +938,51 @@ namespace minsky
     const float z=zoomFactor();
 
     const unsigned width=z*this->iWidth(), height=z*this->iHeight();
-    const cairo::CairoSave cs(cairo);
-    cairo_rotate(cairo,angle);
+    cairoShim.save();
+    cairoShim.rotate(angle);
 
     // In docker environments, something invisible gets drawn outside
     // the horizontal dimensions, stuffing up the bb.width()
     // calculation, and then causing the groupResize test to
     // fail. This extra clip path fixes the problem.
-    cairo_rectangle(cairo,-0.5*width,-0.5*height-topMargin*z, width, height+2*topMargin*z);
-    cairo_clip(cairo);
+    cairoShim.rectangle(-0.5*width,-0.5*height-topMargin*z, width, height+2*topMargin*z);
+    cairoShim.clip();
 
     // draw default group icon
 
     // display I/O region in grey
+    // drawIORegion needs cairo_t* for now
+    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
+    cairo_t* cairo = shimImpl._internalGetCairoContext();
     drawIORegion(cairo);
 
     {
-      const cairo::CairoSave cs(cairo);
-      cairo_translate(cairo, -0.5*width+leftMargin, -0.5*height);
+      cairoShim.save();
+      cairoShim.translate(-0.5*width+leftMargin, -0.5*height);
 
               
       const double scalex=double(width-leftMargin-rightMargin)/width;
-      cairo_scale(cairo, scalex, 1);
+      cairoShim.scale(scalex, 1);
       
       // draw a simple frame 
-      cairo_rectangle(cairo,0,0,width,height);
+      cairoShim.rectangle(0,0,width,height);
       {
-        const cairo::CairoSave cs(cairo);
-        cairo_identity_matrix(cairo);
-        cairo_set_line_width(cairo,1);
-        cairo_stroke(cairo);
+        cairoShim.save();
+        cairoShim.identityMatrix();
+        cairoShim.setLineWidth(1);
+        cairoShim.stroke();
+        cairoShim.restore();
       }
 
       if (!displayContents())
         {
           if (displayPlot)
             {
-              const cairo::CairoSave cs(cairo);
+              cairoShim.save();
               if (flipped)
                 {
-                  cairo_translate(cairo,width,height);
-                  cairo_rotate(cairo,M_PI);  // rotate plot to keep it right way up.
+                  cairoShim.translate(width,height);
+                  cairoShim.rotate(M_PI);  // rotate plot to keep it right way up.
                 }
               // propagate plot type to underling ecolab::Plot
               auto& pt=const_cast<Plot*>(static_cast<const Plot*>(displayPlot.get()))->plotType;
@@ -987,62 +992,67 @@ namespace minsky
                 case PlotWidget::bar:  pt=Plot::bar;  break;
                 default: break;
                 }
+              // Plot::draw needs cairo_t*
               displayPlot->Plot::draw(cairo, width, height);
+              cairoShim.restore();
             }
           else
             {
-              cairo_rectangle(cairo,0, 0,width, height);
-              cairo_clip(cairo);
-              svgRenderer.render(cairo,width, height);
+              cairoShim.rectangle(0, 0,width, height);
+              cairoShim.clip();
+              // Render SVG using ICairoShim abstraction
+              cairoShim.renderSVG(svgRenderer, width, height);
             }
         }
+      cairoShim.restore();
     }
 
+    // drawEdgeVariables needs cairo_t* for now
     drawEdgeVariables(cairo);
 
 
     // display text label
     if (!title.empty())
       {
-        const cairo::CairoSave cs(cairo);
-        cairo_scale(cairo, z, z);
-        cairo_select_font_face
-          (cairo, "sans-serif", CAIRO_FONT_SLANT_ITALIC, 
-           CAIRO_FONT_WEIGHT_NORMAL);
-        cairo_set_font_size(cairo,12);
+        cairoShim.save();
+        cairoShim.scale(z, z);
+        cairoShim.selectFontFace("sans-serif", CAIRO_FONT_SLANT_ITALIC, CAIRO_FONT_WEIGHT_NORMAL);
+        cairoShim.setFontSize(12);
               
         // extract the bounding box of the text
         cairo_text_extents_t bbox;
-        cairo_text_extents(cairo,title.c_str(),&bbox);       
+        cairoShim.textExtents(title, bbox);       
         const double w=0.5*bbox.width+2; 
         const double h=0.5*bbox.height+5;
 
         // if rotation is in 1st or 3rd quadrant, rotate as
         // normal, otherwise flip the text so it reads L->R
         if (flipped)
-          cairo_rotate(cairo, M_PI);
+          cairoShim.rotate(M_PI);
 
         // prepare a background for the text, partially obscuring graphic
         const double transparency=displayContents()? 0.25: 1;
 
         // display text
-        cairo_move_to(cairo, -w+1, h-12-0.5*(height)/z);
-        cairo_set_source_rgba(cairo,0,0,0,transparency);
-        cairo_show_text(cairo,title.c_str());
+        cairoShim.moveTo(-w+1, h-12-0.5*(height)/z);
+        cairoShim.setSourceRGBA(0,0,0,transparency);
+        cairoShim.showText(title);
+        cairoShim.restore();
       }
 
     if (mouseFocus)
       {
-        displayTooltip(cairo,tooltip());
+        displayTooltip(cairoShim,tooltip());
         // Resize handles always visible on mousefocus. For ticket 92.
-        drawResizeHandles(cairo);
+        drawResizeHandles(cairoShim);
       }
 
-    cairo_rectangle(cairo,-0.5*width,-0.5*height,width,height);
-    cairo_clip(cairo);
+    cairoShim.rectangle(-0.5*width,-0.5*height,width,height);
+    cairoShim.clip();
     if (selected)
-      drawSelected(cairo);
+      drawSelected(cairoShim);
     
+    cairoShim.restore();
   }
 
   // Helper to compute edge variable layout (world-space positions) radially
@@ -1093,7 +1103,10 @@ namespace minsky
         cairo_translate(cairo,xEdge,yOff);
         // cairo context is already rotated, so antirotate
         cairo_rotate(cairo,-angle);
-        v->draw(cairo);
+        {
+          CairoShimCairo shim(cairo);
+          v->draw(shim);
+        }
 
         if (i == 0)
           {

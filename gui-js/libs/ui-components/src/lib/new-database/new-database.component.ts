@@ -35,6 +35,7 @@ export class NewDatabaseComponent {
 
   async ngOnInit() {
     this.backends=await this.electronService.minsky.databaseIngestor.db.backends();
+    this.cdRef.detectChanges();
   }
 
   setDbType(event) {

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ElectronService } from '@minsky/core';
 import { PlotWidget } from '@minsky/shared';
@@ -47,7 +47,7 @@ export class PenStylesComponent implements OnInit {
     return this.form.get('pens') as FormArray;
   }
 
-  constructor(private electronService: ElectronService) {
+  constructor(private electronService: ElectronService, private cdRef: ChangeDetectorRef) {
     this.form = new FormGroup({
       pens: new FormArray([]),
     });
@@ -64,6 +64,7 @@ export class PenStylesComponent implements OnInit {
       this.palette.forEach((p) => {
         this.pens.push(this.createPen(p));
       });
+      this.cdRef.detectChanges();
     })();
   }
 

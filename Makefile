@@ -8,7 +8,6 @@ export AEGIS
 export MXE
 export OPENMP
 export OPT
-#export FLAGS
 
 # root directory for ecolab include files and libraries
 ECOLAB_HOME=$(shell pwd)/ecolab
@@ -83,15 +82,30 @@ MAC_DIST_DIR=minsky.app/Contents/MacOS
 # default min version is the machine doing the building.
 MACOSX_MIN_VERSION=$(shell sw_vers|grep ProductVersion|tr -s '\t'|cut -f2)
 LIBS+=-framework AppKit
+FLAGS+=-std=c++20
+# add in MacPorts prefix, in case Node is installed through MacPorts
+DIRS+=/opt/local
 endif
+
 export GCOV
 export CLASSDESC=$(shell pwd)/ecolab/classdesc/classdesc
 MAKEOVERRIDES+=FPIC=1 CLASSDESC=$(CLASSDESC)
 ifneq ($(MAKECMDGOALS),clean)
+
+# RavelCAPI
 build_ravelcapi:=$(shell cd RavelCAPI; if  $(MAKE) $(JOBS) $(MAKEOVERRIDES) >build.log 2>&1; then echo "ravelcapi built"; fi) 
 $(warning $(build_ravelcapi))
 ifneq ($(strip $(build_ravelcapi)),ravelcapi built)
 $(error Making RavelCAPI failed: check RavelCAPI/build.log)
+endif
+
+ifndef MXE
+# libclipboard
+build_libclipboard:=$(shell cd libclipboard; if cmake -DBUILD_SHARED_LIBS=0 -DCMAKE_C_FLAGS=-fPIC . &>build.log && $(MAKE) $(JOBS) >>build.log 2>&1; then echo "libclipboard built"; fi) 
+$(warning $(build_libclipboard))
+ifneq ($(strip $(build_libclipboard)),libclipboard built)
+$(error Making libclipboard failed: check libclipboard/build.log)
+endif
 endif
 
 endif
@@ -119,8 +133,9 @@ ifneq ($(MAKECMDGOALS),clean)
   $(warning have node=$(HAVE_NODE))
   ifeq ($(HAVE_NODE),1)
     NODE_API=
+    nsearch=$(firstword $(foreach dir,$(DIRS) /usr,$(wildcard $(dir)/$(1))))
     ifeq ($(OS),Darwin)
-      NODE_HEADER=/usr/local/include/node
+      NODE_HEADER=$(call nsearch,include/node)
     else
       ifdef MXE
         NODE_API+=node-api.o
@@ -129,7 +144,6 @@ ifneq ($(MAKECMDGOALS),clean)
         NODE_API+=node-api.o
       endif
       NODE_VERSION=$(shell node -v|sed -E -e 's/[^0-9]*([0-9]*).*/\1/')
-      nsearch=$(firstword $(foreach dir,$(DIRS) /usr,$(wildcard $(dir)/$(1))))
       NODE_HEADER=$(call nsearch,include/node$(NODE_VERSION))
       ifeq ($(NODE_HEADER),) # Ubuntu stashes node headers at /usr/include/nodejs, also if node version doesn't match, create a link in your include search path (eg ~/usr/include/node
         NODE_HEADER=$(call nsearch,include/node)
@@ -169,7 +183,7 @@ PREFIX=/usr/local
 # directory
 MODLINK=$(LIBMODS:%=$(ECOLAB_HOME)/lib/%)
 MODEL_OBJS=autoLayout.o cairoItems.o canvas.o CSVDialog.o dataOp.o equationDisplay.o godleyIcon.o godleyTable.o godleyTableWindow.o grid.o group.o item.o intOp.o lasso.o lock.o minsky.o operation.o operationRS.o operationRS1.o  operationRS2.o phillipsDiagram.o plotWidget.o port.o pubTab.o ravelWrap.o renderNativeWindow.o selection.o sheet.o SVGItem.o switchIcon.o userFunction.o userFunction_units.o variableInstanceList.o variable.o variablePane.o windowInformation.o wire.o 
-ENGINE_OBJS=clipboard.o databaseIngestor.o derivative.o equationDisplayRender.o equations.o evalGodley.o evalOp.o flowCoef.o \
+ENGINE_OBJS=clipboard.o cairoShimCairo.o databaseIngestor.o derivative.o equationDisplayRender.o equations.o evalGodley.o evalOp.o flowCoef.o \
 	godleyExport.o latexMarkup.o valueId.o variableValue.o node_latex.o node_matlab.o CSVParser.o \
 	minskyTensorOps.o mdlReader.o saver.o rungeKutta.o
 SCHEMA_OBJS=schema3.o schema2.o schema1.o schema0.o schemaHelper.o variableType.o \
@@ -215,14 +229,28 @@ ifdef CLASSDESC_ARITIES
 FLAGS+=-DUSE_UNROLLED -DCLASSDESC_ARITIES=$(CLASSDESC_ARITIES)
 endif
 
-FLAGS+=-UTR1 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -IRavelCAPI/civita -IRavelCAPI -DCLASSDESC $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-attributes -DCIVITA_ALLOCATOR=civita::LibCAllocator
+FLAGS+=-UTR1 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -IRavelCAPI/civita -IRavelCAPI -Ilibclipboard/include -DCLASSDESC $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-attributes -DCIVITA_ALLOCATOR=civita::LibCAllocator
+
+ifdef OBS
+# Fedora environments make duplicated macros a fatal error, and then
+# have conflicted macrso defined in the python headers vs system
+# headers :P
+FLAGS+=-Wno-macro-redefined
+# Some boost installations require linking to boost_system/thread, others don't have the library installed
+# -Wl,--no-as-needed suggested to solve Fedora linkage problems
+LIBS+=-Wl,--no-as-needed $(if $(call search,lib*/libboost_thread.so),-lboost_thread$(BOOST_EXT))
+LIBS+=$(if $(call search,lib*/libboost_system.so),-lboost_system$(BOOST_EXT)) -Wl,--as-needed
+endif
 
 ifeq ($(CPLUSPLUS),clang++)
 # note some of these flags are disabling warnings that are invalid in some circumstances
 FLAGS+=-std=c++20 -Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-defaulted-function-deleted -Wno-uninitialized
 endif
 
-ifdef OPENMP
+# enable OPENMP by default
+#ifdef OPENMP
+# Default compiler on MacOSX does not support OpenMP. Sigh!
+ifneq ($(OS),Darwin)
 FLAGS+=-fopenmp
 LIBS+=-fopenmp
 endif
@@ -298,7 +326,7 @@ MXE_DLLS=libboost_thread-mt-x64 libbrotlidec libbrotlicommon libbz2 libcairo-2 \
 libcroco-0 libcrypto-3-x64 \
 libexpat-1 libffi libfontconfig-1 libfreetype-6 libfribidi-0 libgcc_s_seh-1 \
 libgdk_pixbuf-2 libgio-2 libglib-2 libgmodule-2 \
-libgobject-2 libgsl-27 libgslcblas-0 libharfbuzz-0 libiconv-2 libintl-8 \
+libgobject-2 libgomp-1 libgsl-27 libgslcblas-0 libharfbuzz-0 libiconv-2 libintl-8 \
 libjpeg-9 liblzma-5 libpango-1 libpangocairo-1 libpangoft2-1 libpangowin32-1 \
 libpcre2-8-0 libpixman-1-0 libpng16-16 libreadline8 librsvg-2-2 libssl-3-x64 \
 libstdc++-6 libtermcap libwinpthread-1 libxml2-16 tcl86 zlib1 \
@@ -316,15 +344,13 @@ ifeq ($(OS),CYGWIN)
 FLAGS+=-Wa,-mbig-obj -Wl,-x -Wl,--oformat,pe-bigobj-x86-64
 endif
 
-LIBS+=-LRavelCAPI -lravelCAPI -LRavelCAPI/civita -lcivita  -lboost_date_time$(BOOST_EXT) -lgsl -lgslcblas -lssl -lcrypto
-
-# Some boost installation require linking to boost_system, others don't have the library installed
-LIBS+=$(if $(call search,lib*/libboost_system.so),-lboost_system$(BOOST_EXT))
+LIBS:=-LRavelCAPI -lravelCAPI -LRavelCAPI/civita -lcivita  -lboost_date_time$(BOOST_EXT) -lgsl -lgslcblas -lssl -lcrypto $(LIBS)
 
 ifdef MXE
 LIBS+=-lgdi32 -lcrypt32 -lbcrypt -lshcore
 else
-LIBS+=-lclipboard -lxcb -lX11 -ldl
+LIBS+=-Llibclipboard -lclipboard -lxcb -lX11 -ldl
+
 endif
 
 # RSVG dependencies calculated here
@@ -486,7 +512,7 @@ node-api.o: node-api.cc
 $(EXES):
 
 tests: $(EXES)
-	cd test; $(MAKE)
+	cd test; $(MAKE) $(MAKEOVERRIDES) CPLUSPLUS="$(CPLUSPLUS)"
 
 BASIC_CLEAN=rm -rf *.o *~ "\#*\#" core *.d *.cd *.rcd *.tcd *.xcd *.gcda *.gcno *.so *.dll *.dylib
 
@@ -499,6 +525,7 @@ clean:
 	-cd schema && $(BASIC_CLEAN)
 	-cd ecolab && $(MAKE) clean
 	-cd RavelCAPI && $(MAKE) clean
+	-cd libclipboard && $(MAKE) clean
 
 mac-dist:
 # force rebuild of the node file to force rewriting of dependent dylibs

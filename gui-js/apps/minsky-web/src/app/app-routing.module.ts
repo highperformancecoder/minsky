@@ -28,7 +28,8 @@ import {
   EditHandleDescriptionComponent,
   EditHandleDimensionComponent, 
   PickSlicesComponent,
-  LockHandlesComponent
+  LockHandlesComponent,
+  LoginComponent,
 } from '@minsky/ui-components';
 
 const routes: Routes = [
@@ -148,6 +149,10 @@ const routes: Routes = [
   {
     path: 'headless/variable-pane',
     component: VariablePaneComponent,
+  },
+  {
+    path: 'headless/login',
+    component: LoginComponent,
   },
   {
     path: '**',

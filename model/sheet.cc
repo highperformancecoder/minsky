@@ -24,6 +24,7 @@
 #include "plotWidget.h"
 #include <cairo_base.h>
 #include <pango.h>
+#include "../engine/cairoShimCairo.h"
 
 #include "itemT.rcd"
 #include "sheet.rcd"
@@ -73,7 +74,7 @@ bool Sheet::onResizeHandle(float xx, float yy) const
 }
 
 
-void Sheet::drawResizeHandles(cairo_t* cairo) const
+void Sheet::drawResizeHandles(const ICairoShim& cairo) const
 {
   auto sf=resizeHandleSize();
   const float w=0.5f*m_width*zoomFactor(), h=0.5f*m_height*zoomFactor();
@@ -82,7 +83,7 @@ void Sheet::drawResizeHandles(cairo_t* cairo) const
   drawResizeHandle(cairo,w,-h,sf,0.5*M_PI);
   drawResizeHandle(cairo,w,h,sf,0);
   drawResizeHandle(cairo,-w,h,sf,0.5*M_PI);
-  cairo_stroke(cairo);
+  cairo.stroke();
 }
 
 
@@ -293,14 +294,15 @@ namespace {
 
 void Sheet::draw(cairo_t* cairo) const
 {
+  CairoShimCairo cairoShim(cairo);
   auto z=zoomFactor();
   m_ports[0]->moveTo(x()-0.5*m_width*z,y());
   if (mouseFocus)
     {
-      drawPorts(cairo);
-      displayTooltip(cairo,tooltip());
+      drawPorts(cairoShim);
+      displayTooltip(cairoShim,tooltip());
       // Resize handles always visible on mousefocus. For ticket 92.
-      drawResizeHandles(cairo);
+      drawResizeHandles(cairoShim);
     }
 
   cairo_scale(cairo,z,z);
@@ -321,7 +323,7 @@ void Sheet::draw(cairo_t* cairo) const
   cairo_rectangle(cairo,-0.5*m_width+border,-0.5*m_height+border,m_width-2*border,m_height-2*border);
   cairo_clip(cairo);
   
-  if (selected) drawSelected(cairo);
+  if (selected) drawSelected(cairoShim);
 
   static const regex pangoMarkup("<[^<>]*>");
   smatch match;
@@ -518,6 +520,13 @@ void Sheet::draw(cairo_t* cairo) const
   cairo_reset_clip(cairo);
   cairo_rectangle(cairo,-0.5*m_width,-0.5*m_height,m_width,m_height);
   cairo_clip(cairo);
+}
+
+void Sheet::draw(const ICairoShim& cairoShim) const
+{
+  // TODO: Implement properly without cairo_t* delegation
+  auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
+  draw(shimImpl._internalGetCairoContext());
 }
 
 void Sheet::exportAsCSV(const string& filename, bool tabular) const

@@ -1,4 +1,4 @@
-import { Component, OnInit, VERSION } from '@angular/core';
+import { Component, OnInit, VERSION, ChangeDetectorRef } from '@angular/core';
 import { ElectronService } from '@minsky/core';
 import { version } from '@minsky/shared';
 
@@ -14,7 +14,7 @@ export class AboutComponent implements OnInit {
   frontEndVersion: string;
   ravelVersion: string;
 
-  constructor(private electronService: ElectronService){}
+  constructor(private electronService: ElectronService, private cdRef: ChangeDetectorRef,){}
 
   ngOnInit(): void {
     (async () => {
@@ -22,7 +22,8 @@ export class AboutComponent implements OnInit {
       this.ravelVersion = await minsky.ravelVersion();
       this.minskyVersion = await minsky.minskyVersion();
       this.frontEndVersion=version;
-    })();
+      // Ensure UI updates even if backend calls resolve outside Angular's zone.
+      this.cdRef.detectChanges();    })();
   }
 
   async closeWindow() {this.electronService.closeWindow();}

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { ElectronService } from '@minsky/core';
 import { ActivatedRoute } from '@angular/router';
 import { ScaleHandler } from '../scale-handler/scale-handler.class';
@@ -31,7 +31,7 @@ export class SummaryComponent implements OnInit {
     
   scale = new ScaleHandler();
 
-  constructor(private electronService: ElectronService, route: ActivatedRoute) {}
+  constructor(private electronService: ElectronService, route: ActivatedRoute, private cdRef: ChangeDetectorRef) {}
 
   append(o: Object, key: string, v) {
     if (o[key])
@@ -85,6 +85,7 @@ export class SummaryComponent implements OnInit {
     // prevent wiring tab handlers from interfering with this tab
     document.body.onkeydown=null;
     document.body.onkeyup=null;
+    this.cdRef.detectChanges();
   }
 
   types(category: string): string[] {

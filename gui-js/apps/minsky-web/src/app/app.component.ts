@@ -6,7 +6,8 @@ import { TranslateService } from '@ngx-translate/core';
 import { MatButtonModule } from '@angular/material/button';
 import { HeaderComponent } from '../../../../libs/ui-components/src/lib/header/header.component';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-
+import { NavigationEnd } from '@angular/router';
+import { filter, first } from 'rxjs/operators';
 
 @Component({
     selector: 'minsky-root',
@@ -55,8 +56,7 @@ export class AppComponent implements OnInit, DoCheck {
   }
 
   async ngDoCheck() {
-    if(this.loading && this.router.url !== '/') {
-      this.loading = false;
+    if(this.loading) {
       this.updatePubTabs();
       this.cdRef.detectChanges();
 
@@ -94,7 +94,14 @@ export class AppComponent implements OnInit, DoCheck {
   async ngOnInit() {
     this.electronService.on(events.CHANGE_MAIN_TAB, ()=>this.changeTab('minsky.canvas'));
     this.electronService.on(events.PUB_TAB_REMOVED, ()=>this.updatePubTabs());
-  }
+    // stop spinner after first successful navigation
+    this.router.events
+      .pipe(filter(e => e instanceof NavigationEnd), first())
+      .subscribe(() => {
+        this.loading = false;
+        this.updatePubTabs();
+        this.cdRef.detectChanges();
+      });  }
 
   async updatePubTabs() {
     let pubTabs=await this.electronService.minsky.publicationTabs.$properties();

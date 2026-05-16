@@ -33,6 +33,7 @@ namespace minsky
 #ifdef MXE
     double m_width=0, m_height=0;
 #endif
+    friend class CairoShimCairo;
   public:
     SVGRenderer() {}
     SVGRenderer(const std::string& resource) {setResource(resource);}
@@ -48,6 +49,16 @@ namespace minsky
 
   
 }
+
+namespace classdesc
+{
+#define CLASSDESC_TYPENAME___RsvgHandle
+  template <>
+  struct tn<RsvgHandle> {
+    static string name() {return "RsvgHandle";}
+  };
+}
+
 
 #include "SVGItem.cd"
 #include "SVGItem.xcd"

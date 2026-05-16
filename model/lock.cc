@@ -27,6 +27,7 @@
 #include "lock.rcd"
 #include "lock.xcd"
 #include "minsky.h"
+#include "cairoShimCairo.h"
 #include "minsky_epilogue.h"
 using namespace std;
 
@@ -78,29 +79,31 @@ namespace minsky
         throw_error("Locks can only be applied to Ravels");
   }
 
-  void Lock::draw(cairo_t* cairo) const 
+  void Lock::draw(const ICairoShim& cairoShim) const 
   {
     const float z=zoomFactor()*scaleFactor();
     const float w=iWidth()*z, h=iHeight()*z;
 
     {
-      const ecolab::cairo::CairoSave cs(cairo);
-      cairo_translate(cairo,-0.5*w,-0.5*h);
+      cairoShim.save();
+      cairoShim.translate(-0.5*w,-0.5*h);
       SVGRenderer* icon=locked()? &lockedIcon: &unlockedIcon;
-      icon->render(cairo,w,h);
+      // Render SVG using ICairoShim abstraction
+      cairoShim.renderSVG(*icon, w, h);
+      cairoShim.restore();
     }
     
     if (mouseFocus)
       { 		  
-        drawPorts(cairo);
-        displayTooltip(cairo,tooltip());
-        if (onResizeHandles) drawResizeHandles(cairo);
+        drawPorts(cairoShim);
+        displayTooltip(cairoShim,tooltip());
+        if (onResizeHandles) drawResizeHandles(cairoShim);
       }	       
 
     // add 8 pt margin to allow for ports
-    cairo_rectangle(cairo,-0.5*w-8,-0.5*h-8,w+16,h+8);
-    cairo_clip(cairo);
-    if (selected) drawSelected(cairo);
+    cairoShim.rectangle(-0.5*w-8,-0.5*h-8,w+16,h+8);
+    cairoShim.clip();
+    if (selected) drawSelected(cairoShim);
   }
 
   Units Lock::units(bool check) const

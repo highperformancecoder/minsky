@@ -1,0 +1,95 @@
+.login-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 24px;
+  max-width: 400px;
+  margin: 0 auto;
+
+  h2 {
+    margin-bottom: 16px;
+  }
+}
+
+.full-width {
+  width: 100%;
+  margin-bottom: 12px;
+}
+
+.error-message {
+  color: red;
+  margin-bottom: 8px;
+}
+
+.signed-in-message {
+  margin-bottom: 16px;
+}
+
+mat-spinner {
+  display: inline-block;
+  margin-right: 8px;
+}
+
+// Social icon buttons — a horizontal row of circular icon-only buttons
+.social-row {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  width: 100%;
+}
+
+.social-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  border: 1.5px solid #d1d5db;
+  background: #ffffff;
+  cursor: pointer;
+  padding: 0;
+  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+  color: #111;
+
+  &:hover:not([disabled]) {
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.15);
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  svg {
+    display: block;
+  }
+}
+
+.social-fallback-initial {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+.divider-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 4px 0 16px;
+  width: 100%;
+
+  mat-divider {
+    flex: 1;
+  }
+
+  .divider-label {
+    color: #9ca3af;
+    font-size: 12px;
+    white-space: nowrap;
+  }
+}

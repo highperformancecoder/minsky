@@ -20,6 +20,7 @@
 #include "cairoItems.h"
 #include "minsky.h"
 #include "godleyTableWindow.h"
+#include "../engine/cairoShimCairo.h"
 #include "selection.h"
 #include "latexMarkup.h"
 #include <pango.h>
@@ -1219,6 +1220,19 @@ namespace {
     
   }  
  
+  template <ButtonWidgetEnums::RowCol rowCol>
+  void ButtonWidget<rowCol>::draw(const ICairoShim& cairoShim)
+  {
+    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
+    draw(shimImpl._internalGetCairoContext());
+  }
+
+  void GodleyTableEditor::draw(const ICairoShim& cairoShim)
+  {
+    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
+    draw(shimImpl._internalGetCairoContext());
+  }
+
   template class ButtonWidget<ButtonWidgetEnums::row>;
   template class ButtonWidget<ButtonWidgetEnums::col>;
 }

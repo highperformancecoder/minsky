@@ -486,39 +486,38 @@ namespace minsky
       return abs(ssize_t(i)-ssize_t(j))<ssize_t(outerStride); // simpler version of above
     }
     
-    void computeTensor() const override
+    void computeTensor(/*size_t idx*/) const override
     {
       if (!arg) throw_error("input unwired");
       if (!errorMsg.empty()) throw_error(errorMsg);
       if (!argIndices.empty())
         {
           assert(argIndices.size()==size());
-          size_t idx=0;
-          for (auto i: argIndices)
+          for (auto idx: argIndices)
             {
               checkCancel();
-              cachedResult[idx++]=arg->atHCIndex(i)-arg->atHCIndex(i-delta);
+              cachedResult[idx]=arg->atHCIndex(argIndices[idx])-arg->atHCIndex(argIndices[idx]-delta);
             }
         }
       else if (delta>=0)
-        for (size_t i=0; i<cachedResult.size(); checkCancel(), ++i)
+        for (size_t idx=0; idx<cachedResult.size(); checkCancel(), ++idx)
           {
-            auto ai=arg->hypercube().linealIndex(cachedResult.hypercube().splitIndex(i));
+            auto ai=arg->hypercube().linealIndex(cachedResult.hypercube().splitIndex(idx));
             auto t=ai+delta*innerStride;
             if (sameSlice(t, ai))
-              cachedResult[i]=arg->atHCIndex(t)-arg->atHCIndex(ai);
+              cachedResult[idx]=arg->atHCIndex(t)-arg->atHCIndex(ai);
             else
-              cachedResult[i]=nan("");
+              cachedResult[idx]=nan(""); //civita::missing();
           }
       else // with -ve delta, origin of result is shifted
-        for (size_t i=0; i<size(); checkCancel(), ++i)
+        for (size_t idx=0; idx<size(); checkCancel(), ++idx)
           {
-            auto ai=arg->hypercube().linealIndex(cachedResult.hypercube().splitIndex(i));
+            auto ai=arg->hypercube().linealIndex(cachedResult.hypercube().splitIndex(idx));
             auto t=ai-delta;
             if (sameSlice(t,ai))
-              cachedResult[i]=arg->atHCIndex(ai)-arg->atHCIndex(t);
+              cachedResult[idx]=arg->atHCIndex(ai)-arg->atHCIndex(t);
             else
-              cachedResult[i]=nan("");
+              cachedResult[idx]=nan(""); //civita::missing();
           }
     }
 
@@ -539,7 +538,7 @@ namespace minsky
   struct GeneralTensorOp<OperationType::innerProduct>: public civita::CachedTensorOp, public OpState
   {
     std::shared_ptr<ITensor> arg1, arg2;
-    void computeTensor() const override {
+    void computeTensor(/*size_t idx*/) const override {
       if (!arg1 || !arg2) return;
       if (arg1->rank()!=0 && arg2->rank()!=0 &&
           arg1->hypercube().dims()[arg1->rank()-1]!=arg2->hypercube().dims()[0])
@@ -559,6 +558,8 @@ namespace minsky
       for (size_t i=0; i< m; i++)
         for (size_t j=0; j< n; j++)
           {
+//            auto r=div(ssize_t(idx),ssize_t(m));
+//            auto i=r.rem, j=r.quot;
             tmpSum=0;
             for (size_t k=0; k<stride; checkCancel(), k++)  
               {
@@ -586,18 +587,21 @@ namespace minsky
   struct GeneralTensorOp<OperationType::outerProduct>: public civita::CachedTensorOp
   {
     std::shared_ptr<ITensor> arg1, arg2;
-    void computeTensor() const override {
+    void computeTensor(/*size_t idx*/) const override {
       if (!arg1 || !arg2) return;
       const size_t m=arg1->size(), n=arg2->size();   
       assert(cachedResult.size()==m*n);
 	
       for (size_t i=0; i< m; i++)
        {
+//         auto r=div(ssize_t(idx),ssize_t(m));
+//         auto i=r.rem;
+//         auto j=r.quot;
          auto v1=(*arg1)[i];  			
          for (size_t j=0; j< n; checkCancel(), j++) 
          {
             auto v2=(*arg2)[j];			
-            cachedResult[i+j*m]=v1*v2;			
+            cachedResult[/*idx*/ j*m+i]=v1*v2;			
  	 }
        }	     
     }
@@ -640,7 +644,7 @@ namespace minsky
   struct GeneralTensorOp<OperationType::index>: public civita::CachedTensorOp
   {
     std::shared_ptr<ITensor> arg;
-    void computeTensor() const override {
+    void computeTensor(/*size_t*/) const override {
       size_t i=0, j=0;
       for (; i<arg->size(); checkCancel(), ++i)
         if ((*arg)[i]>0.5)
@@ -702,7 +706,7 @@ namespace minsky
       return (1-s)*lv + s*gv;
     }
 
-    void computeTensor() const override
+    void computeTensor(/*size_t*/) const override
     {
       if (arg1->rank()==0)
         throw_error("Cannot apply gather to a scalar");
@@ -1125,9 +1129,14 @@ namespace minsky
           scale[i]=(n*sumxy[i] - sx*sumy[i])/(n*sumxx[i]-sx*sx);
           offset[i]=sumy[i]/n-scale[i]*sx/n;
         }
-      if (state && scale.size()==1 &&
+      if (state &&
           (state->tooltip().empty()||state->tooltip().starts_with("y=")))
-          state->tooltip("y="+to_string(scale[0])+"x + "+to_string(offset[0]));
+        {
+          if (scale.size()==1 )
+            state->tooltip("y="+to_string(scale[0])+"x + "+to_string(offset[0]));
+          else
+            state->tooltip("");
+        }
       m_timestamp=timestamp();
     }
     
@@ -1155,7 +1164,6 @@ namespace minsky
             dimension=i-xv.begin();
       }
       
-      sumy.setArgument(y,args);
       TensorPtr spreadX;
       if (x)
         {
@@ -1164,7 +1172,7 @@ namespace minsky
         }
       else
         {
-          if (rank()>1 && dimension>=y->rank()) return;
+          if (y->rank()>1 && dimension>=y->rank()) return;
           // construct x from y's x-vector
           auto tv=make_shared<TensorVal>();
           spreadX=tv;
@@ -1189,13 +1197,17 @@ namespace minsky
                 }
             }
         }
-      sumx.setArgument(spreadX,args);
-      auto fxy=[](double x, double y){return isfinite(x) && isfinite(y)? x*y: 0;};
-      sumyy.setArgument(make_shared<BinOp>(fxy,y,y),args);
-      sumxx.setArgument(make_shared<BinOp>(fxy,spreadX,spreadX),args);
+      auto mask=[](double x, double y){return isfinite(x) && isfinite(y);};
+      auto fx=[mask](double x, double y){return mask(x,y)? x:0;};
+      auto fxy=[mask](double x, double y){return mask(x,y)? x*y: 0;};
+      auto maskedX=make_shared<BinOp>(fx,spreadX,y);
+      auto maskedY=make_shared<BinOp>(fx,y,spreadX);
+      sumx.setArgument(maskedX,args);
+      sumy.setArgument(maskedY,args);
+      sumyy.setArgument(make_shared<BinOp>(fxy,maskedY,y),args);
+      sumxx.setArgument(make_shared<BinOp>(fxy,maskedX,spreadX),args);
       sumxy.setArgument(make_shared<BinOp>(fxy,y,spreadX),args);
-      count.setArgument
-        (make_shared<BinOp>([](double x,double y) {return isfinite(x)*isfinite(y);},y,spreadX),args);
+      count.setArgument(make_shared<BinOp>(mask,y,spreadX),args);
       
       assert(sumx.hypercube()==sumy.hypercube());
       assert(sumx.index()==sumy.index());
@@ -1358,7 +1370,7 @@ namespace minsky
       cachedResult.hypercube(std::move(hc));
     }
 
-    void computeTensor() const override
+    void computeTensor(/*size_t*/) const override
     {
       // first compute max/min over the whole dataset
       double min=numeric_limits<double>::max(), max=-numeric_limits<double>::max();
@@ -1615,24 +1627,24 @@ namespace minsky
     double operator[](size_t i) const override {
       if (chainChecked)
         return chain.empty()? nan(""): (*chain.back())[i];
-      else
-        { // first time through since reset, check the chain doesn't change
-          lock_guard lock(chainMutex); // mutex rather than critical, for possible rescursion
-          double v=nan("");
-          if (!chain.empty())
+      // first time through since reset, check the chain doesn't change
+      lock_guard lock(chainMutex); // mutex rather than critical, for possible rescursion
+      if (chainChecked) // in case we were waiting on another thread at the mutex
+        return chain.empty()? nan(""): (*chain.back())[i];
+      double v=nan("");
+      if (!chain.empty())
+        {
+          v=(*chain.back())[i];
+          if (m_timestamp<chain.back()->timestamp())
             {
+              const_cast<Ravel&>(ravel).populateHypercube(arg->hypercube());
+              chain=ravel::createRavelChain(ravel.getState(), arg);
+              m_timestamp=Timestamp::clock::now();
+              chainChecked=true;
               v=(*chain.back())[i];
-              if (m_timestamp<chain.back()->timestamp())
-                {
-                  const_cast<Ravel&>(ravel).populateHypercube(arg->hypercube());
-                  chain=ravel::createRavelChain(ravel.getState(), arg);
-                  m_timestamp=Timestamp::clock::now();
-                  chainChecked=true;
-                  v=(*chain.back())[i];
-                }
             }
-          return v;
         }
+      return v;
     }
     size_t size() const override {return chain.empty()? 1: chain.back()->size();}
     const Index& index() const override

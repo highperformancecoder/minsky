@@ -22,6 +22,7 @@
 #include "phillipsDiagram.rcd"
 #include "phillipsDiagram.xcd"
 #include "minsky.h"
+#include "../engine/cairoShimCairo.h"
 #include "minsky_epilogue.h"
 using ecolab::cairo::CairoSave;
 
@@ -30,9 +31,28 @@ namespace minsky
   std::map<Units, double> PhillipsFlow::maxFlow;
   std::map<Units, double> PhillipsStock::maxStock;
   
-  void PhillipsFlow::draw(cairo_t* cairo)
+//  void PhillipsFlow::draw(cairo_t* cairo) const
+//  {
+//    const CairoSave cs(cairo);
+//    const double value=this->value();
+//    double& maxV=maxFlow[units()];
+//    if (abs(value)>maxV) maxV=abs(value);
+//    double lineWidth=1;
+//    if (maxV>0)
+//      {
+//        const double lw=5*abs(value)/maxV;
+//        lineWidth=std::max(1.0, lw);
+//        static const double dashLength=3;
+//        if (lw<1)
+//          cairo_set_dash(cairo,&dashLength,1,0);
+//      }
+//    cairo_set_line_width(cairo, lineWidth);
+//    Wire::draw(cairo,value>=0);
+//  }
+
+  void PhillipsFlow::draw(const ICairoShim& cairoShim, bool) const
   {
-    const CairoSave cs(cairo);
+    cairoShim.save();
     const double value=this->value();
     double& maxV=maxFlow[units()];
     if (abs(value)>maxV) maxV=abs(value);
@@ -43,35 +63,39 @@ namespace minsky
         lineWidth=std::max(1.0, lw);
         static const double dashLength=3;
         if (lw<1)
-          cairo_set_dash(cairo,&dashLength,1,0);
+          cairoShim.setDash(&dashLength,1,0);
       }
-    cairo_set_line_width(cairo, lineWidth);
-    Wire::draw(cairo,value>=0);
+    cairoShim.setLineWidth(lineWidth);
+    Wire::draw(cairoShim, value>=0);
+    cairoShim.restore();
   }
 
-  void PhillipsStock::draw(cairo_t* cairo) const
+  void PhillipsStock::draw(const ICairoShim& cairoShim) const
   {
-    StockVar::draw(cairo);
+    // Call parent draw (VariableBase still uses _internalGetCairoContext internally)
+    StockVar::draw(cairoShim);
+    
     // colocate input and output ports on the input side
     m_ports[0]->moveTo(m_ports[1]->x(), m_ports[1]->y());
     auto maxV=maxStock[units()];
     if (maxV>0)
       {
-        const CairoSave cs(cairo);
+        cairoShim.save();
         auto w=width()*zoomFactor(); 
         auto h=height()*zoomFactor();
         auto f=value()/maxV;
         if (f>=0)
           {
-            cairo_set_source_rgba(cairo,0,0,1,0.3);
-            cairo_rectangle(cairo,-0.6*w,0.5*h,1.2*w,-f*h);
+            cairoShim.setSourceRGBA(0,0,1,0.3);
+            cairoShim.rectangle(-0.6*w,0.5*h,1.2*w,-f*h);
           }
         else
           {
-            cairo_set_source_rgba(cairo,1,0,0,0.3);
-            cairo_rectangle(cairo,-0.6*w,-0.5*h,1.2*w,-f*h);
+            cairoShim.setSourceRGBA(1,0,0,0.3);
+            cairoShim.rectangle(-0.6*w,-0.5*h,1.2*w,-f*h);
           }
-        cairo_fill(cairo);
+        cairoShim.fill();
+        cairoShim.restore();
       }
   }
 
@@ -87,10 +111,14 @@ namespace minsky
         const CairoSave cs(cairo);
         cairo_identity_matrix(cairo);
         cairo_translate(cairo,i.second.x()+x, i.second.y()+y);
-        i.second.draw(cairo);
+        CairoShimCairo shim(cairo);
+        i.second.draw(shim);
       }
     for (auto& i: flows)
-      i.second.draw(cairo);
+      {
+        CairoShimCairo shim(cairo);
+        i.second.draw(shim,true);
+      }
     return true;
   }
 

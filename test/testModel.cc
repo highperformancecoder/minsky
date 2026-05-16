@@ -18,6 +18,7 @@
 */
 
 #include "cairoItems.h"
+#include "cairoShimCairo.h"
 #include "operation.h"
 #include "group.h"
 #include "minsky.h"
@@ -112,6 +113,14 @@ namespace
   };
   class GodleyIconFixture: public GodleyIcon, public ::testing::Test {};
   class GroupFixture: public Group, public ::testing::Test {};
+
+  struct RecordingCairoShim: public cairo::Surface, public CairoShimCairo
+  {
+    RecordingCairoShim():
+      cairo::Surface(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr)),
+      CairoShimCairo(cairo::Surface::cairo()) {}
+  };
+  
 }
 
 
@@ -462,8 +471,7 @@ TEST_F(CanvasFixture,findVariableDefinition)
 
 TEST_F(ModelSuite,moveItem)
 {
-  cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr));
-  c->draw(surf.cairo());// reposition ports
+  c->draw(RecordingCairoShim());// reposition ports
   EXPECT_TRUE(c->clickType(c->x(),c->y()) == ClickType::onItem); 
   canvas.mouseDown(c->x(),c->y());
   canvas.mouseUp(400,500);
@@ -475,8 +483,7 @@ TEST_F(ModelSuite,resizeVariable)
 {
   c->moveTo(400,300);
   c->updateBoundingBox();
-  cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr));
-  c->draw(surf.cairo());// reposition ports
+  c->draw(RecordingCairoShim());// reposition ports
   float xc=c->right(), yc=c->bottom();      
   EXPECT_TRUE(c->clickType(xc,yc) == ClickType::onResize);
   canvas.mouseDown(xc,yc);
@@ -490,8 +497,7 @@ TEST_F(ModelSuite,resizeOperation)
   OperationPtr add(OperationType::add);
   model->addItem(add);
   add->moveTo(400,300);
-  cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr));
-  add->draw(surf.cairo());// reposition ports
+  add->draw(RecordingCairoShim());// reposition ports
   float xc=add->right(), yc=add->bottom();      
   EXPECT_TRUE(add->clickType(xc,yc) == ClickType::onResize); 
   canvas.mouseDown(xc,yc);

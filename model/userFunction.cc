@@ -68,7 +68,7 @@ namespace minsky
 {
   int UserFunction::nextId=0;
 
-  template <> void Operation<OperationType::userFunction>::iconDraw(cairo_t*) const
+  template <> void Operation<OperationType::userFunction>::iconDraw(const ICairoShim&) const
   {assert(false);}
 
 #ifdef NO_EXPRTK

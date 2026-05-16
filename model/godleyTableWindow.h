@@ -25,6 +25,7 @@
 #define GODLEYTABLEWINDOW_H
 #include "assetClass.h"
 #include "godleyTable.h"
+#include "ICairoShim.h"
 #include "renderNativeWindow.h"
 #include <memory>
 #include <vector>
@@ -54,6 +55,7 @@ namespace minsky
     unsigned idx=0; ///< row or column this widget is located in
     
     void draw(cairo_t*);
+    void draw(const ICairoShim&);
     /// draw button \a idx, with label \a label and colour \a r, \a b, \a g
     void drawButton(cairo_t*, const std::string& label,
                     double r, double g, double b, int idx);
@@ -120,6 +122,7 @@ namespace minsky
     {m_enableButtons(); adjustWidgets();}
 
     void draw(cairo_t* cairo);
+    void draw(const ICairoShim& cairoShim);
 
     double width() const {return colLeftMargin.empty()? 0: colLeftMargin.back();}
     double height() const;

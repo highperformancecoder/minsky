@@ -66,7 +66,10 @@ export const events = {
   UPDATE_BOOKMARK_LIST: 'update-bookmark-list',
   UPDATE_PREFERENCES: 'update-preferences',
   ZOOM: 'zoom',
-  LOG_MESSAGE: 'log-message'
+  LOG_MESSAGE: 'log-message',
+  SET_AUTH_TOKEN: 'set-auth-token',
+  OAUTH_OPEN_POPUP: 'oauth-open-popup',
+  OAUTH_CALLBACK: 'oauth-callback',
 };
 
 // add non exposed commands here to get intellisense on the terminal popup

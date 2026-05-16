@@ -17,6 +17,7 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "cairoShimCairo.h"
 #include "lock.h"
 #include "minsky.h"
 #include "minsky_epilogue.h"
@@ -154,6 +155,6 @@ TEST_F(LockTest, Draw)
   
   // Test that lock can be drawn (uses different icons for locked/unlocked)
   cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR, nullptr));
-  EXPECT_NO_THROW(lock.draw(surf.cairo()));
+  EXPECT_NO_THROW(lock.draw(CairoShimCairo(surf.cairo())));
 }
 

@@ -344,6 +344,7 @@ export class ImportCsvComponent extends Zoomable implements OnInit, AfterViewIni
     this.fileLoaded = true;
 
     this.selectedTabIndex = selectTab;
+    this.cdr.detectChanges();
   }
 
   setParameterNameFromUrl() {
