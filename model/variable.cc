@@ -18,6 +18,7 @@
 */
 
 #include "minsky.h"
+#include "cairoShimCairo.h"
 #include "geometry.h"
 #include "valueId.h"
 #include "variable.h"
@@ -38,7 +39,6 @@
 #include "variable.rcd"
 
 #include <error.h>
-#include "../engine/cairoShimCairo.h"
 #include "minsky_epilogue.h"
 
 #include <algorithm>
@@ -707,10 +707,7 @@ bool VariableBase::enableSlider(bool x) const
 }
 
 void VariableBase::draw(const ICairoShim& cairoShim) const
-{	
-  // TODO: Refactor RenderVariable to use ICairoShim
-  auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-  cairo_t* cairo = shimImpl._internalGetCairoContext();
+{
   auto [angle,flipped]=rotationAsRadians();
   const float z=zoomFactor();
 
@@ -718,9 +715,9 @@ void VariableBase::draw(const ICairoShim& cairoShim) const
   // rendering on a different thread, and this avoids a race condition
   // when the cache is invalidated
   auto l_cachedNameRender=cachedNameRender;
-  if (!l_cachedNameRender || cairo!=cachedNameRender->cairoContext())
+  if (!l_cachedNameRender || cairoShim.pango().cairoContext()!=cachedNameRender->cairoContext())
     {
-      l_cachedNameRender=cachedNameRender=std::make_shared<RenderVariable>(*this,cairo);
+      l_cachedNameRender=cachedNameRender=std::make_shared<RenderVariable>(*this,cairoShim);
       l_cachedNameRender->setFontSize(12.0);
     }
     
@@ -734,6 +731,8 @@ void VariableBase::draw(const ICairoShim& cairoShim) const
   const double h=std::max(l_cachedNameRender->height(), 0.5f*iHeight());
   const double hoffs=l_cachedNameRender->top();
   
+  auto cairo=reinterpret_cast<const CairoShimCairo&>(cairoShim)._internalGetCairoContext();
+ 
   unique_ptr<cairo::Path> clipPath;
   {
     cairoShim.save();
@@ -759,7 +758,7 @@ void VariableBase::draw(const ICairoShim& cairoShim) const
             }
           cairoShim.save();
           cairoShim.translate(-w,-h);
-          miniPlot->draw(cairo,2*w,2*h);
+          miniPlot->draw(cairoShim.pango().cairoContext(),2*w,2*h);
           cairoShim.restore();
         }
       catch (...) {} // ignore errors in obtaining values
@@ -771,11 +770,11 @@ void VariableBase::draw(const ICairoShim& cairoShim) const
           {
             auto l_cachedMantissa=cachedMantissa;
             auto l_cachedExponent=cachedExponent;
-            if (!l_cachedMantissa || l_cachedMantissa->cairoContext()!=cairo)
+            if (!l_cachedMantissa || l_cachedMantissa->cairoContext()!=cairoShim.pango().cairoContext())
               {
-                l_cachedMantissa=cachedMantissa=make_shared<Pango>(cairo);
+                l_cachedMantissa=cachedMantissa=make_shared<Pango>(cairoShim.pango().cairoContext());
                 l_cachedMantissa->setFontSize(6.0);
-                l_cachedExponent=cachedExponent=make_shared<Pango>(cairo);
+                l_cachedExponent=cachedExponent=make_shared<Pango>(cairoShim.pango().cairoContext());
                 l_cachedExponent->setFontSize(6.0);
                 cachedValue=nan("");
               }
@@ -807,7 +806,7 @@ void VariableBase::draw(const ICairoShim& cairoShim) const
             l_cachedMantissa->angle=angle+(flipped? M_PI:0);
             
             cairoShim.moveTo(r.x(w-l_cachedMantissa->width()-2,-h-hoffs+2),
-                          r.y(w-l_cachedMantissa->width()-2,-h-hoffs+2));
+                             r.y(w-l_cachedMantissa->width()-2,-h-hoffs+2));
             l_cachedMantissa->show();
 
             if (val.engExp!=0 && !isnan(value())) // Avoid large exponential number in variable value display. For ticket 1155

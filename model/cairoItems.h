@@ -34,11 +34,12 @@ namespace minsky
   class RenderVariable: public ecolab::Pango
   {
     const VariableBase& var;
-    cairo_t *cairo;
+    const ICairoShim* cairoShim=nullptr;
     float w, h, hoffs;
+    RenderVariable(const VariableBase& var, cairo_t* pangoCtx); ///< private impl: init Pango + compute metrics
   public:
-    // render a variable to a given cairo context
-    RenderVariable(const VariableBase& var, cairo_t* cairo=NULL);
+    RenderVariable(const VariableBase& var);
+    RenderVariable(const VariableBase& var, const ICairoShim& shim);
     /// render the cairo image
     void draw();
     /// half width of unrotated image

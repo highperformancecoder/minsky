@@ -20,6 +20,7 @@
 #include "minsky.h"
 #include "variablePane.h"
 #include "cairoItems.h"
+#include "../engine/cairoShimCairo.h"
 #include "pannableTab.rcd"
 #include "pannableTab.xcd"
 #include "variableValue.h"
@@ -38,7 +39,8 @@ namespace minsky
     const ecolab::cairo::Surface surf
       (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
     cairo_move_to(surf.cairo(),0,0);
-    RenderVariable rv(*this->var, surf.cairo());
+    CairoShimCairo shim(surf.cairo());
+    RenderVariable rv(*this->var, shim);
     rv.draw();
     double l,t;
     cairo_recording_surface_ink_extents(surf.surface(),&l,&t,&m_width,&m_height);
@@ -47,7 +49,8 @@ namespace minsky
   void VariablePaneCell::show()
   {
     if (!cachedCairo || !var || var->type()==VariableType::undefined) return;
-    RenderVariable rv(*var, cachedCairo);
+    CairoShimCairo shim(cachedCairo);
+    RenderVariable rv(*var, shim);
     const ecolab::cairo::CairoSave cs(cachedCairo);
     cairo_translate(cachedCairo,0.5*m_width,0.5*m_height);
     rv.draw();

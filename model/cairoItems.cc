@@ -28,7 +28,6 @@
 #include "minsky.h"
 
 #include "cairoItems.h"
-#include "../engine/cairoShimCairo.h"
 #include "operation.h"
 #include "latexMarkup.h"
 #include <arrays.h>
@@ -49,8 +48,8 @@ namespace
   cairo::Surface dummySurf(cairo_image_surface_create(CAIRO_FORMAT_A1, 100,100));
 }
 
-RenderVariable::RenderVariable(const VariableBase& var, cairo_t* cairo):
-  Pango(cairo? cairo: dummySurf.cairo()), var(var), cairo(cairo)
+RenderVariable::RenderVariable(const VariableBase& var, cairo_t* pangoCtx):
+  Pango(pangoCtx), var(var)
 {
   setFontSize(12);
   if (var.type()==VariableType::constant)
@@ -71,21 +70,28 @@ RenderVariable::RenderVariable(const VariableBase& var, cairo_t* cairo):
   else
     {
       setMarkup(latexToPango(var.name()));
-      w=0.5*Pango::width(); 
+      w=0.5*Pango::width();
       h=0.5*Pango::height();
       if (!var.ioVar())
-        { // add additional space for numerical display 
-          w+=12; 
+        { // add additional space for numerical display
+          w+=12;
           h+=4;
         }
     }
   hoffs=Pango::top();
 }
 
+RenderVariable::RenderVariable(const VariableBase& var):
+  RenderVariable(var, dummySurf.cairo()) {}
+
+RenderVariable::RenderVariable(const VariableBase& var, const ICairoShim& shim):
+  RenderVariable(var, shim.pango().cairoContext())
+{ cairoShim=&shim; }
+
 void RenderVariable::draw()
 {
-  CairoShimCairo shim(cairo);
-  var.draw(shim);
+  if (cairoShim)
+    var.draw(*cairoShim);
 }
 
 bool RenderVariable::inImage(float x, float y)
