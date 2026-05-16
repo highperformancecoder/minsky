@@ -1,0 +1,41 @@
+<div class="modal-container">
+    <h1 mat-dialog-title>Edit variable...</h1>
+    <div mat-dialog-content>
+        <div class="select-container">
+            <div class="symbollabel selectlabel">Symbol:</div>
+
+            <input class="symbolinput" matInput placeholder="Symbol..." [(ngModel)]="result.symbol">
+
+            <div class="latexlabel selectlabel">LaTeX:</div>
+
+            <div class="latexdisplay" latex [equation]="result.symbol"></div>
+
+            <ng-container *ngIf="['constant', 'stock'].includes(result.type)">
+              <div class="valuelabel selectlabel">{{valueTag}}:</div>
+
+              <mat-form-field class="valueinput"><input type="number" matInput [(ngModel)]="result.value"></mat-form-field>
+
+              <div class="minimumlabel selectlabel">Minimum:</div>
+
+              <mat-form-field class="minimuminput"><input type="number" matInput [(ngModel)]="result.minimum"></mat-form-field>
+
+              <div class="maximumlabel selectlabel">Maximum:</div>
+
+              <mat-form-field class="maximuminput"><input type="number" matInput [(ngModel)]="result.maximum"></mat-form-field>
+</ng-container>
+
+            <div class="namelabel selectlabel">Name:</div>
+
+            <mat-form-field class="nameinput"><input matInput [(ngModel)]="result.name"></mat-form-field>
+
+            <div class="descriptionlabel selectlabel">Description:</div>
+
+            <mat-form-field class="descriptioninput"><textarea matInput [(ngModel)]="result.description"></textarea></mat-form-field>
+</div>
+    </div>
+    <div class="dialog-actions" mat-dialog-actions>
+        <div class="dialog-actions-gap"></div>
+        <button mat-button (click)="onCancelClick()">Cancel</button>
+        <button mat-button (click)="onOKClick()" cdkFocusInitial>Ok</button>
+    </div>
+</div>

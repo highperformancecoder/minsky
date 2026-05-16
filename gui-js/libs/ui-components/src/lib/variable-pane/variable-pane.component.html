@@ -2,6 +2,7 @@
   id="variable-pane-wrapper"
   #variablePaneWrapper
   (window:resize)="windowResize()"
+  
   >
   <div class="selector-buttons">
     <form name="variablePane">
@@ -20,6 +21,6 @@
     </form>
   </div>
   <div id="variable-pane" class="variable-pane" #variablePane>
-    <p>&nbsp;</p>
+    <svg-canvas [style.width]="containerWidth$ | async" [unparkedData]="svgData$ | async" [enableScroll]="false" [showConnectors]="false" [showValuelines]="false" [zoom]="0.75"></svg-canvas>
   </div>
 </div>

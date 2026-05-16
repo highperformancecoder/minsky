@@ -1,7 +1,10 @@
+import { CommonModule } from '@angular/common';
 import {
   AfterViewInit,
+  ChangeDetectionStrategy,
   Component,
   ElementRef,
+  HostListener,
   OnDestroy,
   ViewChild,
 } from '@angular/core';
@@ -10,23 +13,42 @@ import {
   ElectronService,
 } from '@minsky/core';
 import {
-  events,
   VariablePane,
+  VariableValue,
+  VariableValues,
+  minsky
 } from '@minsky/shared';
-import { fromEvent, Observable, Subject, takeUntil } from 'rxjs';
-import { sampleTime } from 'rxjs/operators';
+import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
+import { SvgCanvasComponent } from '../svg-canvas/svg-canvas.component';
+import { SvgCanvasHelper, SvgVariableTypes } from '../svg-canvas/constants/svg-constants';
+import { DataPoint } from '../svg-canvas/classes/datapoint';
 
 @Component({
   selector: 'minsky-variable-pane',
   templateUrl: './variable-pane.component.html',
   styleUrls: ['./variable-pane.component.scss'],
-  standalone: true
+  standalone: true,
+  imports: [CommonModule, SvgCanvasComponent],
+  changeDetection: ChangeDetectionStrategy.OnPush
+  
 })
 export class VariablePaneComponent implements OnDestroy, AfterViewInit {
   @ViewChild('variablePane') variablePaneWrapper: ElementRef;
 
+  @ViewChild(SvgCanvasComponent)
+  svgCanvas: SvgCanvasComponent;
+
+  @HostListener('window:resize', ['$event'])
+	onResize(event) {
+		this.setPositions();
+	}
+
   itemId: number;
   systemWindowId: BigInt;
+
+  allSvgData: DataPoint[];
+
+  svgData$ = new BehaviorSubject<DataPoint[]>(null);
 
   leftOffset = 0;
   topOffset: number;
@@ -35,11 +57,10 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
   variablePaneContainer: HTMLElement;
   mouseMove$: Observable<MouseEvent>;
   variablePane: VariablePane;
+
+  containerWidth$ = new BehaviorSubject<string>(null);
   
   destroy$ = new Subject<{}>();
-
-  mouseX = 0;
-  mouseY = 0;
 
   constructor(
     private electronService: ElectronService,
@@ -53,108 +74,107 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
   }
 
   ngAfterViewInit() {
-    this.getWindowRectInfo();
-    this.renderFrame();
     this.initEvents();
   }
 
   windowResize() {
-    this.getWindowRectInfo();
-    this.renderFrame();
-  }
-  private getWindowRectInfo() {
     this.variablePaneContainer = this.variablePaneWrapper
       .nativeElement as HTMLElement;
-
-    const clientRect = this.variablePaneContainer.getBoundingClientRect();
-
-    this.leftOffset = Math.round(clientRect.left);
-    // 20 pixel offset to allow for selector buttons. Not needed on Windows for some reason.
-    this.topOffset = this.electronService.platform=='win32'? 0: 20; 
-    
-    this.height = Math.round(this.variablePaneContainer.clientHeight);
-    this.width = Math.round(this.variablePaneContainer.clientWidth-this.topOffset);
-  }
-  
-  renderFrame() {
-    if (
-      this.electronService.isElectron &&
-      this.systemWindowId &&
-      this.height &&
-      this.width
-    ) {
-      this.variablePane.updateWithHeight(this.height);
-      this.variablePane.renderFrame({
-        parentWindowId: this.systemWindowId.toString(),
-        offsetLeft: this.leftOffset,
-        offsetTop: this.topOffset,
-        childWidth: this.width,
-        childHeight: this.height,
-        scalingFactor: -1
-      });
-    }
   }
 
   async initEvents() {
+    this.variablePaneContainer = this.variablePaneWrapper
+      .nativeElement as HTMLElement;
 
-    this.mouseMove$ = fromEvent<MouseEvent>(
-      this.variablePaneContainer,
-      'mousemove'
-    ).pipe(sampleTime(1)); /// FPS=1000/sampleTime
+    // Translate vertical wheel movement (deltaY) to horizontal scrolling
+    this.variablePaneContainer.addEventListener('wheel', (evt) => {
+      evt.preventDefault();
+      this.variablePaneContainer.scrollLeft += evt.deltaY;
+    }, { passive: false });
 
-    // vertical offset to allow room for the filter buttons
-    const offset=-15;
-    this.mouseMove$.pipe(takeUntil(this.destroy$)).subscribe((event: MouseEvent) => {
-      const { clientX, clientY } = event;
-      this.mouseX = clientX;
-      this.mouseY = clientY;
-      this.variablePane.mouseMove(clientX,clientY+offset);
-      this.variablePane.requestRedraw();
-    });
-
-    this.variablePaneContainer.addEventListener('mousedown', (event) => {
-      const { clientX, clientY } = event;
-      this.variablePane.mouseDown(clientX,clientY+offset);
-      this.variablePane.requestRedraw();
-    });
-
-    this.variablePaneContainer.addEventListener('mouseup', (event) => {
-      const { clientX, clientY } = event;
-      this.variablePane.mouseUp(clientX,clientY+offset);
-      this.variablePane.requestRedraw();
-    });
-
-//    this.variablePaneContainer.onwheel = this.onMouseWheelZoom;
-    document.onkeydown = this.onKeyDown;
-    document.onkeyup = this.onKeyUp;
-
+    this.height = Math.round(this.variablePaneContainer.clientHeight);
+    this.variablePane.updateWithHeight(this.height);
     // set initial value of form elements from C++
     let selected=await this.variablePane.selection.properties();
-    for (let i of ['flow','parameter','stock','integral'])
-      document.forms["variablePane"]["variablePane::"+i].checked=selected.includes(i);
+    const supportedTypes = ['flow','parameter','stock','integral'];
+    for (let i of supportedTypes)
+      document.forms['variablePane']['variablePane::'+i].checked=selected.includes(i);
+
+    this.allSvgData = [];
+    const varValues: VariableValues = await minsky.variableValues;
+    const varKeys = await varValues.keys();
+    for(let i = 0; i < varKeys.length; i++) {
+      const varValue: VariableValue = varValues.elem(varKeys[i]);
+      const typeName = await varValue.type();
+      if(!supportedTypes.some(t => t === typeName)) continue;
+      let trimmedName;
+      if(typeName === 'constant') {
+        continue;
+      } else {
+        trimmedName = (await varValue.name());
+        const splitName = trimmedName.split(':');
+        if(splitName.length > 1) {
+          trimmedName = splitName[1];
+        }
+      }
+      const d = SvgCanvasHelper.createData({ symbol: trimmedName, name: trimmedName, description: await varValue.detailedText(), type: SvgVariableTypes[typeName] });
+      d.rotation = 0;
+      d.value = await varValue.value();
+      d.exponent = this.findExponent(d.value);
+      d.value = d.value / Math.pow(10, d.exponent);
+      d.minimum = await varValue.sliderMin();
+      d.maximum = await varValue.sliderMax();
+      this.allSvgData.push(d);
+    }
+    this.setPositions();
   }
 
-  onKeyDown =  (event: KeyboardEvent) => {
-    if (event.shiftKey) {
-      document.body.style.cursor='grab';
-      this.variablePane.shift(true);
-      this.variablePane.requestRedraw();
+  setPositions() {
+    const svgData = this.allSvgData.filter(d => {
+      return document.forms['variablePane']['variablePane::'+d.type.name].checked;
+    });
+    svgData.sort((a,b) => {
+      if(a.type.name > b.type.name) return 1;
+      if(a.type.name < b.type.name) return -1;
+      if(a.symbol > b.symbol) return 1;
+      if(a.symbol < b.symbol) return -1;
+      return 0;
+    });
+
+    const columnLength = Math.round(this.variablePaneContainer.clientHeight / 50);
+    const numberOfColumns = svgData.length / columnLength;
+    let currentXOffset = 10;
+    for(let i = 0; i < numberOfColumns; i++) {
+      let maxX = 0;
+      for(let j = 0; j < columnLength; j++) {
+        const d = svgData[i * columnLength + j];
+        if(!d) break;
+        maxX = Math.max(maxX, d.dimensions.boundingbox[2]);
+      }
+      for(let j = 0; j < columnLength; j++) {
+        const d = svgData[i * columnLength + j];
+        if(!d) break;
+        d.x = currentXOffset - d.dimensions.boundingbox[0];
+        d.y = 40 + 60 * j;
+      }
+      currentXOffset += maxX + 20;
     }
-    if (event.code==='F1')
-      this.electronService.send(events.HELP_FOR, {classType:'VariableBrowser'});
-  };
-  onKeyUp = (event: KeyboardEvent) => {
-    document.body.style.cursor='default';
-    this.variablePane.shift(false);
-    this.variablePane.requestRedraw();
-  };
+    this.containerWidth$.next(`${currentXOffset}px`);
+    this.svgData$.next(svgData);
+    this.svgCanvas.setDimensions(currentXOffset);
+  }
 
   select(id) {
-    if (document.forms["variablePane"]["variablePane::"+id].checked)
-      this.variablePane.select(id);
-    else
-      this.variablePane.deselect(id);
-    this.variablePane.updateWithHeight(this.height);
+    if (document.forms["variablePane"]["variablePane::"+id].checked) this.variablePane.select(id);
+    else this.variablePane.deselect(id);
+    this.setPositions();
+  }
+
+  findExponent(num: number) {
+    if (num === 0) return 0;
+    const absNum = Math.abs(num);
+    const rawExponent = Math.floor(Math.log10(absNum));
+    return Math.floor(rawExponent / 3) * 3;
   }
     
   ngOnDestroy() {

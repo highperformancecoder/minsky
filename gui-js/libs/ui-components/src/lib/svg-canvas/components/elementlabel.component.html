@@ -1,0 +1,14 @@
+<div class="latex" latex [equation]="data.symbol" [style.fontSize]="fontSize">
+</div>
+
+<div *ngIf="lines > 1" class="valuelabel" [style.fontSize]="fontSize">
+    {{data.value.toFixed(4)}}
+</div>
+
+<div *ngIf="lines > 2" class="namelabel" [style.fontSize]="fontSize">
+    {{data.name}}
+</div>
+
+<div *ngIf="lines > 3" class="descriptionlabel" [style.fontSize]="fontSize">
+    {{data.description}}
+</div>
