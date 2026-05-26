@@ -1118,7 +1118,7 @@ namespace minsky
     const double sf = scaleFactor();
     cairoShim.moveTo(-4,-7);
     cairoShim.scale(sf,sf);
-    cairoShim.showText("∏",7);;
+    cairoShim.showText("∏",7);
   }
 
   template <> void Operation<OperationType::infimum>::iconDraw(const ICairoShim& cairoShim) const
