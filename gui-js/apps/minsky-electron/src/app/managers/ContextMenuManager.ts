@@ -646,10 +646,8 @@ export class ContextMenuManager {
     const menuItems = [
       new MenuItem({
         label: 'Open Godley Table',
-        click: async () => {
-          const id=await minsky.canvas.item.id();
-          if (id) 
-            CommandsManager.openGodleyTable(id);
+        click: () => {
+          CommandsManager.openGodleyTable(itemInfo.id);
         }
       }),
       new MenuItem({

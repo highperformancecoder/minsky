@@ -831,14 +831,9 @@ export class CommandsManager {
 
     if (itemInfo?.classType) {
       switch (itemInfo?.classType) {
-      case ClassType.GodleyIcon: {
-        const id=await minsky.canvas.item.id();
-        if (id) {
-          await minsky.nameCurrentItem(id);
-          CommandsManager.openGodleyTable(id);
-        }
+      case ClassType.GodleyIcon: 
+        CommandsManager.openGodleyTable(itemInfo.id);
         break;
-      }
 
       case ClassType.PlotWidget:
         await CommandsManager.expandPlot(itemInfo);

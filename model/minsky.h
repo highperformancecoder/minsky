@@ -436,7 +436,7 @@ namespace minsky
     /// request all Godley table windows to redraw
     void redrawAllGodleyTables();
 
-    /// returns list of ids of all Godley table in the current top level canvas
+    /// returns list of ids of all Godley tables in the current top level canvas
     std::vector<std::string> allGodleyTables() const;
     
     /// set/clear busy cursor in GUI
