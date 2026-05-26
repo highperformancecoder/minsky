@@ -40,7 +40,6 @@ namespace minsky
       // if rotation is in 1st or 3rd quadrant, rotate as
       // normal, otherwise flip the text so it reads L->R
     auto [angle,textFlipped]=rotationAsRadians();
-      double coupledIntTranslation=0;
       const float z=zoomFactor();
     
       float l=OperationBase::l*z, r=OperationBase::r*z, 
@@ -49,19 +48,6 @@ namespace minsky
       if (fabs(l)<iWidth()*z) l=-iWidth()*z;        
       if (r<iWidth()*z) r=iWidth()*z;    
       if (h<iHeight()*z) h=iHeight()*z;   
-
-      if (coupled() && intVar)
-        {
-          cairoShim.save();
-          auto& iv=*intVar;
-          const RenderVariable rv(iv,cairoShim);
-          // we need to add some translation if the variable is bound
-          cairoShim.rotate(angle);
-          coupledIntTranslation=-0.5*(intVarOffset+2*rv.width()+2+r)*z;
-          if (rv.width()<iv.iWidth()) coupledIntTranslation=-0.5*(intVarOffset+2*iv.iWidth()+2+r)*z;
-          cairoShim.restore();
-        }
-    
 
       {
         cairoShim.save();
@@ -167,7 +153,6 @@ namespace minsky
       if (numPorts()>2)
         m_ports[2]->moveTo(x2, y2);
 
-      cairoShim.translate(-coupledIntTranslation,0);
       cairoShim.restore(); // undo rotation
       if (mouseFocus)
         {
