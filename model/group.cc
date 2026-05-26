@@ -1016,12 +1016,12 @@ namespace minsky
       {
         cairoShim.save();
         cairoShim.scale(z, z);
-        cairoShim.selectFontFace("sans-serif", CAIRO_FONT_SLANT_ITALIC, CAIRO_FONT_WEIGHT_NORMAL);
-        cairoShim.setFontSize(12);
+        TextProperties tp;
+        tp.fontSize=12;
               
         // extract the bounding box of the text
-        cairo_text_extents_t bbox;
-        cairoShim.textExtents(title, bbox);       
+        tp.markup=title;
+        auto bbox=cairoShim.textExtents(tp);
         const double w=0.5*bbox.width+2; 
         const double h=0.5*bbox.height+5;
 

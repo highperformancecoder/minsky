@@ -70,8 +70,8 @@ namespace minsky
         if (textFlipped) cairoShim.rotate(M_PI);
         const double sf = scaleFactor();  
         cairoShim.scale(sf,sf);		  
-        cairoShim.moveTo(-7,3.5);
-        cairoShim.showText("∫dt");
+        cairoShim.moveTo(-12,-9);
+        cairoShim.showText(TextProperties("∫dt"));
         cairoShim.restore();
       }
       DrawBinOpShim d(cairoShim, zoomFactor());
