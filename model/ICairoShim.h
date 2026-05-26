@@ -161,6 +161,14 @@ namespace minsky
     {return std::make_unique<NonCachedRenderer>(tp,*this);}
   };
 
+  /// RAII wrapper around save/restore
+  struct CairoShimSave
+  {
+    const ICairoShim& shim;
+    CairoShimSave(const ICairoShim& shim): shim(shim) {shim.save();}
+    ~CairoShimSave() {shim.restore();}
+  };
+  
   inline void NonCachedRenderer::show()
   {shim.showText(text);}
   inline TextExtents NonCachedRenderer::extents() const

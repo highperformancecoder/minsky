@@ -1036,7 +1036,7 @@ namespace minsky
         // display text
         cairoShim.moveTo(-w+1, h-12-0.5*(height)/z);
         cairoShim.setSourceRGBA(0,0,0,transparency);
-        cairoShim.showText(title);
+        cairoShim.showText(tp);
         cairoShim.restore();
       }
 

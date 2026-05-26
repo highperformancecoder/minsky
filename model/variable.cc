@@ -715,7 +715,7 @@ void VariableBase::draw(const ICairoShim& cairoShim) const
   // rendering on a different thread, and this avoids a race condition
   // when the cache is invalidated
   auto l_cachedNameRender=cachedNameRender;
-  if (!l_cachedNameRender || cairoShim.context()!=cachedNameRender->context())
+  if (!l_cachedNameRender || cairoShim.context()!=l_cachedNameRender->context())
     l_cachedNameRender=cachedNameRender=std::make_shared<RenderVariable>(*this,cairoShim);
     
   // if rotation is in 1st or 3rd quadrant, rotate as
@@ -755,7 +755,6 @@ void VariableBase::draw(const ICairoShim& cairoShim) const
             }
           cairoShim.save();
           cairoShim.translate(-w,-h);
-          auto cairo=reinterpret_cast<const CairoShimCairo&>(cairoShim)._internalGetCairoContext();
           miniPlot->draw(cairo,2*w,2*h);
           cairoShim.restore();
         }
@@ -794,8 +793,6 @@ void VariableBase::draw(const ICairoShim& cairoShim) const
                 else // Display all other NaN cases as ???. For ticket 1155
                   mantissaText.markup="???";
                 exponentText=expMultiplier(val.engExp);
-                mantissaText.angle=angle+(flipped? M_PI:0);
-                exponentText.angle=mantissaText.angle;
                 mantissaText.fontSize=6;
                 exponentText.fontSize=6;
                 l_cachedMantissa=cachedMantissa=shared_ptr(cairoShim.cachedRender(mantissaText));
@@ -805,12 +802,18 @@ void VariableBase::draw(const ICairoShim& cairoShim) const
             auto mantissaBB=l_cachedMantissa->extents();
             cairoShim.moveTo(r.x(w-mantissaBB.width-2,-h-hoffs+2),
                              r.y(w-mantissaBB.width-2,-h-hoffs+2));
-            l_cachedMantissa->show();
+            {
+              CairoShimSave cs(cairoShim);
+              cairoShim.rotate(angle+(flipped? M_PI:0));
+              l_cachedMantissa->show();
+            }
 
             if (val.engExp!=0 && !isnan(value())) // Avoid large exponential number in variable value display. For ticket 1155
               {
                 auto exponentBB=l_cachedExponent->extents();
                 cairoShim.moveTo(r.x(w-exponentBB.width-2,0),r.y(w-exponentBB.width-2,0));
+                CairoShimSave cs(cairoShim);
+                cairoShim.rotate(angle+(flipped? M_PI:0));
                 l_cachedExponent->show();
               }
           }

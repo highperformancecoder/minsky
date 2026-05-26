@@ -37,6 +37,7 @@ namespace minsky
     const ICairoShim& cairoShim;
     // caching of text rendering
     std::shared_ptr<ICacheRender> cachedRenderer;
+    void* m_context;
     float w, h, hoffs;
   public:
     RenderVariable(const VariableBase& var);
@@ -55,7 +56,7 @@ namespace minsky
     /// x coordinate of the slider handle in the unrotated/unscaled
     /// frame of reference
     double handlePos() const;
-    void* context() const {return cairoShim.context();}
+    void* context() const {return m_context;}
   };
 
   void drawTriangle(cairo_t* cairo, double x, double y, const ecolab::cairo::Colour& col, double angle=0);
