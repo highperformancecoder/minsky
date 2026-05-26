@@ -727,7 +727,7 @@ void VariableBase::draw(const ICairoShim& cairoShim) const
   const double h=std::max(l_cachedNameRender->height(), 0.5f*iHeight());
   const double hoffs=l_cachedNameRender->top();
   
-  auto cairo=reinterpret_cast<const CairoShimCairo&>(cairoShim)._internalGetCairoContext();
+  auto cairo=dynamic_cast<const CairoShimCairo&>(cairoShim)._internalGetCairoContext();
  
   unique_ptr<cairo::Path> clipPath;
   {
