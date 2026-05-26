@@ -831,82 +831,98 @@ export class CommandsManager {
 
     if (itemInfo?.classType) {
       switch (itemInfo?.classType) {
-        case ClassType.GodleyIcon:
-          await CommandsManager.openGodleyTable(itemInfo);
-          break;
+      case ClassType.GodleyIcon: 
+        CommandsManager.openGodleyTable(itemInfo.id);
+        break;
 
-        case ClassType.PlotWidget:
-          await CommandsManager.expandPlot(itemInfo);
+      case ClassType.PlotWidget:
+        await CommandsManager.expandPlot(itemInfo);
         break;
         
-        case ClassType.Ravel:
-          await CommandsManager.openRavelPopup(itemInfo);
-          break;
+      case ClassType.Ravel:
+        await CommandsManager.openRavelPopup(itemInfo);
+        break;
 
-        case ClassType.Variable:
-        case ClassType.VarConstant:
-          await CommandsManager.editVar();
-          break;
-
-        case ClassType.Operation:
-          await CommandsManager.editItem(ClassType.Operation);
-
-          break;
-
-        case ClassType.IntOp:
-        case ClassType.DataOp:
-          await CommandsManager.editItem(ClassType.IntOp);
-
-          break;
-
-        case ClassType.UserFunction:
-          await CommandsManager.editItem(ClassType.UserFunction);
-
-          break;
-
+      case ClassType.Variable:
+      case ClassType.VarConstant:
+        await CommandsManager.editVar();
+        break;
+        
+      case ClassType.Operation:
+        await CommandsManager.editItem(ClassType.Operation);
+        
+        break;
+        
+      case ClassType.IntOp:
+      case ClassType.DataOp:
+        await CommandsManager.editItem(ClassType.IntOp);
+        
+        break;
+        
+      case ClassType.UserFunction:
+        await CommandsManager.editItem(ClassType.UserFunction);
+        
+        break;
+        
       case ClassType.Group:
         if (await CommandsManager.selectVar(mouseX,mouseY))
           await CommandsManager.editVar();
         else
           await CommandsManager.editItem(ClassType.Group);
         break;
-
-        case ClassType.Item:
-          await CommandsManager.postNote('item');
-          break;
-
+        
+      case ClassType.Item:
+        await CommandsManager.postNote('item');
+        break;
+        
       case ClassType.Lock:
         new Lock(minsky.canvas.item).toggleLocked();
         minsky.canvas.requestRedraw();
         break;
         
-        default:
-          break;
+      default:
+        break;
       }
     }
   }
 
-  static async openGodleyTable(itemInfo: CanvasItem) {
-    if (!WindowManager.focusIfWindowIsPresent(itemInfo.id)) {
-      CommandsManager.addItemToNamedItems(itemInfo);
-      let godley=new GodleyIcon(minsky.namedItems.elem(itemInfo.id));
+  static async openAllGodleyTables() {
+    for (const id of await minsky.allGodleyTables()) 
+      this.openGodleyTable(id);
+  }
+  
+  static async closeAllGodleyTables() {
+    for (const id of await minsky.allGodleyTables())
+      WindowManager.closeWindowByUid(id);
+  }
+  
+  static async openGodleyTable(id: string) {
+    if (!WindowManager.focusIfWindowIsPresent(id)) {
+      await minsky.itemFromNamedItem(id); // ensure named items is populated
+      let godley=new GodleyIcon(minsky.namedItems.elem(id));
       var title=await godley.table.title();
-
-      const window = await this.initializePopupWindow({
-        customTitle: `Godley Table : ${title}`,
-        itemInfo,
-        url: `#/headless/godley-widget-view?systemWindowId=0&itemId=${itemInfo.id}`,
+      const itemInfo={classType: ClassType.GodleyIcon, displayContents: false, id}; // TODO - is this stuff useful?
+      
+      const window = await WindowManager.createPopupWindowWithRouting({
+        title: `Godley Table : ${title}`,
+        height: 600,
+        width: 800,
+        url: `#/headless/godley-widget-view?systemWindowId=0&itemId=${id}`,
+        uid: id,
         modal: false,
+      },
+      () => {
+        this.onPopupWindowClose(itemInfo.id);
       });
-
+    
       Object.defineProperty(window,'dontCloseOnEscape',{value: true,writable:false});
       godley.adjustPopupWidgets();
 
-      let systemWindowId = WindowManager.getWindowByUid(itemInfo.id).systemWindowId;
+      let systemWindowId = WindowManager.getWindowByUid(id).systemWindowId;
       
       window.loadURL(
         WindowManager.getWindowUrl(
-          `#/headless/godley-widget-view?systemWindowId=${systemWindowId}&itemId=${itemInfo.id}`
+          `#/headless/godley-widget-view?systemWindowId=${systemWindowId}&itemId=${id}`
         )
       );
       
@@ -915,7 +931,7 @@ export class CommandsManager {
         itemInfo,
       });
       
-      this.activeGodleyWindowItems.set(itemInfo.id, itemInfo);
+      this.activeGodleyWindowItems.set(id, itemInfo);
     }
   }
 

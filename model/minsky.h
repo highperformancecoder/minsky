@@ -436,6 +436,9 @@ namespace minsky
     /// request all Godley table windows to redraw
     void redrawAllGodleyTables();
 
+    /// returns list of ids of all Godley tables in the current top level canvas
+    std::vector<std::string> allGodleyTables() const;
+    
     /// set/clear busy cursor in GUI
     virtual void setBusyCursor() {}
     virtual void clearBusyCursor() {}
@@ -524,7 +527,7 @@ namespace minsky
 
     std::map<std::string,std::weak_ptr<Item>> namedItems;
     void nameCurrentItem(const std::string& name) {namedItems[name]=canvas.item;}
-    void itemFromNamedItem(const std::string& name) {canvas.item=namedItems[name].lock();}
+    void itemFromNamedItem(const std::string& name);
 
     VariablePane variablePane;
 
