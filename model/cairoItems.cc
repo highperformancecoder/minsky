@@ -52,7 +52,7 @@ namespace
 }
 
 RenderVariable::RenderVariable(const VariableBase& var, const ICairoShim& shim):
-  cairoShim(shim), var(var)
+  var(var), cairoShim(shim)
 {
   TextProperties textProperties;
   textProperties.fontSize=12;
