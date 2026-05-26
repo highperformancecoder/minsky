@@ -795,9 +795,9 @@ void VariableBase::draw(const ICairoShim& cairoShim) const
                   mantissaText.markup="???";
                 exponentText=expMultiplier(val.engExp);
                 mantissaText.angle=angle+(flipped? M_PI:0);
+                exponentText.angle=mantissaText.angle;
                 mantissaText.fontSize=6;
                 exponentText.fontSize=6;
-            
                 l_cachedMantissa=cachedMantissa=shared_ptr(cairoShim.cachedRender(mantissaText));
                 l_cachedExponent=cachedExponent=shared_ptr(cairoShim.cachedRender(exponentText));
               }
