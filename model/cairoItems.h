@@ -31,26 +31,32 @@ namespace minsky
   /** class that renders a variable into a cairo context. 
       A user can also query the size of the unrotated rendered image
   */
-  class RenderVariable: public ecolab::Pango
+  class RenderVariable
   {
     const VariableBase& var;
-    cairo_t *cairo;
+    const ICairoShim& cairoShim;
+    // caching of text rendering
+    std::shared_ptr<ICacheRender> cachedRenderer;
+    void* m_context;
     float w, h, hoffs;
   public:
-    // render a variable to a given cairo context
-    RenderVariable(const VariableBase& var, cairo_t* cairo=NULL);
+    RenderVariable(const VariableBase& var);
+    RenderVariable(const VariableBase& var, const ICairoShim& shim);
     /// render the cairo image
-    void draw();
+    void draw() {var.draw(cairoShim);}
+    /// render cached text
+    void show() const {cachedRenderer->show();}
     /// half width of unrotated image
     float width() const {return w;}
     /// half height of unrotated image
     float height() const {return h;}
-    /// return the boost geometry corresponding to this variable's shape
-    //Polygon geom() const;
+    /// vertical offset
+    float top() const {return hoffs;}
     bool inImage(float x, float y); ///< true if (x,y) within rendered image
     /// x coordinate of the slider handle in the unrotated/unscaled
     /// frame of reference
     double handlePos() const;
+    void* context() const {return m_context;}
   };
 
   void drawTriangle(cairo_t* cairo, double x, double y, const ecolab::cairo::Colour& col, double angle=0);

@@ -19,10 +19,10 @@
 
 #include "minsky.h"
 #include "cairoItems.h"
+#include "cairoShimCairo.h"
 #include "intOp.h"
 #include "intOp.rcd"
 #include "itemT.rcd"
-#include "../engine/cairoShimCairo.h"
 #include "minsky_epilogue.h"
 
 namespace minsky
@@ -36,14 +36,10 @@ namespace minsky
   }
   
   void IntOp::draw(const ICairoShim& cairoShim) const
-  { 	  
-      // TODO: Refactor to use cairoShim methods instead of raw cairo_t*
-      auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-      cairo_t* cairo = shimImpl._internalGetCairoContext();
+  {
       // if rotation is in 1st or 3rd quadrant, rotate as
       // normal, otherwise flip the text so it reads L->R
     auto [angle,textFlipped]=rotationAsRadians();
-      double coupledIntTranslation=0;
       const float z=zoomFactor();
     
       float l=OperationBase::l*z, r=OperationBase::r*z, 
@@ -53,19 +49,6 @@ namespace minsky
       if (r<iWidth()*z) r=iWidth()*z;    
       if (h<iHeight()*z) h=iHeight()*z;   
 
-      if (coupled() && intVar)
-        {
-          cairoShim.save();
-          auto& iv=*intVar;
-          const RenderVariable rv(iv,cairo);
-          // we need to add some translation if the variable is bound
-          cairo_rotate(cairo,angle);
-          coupledIntTranslation=-0.5*(intVarOffset+2*rv.width()+2+r)*z;
-          if (rv.width()<iv.iWidth()) coupledIntTranslation=-0.5*(intVarOffset+2*iv.iWidth()+2+r)*z;
-          cairoShim.restore();
-        }
-    
-
       {
         cairoShim.save();
         cairoShim.rotate(angle); 
@@ -73,8 +56,8 @@ namespace minsky
         if (textFlipped) cairoShim.rotate(M_PI);
         const double sf = scaleFactor();  
         cairoShim.scale(sf,sf);		  
-        cairoShim.moveTo(-7,3.5);
-        cairoShim.showText("∫dt");
+        cairoShim.moveTo(-12,-9);
+        cairoShim.showText(TextProperties("∫dt"));
         cairoShim.restore();
       }
       DrawBinOpShim d(cairoShim, zoomFactor());
@@ -106,7 +89,7 @@ namespace minsky
           cairoShim.stroke();
      
           // display an integration variable next to it
-          RenderVariable rv(*intVar, cairo);
+          RenderVariable rv(*intVar, cairoShim);
           // save the render width for later use in setting the clip
           intVarWidth=rv.width()*z;
           if (rv.width()<intVar->iWidth()) intVarWidth=0.5*intVar->iWidth()*z;
@@ -142,42 +125,42 @@ namespace minsky
           cairoShim.closePath();        
         }
     
-      cairo::Path clipPath(cairo); 
-    
-      double x0=r, y0=0, x1=l, y1=numPorts() > 2? -h+3: 0, 
+      auto cairo=dynamic_cast<const CairoShimCairo&>(cairoShim)._internalGetCairoContext();
+      cairo::Path clipPath(cairo);
+
+      double x0=r, y0=0, x1=l, y1=numPorts() > 2? -h+3: 0,
         x2=l, y2=numPorts() > 2? h-3: 0;
-                  
+
       if (textFlipped) swap(y1,y2);
-	
+
       // adjust for integration variable
       if (coupled())
         x0+=intVarOffset+2*intVarWidth+2;
-	
+
       cairoShim.save();
-      cairo_identity_matrix(cairo);
-      cairo_translate(cairo, x(), y());
-      cairo_rotate(cairo, angle);
-      cairo_user_to_device(cairo, &x0, &y0);
-      cairo_user_to_device(cairo, &x1, &y1);
-      cairo_user_to_device(cairo, &x2, &y2);
+      cairoShim.identityMatrix();
+      cairoShim.translate(x(), y());
+      cairoShim.rotate(angle);
+      cairoShim.userToDevice(x0, y0);
+      cairoShim.userToDevice(x1, y1);
+      cairoShim.userToDevice(x2, y2);
       cairoShim.restore();
-    
-      if (numPorts()>0) 
+
+      if (numPorts()>0)
         m_ports[0]->moveTo(x0, y0);
-      if (numPorts()>1) 
+      if (numPorts()>1)
         m_ports[1]->moveTo(x1, y1);
       if (numPorts()>2)
         m_ports[2]->moveTo(x2, y2);
-	
-      cairoShim.translate(-coupledIntTranslation,0);        
+
       cairoShim.restore(); // undo rotation
       if (mouseFocus)
         {
           drawPorts(cairoShim);
           displayTooltip(cairoShim,tooltip());
         }
-      if (onResizeHandles) drawResizeHandles(cairoShim);  
-	
+      if (onResizeHandles) drawResizeHandles(cairoShim);
+
       cairoShim.newPath();
       clipPath.appendToCurrent(cairo);
       cairoShim.clip();          

@@ -151,13 +151,8 @@ namespace minsky
       cairoShim.stroke();
     }
 
-    void drawSymbol(const char* s) const
-    {
-      cairoShim.scale(zoomFactor,zoomFactor);
-      cairoShim.moveTo(-5,0);
-      cairoShim.showText(s);
-    }
-  
+    void drawSymbol(const char* s) const;
+ 
     // puts a small symbol to identify port
     // x, y = position of symbol
     template <class F>

@@ -646,7 +646,17 @@ export class ContextMenuManager {
     const menuItems = [
       new MenuItem({
         label: 'Open Godley Table',
-        click: () => CommandsManager.openGodleyTable(itemInfo)
+        click: () => {
+          CommandsManager.openGodleyTable(itemInfo.id);
+        }
+      }),
+      new MenuItem({
+        label: 'Open All Godley Tables',
+        click: () => {CommandsManager.openAllGodleyTables();}
+      }),
+      new MenuItem({
+          label: 'Close All Godley Tables',
+          click() {CommandsManager.closeAllGodleyTables();},
       }),
       new MenuItem({
         label: 'Title',

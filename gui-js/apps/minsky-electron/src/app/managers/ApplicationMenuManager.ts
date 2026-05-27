@@ -448,6 +448,14 @@ export class ApplicationMenuManager {
           label: 'Random Layout',
           async click() {minsky.randomLayout();}
         },
+        {
+          label: 'Open All Godley Tables',
+          click() {CommandsManager.openAllGodleyTables();},
+        },
+        {
+          label: 'Close All Godley Tables',
+          click() {CommandsManager.closeAllGodleyTables();},
+        },
       ],
     };
   }
