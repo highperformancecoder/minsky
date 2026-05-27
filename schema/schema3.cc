@@ -569,7 +569,9 @@ namespace schema3
           }
         catch (const std::exception&) {}
         if (y.name) x1->table.title=*y.name;
-        if (y.editorMode && *y.editorMode!=x1->editorMode())
+        if (y.editorMode && *y.editorMode!=x1->editorMode() ||
+            !y.editorMode && x1->editorMode() // if legacy, not specified, set as icon
+            )
           x1->toggleEditorMode();
         if (y.variableDisplay)
           SchemaHelper::setVariableDisplay(*x1, *y.variableDisplay);
