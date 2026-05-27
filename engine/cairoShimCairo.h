@@ -14,7 +14,7 @@ namespace minsky
   class CairoShimCairo: public ICairoShim
   {
     cairo_t* cairo;
-    mutable std::unique_ptr<ecolab::Pango> m_pango;
+    void initPango(ecolab::Pango&,const TextProperties&) const;
     CairoShimCairo(const CairoShimCairo&)=delete;
     void operator=(const CairoShimCairo&)=delete;
   public:
@@ -56,10 +56,8 @@ namespace minsky
     void setSourceRGBA(double r, double g, double b, double a) const override;
 
     // Text operations
-    void showText(const std::string& text) const override;
-    void setFontSize(double size) const override;
-    void selectFontFace(const std::string& family, cairo_font_slant_t slant, cairo_font_weight_t weight) const override;
-    void textExtents(const std::string& text, cairo_text_extents_t& extents) const override;
+    void showText(const TextProperties& text) const override;
+    TextExtents textExtents(const TextProperties& text) const override;
 
     // Transformation operations
     void identityMatrix() const override;
@@ -75,15 +73,13 @@ namespace minsky
     // Tolerance
     void setTolerance(double tolerance) const override;
 
-    // Pango support
-    ecolab::Pango& pango() const override;
-    ecolab::Pango& newPango() const override;
-    
     // SVG rendering support
     void renderSVG(const SVGRenderer& svgRenderer, double width, double height) const override;
     
     // TEMPORARY: Internal accessor for migration - to be removed once all implementations are updated
     cairo_t* _internalGetCairoContext() const { return cairo; }
+
+    void* context() const override {return cairo;}
   };
 
 }

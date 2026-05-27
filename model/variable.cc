@@ -18,6 +18,7 @@
 */
 
 #include "minsky.h"
+#include "cairoShimCairo.h"
 #include "geometry.h"
 #include "valueId.h"
 #include "variable.h"
@@ -38,7 +39,6 @@
 #include "variable.rcd"
 
 #include <error.h>
-#include "../engine/cairoShimCairo.h"
 #include "minsky_epilogue.h"
 
 #include <algorithm>
@@ -707,10 +707,7 @@ bool VariableBase::enableSlider(bool x) const
 }
 
 void VariableBase::draw(const ICairoShim& cairoShim) const
-{	
-  // TODO: Refactor RenderVariable to use ICairoShim
-  auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-  cairo_t* cairo = shimImpl._internalGetCairoContext();
+{
   auto [angle,flipped]=rotationAsRadians();
   const float z=zoomFactor();
 
@@ -718,22 +715,20 @@ void VariableBase::draw(const ICairoShim& cairoShim) const
   // rendering on a different thread, and this avoids a race condition
   // when the cache is invalidated
   auto l_cachedNameRender=cachedNameRender;
-  if (!l_cachedNameRender || cairo!=cachedNameRender->cairoContext())
-    {
-      l_cachedNameRender=cachedNameRender=std::make_shared<RenderVariable>(*this,cairo);
-      l_cachedNameRender->setFontSize(12.0);
-    }
+  if (!l_cachedNameRender || cairoShim.context()!=l_cachedNameRender->context())
+    l_cachedNameRender=cachedNameRender=std::make_shared<RenderVariable>(*this,cairoShim);
     
   // if rotation is in 1st or 3rd quadrant, rotate as
   // normal, otherwise flip the text so it reads L->R
   const Rotate r(rotation() + (flipped? 180:0),0,0);
-  l_cachedNameRender->angle=angle+(flipped? M_PI:0);
 
   // parameters of icon in userspace (unscaled) coordinates
   const double w=std::max(l_cachedNameRender->width(), 0.5f*iWidth()); 
   const double h=std::max(l_cachedNameRender->height(), 0.5f*iHeight());
   const double hoffs=l_cachedNameRender->top();
   
+  auto cairo=dynamic_cast<const CairoShimCairo&>(cairoShim)._internalGetCairoContext();
+ 
   unique_ptr<cairo::Path> clipPath;
   {
     cairoShim.save();
@@ -743,6 +738,7 @@ void VariableBase::draw(const ICairoShim& cairoShim) const
       cairoShim.save();
       if (local())
         cairoShim.setSourceRGB(0,0,1);
+      cairoShim.rotate(angle+(flipped? M_PI:0));
       l_cachedNameRender->show();
       cairoShim.restore();
     }
@@ -771,48 +767,53 @@ void VariableBase::draw(const ICairoShim& cairoShim) const
           {
             auto l_cachedMantissa=cachedMantissa;
             auto l_cachedExponent=cachedExponent;
-            if (!l_cachedMantissa || l_cachedMantissa->cairoContext()!=cairo)
-              {
-                l_cachedMantissa=cachedMantissa=make_shared<Pango>(cairo);
-                l_cachedMantissa->setFontSize(6.0);
-                l_cachedExponent=cachedExponent=make_shared<Pango>(cairo);
-                l_cachedExponent->setFontSize(6.0);
-                cachedValue=nan("");
-              }
-          
             auto val=engExp();    
-            if (value()!=cachedValue)
+            if (!l_cachedMantissa || l_cachedMantissa->context()!=cairoShim.context() ||
+               value()!=cachedValue)
               {
+         
                 cachedValue=value();
+                TextProperties mantissaText, exponentText;
                 if (!isnan(value())) {
                   if (sliderVisible())
-                    l_cachedMantissa->setMarkup
-                      (mantissa(val,
+                    mantissaText.markup=
+                      mantissa(val,
                                 int(1+
                                     (vv->sliderStepRel?
                                      -log10(vv->maxSliderSteps()):
                                      log10(vv->value()/vv->maxSliderSteps())
-                                     ))));
+                                     )));
                   else
-                    l_cachedMantissa->setMarkup(mantissa(val));
+                    mantissaText.markup=mantissa(val);
                 }
                 else if (isinf(value())) { // Display non-zero divide by zero as infinity. For ticket 1155
-                  if (signbit(value())) l_cachedMantissa->setMarkup("-∞");
-                  else l_cachedMantissa->setMarkup("∞");
+                  if (signbit(value())) mantissaText.markup="-∞";
+                  else mantissaText.markup="∞";
                 }
                 else // Display all other NaN cases as ???. For ticket 1155
-                  l_cachedMantissa->setMarkup("???");
-                l_cachedExponent->setMarkup(expMultiplier(val.engExp));
+                  mantissaText.markup="???";
+                exponentText=expMultiplier(val.engExp);
+                mantissaText.fontSize=6;
+                exponentText.fontSize=6;
+                l_cachedMantissa=cachedMantissa=shared_ptr(cairoShim.cachedRender(mantissaText));
+                l_cachedExponent=cachedExponent=shared_ptr(cairoShim.cachedRender(exponentText));
               }
-            l_cachedMantissa->angle=angle+(flipped? M_PI:0);
-            
-            cairoShim.moveTo(r.x(w-l_cachedMantissa->width()-2,-h-hoffs+2),
-                          r.y(w-l_cachedMantissa->width()-2,-h-hoffs+2));
-            l_cachedMantissa->show();
+
+            auto mantissaBB=l_cachedMantissa->extents();
+            cairoShim.moveTo(r.x(w-mantissaBB.width-2,-h-hoffs+2),
+                             r.y(w-mantissaBB.width-2,-h-hoffs+2));
+            {
+              CairoShimSave cs(cairoShim);
+              cairoShim.rotate(angle+(flipped? M_PI:0));
+              l_cachedMantissa->show();
+            }
 
             if (val.engExp!=0 && !isnan(value())) // Avoid large exponential number in variable value display. For ticket 1155
               {
-                cairoShim.moveTo(r.x(w-l_cachedExponent->width()-2,0),r.y(w-l_cachedExponent->width()-2,0));
+                auto exponentBB=l_cachedExponent->extents();
+                cairoShim.moveTo(r.x(w-exponentBB.width-2,0),r.y(w-exponentBB.width-2,0));
+                CairoShimSave cs(cairoShim);
+                cairoShim.rotate(angle+(flipped? M_PI:0));
                 l_cachedExponent->show();
               }
           }

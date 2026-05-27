@@ -63,10 +63,10 @@ namespace minsky
   {
   CLASSDESC_ACCESS(VariableCaches);
   protected:
-    /// cached Pango objects
+    /// cached font rendering objects
     mutable classdesc::Exclude<std::shared_ptr<RenderVariable>> cachedNameRender;
-    mutable classdesc::Exclude<std::shared_ptr<ecolab::Pango>> cachedMantissa;
-    mutable classdesc::Exclude<std::shared_ptr<ecolab::Pango>> cachedExponent;
+    mutable classdesc::Exclude<std::shared_ptr<ICacheRender>> cachedMantissa;
+    mutable classdesc::Exclude<std::shared_ptr<ICacheRender>> cachedExponent;
     mutable double cachedValue, cachedTime;
   public:
     VariableCaches()=default;
