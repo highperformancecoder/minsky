@@ -9,4 +9,5 @@ contextBridge.exposeInMainWorld('electron', {
   ipcRendererOff: (channel: string, listener) => ipcRenderer.removeListener(channel, listener),
   ipcRenderer: { ...ipcRenderer, send: ipcRenderer.send, sendSync: ipcRenderer.sendSync, invoke: ipcRenderer.invoke },
   platform: process.platform,
+  electronVersion: process.versions.electron,
 });
