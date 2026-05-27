@@ -99,7 +99,6 @@ namespace minsky
     iWidth(800);
     iHeight(200);
     toggleEditorMode();
-    //toggleButtons();
   }
   
   bool GodleyIcon::inItem(float xx, float yy) const
