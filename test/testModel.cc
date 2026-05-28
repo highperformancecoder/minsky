@@ -629,6 +629,7 @@ TEST_F(CanvasFixture, godleyResize)
   model.reset(new Group);
   addGodley();
   auto i=itemFocus;
+  if (i->editorMode()) i->toggleEditorMode();// disable editor mode
   double w=i->width(), h=i->height();
   double x=i->x(), y=i->y();
 
