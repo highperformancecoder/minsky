@@ -61,7 +61,7 @@ namespace minsky
   public:
     static SVGRenderer svgRenderer; ///< SVG icon to display when not in editor mode
     
-    GodleyIcon() {iWidth(150); iHeight(150); editor.adjustWidgets(); editor.disableButtons();}
+    GodleyIcon();
     GodleyIcon(const GodleyIcon&)=default;
     ~GodleyIcon() {Item::removeControlledItems();}
 

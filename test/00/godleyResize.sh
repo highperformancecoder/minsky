@@ -13,6 +13,7 @@ minsky.canvas.mouseUp(300, 200)  # Finalize the position
 # Attempt to select the GodleyIcon
 godley_icon = findObject("GodleyIcon")  
 assert godley_icon is not None, "GodleyIcon not found or not focused"
+if godley_icon.editorMode(): godley_icon.toggleEditorMode()
 
 # Print details about the focused item
 print(f"Focused item: {godley_icon.classType()} at ({godley_icon.x()}, {godley_icon.y()})")
