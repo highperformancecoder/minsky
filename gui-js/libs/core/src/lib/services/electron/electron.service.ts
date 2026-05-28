@@ -14,6 +14,7 @@ export class ElectronService {
   minsky: Minsky;
   on: (channel: string, listener) => void;
   removeListener: (channel: string, listener) => void;
+  electronVersion: string;
   
   constructor() {
     this.minsky=new Minsky("minsky");
@@ -21,6 +22,7 @@ export class ElectronService {
     if (this.isElectron) {
       this.ipcRenderer = window['electron'].ipcRenderer;
       this.platform = window['electron'].platform;
+      this.electronVersion = window['electron'].electronVersion;
       this.on = window['electron'].ipcRendererOn;
       this.removeListener = window['electron'].ipcRendererOff;
       
