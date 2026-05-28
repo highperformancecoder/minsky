@@ -1658,6 +1658,22 @@ namespace minsky
     variableInstanceList.reset();
   }
 
+  void Minsky::itemFromNamedItem(const std::string& name)
+  {
+    canvas.item=namedItems[name].lock();
+    if (!canvas.item) 
+      {
+        // name all items by id
+        model->recursiveDo(&GroupItems::items,
+                           [this](const Items&,const Items::const_iterator& x){
+                             namedItems[(*x)->id()]=*x;
+                             return false;
+                           });
+        canvas.item=namedItems[name].lock();
+      }
+  }
+
+  
   void Minsky::removeItems(Wire& wire)
   {
     if (wire.from()->wires().size()==1)
@@ -1736,6 +1752,15 @@ namespace minsky
                        });
   }
 
+  vector<string> Minsky::allGodleyTables() const
+  {
+    vector<string> r;
+    for (auto& i: canvas.model->items)
+      if (i->godleyIconCast())
+        r.push_back(i->id());
+    return r;
+  }
+  
   size_t Minsky::physicalMem()
   {
 #if defined(__linux__)

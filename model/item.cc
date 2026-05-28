@@ -368,17 +368,17 @@ namespace minsky
   {
     auto [angle,flipped]=rotationAsRadians();
     const Rotate r(rotation()+(flipped? 180:0),0,0);
-    auto& pango = cairoShim.pango();
     const float z=zoomFactor();
-    pango.angle=angle+(flipped? M_PI: 0);
-    pango.setFontSize(12.0*scaleFactor()*z);
-    pango.setMarkup(latexToPango(detailedText()));         
+    TextProperties tp(latexToPango(detailedText()));
+    tp.angle=angle+(flipped? M_PI: 0);
+    tp.fontSize=12.0*scaleFactor()*z;
+    auto bbox=cairoShim.textExtents(tp);
     // parameters of icon in userspace (unscaled) coordinates
-    const float w=0.5*pango.width()+2*z; 
-    const float h=0.5*pango.height()+4*z;       
+    const float w=0.5*bbox.width+2*z; 
+    const float h=0.5*bbox.height+4*z;       
 
     cairoShim.moveTo(r.x(-w+1,-h+2), r.y(-w+1,-h+2));
-    pango.show();
+    cairoShim.showText(tp);
 
     if (mouseFocus) {
       displayTooltip(cairoShim,tooltip());	
@@ -406,19 +406,19 @@ namespace minsky
     if (!tooltip.empty() || !unitstr.empty())
       {
         cairoShim.save();
-        auto& pango = cairoShim.newPango();
         string toolTipText=latexToPango(tooltip);
         if (!unitstr.empty())
           toolTipText+=" Units:"+latexToPango(unitstr);
-        pango.setMarkup(toolTipText);
+        TextProperties tp(toolTipText);
         const float z=zoomFactor();
         cairoShim.translate(z*(0.5*bb.width())+10,
                             z*(-0.5*bb.height())-20);
-        cairoShim.rectangle(0,0,pango.width(),pango.height());
+        auto bbox=cairoShim.textExtents(tp);
+        cairoShim.rectangle(0,0,bbox.width,bbox.height);
         cairoShim.setSourceRGB(1,1,1);
         cairoShim.fillPreserve();
         cairoShim.setSourceRGB(0,0,0);
-        pango.show();
+        cairoShim.showText(tp);
         cairoShim.stroke();
         cairoShim.restore();
       }

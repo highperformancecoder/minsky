@@ -504,11 +504,11 @@ namespace minsky
     if (!table.title.empty())
       {
         cairoShim.save();
-        auto& pango = cairoShim.pango();
-        pango.setMarkup("<b>"+latexToPango(table.title)+"</b>");
-        pango.setFontSize(titleOffs());
-        cairoShim.moveTo(-0.5*(pango.width()-leftMargin()), titley);
-        pango.show();
+        TextProperties tp("<b>"+latexToPango(table.title)+"</b>");
+        tp.fontSize=titleOffs();
+        auto bbox=cairoShim.textExtents(tp);
+        cairoShim.moveTo(-0.5*(bbox.width-leftMargin()), titley);
+        cairoShim.showText(tp);
         cairoShim.restore();
       }
       
