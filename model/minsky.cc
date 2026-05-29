@@ -1597,17 +1597,17 @@ namespace minsky
     });
   }
 
-  void Minsky::setGodleyDisplayValue(bool displayValues, GodleyTable::DisplayStyle displayStyle)
-  {
-    this->displayValues=displayValues;
-    this->displayStyle=displayStyle;
-    canvas.requestRedraw();
-    model->recursiveDo(&GroupItems::items, [](Items&,Items::iterator i) {
-      if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
-        g->popup.requestRedraw();
-      return false;
-    });
-  }
+//  void Minsky::setGodleyDisplayValue(bool displayValues, GodleyTable::DisplayStyle displayStyle)
+//  {
+//    this->displayValues=displayValues;
+//    this->displayStyle=displayStyle;
+//    canvas.requestRedraw();
+//    model->recursiveDo(&GroupItems::items, [](Items&,Items::iterator i) {
+//      if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
+//        g->popup.requestRedraw();
+//      return false;
+//    });
+//  }
 
   void Minsky::importVensim(const string& filename)
   {

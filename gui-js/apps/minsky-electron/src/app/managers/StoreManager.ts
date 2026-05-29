@@ -3,7 +3,7 @@ import Store from 'electron-store';
 import {homedir} from 'node:os';
 
 interface MinskyPreferences {
-  godleyTableShowValues: boolean;
+//  godleyTableShowValues: boolean;
   godleyTableOutputStyle: string;
   enableMultipleEquityColumns: boolean;
   numberOfRecentFilesToDisplay: number;
@@ -31,7 +31,7 @@ class StoreManager {
       defaultModelDirectory: homedir(),
       defaultDataDirectory: homedir(),
       preferences: {
-        godleyTableShowValues: false,
+ //       godleyTableShowValues: false,
         godleyTableOutputStyle: 'sign',
         enableMultipleEquityColumns: false,
         numberOfRecentFilesToDisplay: 10,

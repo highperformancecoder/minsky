@@ -682,7 +682,19 @@ export class ContextMenuManager {
         label: 'Display variables',
         type: 'checkbox',
         checked: displayVariableChecked,
-        click: () => godley.toggleVariableDisplay()
+        click: async () => {
+          await godley.toggleVariableDisplay();
+          await minsky.canvas.requestRedraw();
+        }
+      }),
+      new MenuItem({
+        label: 'Display values',
+        type: 'checkbox',
+        checked: await  godley.displayValues(),
+        click: async () => {
+          await godley.toggleDisplayValues();
+          await minsky.canvas.requestRedraw();
+        },
       }),
       new MenuItem({
         label: 'Copy flow variables',

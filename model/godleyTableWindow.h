@@ -94,6 +94,9 @@ namespace minsky
     /// minimum column width (for eg empty columns)
     static constexpr double minColumnWidth=4*ButtonWidget<col>::buttonSpacing;
 
+    // note explicit getter/setter here rather than public member to
+    // avoid an infinite recursion when running RESTProcess on this
+    // object
     GodleyIcon& godleyIcon() {return m_godleyIcon;}
     const GodleyIcon& godleyIcon() const {return m_godleyIcon;}
     

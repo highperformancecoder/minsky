@@ -58,7 +58,6 @@ export class GodleyMenuManager {
     const preferences = StoreManager.store.get('preferences');
     let {
       enableMultipleEquityColumns,
-      godleyTableShowValues,
       godleyTableOutputStyle,
     } = preferences;
 
@@ -66,19 +65,14 @@ export class GodleyMenuManager {
       enableMultipleEquityColumns = value as boolean;
       minsky.multipleEquities(enableMultipleEquityColumns);
       GodleyMenuManager.refresh(window);
-    } else {
-      if (property === 'godleyTableOutputStyle') {
+    } else if (property === 'godleyTableOutputStyle') {
         godleyTableOutputStyle = value as GodleyTableOutputStyles;
-      } else if (property === 'godleyTableShowValues') {
-        godleyTableShowValues = value as boolean;
-      }
-      minsky.setGodleyDisplayValue(godleyTableShowValues, godleyTableOutputStyle);
+        minsky.displayStyle(godleyTableOutputStyle);
     }
 
     StoreManager.store.set({
       preferences: {
         ...preferences,
-        godleyTableShowValues: godleyTableShowValues,
         godleyTableOutputStyle: godleyTableOutputStyle,
         enableMultipleEquityColumns: enableMultipleEquityColumns,
       },
