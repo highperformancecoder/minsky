@@ -426,9 +426,6 @@ namespace minsky
     // godley table display values preferences
     GodleyTable::DisplayStyle displayStyle=GodleyTable::sign;
 
-    /// set display value mode on all godley table editor modes
-    //void setGodleyDisplayValue(bool displayValues, GodleyTable::DisplayStyle displayStyle);
-
     /// import a Vensim file
     void importVensim(const std::string&);
     
