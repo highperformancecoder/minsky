@@ -120,21 +120,22 @@ namespace minsky
 
   void Selection::align(const Item& ref, Align align)
   {
-    for (auto& i: items)
+    auto apply=[&](const auto& i)
+    {
       switch (align)
         {
         case left:
           i->moveTo(i->x()+ref.left()-i->left(), i->y());
           break;
         case centre:
-          i->moveTo(ref.x(),i->y());
+          i->moveTo(ref.x(), i->y());
           break;
         case right:
           i->moveTo(i->x()+ref.right()-i->right(), i->y());
           break;
         case left_right:
           i->iWidth(ref.iWidth());
-          i->moveTo(ref.x(),i->y());
+          i->moveTo(ref.x(), i->y());
           break;
         case top:
           i->moveTo(i->x(), i->y()+ref.top()-i->top());
@@ -150,6 +151,10 @@ namespace minsky
           i->moveTo(i->x(), ref.y());
           break;
         }
+    };
+
+    for (auto& i: items) apply(i);
+    for (auto& g: groups) apply(g);
   }
 }
 
