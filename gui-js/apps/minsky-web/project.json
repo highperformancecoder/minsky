@@ -27,6 +27,7 @@
           "apps/minsky-web/src/assets"
         ],
         "styles": [
+          "node_modules/@angular/material/prebuilt-themes/deeppurple-amber.css",
           "apps/minsky-web/src/styles.scss"
         ],
         "scripts": [

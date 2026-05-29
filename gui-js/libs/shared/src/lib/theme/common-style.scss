@@ -1,4 +1,5 @@
-@import './variables.scss';
+@forward './variables';
+@use './variables' as *;
 
 .popup-wrapper {
   font-family: $font-family;

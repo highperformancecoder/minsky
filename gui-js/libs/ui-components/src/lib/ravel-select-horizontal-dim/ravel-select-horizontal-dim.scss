@@ -1,4 +1,4 @@
-@import '../../../../shared/src/lib/theme/common-style.scss';
+@use '../../../../shared/src/lib/theme/common-style' as *;
 
 :host {
   display: block; /* Important for host to take up space */

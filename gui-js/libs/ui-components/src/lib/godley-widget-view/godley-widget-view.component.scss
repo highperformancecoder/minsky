@@ -1,4 +1,4 @@
-@import '../../../../shared/src/lib/theme/variables.scss';
+@use '../../../../shared/src/lib/theme/variables' as *;
 
 #godley-cairo-canvas-wrapper {
   height: 100vh;
