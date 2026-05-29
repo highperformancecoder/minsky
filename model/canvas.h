@@ -161,9 +161,14 @@ namespace minsky
     /// select all items in a given region
     void select(const LassoBox&);
 
-    /// align items in selection
+    /// align items in selection using the current context item as the anchor.
+    /// No-op when there is no current item (for example, no right-clicked item);
+    /// callers should only expose/enable this action when an anchor item exists.
     void alignSelection(Selection::Align align)
-    {if (item) selection.align(*item,align);}
+    {
+      if (item)
+        selection.align(*item,align);
+    }
     
     int ravelsSelected() const; ///< number of ravels in selection
     
