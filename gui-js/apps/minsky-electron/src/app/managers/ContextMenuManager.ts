@@ -1423,7 +1423,10 @@ export class ContextMenuManager {
     for (let i in labels) 
       menuItems.push(new MenuItem({
         label: labels[i],
-        click: async ()=>{await minsky.canvas.alignSelection(i);},
+        click: async ()=>{
+          await minsky.canvas.alignSelection(i);
+          await CommandsManager.requestRedraw();
+        },
       }));
     return menuItems;
   }
