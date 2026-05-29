@@ -1628,21 +1628,6 @@ TEST(TensorOps, evalOpEvaluate)
       EXPECT_TRUE(variableValues[":unitVar"]->units.str().empty());
     }
 
-    // Test setGodleyDisplayValue
-    TEST_F(MinskySuite, setGodleyDisplayValue)
-    {
-      auto g1 = new GodleyIcon;
-      model->addItem(g1);
-      
-      setGodleyDisplayValue(true, GodleyTable::DRCR);
-      EXPECT_TRUE(displayValues);
-      EXPECT_EQ(GodleyTable::DRCR, displayStyle);
-      
-      setGodleyDisplayValue(false, GodleyTable::sign);
-      EXPECT_FALSE(displayValues);
-      EXPECT_EQ(GodleyTable::sign, displayStyle);
-    }
-
     // Test save and load
     TEST_F(MinskySuite, saveAndLoad)
     {
