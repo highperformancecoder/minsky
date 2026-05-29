@@ -1409,26 +1409,22 @@ export class ContextMenuManager {
   }
 
   static alignmentMenu() {
-    const labels={
-      left: "Left",
-      centre: "Centre",
-      right: "Right",
-      left_right: "Left & Right",
-      top: "Top",
-      middle: "Middle",
-      bottom: "Bottom",
-      top_bottom: "Top & Bottom",
-    };
-    let menuItems=[];
-    for (let i in labels) 
-      menuItems.push(new MenuItem({
-        label: labels[i],
-        click: async ()=>{
-          await minsky.canvas.alignSelection(i);
-          await CommandsManager.requestRedraw();
-        },
-      }));
-    return menuItems;
+     const labels: [string, string][] = [
+       ['left', 'Left'],
+       ['centre', 'Centre'],
+       ['right', 'Right'],
+       ['left_right', 'Left & Right'],
+       ['top', 'Top'],
+       ['middle', 'Middle'],
+       ['bottom', 'Bottom'],
+       ['top_bottom', 'Top & Bottom'],
+     ];
+    return labels.map(([alignment, label]) =>
+       new MenuItem({
+         label,
+         click: async ()=>{await minsky.canvas.alignSelection(alignment);},
+       })
+     );
   }
 }
 
