@@ -125,7 +125,7 @@ namespace schema3
     // Godley Icon specific fields
     Optional<std::vector<std::vector<std::string>>> data;
     Optional<std::vector<minsky::GodleyAssetClass::AssetClass>> assetClasses;
-    Optional<bool> editorMode, buttonDisplay, variableDisplay;
+    Optional<bool> editorMode, buttonDisplay, variableDisplay, displayValues;
     Optional<string> currency;
     // sheet specific fields
     Optional<minsky::ShowSlice> showSlice; // slicing rows
@@ -160,7 +160,8 @@ namespace schema3
       ItemBase(id,static_cast<const minsky::Item&>(g),ports),
       data(g.table.getData()), assetClasses(g.table.assetClass()),
       editorMode(g.editorMode()), buttonDisplay(g.buttonDisplay()),
-      variableDisplay(g.variableDisplay()), currency(g.currency)
+      variableDisplay(g.variableDisplay()), displayValues(g.displayValues),
+      currency(g.currency)
     {name=g.table.title;}
     Item(int id, const minsky::PlotWidget& p, const std::vector<int>& ports):
       ItemBase(id,static_cast<const minsky::Item&>(p),ports),

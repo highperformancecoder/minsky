@@ -744,6 +744,7 @@ export class GodleyIcon extends Item {
   async currency(...args: string[]): Promise<string> {return this.$callMethod('currency',...args);}
   async deleteRow(a1: number): Promise<void> {return this.$callMethod('deleteRow',a1);}
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
+  async displayValues(...args: boolean[]): Promise<boolean> {return this.$callMethod('displayValues',...args);}
   async draw(a1: ICairoShim): Promise<void> {return this.$callMethod('draw',a1);}
   async editorMode(): Promise<boolean> {return this.$callMethod('editorMode');}
   async flowSignature(a1: number): Promise<object> {return this.$callMethod('flowSignature',a1);}
@@ -772,6 +773,7 @@ export class GodleyIcon extends Item {
   async toEditorX(a1: number): Promise<number> {return this.$callMethod('toEditorX',a1);}
   async toEditorY(a1: number): Promise<number> {return this.$callMethod('toEditorY',a1);}
   async toggleButtons(): Promise<void> {return this.$callMethod('toggleButtons');}
+  async toggleDisplayValues(): Promise<void> {return this.$callMethod('toggleDisplayValues');}
   async toggleEditorMode(): Promise<void> {return this.$callMethod('toggleEditorMode');}
   async toggleVariableDisplay(): Promise<void> {return this.$callMethod('toggleVariableDisplay');}
   async update(): Promise<void> {return this.$callMethod('update');}
@@ -1369,7 +1371,6 @@ export class Minsky extends CppClass {
   async dimensionalAnalysis(): Promise<void> {return this.$callMethod('dimensionalAnalysis');}
   async displayErrorItem(a1: Item): Promise<void> {return this.$callMethod('displayErrorItem',a1);}
   async displayStyle(...args: string[]): Promise<string> {return this.$callMethod('displayStyle',...args);}
-  async displayValues(...args: boolean[]): Promise<boolean> {return this.$callMethod('displayValues',...args);}
   async doPushHistory(...args: boolean[]): Promise<boolean> {return this.$callMethod('doPushHistory',...args);}
   async ecolabVersion(): Promise<string> {return this.$callMethod('ecolabVersion');}
   async edited(): Promise<boolean> {return this.$callMethod('edited');}
@@ -1455,7 +1456,6 @@ export class Minsky extends CppClass {
   async setAutoSaveFile(a1: string): Promise<void> {return this.$callMethod('setAutoSaveFile',a1);}
   async setBusyCursor(): Promise<void> {return this.$callMethod('setBusyCursor');}
   async setDefinition(a1: string,a2: string): Promise<void> {return this.$callMethod('setDefinition',a1,a2);}
-  async setGodleyDisplayValue(a1: boolean,a2: string): Promise<void> {return this.$callMethod('setGodleyDisplayValue',a1,a2);}
   async setGodleyIconResource(a1: string): Promise<void> {return this.$callMethod('setGodleyIconResource',a1);}
   async setGroupIconResource(a1: string): Promise<void> {return this.$callMethod('setGroupIconResource',a1);}
   async setLockIconResource(a1: string,a2: string): Promise<void> {return this.$callMethod('setLockIconResource',a1,a2);}

@@ -22,7 +22,6 @@ export class PreferencesComponent implements OnInit {
 
   constructor(private electronService: ElectronService) {
     this.form = new FormGroup({
-      godleyTableShowValues: new FormControl(null),
       godleyTableOutputStyle: new FormControl(null),
       enableMultipleEquityColumns: new FormControl(null),
       numberOfRecentFilesToDisplay: new FormControl(null),
