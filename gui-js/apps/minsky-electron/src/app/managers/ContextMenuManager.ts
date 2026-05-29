@@ -690,7 +690,7 @@ export class ContextMenuManager {
       new MenuItem({
         label: 'Display values',
         type: 'checkbox',
-        checked: await  godley.displayValues(),
+        checked: await godley.displayValues(),
         click: async () => {
           await godley.toggleDisplayValues();
           await minsky.canvas.requestRedraw();
