@@ -529,6 +529,10 @@ export class ContextMenuManager {
         submenu: await ContextMenuManager.pubTabMenu(),
       }),
       new MenuItem({
+        label: 'Align',
+        submenu: Menu.buildFromTemplate(this.alignmentMenu()),
+      }),
+      new MenuItem({
         label: `Delete ${itemInfo.classType}`,
         click: () => CommandsManager.deleteCurrentItemHavingId(itemInfo.id)
       }),
@@ -1402,6 +1406,26 @@ export class ContextMenuManager {
       }),
       ]);
     menu.popup();
+  }
+
+  static alignmentMenu() {
+    const labels={
+      left: "Left",
+      centre: "Centre",
+      right: "Right",
+      left_right: "Left & Right",
+      top: "Top",
+      middle: "Middle",
+      bottom: "Bottom",
+      top_bottom: "Top & Bottom",
+    };
+    let menuItems=[];
+    for (let i in labels) 
+      menuItems.push(new MenuItem({
+        label: labels[i],
+        click: async ()=>{await minsky.canvas.alignSelection(i);},
+      }));
+    return menuItems;
   }
 }
 

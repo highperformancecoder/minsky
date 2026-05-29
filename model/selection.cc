@@ -117,7 +117,40 @@ namespace minsky
           return true;
     return false;
   }
-  
+
+  void Selection::align(const Item& ref, Align align)
+  {
+    for (auto& i: items)
+      switch (align)
+        {
+        case left:
+          i->moveTo(i->x()+ref.left()-i->left(), i->y());
+          break;
+        case centre:
+          i->moveTo(ref.x(),i->y());
+          break;
+        case right:
+          i->moveTo(i->x()+ref.right()-i->right(), i->y());
+          break;
+        case left_right:
+          i->iWidth(ref.iWidth());
+          i->moveTo(ref.x(),i->y());
+          break;
+        case top:
+          i->moveTo(i->x(), i->y()+ref.top()-i->top());
+          break;
+        case middle:
+          i->moveTo(i->x(), ref.y());
+          break;
+        case bottom:
+          i->moveTo(i->x(), i->y()+ref.bottom()-i->bottom());
+          break;
+        case top_bottom:
+          i->iHeight(ref.iHeight());
+          i->moveTo(i->x(), ref.y());
+          break;
+        }
+  }
 }
 
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Selection);

@@ -53,6 +53,10 @@ namespace minsky
     /// return if item is contained in selection
     bool contains(const ItemPtr& item) const;
     using Item::contains;
+
+    enum Align {left, centre, right, left_right, top, middle, bottom, top_bottom};
+    /// Align items in this selection with the reference item 
+    void align(const Item&, Align);
   };
 
 }

@@ -432,6 +432,7 @@ export class Canvas extends RenderNativeWindow {
   async addSheet(): Promise<void> {return this.$callMethod('addSheet');}
   async addSwitch(): Promise<void> {return this.$callMethod('addSwitch');}
   async addVariable(a1: string,a2: string): Promise<void> {return this.$callMethod('addVariable',a1,a2);}
+  async alignSelection(a1: string): Promise<void> {return this.$callMethod('alignSelection',a1);}
   async applyDefaultPlotOptions(): Promise<void> {return this.$callMethod('applyDefaultPlotOptions');}
   async clickType(...args: string[]): Promise<string> {return this.$callMethod('clickType',...args);}
   async closestInPort(a1: number,a2: number): Promise<object> {return this.$callMethod('closestInPort',a1,a2);}
@@ -1941,6 +1942,7 @@ export class Selection extends CppClass {
   async addWire(...args: any[]): Promise<object> {return this.$callMethod('addWire',...args);}
   async adjustBookmark(): Promise<void> {return this.$callMethod('adjustBookmark');}
   async adjustWiresGroup(a1: Wire): Promise<void> {return this.$callMethod('adjustWiresGroup',a1);}
+  async align(a1: Item,a2: string): Promise<void> {return this.$callMethod('align',a1,a2);}
   async arguments(): Promise<string> {return this.$callMethod('arguments');}
   async autoLayout(): Promise<void> {return this.$callMethod('autoLayout');}
   async bookmark(...args: boolean[]): Promise<boolean> {return this.$callMethod('bookmark',...args);}
