@@ -892,8 +892,8 @@ TEST(TensorOps, evalOpEvaluate)
       auto g2=new GodleyIcon; model->addItem(g2);
       GodleyTable& godley1=g1->table;
       GodleyTable& godley2=g2->table;
-      godley1.resize(3,2);
-      godley2.resize(3,2);
+      godley1.resize(3,4);
+      godley2.resize(3,4);
 
       godley1.assetClass(1,GodleyAssetClass::asset);  
       godley2.assetClass(1,GodleyAssetClass::liability);  
@@ -1626,21 +1626,6 @@ TEST(TensorOps, evalOpEvaluate)
       
       // Verify units are cleared
       EXPECT_TRUE(variableValues[":unitVar"]->units.str().empty());
-    }
-
-    // Test setGodleyDisplayValue
-    TEST_F(MinskySuite, setGodleyDisplayValue)
-    {
-      auto g1 = new GodleyIcon;
-      model->addItem(g1);
-      
-      setGodleyDisplayValue(true, GodleyTable::DRCR);
-      EXPECT_TRUE(displayValues);
-      EXPECT_EQ(GodleyTable::DRCR, displayStyle);
-      
-      setGodleyDisplayValue(false, GodleyTable::sign);
-      EXPECT_FALSE(displayValues);
-      EXPECT_EQ(GodleyTable::sign, displayStyle);
     }
 
     // Test save and load

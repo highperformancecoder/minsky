@@ -1,5 +1,4 @@
-@import '../../../../../shared/src/lib/theme/variables.scss';
-@import '../../../../../shared/src/lib/theme/common-style.scss';
+@use '../../../../../shared/src/lib/theme/common-style' as *;
 
 button {
   margin: $margin;

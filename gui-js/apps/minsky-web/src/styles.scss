@@ -1,6 +1,5 @@
 /* You can add global styles to this file, and also import other theme files */
-@import './../../../libs/shared/src/lib/theme/variables.scss';
-@import '@angular/material/prebuilt-themes/deeppurple-amber.css';
+@use './../../../libs/shared/src/lib/theme/variables' as *;
 
 @font-face {
   font-family: 'Material Icons';

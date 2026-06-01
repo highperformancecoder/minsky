@@ -529,6 +529,10 @@ export class ContextMenuManager {
         submenu: await ContextMenuManager.pubTabMenu(),
       }),
       new MenuItem({
+        label: 'Align',
+        submenu: Menu.buildFromTemplate(this.alignmentMenu()),
+      }),
+      new MenuItem({
         label: `Delete ${itemInfo.classType}`,
         click: () => CommandsManager.deleteCurrentItemHavingId(itemInfo.id)
       }),
@@ -682,7 +686,19 @@ export class ContextMenuManager {
         label: 'Display variables',
         type: 'checkbox',
         checked: displayVariableChecked,
-        click: () => godley.toggleVariableDisplay()
+        click: async () => {
+          await godley.toggleVariableDisplay();
+          await minsky.canvas.requestRedraw();
+        }
+      }),
+      new MenuItem({
+        label: 'Display values',
+        type: 'checkbox',
+        checked: await godley.displayValues(),
+        click: async () => {
+          await godley.toggleDisplayValues();
+          await minsky.canvas.requestRedraw();
+        },
       }),
       new MenuItem({
         label: 'Copy flow variables',
@@ -1402,6 +1418,25 @@ export class ContextMenuManager {
       }),
       ]);
     menu.popup();
+  }
+
+  static alignmentMenu() {
+     const labels: [string, string][] = [
+       ['left', 'Left'],
+       ['centre', 'Centre'],
+       ['right', 'Right'],
+       ['left_right', 'Left & Right'],
+       ['top', 'Top'],
+       ['middle', 'Middle'],
+       ['bottom', 'Bottom'],
+       ['top_bottom', 'Top & Bottom'],
+     ];
+    return labels.map(([alignment, label]) =>
+       new MenuItem({
+         label,
+         click: async ()=>{await minsky.canvas.alignSelection(alignment);},
+       })
+     );
   }
 }
 

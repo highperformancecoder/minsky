@@ -61,7 +61,7 @@ namespace minsky
   public:
     static SVGRenderer svgRenderer; ///< SVG icon to display when not in editor mode
     
-    GodleyIcon() {iWidth(150); iHeight(150); editor.adjustWidgets(); editor.disableButtons();}
+    GodleyIcon();
     GodleyIcon(const GodleyIcon&)=default;
     ~GodleyIcon() {Item::removeControlledItems();}
 
@@ -82,8 +82,13 @@ namespace minsky
     GodleyTableEditor editor{*this};
     /// for rendering the popup window
     GodleyTableWindow popup{*this};
-    void adjustPopupWidgets() {popup.adjustWidgets();}
+
+    /// whether to display values in this table
+    bool displayValues=false;
+    void toggleDisplayValues() {displayValues=!displayValues;}
     
+    void adjustPopupWidgets() {popup.adjustWidgets();}
+
     /// scale icon until it's height or width matches \a h or \a w depending on which is minimum             
     void scaleIcon(float w, float h);         
     

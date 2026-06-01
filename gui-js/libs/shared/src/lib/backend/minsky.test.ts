@@ -180,7 +180,7 @@ describe('Minsky tests', ()=>{
      minsky.canvas.getItemAt(0,0);
      expect(await minsky.canvas.item.classType()).toBe("GodleyIcon");
      let godley=new GodleyIcon(minsky.canvas.item);
-     godley.table.resize(3,2);
+     godley.table.resize(3,4);
      godley.setCell(0,1,"stock");
      godley.setCell(2,1,"flow");
      godley.update();

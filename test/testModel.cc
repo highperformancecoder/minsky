@@ -629,6 +629,7 @@ TEST_F(CanvasFixture, godleyResize)
   model.reset(new Group);
   addGodley();
   auto i=itemFocus;
+  if (i->editorMode()) i->toggleEditorMode();// disable editor mode
   double w=i->width(), h=i->height();
   double x=i->x(), y=i->y();
 
@@ -1042,7 +1043,7 @@ TEST_F(GodleyIconFixture, select)
 {
   GodleyIcon::svgRenderer.setResource("bank.svg");
       
-  table.resize(3,2);
+  table.resize(3,4);
   table.cell(2,1)="flow1";
   table.cell(0,1)="stock1";
   toggleVariableDisplay();

@@ -1235,12 +1235,11 @@ export class CommandsManager {
   static async applyPreferences() {
     const {
       enableMultipleEquityColumns,
-      godleyTableShowValues,
       godleyTableOutputStyle,
       font,
       numBackups,
     } = StoreManager.store.get('preferences');
-    minsky.setGodleyDisplayValue(godleyTableShowValues,godleyTableOutputStyle);
+    minsky.displayStyle(godleyTableOutputStyle);
     minsky.multipleEquities(enableMultipleEquityColumns);
     minsky.defaultFont(font);
     minsky.numBackups(numBackups);
