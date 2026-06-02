@@ -7,8 +7,12 @@ arch=`arch`
 if [ $arch = 'i386' ]; then arch=x64; fi
 os=`uname`
 
+if git describe|grep beta; then
+    beta=--beta
+fi
+
 if [ $os = Darwin ]; then 
-    python3 ~/usr/bin/upload_assets.py --api-url $apiUrl --product minsky --version $version --os macos --arch $arch --release-date $releaseDate --sign ~/minsky-signing.key gui-js/dist/ravel-$version-$arch.dmg
+    python3 ~/usr/bin/upload_assets.py --api-url $apiUrl --product minsky --version $version --os macos --arch $arch --release-date $releaseDate --sign ~/minsky-signing.key $beta gui-js/dist/ravel-$version-$arch.dmg
 else #linux, but assume we're running this in a MXE build directory
-    python3 ~/usr/bin/upload_assets.py --api-url $apiUrl --product minsky --version $version --os windows --arch $arch --release-date $releaseDate --sign ~/minsky-signing.key gui-js/dist/executables/ravel-$version.exe
+    python3 ~/usr/bin/upload_assets.py --api-url $apiUrl --product minsky --version $version --os windows --arch $arch --release-date $releaseDate --sign ~/minsky-signing.key $beta gui-js/dist/executables/ravel-$version.exe
 fi
