@@ -57,6 +57,8 @@ using namespace ecolab;
 namespace minsky
 {
   ecolab::cairo::Colour RenderNativeWindow::backgroundColour{0.8,0.8,0.8,1};
+
+  thread_local bool backgroundRedrawThread=false;
   
   namespace
   {
