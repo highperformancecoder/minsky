@@ -80,8 +80,10 @@ namespace minsky
     cairo_t* _internalGetCairoContext() const { return cairo; }
 
     void* context() const override {return cairo;}
+    
+    std::unique_ptr<ICacheRender>
+    cachedRender(const TextProperties& tp) const override;
   };
-
 }
 
 #include "cairoShimCairo.xcd"

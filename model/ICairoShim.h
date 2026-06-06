@@ -157,8 +157,7 @@ namespace minsky
     virtual void* context() const=0;
 
     /// return a cached object of rendered text
-    virtual std::unique_ptr<ICacheRender> cachedRender(const TextProperties& tp) const
-    {return std::make_unique<NonCachedRenderer>(tp,*this);}
+    virtual std::unique_ptr<ICacheRender> cachedRender(const TextProperties& tp) const=0;
   };
 
   /// RAII wrapper around save/restore

@@ -170,4 +170,29 @@ namespace minsky
       g_error_free(err);
 #endif
   }
+
+  struct PangoCache: public ICacheRender, public Pango
+  {
+    PangoCache(cairo_t* cr, const TextProperties& tp): Pango(cr)
+    {
+      if (!tp.markup.empty())
+        setMarkup(tp.markup);
+      else
+        setText(tp.plainText);
+      setFontSize(tp.fontSize);
+      if (!tp.fontFamily.empty())
+        setFontFamily(tp.fontFamily.c_str());
+      angle=tp.angle;
+    }
+    void show() override {Pango::show();}
+    TextExtents extents() const override
+    {return TextExtents{left(),top(),width(),height()};}
+      
+    void* context() const override
+    {return cairoContext();}
+  };
+  
+  std::unique_ptr<ICacheRender>
+  CairoShimCairo::cachedRender(const TextProperties& tp) const
+  {return make_unique<PangoCache>(cairo,tp);}
 }
