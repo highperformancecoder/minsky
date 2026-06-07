@@ -711,15 +711,12 @@ void VariableBase::draw(const ICairoShim& cairoShim) const
   auto [angle,flipped]=rotationAsRadians();
   const float z=zoomFactor();
 
-  // cache the results of the render if on the redrawing thread
-  shared_ptr<RenderVariable> l_cachedNameRender;
-  if (backgroundRedrawThread)
-    l_cachedNameRender=cachedNameRender;
-  if (!l_cachedNameRender || cairoShim.context()!=l_cachedNameRender->context()) {
-    l_cachedNameRender=std::make_shared<RenderVariable>(*this,cairoShim);
-    if (backgroundRedrawThread)
-      cachedNameRender=l_cachedNameRender;
-  }
+  // grab a thread local copy of the renderer caches, as MacOSX does
+  // rendering on a different thread, and this avoids a race condition
+  // when the cache is invalidated
+  auto l_cachedNameRender=cachedNameRender;
+  if (!l_cachedNameRender || cairoShim.context()!=l_cachedNameRender->context())
+    l_cachedNameRender=cachedNameRender=std::make_shared<RenderVariable>(*this,cairoShim);
     
   // if rotation is in 1st or 3rd quadrant, rotate as
   // normal, otherwise flip the text so it reads L->R
@@ -768,17 +765,14 @@ void VariableBase::draw(const ICairoShim& cairoShim) const
       {
         if (type()!=constant && !ioVar() && vv && vv->size()==1 && vv->idxInRange())
           {
-            shared_ptr<ICacheRender> l_cachedMantissa, l_cachedExponent;
-            if (backgroundRedrawThread)
-              {
-                l_cachedMantissa=cachedMantissa;
-                l_cachedExponent=cachedExponent;
-              }
+            auto l_cachedMantissa=cachedMantissa;
+            auto l_cachedExponent=cachedExponent;
             auto val=engExp();    
             if (!l_cachedMantissa || l_cachedMantissa->context()!=cairoShim.context() ||
                value()!=cachedValue)
               {
          
+                cachedValue=value();
                 TextProperties mantissaText, exponentText;
                 if (isfinite(value())) {
                   if (sliderVisible())
@@ -801,14 +795,8 @@ void VariableBase::draw(const ICairoShim& cairoShim) const
                 exponentText=expMultiplier(val.engExp);
                 mantissaText.fontSize=6;
                 exponentText.fontSize=6;
-                l_cachedMantissa=shared_ptr(cairoShim.cachedRender(mantissaText));
-                l_cachedExponent=shared_ptr(cairoShim.cachedRender(exponentText));
-                if (backgroundRedrawThread)
-                  {
-                    cachedMantissa=l_cachedMantissa;
-                    cachedExponent=l_cachedExponent;
-                    cachedValue=value();
-                  }
+                l_cachedMantissa=cachedMantissa=shared_ptr(cairoShim.cachedRender(mantissaText));
+                l_cachedExponent=cachedExponent=shared_ptr(cairoShim.cachedRender(exponentText));
               }
 
             auto mantissaBB=l_cachedMantissa->extents();

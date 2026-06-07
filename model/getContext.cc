@@ -110,8 +110,6 @@ namespace minsky
 @implementation CairoView
 -(void) drawRect: (NSRect)rect
 {
-  backgroundRedrawThread=true;
-
   // Lock the mutex when actually drawing, not before
   std::optional<std::lock_guard<std::recursive_mutex>> lock;
   if (winfo->cmdMutex)

@@ -256,7 +256,6 @@ namespace minsky
       {
         const lock_guard<recursive_mutex> lock(minskyCmdMutex);
         const Timer timer(timers["draw"]);
-        backgroundRedrawThread=true;
         for (auto i: nativeWindowsToRedraw)
           try
             {

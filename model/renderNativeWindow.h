@@ -39,12 +39,7 @@ namespace classdesc
 #endif
 
 namespace minsky
-{
-  /*
-    this thread local flag indicates we're running on the thread performing the bulk of drawing to the display. It is used to perform caching optimisation on just that thread, as trying to synchronise caches across multiple threads causes crashes on Windows and Mac. For #1935.
-  */
-  extern thread_local bool backgroundRedrawThread;
-  
+{  
   class WindowInformation;
   class RenderNativeWindow : public ecolab::CairoSurface, public EventInterface
   {
