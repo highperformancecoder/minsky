@@ -4,7 +4,7 @@ apiUrl=https://minskybe-x7dj1.sevalla.app
 version=`git describe`
 releaseDate=`git log -1 --format=%cs --date=iso`
 arch=`arch`
-if [ $arch = 'i386' ]; then arch=x64; fi
+if [ $arch = 'i386' -o $arch = 'x86_64' ]; then arch=x64; fi
 os=`uname`
 
 if git describe|grep beta; then
