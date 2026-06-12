@@ -13,6 +13,7 @@
 #endif
 
 using namespace std;
+using ecolab::Pango;
 
 namespace minsky
 {
@@ -98,17 +99,33 @@ namespace minsky
   {cairo_set_source_rgba(cairo,r,g,b,a);}
 
   // Text operations
-  void CairoShimCairo::showText(const std::string& text) const
-  {cairo_show_text(cairo,text.c_str());}
+  void CairoShimCairo::initPango(Pango& pango,const TextProperties& tp) const
+  {
+    if (!tp.markup.empty())
+      pango.setMarkup(tp.markup);
+    else if (!tp.plainText.empty())
+      pango.setText(tp.plainText);
+    pango.angle=tp.angle;
+    if (isfinite(tp.fontSize))
+      pango.setFontSize(tp.fontSize);
+    if (!tp.fontFamily.empty())
+      pango.setFontFamily(tp.fontFamily.c_str());
+  }
+  
+  void CairoShimCairo::showText(const TextProperties& tp) const
+  {
+    if (tp.markup.empty() && tp.plainText.empty()) return;
+    Pango pango(cairo);
+    initPango(pango,tp);
+    pango.show();
+  }
 
-  void CairoShimCairo::setFontSize(double size) const
-  {cairo_set_font_size(cairo, size);}
-
-  void CairoShimCairo::selectFontFace(const std::string& family, cairo_font_slant_t slant, cairo_font_weight_t weight) const
-  {cairo_select_font_face(cairo, family.c_str(), slant, weight);}
-
-  void CairoShimCairo::textExtents(const std::string& text, cairo_text_extents_t& extents) const
-  {cairo_text_extents(cairo,text.c_str(),&extents);}
+  TextExtents CairoShimCairo::textExtents(const TextProperties& tp) const
+  {
+    Pango pango(cairo);
+    initPango(pango,tp);
+    return {pango.left(), pango.top(), pango.width(), pango.height()};
+  }
 
   // Transformation operations
   void CairoShimCairo::identityMatrix() const
@@ -137,18 +154,6 @@ namespace minsky
   void CairoShimCairo::setTolerance(double tolerance) const
   {cairo_set_tolerance(cairo, tolerance);}
 
-  // Pango support
-  ecolab::Pango& CairoShimCairo::pango() const
-  {
-    if (!m_pango) newPango();
-    return *m_pango;
-  }
-  ecolab::Pango& CairoShimCairo::newPango() const
-  {
-    m_pango.reset(new ecolab::Pango(cairo));
-    return *m_pango;
-  }
-
   // SVG rendering support
   void CairoShimCairo::renderSVG(const SVGRenderer& svgRenderer, double width, double height) const
   {
@@ -165,4 +170,29 @@ namespace minsky
       g_error_free(err);
 #endif
   }
+
+  struct PangoCache: public ICacheRender, public Pango
+  {
+    PangoCache(cairo_t* cr, const TextProperties& tp): Pango(cr)
+    {
+      if (!tp.markup.empty())
+        setMarkup(tp.markup);
+      else
+        setText(tp.plainText);
+      setFontSize(tp.fontSize);
+      if (!tp.fontFamily.empty())
+        setFontFamily(tp.fontFamily.c_str());
+      angle=tp.angle;
+    }
+    void show() override {Pango::show();}
+    TextExtents extents() const override
+    {return TextExtents{left(),top(),width(),height()};}
+      
+    void* context() const override
+    {return cairoContext();}
+  };
+  
+  std::unique_ptr<ICacheRender>
+  CairoShimCairo::cachedRender(const TextProperties& tp) const
+  {return make_unique<PangoCache>(cairo,tp);}
 }

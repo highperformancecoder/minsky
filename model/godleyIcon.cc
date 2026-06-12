@@ -87,6 +87,20 @@ namespace minsky
     }
   }
 
+  GodleyIcon::GodleyIcon() {
+    if (minsky().model->findAny(&GroupItems::items, [](const ItemPtr& i){return i->godleyIconCast();}))
+      {
+        iWidth(150);
+        iHeight(150);
+        editor.adjustWidgets();
+        editor.disableButtons();
+        return;
+      }
+    iWidth(800);
+    iHeight(200);
+    toggleEditorMode();
+  }
+  
   bool GodleyIcon::inItem(float xx, float yy) const
   {
     return abs(xx-x())<0.5*width()-border && abs(yy-y())<0.5*height()-border;
@@ -490,11 +504,11 @@ namespace minsky
     if (!table.title.empty())
       {
         cairoShim.save();
-        auto& pango = cairoShim.pango();
-        pango.setMarkup("<b>"+latexToPango(table.title)+"</b>");
-        pango.setFontSize(titleOffs());
-        cairoShim.moveTo(-0.5*(pango.width()-leftMargin()), titley);
-        pango.show();
+        TextProperties tp("<b>"+latexToPango(table.title)+"</b>");
+        tp.fontSize=titleOffs();
+        auto bbox=cairoShim.textExtents(tp);
+        cairoShim.moveTo(-0.5*(bbox.width-leftMargin()), titley);
+        cairoShim.showText(tp);
         cairoShim.restore();
       }
       

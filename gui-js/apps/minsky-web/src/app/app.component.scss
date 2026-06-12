@@ -1,4 +1,4 @@
-@import '../../../../libs//shared/src/lib/theme/variables.scss';
+@use '../../../../libs/shared/src/lib/theme/variables' as *;
 :host {
   display: flex;
   flex-direction: column;

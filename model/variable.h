@@ -63,10 +63,10 @@ namespace minsky
   {
   CLASSDESC_ACCESS(VariableCaches);
   protected:
-    /// cached Pango objects
-    mutable classdesc::Exclude<std::shared_ptr<RenderVariable>> cachedNameRender;
-    mutable classdesc::Exclude<std::shared_ptr<ecolab::Pango>> cachedMantissa;
-    mutable classdesc::Exclude<std::shared_ptr<ecolab::Pango>> cachedExponent;
+    /// cached font rendering objects
+    mutable std::shared_ptr<RenderVariable> cachedNameRender;
+    mutable std::shared_ptr<ICacheRender> cachedMantissa;
+    mutable std::shared_ptr<ICacheRender> cachedExponent;
     mutable double cachedValue, cachedTime;
   public:
     VariableCaches()=default;
@@ -77,7 +77,7 @@ namespace minsky
   class VariableBase: virtual public classdesc::PolyPackBase,
                       public BottomRightResizerItem,
                       public VariableType,
-                      public VariableCaches
+                      public classdesc::Exclude<VariableCaches>
   {
   public:
     typedef VariableType::Type Type;

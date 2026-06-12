@@ -80,7 +80,7 @@ tcl-cov: tcl-cov.o $(MINSKYOBJS)
 	$(CPLUSPLUS) $(FLAGS) -o $@ $^ $(LIBS)
 
 ifneq ($(MAKECMDGOALS),clean)
-include $(UNITTESTOBJS:.o=.d) $(GTESTOBJS:.o=.d) $(EXES:=.d)
+-include $(UNITTESTOBJS:.o=.d) $(GTESTOBJS:.o=.d) $(EXES:=.d) localMinsky.d
 endif
 
 BASIC_CLEAN=rm -rf *.o *~ "\#*\#" core *.d *.cd *.xcd *.gcda *.gcno

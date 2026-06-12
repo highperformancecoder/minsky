@@ -28,7 +28,7 @@
 #include "minsky.h"
 
 #include "cairoItems.h"
-#include "../engine/cairoShimCairo.h"
+#include "cairoShimCairo.h"
 #include "operation.h"
 #include "latexMarkup.h"
 #include <arrays.h>
@@ -46,47 +46,51 @@ using namespace boost::geometry;
 
 namespace
 {
+  // for use when calculating bounding boxes, but not drawing to anything?
   cairo::Surface dummySurf(cairo_image_surface_create(CAIRO_FORMAT_A1, 100,100));
+  CairoShimCairo dummyCairoShim(dummySurf.cairo());
 }
 
-RenderVariable::RenderVariable(const VariableBase& var, cairo_t* cairo):
-  Pango(cairo? cairo: dummySurf.cairo()), var(var), cairo(cairo)
+RenderVariable::RenderVariable(const VariableBase& var, const ICairoShim& shim):
+  var(var), cairoShim(shim), m_context(cairoShim.context())
 {
-  setFontSize(12);
+  TextProperties textProperties;
+  textProperties.fontSize=12;
   if (var.type()==VariableType::constant)
     {
       try
         {
           auto val=var.engExp();
           if (val.engExp==-3) val.engExp=0; //0.001-1.0
-          setMarkup(var.mantissa(val)+expMultiplier(val.engExp));
+          textProperties.markup=var.mantissa(val)+expMultiplier(val.engExp);
         }
       catch (const std::exception& ex)
         {
-          setMarkup("0");
+          textProperties.markup="0";
         }
-      w=0.5*Pango::width();
-      h=0.5*Pango::height();
+      auto bbox=shim.textExtents(textProperties);
+      w=0.5*bbox.width;
+      h=0.5*bbox.height;
+      hoffs=bbox.top;
     }
   else
     {
-      setMarkup(latexToPango(var.name()));
-      w=0.5*Pango::width(); 
-      h=0.5*Pango::height();
+      textProperties.markup=latexToPango(var.name());
+      auto bbox=shim.textExtents(textProperties);
+      w=0.5*bbox.width;
+      h=0.5*bbox.height;
       if (!var.ioVar())
-        { // add additional space for numerical display 
-          w+=12; 
+        { // add additional space for numerical display
+          w+=12;
           h+=4;
         }
+      hoffs=bbox.top;
     }
-  hoffs=Pango::top();
+  cachedRenderer=cairoShim.cachedRender(textProperties);
 }
 
-void RenderVariable::draw()
-{
-  CairoShimCairo shim(cairo);
-  var.draw(shim);
-}
+RenderVariable::RenderVariable(const VariableBase& var):
+  RenderVariable(var, dummyCairoShim) {}
 
 bool RenderVariable::inImage(float x, float y)
 {
