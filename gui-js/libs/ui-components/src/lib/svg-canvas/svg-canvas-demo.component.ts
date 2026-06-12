@@ -17,7 +17,7 @@ export class SvgCanvasDemoComponent {
       { symbol: '\\times', name: 'Times', type: SvgVariableTypes.operator }, 
       { symbol: '+', name: 'Plus', type: SvgVariableTypes.operator },
       { symbol: '-', name: 'Minus', type: SvgVariableTypes.operator },
-      { symbol: '\\:/', name: 'Divide', type: SvgVariableTypes.operator }
+      { symbol: '\\div', name: 'Divide', type: SvgVariableTypes.operator }
     ].map((template: any, i: number) => {
       const d = SvgCanvasHelper.createData(template);
       d.x = 60 + 120 * i;
