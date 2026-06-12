@@ -130,6 +130,8 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
   }
 
   setPositions() {
+    if (!this.allSvgData || !this.variablePaneContainer || !this.svgCanvas) return;
+
     const svgData = this.allSvgData.filter(d => {
       return document.forms['variablePane']['variablePane::'+d.type.name].checked;
     });
@@ -141,7 +143,7 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
       return 0;
     });
 
-    const columnLength = Math.round(this.variablePaneContainer.clientHeight / 50);
+    const columnLength = Math.max(1, Math.round(this.variablePaneContainer.clientHeight / 50));
     const numberOfColumns = svgData.length / columnLength;
     let currentXOffset = 10;
     for(let i = 0; i < numberOfColumns; i++) {

@@ -2,7 +2,7 @@
 </div>
 
 <div *ngIf="lines > 1" class="valuelabel" [style.fontSize]="fontSize">
-    {{data.value.toFixed(4)}}
+    {{data.value?.toFixed(4)}}
 </div>
 
 <div *ngIf="lines > 2" class="namelabel" [style.fontSize]="fontSize">

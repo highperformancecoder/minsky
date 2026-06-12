@@ -19,7 +19,7 @@ import { SvgCanvasHelper } from './constants/svg-constants';
   templateUrl: './svg-canvas.component.html',
   styleUrls: ['./svg-canvas.component.css'],
   standalone: true,
-  imports: [AsyncPipe, CommonModule, MatFormField, LatexDirective, DragdropDirective, D3LineComponent, FormsModule, ReactiveFormsModule, ElementLabelComponent, NgxGraphModule]
+  imports: [CommonModule, MatFormField, LatexDirective, DragdropDirective, D3LineComponent, FormsModule, ReactiveFormsModule, ElementLabelComponent, NgxGraphModule]
 })
 export class SvgCanvasComponent implements AfterViewInit {
   @HostListener('window:resize', ['$event'])
@@ -184,7 +184,7 @@ export class SvgCanvasComponent implements AfterViewInit {
         }
         this.setAnchor(d);
 
-        this.rectCollideForce.sizeModifier(1.1);
+        // this.rectCollideForce.sizeModifier(1.1);
       },
       dragged: () => {
         if(this.clickedConnector || this.layoutType !== 'spread') return;
@@ -237,7 +237,7 @@ export class SvgCanvasComponent implements AfterViewInit {
         setTimeout(() => {
           this.setAnchor(d);
 
-          this.rectCollideForce.sizeModifier(1);
+          // this.rectCollideForce.sizeModifier(1);
         }, 100);
       }
     };

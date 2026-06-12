@@ -17,6 +17,6 @@ import { CommonModule } from '@angular/common';
     lines: number;
 
     get fontSize() {
-        return `${20 / this.lines}px`;
+        return `${20 / (this.lines || 1)}px`;
     }
   }

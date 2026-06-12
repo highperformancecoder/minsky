@@ -87,7 +87,7 @@ export class D3LineComponent implements OnChanges {
             if(this.draggable) {
                 const x = d3.event.x;
                 const y = d3.event.y;
-                const point = [x,1000];
+                const point = [x,y];
 
                 const a1 = Math.max(0, Math.PI / 2 - this.getAngle(end, start, point));
                 const a2 = Math.max(0, Math.PI / 2 - this.getAngle(start, end, point));

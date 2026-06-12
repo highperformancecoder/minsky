@@ -19,4 +19,7 @@ export class DataPoint {
     symbol;
     dimensions: Dimensions;
     hidden = false;
+
+    minimum?: number;
+    maximum?: number;
 }

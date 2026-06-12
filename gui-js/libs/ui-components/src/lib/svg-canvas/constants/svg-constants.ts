@@ -1,5 +1,3 @@
-import { Dimensions } from '../classes/dimensions';
-
 export class SvgVariableTypes {
     public static constant = {
         name: 'constant',
@@ -195,7 +193,7 @@ export class SvgCanvasHelper {
         return clean.length;
     }
 
-    static createData(template) {
+    static createData(template: any) {
       const d = Object.assign({}, template);
       d.connectors = d.type.connectors.map(c => Object.assign({},c,{data: d}));
       d.actualLength = Math.max(100, SvgCanvasHelper.estimateVisibleLatex(template.symbol) * 15) + 120;
