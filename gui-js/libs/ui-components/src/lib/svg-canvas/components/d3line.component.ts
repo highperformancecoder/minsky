@@ -6,7 +6,8 @@ import * as d3 from 'd3';
   selector: '[d3line]',
   templateUrl: './d3line.component.html',
     styleUrls: ['./d3line.component.css'],
-    imports: [CommonModule]
+    imports: [CommonModule],
+    standalone: true
 })
 export class D3LineComponent implements OnChanges {
     @ViewChild('linepath', {static: true})

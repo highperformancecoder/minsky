@@ -4,7 +4,7 @@ import { DataPoint } from './classes/datapoint';
 import { EditVariableDialog, EditVariableDialogData } from './dialogs/editvariabledialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import flatMap from 'lodash/flatMap';
-import { AsyncPipe, CommonModule, formatNumber } from '@angular/common';
+import { CommonModule, formatNumber } from '@angular/common';
 import { MatFormField } from '@angular/material/input';
 import { LatexDirective } from '../directives/latex.directive';
 import { DragdropDirective } from './directives/dragdrop.directive';
@@ -285,7 +285,7 @@ export class SvgCanvasComponent implements AfterViewInit {
 
             while (++j < nodes.length) {
                 node = nodes[j]
-                size = adjustSize(node.type.boundingbox, node.rotation)
+                size = adjustSize(node.dimensions.boundingbox, node.rotation)
                 xi = xCenter(node)
                 yi = yCenter(node)
 
@@ -307,7 +307,7 @@ export class SvgCanvasComponent implements AfterViewInit {
 
                 if (xd < 0 && yd < 0) {
                     var l = Math.sqrt(x * x + y * y)
-                    var mass = data.type.boundingbox[2] * data.type.boundingbox[3]
+                    var mass = data.dimensions.boundingbox[2] * data.dimensions.boundingbox[3]
                     var m = mass / (mass + mass)
 
                     if (Math.abs(xd) < Math.abs(yd)) {
@@ -326,7 +326,7 @@ export class SvgCanvasComponent implements AfterViewInit {
 
         function prepare(quad) {
             if (quad.data) {
-                quad.size = adjustSize(quad.data.type.boundingbox, quad.data.rotation)
+                quad.size = adjustSize(quad.data.dimensions.boundingbox, quad.data.rotation)
             } else {
                 quad.size = [0, 0]
                 var i = -1
@@ -492,7 +492,7 @@ export class SvgCanvasComponent implements AfterViewInit {
   }
 
   getConnectorPos(c) {
-    const points = c.position(0,0,(c.data.type.boundingbox[2] / 2), (c.data.type.boundingbox[3] / 2));
+    const points = c.position(0,0,(c.data.dimensions.boundingbox[2] / 2), (c.data.dimensions.boundingbox[3] / 2));
     const rotated = this.rotatePoint(points, c.data.rotation);
     return [rotated[0] + c.data.x, rotated[1] + c.data.y, points[2] + c.data.rotation];
   }
