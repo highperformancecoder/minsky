@@ -21,7 +21,9 @@ import {
 import { BehaviorSubject, Observable, Subject, takeUntil } from 'rxjs';
 import { SvgCanvasComponent } from '../svg-canvas/svg-canvas.component';
 import { SvgCanvasHelper, SvgVariableTypes } from '../svg-canvas/constants/svg-constants';
-import { DataPoint } from '../svg-canvas/classes/datapoint';
+import { DataPoint } from '../svg-canvas/interfaces/datapoint';
+import { DragStartEvent } from '../svg-canvas/interfaces/dragstart-event';
+import { DragEndEvent } from '../svg-canvas/interfaces/dragend-event';
 
 @Component({
   selector: 'minsky-variable-pane',
@@ -177,6 +179,14 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
     const absNum = Math.abs(num);
     const rawExponent = Math.floor(Math.log10(absNum));
     return Math.floor(rawExponent / 3) * 3;
+  }
+
+  onDragStarted(event: DragStartEvent) {
+
+  }
+
+  onDragEnded(event: DragEndEvent) {
+
   }
     
   ngOnDestroy() {

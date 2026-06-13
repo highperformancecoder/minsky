@@ -21,6 +21,7 @@
     </form>
   </div>
   <div id="variable-pane" class="variable-pane" #variablePane>
-    <svg-canvas [style.width]="containerWidth$ | async" [unparkedData]="svgData$ | async" [enableScroll]="false" [showConnectors]="false" [showValuelines]="false" [zoom]="0.75"></svg-canvas>
+    <svg-canvas [style.width]="containerWidth$ | async" [unparkedData]="svgData$ | async" (dragStarted)="onDragStarted($event)" (dragEnded)="onDragEnded($event)"
+    [enableScroll]="false" [showConnectors]="false" [showValuelines]="false" [zoom]="0.75"></svg-canvas>
   </div>
 </div>

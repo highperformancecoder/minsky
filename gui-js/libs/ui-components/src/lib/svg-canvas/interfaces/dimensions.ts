@@ -1,4 +1,4 @@
-export class Dimensions {
+export interface Dimensions {
     length: number;
     boundingbox: number[];
     labelbox: number[];

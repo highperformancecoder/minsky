@@ -1,7 +1,7 @@
 import { Connector } from './connector';
 import { Dimensions } from './dimensions';
 
-export class ElementType {
+export interface ElementType {
     name: string;
     points: (x: number, y: number, width: number, height: number) => string;
     size: number[];

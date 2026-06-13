@@ -1,6 +1,6 @@
-import { Component, AfterViewInit, ElementRef, HostListener, Input } from '@angular/core';
+import { Component, AfterViewInit, ElementRef, HostListener, Input, Output, EventEmitter } from '@angular/core';
 import * as d3 from 'd3';
-import { DataPoint } from './classes/datapoint';
+import { DataPoint } from './interfaces/datapoint';
 import { EditVariableDialog, EditVariableDialogData } from './dialogs/editvariabledialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import flatMap from 'lodash/flatMap';
@@ -50,6 +50,12 @@ export class SvgCanvasComponent implements AfterViewInit {
 
   @Input()
   zoom = 1;
+
+  @Output()
+  dragStarted = new EventEmitter<{}>();
+
+  @Output()
+  dragEnded = new EventEmitter<{}>();
 
   rectCollideForce;
 
@@ -165,7 +171,9 @@ export class SvgCanvasComponent implements AfterViewInit {
 
   dragfunctions(d) {
     return {
-      dragstarted: () => {
+      dragstarted: (e: any) => {
+        this.dragStarted.emit(e);
+
         if(this.clickedConnector) return;
 
         if(this.layoutType === 'flat') {
@@ -220,7 +228,8 @@ export class SvgCanvasComponent implements AfterViewInit {
           this.simulation?.nodes(this.unparkedData);
         }
       },
-      dragended: () => {
+      dragended: (e: any) => {
+        this.dragEnded.emit(e);
         if(this.clickedConnector || this.layoutType !== 'spread') return;
 
         d.startRotation = undefined;

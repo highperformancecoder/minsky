@@ -2,7 +2,7 @@ import { ElementType } from './elementtype';
 import { Connector } from './connector';
 import { Dimensions } from './dimensions';
 
-export class DataPoint {
+export interface DataPoint {
     label: string;
     x?: number;
     y?: number;
@@ -18,7 +18,7 @@ export class DataPoint {
     canvasPosition;
     symbol;
     dimensions: Dimensions;
-    hidden = false;
+    hidden: boolean;
 
     minimum?: number;
     maximum?: number;
