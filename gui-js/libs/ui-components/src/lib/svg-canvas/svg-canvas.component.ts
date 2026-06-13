@@ -13,6 +13,9 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ElementLabelComponent } from './components/elementlabel.component';
 import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { SvgCanvasHelper } from './constants/svg-constants';
+import { DragStartEvent } from './interfaces/dragstart-event';
+import { DragEndEvent } from './interfaces/dragend-event';
+import { Connector } from './interfaces/connector';
 
 @Component({
   selector: 'svg-canvas',
@@ -52,10 +55,10 @@ export class SvgCanvasComponent implements AfterViewInit {
   zoom = 1;
 
   @Output()
-  dragStarted = new EventEmitter<{}>();
+  dragStarted = new EventEmitter<DragStartEvent>();
 
   @Output()
-  dragEnded = new EventEmitter<{}>();
+  dragEnded = new EventEmitter<DragEndEvent>();
 
   rectCollideForce;
 
@@ -172,7 +175,7 @@ export class SvgCanvasComponent implements AfterViewInit {
   dragfunctions(d) {
     return {
       dragstarted: (e: any) => {
-        this.dragStarted.emit(e);
+        this.dragStarted.emit({event: e, data: d});
 
         if(this.clickedConnector) return;
 
@@ -229,7 +232,7 @@ export class SvgCanvasComponent implements AfterViewInit {
         }
       },
       dragended: (e: any) => {
-        this.dragEnded.emit(e);
+        this.dragEnded.emit({event: e, data: d});
         if(this.clickedConnector || this.layoutType !== 'spread') return;
 
         d.startRotation = undefined;
@@ -500,10 +503,11 @@ export class SvgCanvasComponent implements AfterViewInit {
     }
   }
 
-  getConnectorPos(c) {
-    const points = c.position(0,0,(c.data.dimensions.boundingbox[2] / 2), (c.data.dimensions.boundingbox[3] / 2));
-    const rotated = this.rotatePoint(points, c.data.rotation);
-    return [rotated[0] + c.data.x, rotated[1] + c.data.y, points[2] + c.data.rotation];
+  getConnectorPos(c: any): [number, number, number] {
+    const dataPoint: DataPoint = c.data;
+    const points = c.position(0,0,(dataPoint.dimensions.boundingbox[2] / 2), (dataPoint.dimensions.boundingbox[3] / 2));
+    const rotated = this.rotatePoint(points, dataPoint.rotation);
+    return [rotated[0] + dataPoint.x, rotated[1] + dataPoint.y, points[2] + dataPoint.rotation];
   }
 
   rotatePoint(point, degrees) {
@@ -540,7 +544,7 @@ export class SvgCanvasComponent implements AfterViewInit {
     }
   }
 
-  scaleAdjust(points: number[]) {
+  scaleAdjust(points: [number, number, number]) {
     const adjusted = points.slice();
     adjusted[0] = this.xScale(points[0]);
     adjusted[1] = this.yScale(points[1]);

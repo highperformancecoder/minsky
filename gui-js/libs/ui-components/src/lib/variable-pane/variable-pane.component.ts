@@ -169,7 +169,7 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
   }
 
   select(id) {
-    if (document.forms["variablePane"]["variablePane::"+id].checked) this.variablePane.select(id);
+    if (document.forms['variablePane']['variablePane::'+id].checked) this.variablePane.select(id);
     else this.variablePane.deselect(id);
     this.setPositions();
   }
@@ -181,14 +181,10 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
     return Math.floor(rawExponent / 3) * 3;
   }
 
-  onDragStarted(event: DragStartEvent) {
-
+  async onDragStarted(event: DragStartEvent) {
+      await minsky.canvas.addVariable(event.data.name, event.data.type.name);
   }
 
-  onDragEnded(event: DragEndEvent) {
-
-  }
-    
   ngOnDestroy() {
     this.destroy$.next(undefined);
     this.destroy$.complete();
