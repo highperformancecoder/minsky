@@ -1,0 +1,47 @@
+<svg class="mainsvg" [attr.height]="height" [attr.width]="width">
+    <g d3line *ngIf="lineend" class="connection" [start]="scaleAdjust(getConnectorPos(clickedConnector))" [end]="lineend"></g>
+
+    <g *ngFor="let l of links">
+        <g d3line *ngIf="!l.in.data.hidden && !l.out.data.hidden" class="connection" [start]="scaleAdjust(getConnectorPos(l.in))" [end]="scaleAdjust(getConnectorPos(l.out))">
+        </g>
+    </g>
+    <ng-container *ngFor="let d of unparkedData">
+        <g *ngIf="!d.hidden" dragdrop [dragfunctions]="dragfunctions(d)" (click)="elementClicked($event, d)" (contextmenu)="elementRightClicked($event, d)"
+            [attr.transform]="'translate(' + xScale(d.x) + ' ' + yScale(d.y) + ') scale(' + xFactor + ' ' + yFactor + ')  rotate(' + toDegrees(d.rotation) + ')'">
+            <polygon [ngClass]="d.type.class" [attr.stroke]="d.type.stroke" [attr.points]="d.type.points(0, 0, d.dimensions.boundingbox[2] / 2, d.dimensions.boundingbox[3] / 2)"></polygon>
+
+            <g d3line *ngIf="showValuelines && d.dimensions.valueline" #valueLine class="valueline" [start]="d.dimensions.valueline[0]" [end]="d.dimensions.valueline[1]" [dotsAt]="[getRelativeValue(d)]"
+            [invisibleLine]="true" [draggable]="d.type.name !== 'flow'" [style.stroke]="d.type.stroke" [style.fill]="d.type.stroke" (pointMoved)="sliderMoved($event, d)"></g>
+
+            <foreignObject *ngIf="d.dimensions.labelbox" [attr.x]="d.dimensions.labelbox[0]" [attr.y]="d.dimensions.labelbox[1]" [attr.width]="d.dimensions.labelbox[2]" [attr.height]="d.dimensions.labelbox[3]"
+            [attr.transform]="(isUpsideDown(d) ? 'rotate(180)' : '')">
+                <elementlabel [data]="d" [lines]="d.type.name === 'operator' ? getLines(yFactor) : 0"></elementlabel>
+            </foreignObject>
+
+            <foreignObject *ngIf="d.dimensions.valuebox" [attr.x]="d.dimensions.valuebox[0]" [attr.y]="d.dimensions.valuebox[1]" [attr.width]="d.dimensions.valuebox[2]" [attr.height]="d.dimensions.valuebox[3]"
+            [attr.transform]="(isUpsideDown(d) ? 'rotate(180)' : '')">
+                <div class="latex" latex [equation]="roundValue(d.value)" [style.fontSize]="'12px'"></div>
+            </foreignObject>
+
+            <foreignObject *ngIf="d.dimensions.exponentbox && d.exponent != 0" [attr.x]="d.dimensions.exponentbox[0]" [attr.y]="d.dimensions.exponentbox[1]" [attr.width]="d.dimensions.exponentbox[2]" [attr.height]="d.dimensions.exponentbox[3]"
+            [attr.transform]="(isUpsideDown(d) ? 'rotate(180)' : '')">
+                <div class="latex" latex [equation]="exponentEquation(d.exponent)" [style.fontSize]="'12px'"></div>
+            </foreignObject>
+
+            <g *ngFor="let c of showConnectors ? d.connectors : []">
+                <circle (mousedown)="connectorClicked(c, $event)" (mouseup)="connectorClicked(c, $event)" connector r="7" 
+                [attr.cx]="c.position(0, 0, d.dimensions.boundingbox[2] / 2, d.dimensions.boundingbox[3] / 2)[0]" [attr.cy]="c.position(0, 0, d.dimensions.boundingbox[2] / 2, d.dimensions.boundingbox[3] / 2)[1]"
+                [style.fill]="c.type === 'out' ? 'green' : 'blue'"></circle>
+            </g>
+        </g>
+    </ng-container>
+
+    <rect *ngIf="parkedData.length > 0" class="toolbar" [attr.width]="width" height="80"></rect>
+
+    <g *ngFor="let d of parkedData" dragdrop [dragfunctions]="dragfunctions(d)">
+        <polygon [ngClass]="d.type.class" [attr.stroke]="d.type.stroke" [attr.points]="d.type.points(d.x, d.y, d.dimensions.boundingbox[2] / 2, d.dimensions.boundingbox[3] / 2)"></polygon>
+
+        <foreignObject class="latex" latex [equation]="d.symbol" [attr.x]="d.x - 22" [attr.y]="d.y - 9" width="60" height="20">
+        </foreignObject>
+    </g>
+</svg>

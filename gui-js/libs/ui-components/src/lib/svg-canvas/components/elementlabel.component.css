@@ -1,0 +1,24 @@
+:host {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
+    align-items: center;
+    overflow: visible;
+}
+
+.namelabel, .descriptionlabel, .valuelabel {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    text-align: center;
+}
+
+.descriptionlabel {
+    flex-grow: 6;
+}
