@@ -239,8 +239,11 @@ export default class App {
     App.BrowserWindow = browserWindow;
     App.application = app;
 
-    App.application.commandLine.appendSwitch('disable-gpu');
     // Rendering was not working on some window's machines without disabling gpu
+    if (process.platform === 'win32') {
+      app.commandLine.appendSwitch('disable-gpu');
+      app.commandLine.appendSwitch('disable-direct-composition');
+    }
     App.application.commandLine.appendSwitch('high-dpi-support', '1');
     // This probably supports high-res fonts, but we don't know exactly what implications it has!
 
