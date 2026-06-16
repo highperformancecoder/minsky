@@ -177,7 +177,7 @@
     "@nx/workspace": "^22.7.5",
     "@types/jest": "^29.0.0",
     "electron": "^37.0.0",
-    "electron-builder": "^24.13.3",
+    "electron-builder": "^26.15.3",
     "exitzero": "^1.0.1",
     "is-electron": "^2.2.2",
     "jest": "^30.2.0",
