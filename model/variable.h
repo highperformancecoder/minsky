@@ -64,9 +64,9 @@ namespace minsky
   CLASSDESC_ACCESS(VariableCaches);
   protected:
     /// cached font rendering objects
-    mutable classdesc::Exclude<std::shared_ptr<RenderVariable>> cachedNameRender;
-    mutable classdesc::Exclude<std::shared_ptr<ICacheRender>> cachedMantissa;
-    mutable classdesc::Exclude<std::shared_ptr<ICacheRender>> cachedExponent;
+    mutable std::shared_ptr<RenderVariable> cachedNameRender;
+    mutable std::shared_ptr<ICacheRender> cachedMantissa;
+    mutable std::shared_ptr<ICacheRender> cachedExponent;
     mutable double cachedValue, cachedTime;
   public:
     VariableCaches()=default;
@@ -77,7 +77,7 @@ namespace minsky
   class VariableBase: virtual public classdesc::PolyPackBase,
                       public BottomRightResizerItem,
                       public VariableType,
-                      public VariableCaches
+                      public classdesc::Exclude<VariableCaches>
   {
   public:
     typedef VariableType::Type Type;

@@ -248,11 +248,12 @@ FLAGS+=-std=c++20 -Wno-unused-command-line-argument -Wno-unknown-warning-option 
 endif
 
 # enable OPENMP by default
-#ifdef OPENMP
+ifdef OPENMP
 # Default compiler on MacOSX does not support OpenMP. Sigh!
 ifneq ($(OS),Darwin)
 FLAGS+=-fopenmp
 LIBS+=-fopenmp
+endif
 endif
 
 ifeq ($(DEBUG), 1)

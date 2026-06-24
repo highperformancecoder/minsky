@@ -774,7 +774,7 @@ void VariableBase::draw(const ICairoShim& cairoShim) const
          
                 cachedValue=value();
                 TextProperties mantissaText, exponentText;
-                if (!isnan(value())) {
+                if (isfinite(value())) {
                   if (sliderVisible())
                     mantissaText.markup=
                       mantissa(val,

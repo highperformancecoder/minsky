@@ -59,19 +59,6 @@ namespace minsky
 
   class ICairoShim;
   
-  /// a simple minded implementation that doesn't cache
-  class NonCachedRenderer: public ICacheRender
-  {
-    TextProperties text;
-    const ICairoShim& shim;
-  public:
-    NonCachedRenderer(const TextProperties& text, const ICairoShim& shim):
-      text(text), shim(shim) {}
-    void show() override;
-    TextExtents extents() const override;
-    void* context() const override;
-  };
-  
   /// Abstract interface for Cairo drawing operations
   class ICairoShim
   {
@@ -157,8 +144,7 @@ namespace minsky
     virtual void* context() const=0;
 
     /// return a cached object of rendered text
-    virtual std::unique_ptr<ICacheRender> cachedRender(const TextProperties& tp) const
-    {return std::make_unique<NonCachedRenderer>(tp,*this);}
+    virtual std::unique_ptr<ICacheRender> cachedRender(const TextProperties& tp) const=0;
   };
 
   /// RAII wrapper around save/restore
@@ -169,13 +155,6 @@ namespace minsky
     ~CairoShimSave() {shim.restore();}
   };
   
-  inline void NonCachedRenderer::show()
-  {shim.showText(text);}
-  inline TextExtents NonCachedRenderer::extents() const
-  {return shim.textExtents(text);}
-  inline void* NonCachedRenderer::context() const
-  {return shim.context();}
-
 }
 
 #include "ICairoShim.xcd"
