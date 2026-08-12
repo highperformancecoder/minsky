@@ -7,7 +7,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link rel="icon" type="image/x-icon" href="assets/icons/favicon.ico" />
 
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:;">
+<meta 
+  http-equiv="Content-Security-Policy" 
+  content="default-src 'self'; connect-src 'self' https://*.clerk.accounts.dev https://clerk.accounts.dev; script-src 'self' https://*.clerk.accounts.dev 'unsafe-inline'; worker-src 'self' blob:; style-src 'self' 'unsafe-inline'; img-src 'self' data: https://img.clerk.com;"
+>
 
     <style>
       .loader {

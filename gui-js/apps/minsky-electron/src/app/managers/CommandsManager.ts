@@ -1455,13 +1455,13 @@ export class CommandsManager {
     let state;
     switch (process.platform) {
     case 'win32':
-      state={system: 'windows', distro: '', version: '', arch:'', previous: ''};
+      state={system: 'windows', distro: '', version: '', arch:`${process.arch}`, previous: ''};
       break;
     case 'darwin':
       state={system: 'macos', distro: '', version: '', arch: `${process.arch}`, previous: ''};
       break;
     case 'linux': {
-      state={system: 'linux', distro: '', version: '',arch:'', previous: ''};
+      state={system: 'linux', distro: '', version: '',arch:`${process.arch}`, previous: ''};
       // figure out distro and version from /etc/os-release
       let aexec=promisify(exec);
       let osRelease='/etc/os-release';
