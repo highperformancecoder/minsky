@@ -125,7 +125,7 @@ namespace minsky
     model->recursiveDo(&GroupItems::items,
                        [&](const Items&, Items::const_iterator i)
                        {
-                         if ((*i)->group.lock()->displayContents())
+                         if ((*i)->group.lock()->displayContents() || (*i)->ioVar())
                            for (size_t pi=0; pi<(*i)->portsSize(); ++pi)
                              {
                                auto p=(*i)->ports(pi).lock();
