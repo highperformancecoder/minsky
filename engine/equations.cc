@@ -188,9 +188,12 @@ namespace MathDAG
       return 0; //integrals have already been evaluated
     if (cachedOrder>=0) return cachedOrder;
 
+    static const auto maxRecursion="maximum order recursion reached";
     if (maxOrder==0)
-      throw error("maximum order recursion reached");
-
+      {
+        if (state) cminsky().displayErrorItem(*state);
+        throw MaxRecursionOrder();
+      }
     
     // constants have order one, as they must be ordered after the
     // "fake" variables have been initialised

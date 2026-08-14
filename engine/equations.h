@@ -168,6 +168,16 @@ namespace MathDAG
     NodePtr derivative(SystemOfEquations&) const override;
   };
 
+  struct MaxRecursionOrder: public std::exception
+  {
+    std::string message;
+    MaxRecursionOrder()=default;
+    MaxRecursionOrder(const std::string& name):
+      message("maximum order recursion reached for "+name) {}
+    const char* what() const noexcept override
+    {return message.c_str();}
+  };
+  
   class VariableDAG: public Node, public VariableType
   {
   public:
@@ -185,8 +195,15 @@ namespace MathDAG
     int order(unsigned maxOrder) const override {
       if (rhs) {
         if (cachedOrder>=0) return cachedOrder;
-        if (maxOrder==0) throw error("maximum order recursion reached");
-        return cachedOrder=rhs->order(maxOrder-1)+1;
+        if (maxOrder==0) throw MaxRecursionOrder(name);
+        try
+          {
+            return cachedOrder=rhs->order(maxOrder-1)+1;
+          }
+        catch (const MaxRecursionOrder&)
+          {
+            throw MaxRecursionOrder(name);
+          }
       }
       else
         return 0;
