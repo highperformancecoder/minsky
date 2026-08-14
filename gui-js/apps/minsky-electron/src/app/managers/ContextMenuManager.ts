@@ -1435,6 +1435,8 @@ export class ContextMenuManager {
        ['middle', 'Middle'],
        ['bottom', 'Bottom'],
        ['top_bottom', 'Top & Bottom'],
+       ['equal_width', 'Equal width'],
+       ['equal_height', 'Equal height'],
      ];
     return labels.map(([alignment, label]) =>
        new MenuItem({

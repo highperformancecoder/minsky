@@ -25,6 +25,9 @@
 #include "libclipboard.h"
 #endif
 
+#include <thread>
+#include <chrono>
+
 using namespace std;
 
 namespace minsky
@@ -55,8 +58,12 @@ namespace minsky
 #else
      if (pimpl->clipboard)
       {
-        auto s=clipboard_text(pimpl->clipboard);
-        return s? s: "";
+        for (int maxAttempts=5; maxAttempts>0; --maxAttempts)
+          {
+            auto s=clipboard_text(pimpl->clipboard);
+            if (s) return s;
+            this_thread::sleep_for(25ms);
+          }
       }
     return {};
 #endif

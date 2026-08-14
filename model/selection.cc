@@ -150,6 +150,12 @@ namespace minsky
           i->iHeight(ref.iHeight());
           i->moveTo(i->x(), ref.y());
           break;
+        case equal_width:
+          i->iWidth(ref.iWidth());
+          break;
+         case equal_height:
+          i->iWidth(ref.iWidth());
+          break;
         }
     };
 
