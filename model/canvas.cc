@@ -440,6 +440,12 @@ namespace minsky
     return wire.get();
   }
 
+  void Canvas::addSubroutine(const std::string& name) {
+      if (auto subItr=minsky().subroutines.find(name);
+          subItr!=minsky().subroutines.end())
+        setItemFocus(model->addItem(subItr->second));
+  }
+  
   void Canvas::groupSelection()
   {
     const GroupPtr r=model->addGroup(new Group);

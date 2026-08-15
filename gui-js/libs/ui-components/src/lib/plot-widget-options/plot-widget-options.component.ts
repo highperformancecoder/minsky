@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { NgFor } from '@angular/common';
 import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
@@ -12,7 +13,8 @@ import { MatButtonModule } from '@angular/material/button';
     templateUrl: './plot-widget-options.component.html',
     styleUrls: ['./plot-widget-options.component.scss'],
     standalone: true,
-    imports: [
+  imports: [
+    NgFor,
     FormsModule,
     ReactiveFormsModule,
     MatButtonModule

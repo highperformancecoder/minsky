@@ -63,6 +63,14 @@
           title="User Defined Function"
           />
       </button>
+      <button class="tab toolButton"
+        classType="Operation:subroutine" (click)="electronService.popupSubroutineMenu($event.x,$event.y)">
+        <img
+          src="assets/images/icons/subroutine.png"
+          alt="Subroutine"
+          title="Subroutine"
+          />
+      </button>
       <button class="tab toolButton" classType="GodleyIcon" (click)="electronService.minsky.canvas.addGodley()">
         <img
           src="assets/images/icons/bank.gif"

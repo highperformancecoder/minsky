@@ -208,6 +208,7 @@ namespace minsky
     }
     void addGodley() {setItemFocus(model->addItem(new GodleyIcon));}
     void addGroup() {setItemFocus(model->addItem(new Group));}
+    void addSubroutine(const std::string& name);
     void addSwitch() {setItemFocus(model->addItem(new SwitchIcon));}
     void addRavel() {setItemFocus(model->addItem(new Ravel));}
     void addLock() {setItemFocus(model->addItem(new Lock));}

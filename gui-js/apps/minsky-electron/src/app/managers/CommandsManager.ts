@@ -1643,5 +1643,23 @@ export class CommandsManager {
     }
 
   }
+  
+  static async postSubroutineMenu(x,y) {
+    let subroutines=await minsky.subroutines.keys();
+    let menuitems=[];
+    for (let sub of subroutines) {
+      menuitems.push({
+        label: sub,
+        click: async () => {await minsky.canvas.addSubroutine(sub);},
+      });
+    }
+    if (!menuitems.length)
+      menuitems.push({
+        label: "No subroutines available",
+        enabled: false,
+      });
+    let menu=Menu.buildFromTemplate(menuitems);
+    menu.popup({window: WindowManager.getMainWindow(),x,y});
+  }
 
 }

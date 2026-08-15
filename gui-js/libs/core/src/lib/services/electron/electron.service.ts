@@ -100,4 +100,7 @@ export class ElectronService {
   openUrl(options) {
     this.ipcRenderer.invoke(events.OPEN_URL,options);
   }
+  popupSubroutineMenu(x: number, y: number) {
+    this.ipcRenderer.invoke(events.POPUP_SUBROUTINE_MENU, x, y);
+  }
 }

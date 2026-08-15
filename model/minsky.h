@@ -145,6 +145,7 @@ namespace minsky
     PhillipsDiagram phillipsDiagram;
     std::vector<PubTab> publicationTabs;
     DatabaseIngestor databaseIngestor;
+    std::map<string, GroupPtr> subroutines;
     
     void addNewPublicationTab(const std::string& name) {publicationTabs.emplace_back(name);}
     void addCanvasItemToPublicationTab(size_t i) {

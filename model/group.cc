@@ -191,6 +191,8 @@ namespace minsky
 
   void Group::makeSubroutine()
   {
+    if (title.empty())
+      throw runtime_error("Subroutines need to have a title");
     recursiveDo(&GroupItems::items, [this](Items&,Items::iterator i)
     {
       if (auto v=(*i)->variableCast())
@@ -207,6 +209,8 @@ namespace minsky
     outer_scope_variable_found:
       return false;
     });
+    if (auto ptr=groupPtrFromThis())
+      minsky().subroutines[title]=ptr;
   }
 
   
@@ -1415,6 +1419,15 @@ namespace minsky
       minsky().requestReset();   // Updates model after variables rename. For ticket 1109.    
     }
 
+  GroupPtr Group::groupPtrFromThis() const 
+  {
+    if (auto g=group.lock())
+      return g->findGroup(*this);
+    return {};
+  }
+   
+
+  
 }
 
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Group);

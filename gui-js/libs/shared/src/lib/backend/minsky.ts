@@ -430,6 +430,7 @@ export class Canvas extends RenderNativeWindow {
   async addPlot(): Promise<void> {return this.$callMethod('addPlot');}
   async addRavel(): Promise<void> {return this.$callMethod('addRavel');}
   async addSheet(): Promise<void> {return this.$callMethod('addSheet');}
+  async addSubroutine(a1: string): Promise<void> {return this.$callMethod('addSubroutine',a1);}
   async addSwitch(): Promise<void> {return this.$callMethod('addSwitch');}
   async addVariable(a1: string,a2: string): Promise<void> {return this.$callMethod('addVariable',a1,a2);}
   async alignSelection(a1: string): Promise<void> {return this.$callMethod('alignSelection',a1);}
@@ -1099,6 +1100,7 @@ export class Group extends Item {
   async globalGroup(): Promise<Group> {return this.$callMethod('globalGroup');}
   async gotoBookmark(a1: number): Promise<void> {return this.$callMethod('gotoBookmark',a1);}
   async gotoBookmark_b(a1: Bookmark): Promise<void> {return this.$callMethod('gotoBookmark_b',a1);}
+  async groupPtrFromThis(): Promise<object> {return this.$callMethod('groupPtrFromThis');}
   async height(): Promise<number> {return this.$callMethod('height');}
   async higher(a1: Group): Promise<boolean> {return this.$callMethod('higher',a1);}
   async iHeight(...args: any[]): Promise<number> {return this.$callMethod('iHeight',...args);}
@@ -1308,6 +1310,7 @@ export class Minsky extends CppClass {
   phillipsDiagram: PhillipsDiagram;
   publicationTabs: Sequence<PubTab>;
   stockVars: Sequence<number>;
+  subroutines: Map<string,Group>;
   variableInstanceList: VariableInstanceList;
   variablePane: VariablePane;
   variableValues: VariableValues;
@@ -1330,6 +1333,7 @@ export class Minsky extends CppClass {
     this.phillipsDiagram=new PhillipsDiagram(this.$prefix()+'.phillipsDiagram');
     this.publicationTabs=new Sequence<PubTab>(this.$prefix()+'.publicationTabs',PubTab);
     this.stockVars=new Sequence<number>(this.$prefix()+'.stockVars');
+    this.subroutines=new Map<string,Group>(this.$prefix()+'.subroutines',Group);
     this.variableInstanceList=new VariableInstanceList(this.$prefix()+'.variableInstanceList');
     this.variablePane=new VariablePane(this.$prefix()+'.variablePane');
     this.variableValues=new VariableValues(this.$prefix()+'.variableValues');
@@ -2000,6 +2004,7 @@ export class Selection extends CppClass {
   async globalGroup(): Promise<Group> {return this.$callMethod('globalGroup');}
   async gotoBookmark(a1: number): Promise<void> {return this.$callMethod('gotoBookmark',a1);}
   async gotoBookmark_b(a1: Bookmark): Promise<void> {return this.$callMethod('gotoBookmark_b',a1);}
+  async groupPtrFromThis(): Promise<object> {return this.$callMethod('groupPtrFromThis');}
   async height(): Promise<number> {return this.$callMethod('height');}
   async higher(a1: Group): Promise<boolean> {return this.$callMethod('higher',a1);}
   async iHeight(...args: any[]): Promise<number> {return this.$callMethod('iHeight',...args);}

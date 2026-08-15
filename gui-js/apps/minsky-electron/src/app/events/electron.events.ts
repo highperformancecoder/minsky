@@ -297,3 +297,8 @@ ipcMain.handle(events.SET_AUTH_TOKEN, async (event, token: string | null) => {
 ipcMain.handle(events.OAUTH_OPEN_POPUP, (event, oauthUrl: string) => {
   WindowManager.openOAuthPopup(oauthUrl);
 });
+
+ipcMain.handle(events.POPUP_SUBROUTINE_MENU, (event,x,y) => {
+  CommandsManager.postSubroutineMenu(x,y);
+});
+

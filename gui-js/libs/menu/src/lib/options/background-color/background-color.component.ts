@@ -3,7 +3,7 @@ import { FormControl, Validators, FormsModule, ReactiveFormsModule } from '@angu
 import { ThemePalette } from '@angular/material/core';
 import { CommunicationService, ElectronService } from '@minsky/core';
 import { MatButtonModule } from '@angular/material/button';
-import { ColorPickerComponent, ColorPickerDirective } from 'ngx-color-picker';
+import { ColorPickerDirective } from 'ngx-color-picker';
 @Component({
     selector: 'minsky-background-color',
     templateUrl: './background-color.component.html',
@@ -11,7 +11,6 @@ import { ColorPickerComponent, ColorPickerDirective } from 'ngx-color-picker';
     standalone: true,
     imports: [
         FormsModule,
-        ColorPickerComponent,
         ColorPickerDirective,
         ReactiveFormsModule,
         MatButtonModule,

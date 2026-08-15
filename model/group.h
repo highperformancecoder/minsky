@@ -436,7 +436,9 @@ namespace minsky
 
     /// rename all instances of a variable matching \a valueId to \a newName
     void renameAllInstances(const std::string& valueId, const std::string& newName);
-    
+
+    /// return the smart pointer containing this object, if it is
+    GroupPtr groupPtrFromThis() const;
   };
 
   template <class M, class C>
