@@ -12,7 +12,7 @@ canvas=minsky.canvas
 model=minsky.model
 canvas.mouseDown(item.left()-10, item.bottom()+10)
 canvas.mouseUp(item.left()+10, item.bottom()-10) 
-assert len(canvas.selection.groups)==1
+assert len(canvas.selection.contents.groups)==1
 minsky.clearAllMaps()
 minsky.paste()
 # For ticket 1080. There is no longer an outer group when existing groups or items are pasted between canvasses or in the same canvas

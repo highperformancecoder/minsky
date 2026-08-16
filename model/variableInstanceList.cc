@@ -36,7 +36,7 @@ namespace minsky
     model(model)
   {
     model.recursiveDo
-      (&Group::items,
+      (&GroupItems::items,
        [this,&valueId](const Items&, Items::const_iterator i) {
          if (const auto* v=(*i)->variableCast())
            if (v->valueId()==valueId)

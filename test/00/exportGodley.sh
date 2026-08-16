@@ -6,16 +6,16 @@ here=`pwd`
 cat >input.py <<EOF
 from pyminsky import minsky
 minsky.load('$here/examples/1Free.mky')
-for i in range(len(minsky.model.items)):
-    item=minsky.model.items[i]
+for i in range(len(minsky.model.contents.items)):
+    item=minsky.model.contents.items[i]
     if item.classType()=='GodleyIcon':
        item.table.exportToLaTeX('1FreeGodley.tex')
        item.table.exportToCSV('1FreeGodley.csv')
        break
 
 minsky.load('$here/test/testEq.mky')
-for i in range(len(minsky.model.items)):
-    item=minsky.model.items[i]
+for i in range(len(minsky.model.contents.items)):
+    item=minsky.model.contents.items[i]
     if item.classType()=='GodleyIcon':
        item.table.exportToLaTeX('testEqGodley.tex')
        item.table.exportToCSV('testEqGodley.csv')

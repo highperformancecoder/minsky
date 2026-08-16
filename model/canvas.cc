@@ -102,7 +102,7 @@ namespace minsky
       }
     else
       {
-        wireFocus=model->findAny(&Group::wires,
+        wireFocus=model->findAny(&GroupItems::wires,
                        [&](const WirePtr& i){return i->near(x,y);});
         if (wireFocus)
           handleSelected=wireFocus->nearestHandle(x,y);
@@ -204,9 +204,9 @@ namespace minsky
       {
         // move the whole selection
         auto deltaX=x-moveOffsX-itemFocus->x(), deltaY=y-moveOffsY-itemFocus->y();
-        for (auto& i: selection.items)
+        for (auto& i: selection.contents->items)
           i->moveTo(i->x()+deltaX, i->y()+deltaY);
-        for (auto& i: selection.groups)
+        for (auto& i: selection.contents->groups)
           i->moveTo(i->x()+deltaX, i->y()+deltaY);
       }
     requestRedraw();
@@ -303,7 +303,7 @@ namespace minsky
             };
             // set mouse focus to display ports etc.
             bool mouseFocusSet=false; // ensure only one item is focused by mouse.
-            model->recursiveDo(&Group::items, [&](Items&,Items::iterator& i)
+            model->recursiveDo(&GroupItems::items, [&](Items&,Items::iterator& i)
                                               {
                                                 (*i)->disableDelayedTooltip();
                                                 // with coupled integration variables, we
@@ -327,7 +327,7 @@ namespace minsky
                                                   }
                                                 return false;
                                               });
-            model->recursiveDo(&Group::groups, [&](Groups&,Groups::iterator& i)
+            model->recursiveDo(&GroupItems::groups, [&](Groups&,Groups::iterator& i)
                                                {
                                                  auto ct=(*i)->clickType(x,y);
                                                  setFlagAndRequestRedraw((*i)->mouseFocus, !mouseFocusSet && ct!=ClickType::outside);
@@ -340,7 +340,7 @@ namespace minsky
                                                    }
                                                  return false;
                                                });
-            model->recursiveDo(&Group::wires, [&](Wires&,Wires::iterator& i)
+            model->recursiveDo(&GroupItems::wires, [&](Wires&,Wires::iterator& i)
                                               {
                                                 const bool mf=(*i)->near(x,y);
                                                 if (mf!=(*i)->mouseFocus)
@@ -386,11 +386,11 @@ namespace minsky
 
     if (!topLevel) topLevel=&*model;
 
-    for (auto& i: topLevel->items)
+    for (auto& i: topLevel->contents->items)
       if (i->visible() && lasso.intersects(*i))
         selection.ensureItemInserted(i);
 
-    for (auto& i: topLevel->groups)
+    for (auto& i: topLevel->contents->groups)
       if (i->visible() && lasso.intersects(*i))
         selection.ensureGroupInserted(i);
 
@@ -401,7 +401,7 @@ namespace minsky
   int Canvas::ravelsSelected() const
   {
     int ravelsSelected = 0;
-    for (auto& i: selection.items) {
+    for (auto& i: selection.contents->items) {
       if (dynamic_pointer_cast<Ravel>(i))
       {
         ravelsSelected++;
@@ -428,14 +428,14 @@ namespace minsky
                        });
     if (!item)
       item=model->findAny
-        (&Group::groups, [&](const GroupPtr& i)
+        (&GroupItems::groups, [&](const GroupPtr& i)
                          {return i->visible() && i->clickType(x,y)!=ClickType::outside;});
     return item;
   }
   
   bool Canvas::getWireAt(float x, float y)
   {
-    wire=model->findAny(&Group::wires,
+    wire=model->findAny(&GroupItems::wires,
                         [&](const WirePtr& i){return i->near(x,y);});
     return wire.get();
   }
@@ -449,9 +449,9 @@ namespace minsky
   void Canvas::groupSelection()
   {
     const GroupPtr r=model->addGroup(new Group);
-    for (auto& i: selection.items)
+    for (auto& i: selection.contents->items)
       r->addItem(i);
-    for (auto& i: selection.groups)
+    for (auto& i: selection.contents->groups)
       r->addItem(i);
     r->splitBoundaryCrossingWires();
     r->resizeOnContents();
@@ -462,7 +462,7 @@ namespace minsky
     vector<shared_ptr<Ravel> > ravelsToLock;
     shared_ptr<RavelLockGroup> lockGroup;
     bool conflictingLockGroups=false;
-    for (auto& i: selection.items)
+    for (auto& i: selection.contents->items)
       if (auto r=dynamic_pointer_cast<Ravel>(i))
         {
           ravelsToLock.push_back(r);
@@ -487,7 +487,7 @@ namespace minsky
 
   void Canvas::unlockRavelsInSelection()
   {
-    for (auto& i: selection.items)
+    for (auto& i: selection.contents->items)
       if (auto r=dynamic_cast<Ravel*>(i.get()))
         r->leaveLockGroup();
   }
@@ -514,7 +514,7 @@ namespace minsky
   // For ticket 1092. Reinstate delete handle user interaction
   void Canvas::delHandle(float x, float y)
   {
-    wireFocus=model->findAny(&Group::wires,
+    wireFocus=model->findAny(&GroupItems::wires,
                    [&](const WirePtr& i){return i->near(x,y);});
     if (wireFocus)
       {
@@ -586,7 +586,7 @@ namespace minsky
               {  	    				 
                 // stash values of parameters in copied group, as they are reset for some unknown reason later on. for tickets 1243/1258
                 map<string,string> existingParms; 
-                for (auto& i: g->items) {
+                for (auto& i: g->contents->items) {
                   auto v=i->variableCast(); 
                   if (v && v->type()==VariableType::parameter) 
                     existingParms.emplace(v->valueId(),v->init());
@@ -594,9 +594,9 @@ namespace minsky
 
                 // blow up containe items so they appear in same relative locationsat parent scalefactor
                 auto scaleFactor=1/g->relZoom;
-                for (auto& i: g->items)
+                for (auto& i: g->contents->items)
                   i->moveTo((i->x()-g->x())*scaleFactor+g->x(), (i->y()-g->y())*scaleFactor+g->y());
-                for (auto& i: g->groups)
+                for (auto& i: g->contents->groups)
                   i->moveTo((i->x()-g->x())*scaleFactor+g->x(), (i->y()-g->y())*scaleFactor+g->y());
                 p->moveContents(*g);
                 deleteItem();
@@ -665,7 +665,7 @@ namespace minsky
   {
     if (frameArgs().parentWindowId.empty()) return; // no window to fit to, so do nothing
     // recompute all bounding boxes - why is this needed?
-    for (auto& i: model->items) i->updateBoundingBox();
+    for (auto& i: model->contents->items) i->updateBoundingBox();
     
     double x0,x1,y0,y1;
     model->contentBounds(x0,y0,x1,y1);
@@ -674,9 +674,9 @@ namespace minsky
     const float flip=notFlipped? 1: -1;
                                                          
     // we need to move the io variables
-    for (auto& v: model->inVariables)
+    for (auto& v: model->contents->inVariables)
       inOffset=std::max(inOffset, v->width());
-    for (auto& v: model->outVariables)
+    for (auto& v: model->contents->outVariables)
       outOffset=std::max(outOffset, v->width());
         
     const float zoomFactor=std::min(frameArgs().childWidth/(x1-x0+inOffset+outOffset),
@@ -689,10 +689,10 @@ namespace minsky
     float ioOffset=notFlipped? x0: x1;
                                                           
     // we need to move the io variables
-    for (auto& v: model->inVariables)
+    for (auto& v: model->contents->inVariables)
       v->moveTo(ioOffset-flip*v->width(),v->y());
     ioOffset=notFlipped? x1: x0;                                               
-    for (auto& v: model->outVariables)
+    for (auto& v: model->contents->outVariables)
       v->moveTo(ioOffset+flip*v->width(),v->y());
        
     recentre();
@@ -748,7 +748,7 @@ namespace minsky
           selection.insertItem(model->addItem(ni));		 
         }
         // Item focus put on one of the copied vars that are still in selection. For ticket 1039
-        if (!selection.empty()) setItemFocus(selection.items[0]);
+        if (!selection.empty()) setItemFocus(selection.contents->items[0]);
         else setItemFocus(nullptr);  
     } else throw error("no flow or stock variables to copy");    
   }

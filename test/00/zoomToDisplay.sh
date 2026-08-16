@@ -13,19 +13,19 @@ from pyminsky import minsky, findObject
 minsky.load('testGroup.mky')
 group=findObject('Group')
 # initially, no internal items should be visible
-for v in range(len(group.items)):
-    var=group.items[v]
+for v in range(len(group.contents.items)):
+    var=group.contents.items[v]
     assert not var.visible(), "var"+str(v)
 
-for w in range(len(group.wires)):
-    wire=group.wires[w]
+for w in range(len(group.contents.wires)):
+    wire=group.contents.wires[w]
     assert not wire.visible(), "wire"+str(w)
 
 # zoom into displayZoom - everything should now be visible
 minsky.canvas.zoomToDisplay()
 group.updateBoundingBox()
-for v in range(len(group.items)):
-    var=group.items[v]
+for v in range(len(group.contents.items)):
+    var=group.contents.items[v]
     var.updateBoundingBox()
     if not var.ioVar():
       assert var.visible(), "var"+str(v)
@@ -34,18 +34,18 @@ for v in range(len(group.items)):
     else:
       assert not var.visible(), "edge var"+str(v)
 
-for w in range(len(group.wires)):
-    wire=group.wires[w]
+for w in range(len(group.contents.wires)):
+    wire=group.contents.wires[w]
     assert wire.visible(), "wire\$w"
 
 # zoom back to original
 minsky.canvas.zoom(1/minsky.canvas.zoomFactor(),0,0)
-for v in range(len(group.items)):
-    var=group.items[v]
+for v in range(len(group.contents.items)):
+    var=group.contents.items[v]
     assert not var.visible(), "var"+str(v)
 
-for w in range(len(group.wires)):
-    wire=group.wires[w]
+for w in range(len(group.contents.wires)):
+    wire=group.contents.wires[w]
     assert not wire.visible(), "wire"+str(w)
 EOF
 

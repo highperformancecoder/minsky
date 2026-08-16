@@ -74,7 +74,7 @@ namespace
 
       // build a table of variables - names will be unique at this stage
       map<string, VariablePtr> var;
-      for (ItemPtr& i: model->items)
+      for (ItemPtr& i: model->contents->items)
         if (auto v=dynamic_pointer_cast<VariableBase>(i))
           var[v->name()]=v;
 
@@ -102,7 +102,7 @@ namespace
       model->addWire(*var["e"], *mulOp, 2);
       model->addWire(*mulOp, *var["b"], 1);
 
-      for (auto& w: model->wires)
+      for (auto& w: model->contents->wires)
         {
           EXPECT_TRUE(!w->from()->input());
           EXPECT_TRUE(w->to()->input());
@@ -157,7 +157,7 @@ namespace
 
       // build a table of variables - names will be unique at this stage
       map<string, VariablePtr> var;
-      for (ItemPtr& i: model->items)
+      for (ItemPtr& i: model->contents->items)
         if (auto v=dynamic_pointer_cast<VariableBase>(i))
             var[v->name()]=v;
 
@@ -175,7 +175,7 @@ namespace
       auto wire10=model->addWire(*op5, *op6, 2);
       auto wire11=model->addWire(*op6, *var["h"], 1);
  
-      for (auto& w: model->wires)
+      for (auto& w: model->contents->wires)
         {
           EXPECT_TRUE(!w->from()->input());
           EXPECT_TRUE(w->to()->input());
@@ -261,7 +261,7 @@ namespace
  
       // build a table of variables - names will be unique at this stage
       map<string, VariablePtr> var;
-      for (ItemPtr& i: model->items)
+      for (ItemPtr& i: model->contents->items)
         if (auto v=dynamic_pointer_cast<VariableBase>(i))
           var[v->name()]=v;
 
@@ -1066,6 +1066,10 @@ TEST(TensorOps, evalOpEvaluate)
       VariablePtr c(VariableType::flow,":c");
       g3->addItem(c);
 
+      g0->title="g0";
+      g1->title="g1";
+      g2->title="g2";
+      g3->title="g3";
       g0->makeSubroutine();
       g1->makeSubroutine();
       g2->makeSubroutine();
@@ -1153,9 +1157,9 @@ TEST(TensorOps, evalOpEvaluate)
         EXPECT_EQ(1,canvas.selection.numWires());
         copy();
         paste();
-        EXPECT_EQ(4, model->items.size());
+        EXPECT_EQ(4, model->contents->items.size());
         // ensure extra wire is not copied
-        EXPECT_EQ(1, model->wires.size());
+        EXPECT_EQ(1, model->contents->wires.size());
         // check that b's definition remains as before
         EXPECT_TRUE(definingVar(":b")==b);
       }
@@ -1170,10 +1174,10 @@ TEST(TensorOps, evalOpEvaluate)
         canvas.selection.ensureItemInserted(b);
         copy();
         model->deleteItem(*b);
-        EXPECT_EQ(0, model->wires.size());
+        EXPECT_EQ(0, model->contents->wires.size());
         paste();
         // ensure extra wire is not copied
-        EXPECT_EQ(1, model->wires.size());
+        EXPECT_EQ(1, model->contents->wires.size());
         // check that b's definition is now the copied var
         EXPECT_TRUE(definingVar(":b")!=b);
       }
@@ -1183,7 +1187,7 @@ TEST(TensorOps, evalOpEvaluate)
         auto intOp=make_shared<IntOp>();
         intOp->description("foo");
         model->addItem(intOp);
-        EXPECT_EQ(2,model->items.size());
+        EXPECT_EQ(2,model->contents->items.size());
         canvas.selection.ensureItemInserted(intOp);
         copy();
         paste();
@@ -1202,10 +1206,10 @@ TEST(TensorOps, evalOpEvaluate)
         model->removeItem(*intOp);
         intOp.reset();
         paste();
-        EXPECT_EQ(2,model->items.size());
-        EXPECT_TRUE(model->items[1]->variableCast());
-        EXPECT_EQ(VariableType::flow, model->items[1]->variableCast()->type());
-        EXPECT_EQ(clonedIntVar->name(), model->items[1]->variableCast()->name());
+        EXPECT_EQ(2,model->contents->items.size());
+        EXPECT_TRUE(model->contents->items[1]->variableCast());
+        EXPECT_EQ(VariableType::flow, model->contents->items[1]->variableCast()->type());
+        EXPECT_EQ(clonedIntVar->name(), model->contents->items[1]->variableCast()->name());
       }
     
     TEST_F(MinskySuite, cut)
@@ -1224,7 +1228,7 @@ TEST(TensorOps, evalOpEvaluate)
         EXPECT_EQ(3,canvas.selection.numItems()); // both integral and intVar must be inserted
         canvas.selection.toggleItemMembership(model->findItem(*integ));
         EXPECT_EQ(1,canvas.selection.numItems());
-        canvas.selection.items.push_back(integ->intVar);
+        canvas.selection.contents->items.push_back(integ->intVar);
         EXPECT_EQ(2,canvas.selection.numItems());
         canvas.selection.ensureGroupInserted(g);
         EXPECT_EQ(3,canvas.selection.numItems());
@@ -1427,7 +1431,7 @@ TEST(TensorOps, evalOpEvaluate)
       undo(1);
       EXPECT_EQ(history.size(), 2);
       EXPECT_EQ(historyPtr, 1);
-      EXPECT_EQ(model->items.size(), 1);
+      EXPECT_EQ(model->contents->items.size(), 1);
     }
 
     // Test dimension operations
@@ -1508,19 +1512,19 @@ TEST(TensorOps, evalOpEvaluate)
       auto var1 = model->addItem(VariablePtr(VariableType::flow, "integVar"));
       canvas.item = var1;
       
-      size_t itemsBefore = model->items.size();
+      size_t itemsBefore = model->contents->items.size();
       addIntegral();
-      EXPECT_GT(model->items.size(), itemsBefore);
+      EXPECT_GT(model->contents->items.size(), itemsBefore);
       
       // Check that var1's type is now integral
       EXPECT_EQ(VariableType::integral, variableValues[":integVar"]->type());
       
-      ASSERT_EQ(model->items.size(),2);
+      ASSERT_EQ(model->contents->items.size(),2);
 
       // assume integral is placed at end
-      auto integ=dynamic_cast<IntOp*>(model->items[1].get());
+      auto integ=dynamic_cast<IntOp*>(model->contents->items[1].get());
       ASSERT_TRUE(integ);
-      EXPECT_EQ(integ->intVar, model->items[0]);
+      EXPECT_EQ(integ->intVar, model->contents->items[0]);
     }
 
     // Test requestReset and requestRedraw
@@ -1563,12 +1567,12 @@ TEST(TensorOps, evalOpEvaluate)
       
       // Clear the model and load from autosave file
       clearAllMaps();
-      EXPECT_EQ(0, model->items.size());
+      EXPECT_EQ(0, model->contents->items.size());
       
       load(testFile);
       
       // Check that the state was restored
-      EXPECT_EQ(model->items.size(), 2);
+      EXPECT_EQ(model->contents->items.size(), 2);
       EXPECT_TRUE(variableValues.count(":autoVar1") > 0);
       EXPECT_TRUE(variableValues.count(":autoVar2") > 0);
       
@@ -1639,11 +1643,11 @@ TEST(TensorOps, evalOpEvaluate)
       save(testFile);
       
       clearAllMaps();
-      EXPECT_EQ(0, model->items.size());
+      EXPECT_EQ(0, model->contents->items.size());
       EXPECT_EQ(0, variableValues.count(":saveVar"));
      
       load(testFile);
-      EXPECT_EQ(model->items.size(), 1);
+      EXPECT_EQ(model->contents->items.size(), 1);
       EXPECT_TRUE(variableValues.count(":saveVar") > 0);
       
       remove(testFile.c_str());
@@ -1663,12 +1667,12 @@ TEST(TensorOps, evalOpEvaluate)
       insertGroupFromFile(groupFile);
       
       // model->items should be empty, as the model has been cleared
-      EXPECT_EQ(0, model->items.size()); 
+      EXPECT_EQ(0, model->contents->items.size()); 
       // model->groups should contain the one group that has been imported from the file
-      EXPECT_EQ(1, model->groups.size());
-      if (model->groups.size() > 0) {
+      EXPECT_EQ(1, model->contents->groups.size());
+      if (model->contents->groups.size() > 0) {
         // which in turn contains one item in model->groups[0]->items
-        EXPECT_EQ(1, model->groups[0]->items.size());
+        EXPECT_EQ(1, model->contents->groups[0]->contents->items.size());
       }
       
       remove(groupFile.c_str());

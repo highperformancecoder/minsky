@@ -84,15 +84,15 @@ describe('Minsky tests', ()=>{
    });
  
   test('addIntegral', async ()=>{
-     expect(await minsky.model.items.size()).toBe(0);
+     expect(await minsky.model.contents.items.size()).toBe(0);
      minsky.canvas.addVariable("foo","flow");
-     expect(await minsky.model.items.size()).toBe(1);
+     expect(await minsky.model.contents.items.size()).toBe(1);
      minsky.canvas.getItemAt(0,0);
      expect(await minsky.canvas.item.classType()).toBe("Variable:flow");
      expect(await (new VariableBase(minsky.canvas.item)).name()).toBe("foo");
      minsky.addIntegral();
-     expect(await minsky.model.items.size()).toBe(2);
-     expect(await minsky.model.items.elem(1).classType()).toBe("IntOp");
+     expect(await minsky.model.contents.items.size()).toBe(2);
+     expect(await minsky.model.contents.items.elem(1).classType()).toBe("IntOp");
    });
  
    test('operations', async ()=>{
@@ -118,28 +118,28 @@ describe('Minsky tests', ()=>{
     minsky.copy();
     expect(await minsky.canvas.selection.empty()).toBe(false);
     expect(await minsky.clipboardEmpty()).toBe(false);
-    let numItems=await minsky.model.items.size();
-    let numSelected=await minsky.canvas.selection.items.size();
+    let numItems=await minsky.model.contents.items.size();
+    let numSelected=await minsky.canvas.selection.contents.items.size();
     expect(numItems).toBeGreaterThan(0);
     expect(numSelected).toBeGreaterThan(0);
     minsky.cut();
-    expect(await minsky.model.items.size()+numSelected).toBe(numItems);
+    expect(await minsky.model.contents.items.size()+numSelected).toBe(numItems);
     minsky.paste();
-    expect(await minsky.model.items.size()).toBe(numItems);
+    expect(await minsky.model.contents.items.size()).toBe(numItems);
    });
    
    test('undo',async ()=>{
      expect(await minsky.undo(0)).toBe(1);
      minsky.canvas.addOperation("time");
      expect(await minsky.undo(0)).toBe(2);
-     expect(await minsky.model.items.size()).toBe(1);
+     expect(await minsky.model.contents.items.size()).toBe(1);
      minsky.canvas.addOperation("time");
      expect(await minsky.undo(0)).toBe(3);
-     expect(await minsky.model.items.size()).toBe(2);
+     expect(await minsky.model.contents.items.size()).toBe(2);
      expect(await minsky.undo(1)).toBe(2);
-     expect(await minsky.model.items.size()).toBe(1);
+     expect(await minsky.model.contents.items.size()).toBe(1);
      expect(await minsky.undo(-1)).toBe(3);
-     expect(await minsky.model.items.size()).toBe(2);
+     expect(await minsky.model.contents.items.size()).toBe(2);
    });
    test('doPushHistory',async ()=>{
      minsky.clearAllMaps(true);
@@ -148,18 +148,18 @@ describe('Minsky tests', ()=>{
      expect(await minsky.doPushHistory()).toBe(false);
      minsky.canvas.addOperation("time");
      minsky.canvas.addOperation("time");
-     expect(await minsky.model.items.size()).toBe(2);
+     expect(await minsky.model.contents.items.size()).toBe(2);
      expect(await minsky.undo(1)).toBe(0);
-     expect(await minsky.model.items.size()).toBe(2);
+     expect(await minsky.model.contents.items.size()).toBe(2);
      expect(await minsky.doPushHistory(true)).toBe(true);
      expect(await minsky.doPushHistory()).toBe(true);
      minsky.canvas.addOperation("time");
      expect(await minsky.undo(0)).toBe(1);
      minsky.canvas.addOperation("time");
-     expect(await minsky.model.items.size()).toBe(4);
+     expect(await minsky.model.contents.items.size()).toBe(4);
      expect(await minsky.undo(0)).toBe(2);
      expect(await minsky.undo(1)).toBe(1);
-     expect(await minsky.model.items.size()).toBe(3);
+     expect(await minsky.model.contents.items.size()).toBe(3);
    });
    test('clearHistory',async ()=>{
      minsky.canvas.addOperation("time");
@@ -195,8 +195,8 @@ describe('Minsky tests', ()=>{
      expect(await plot.plotType()).toBe("automatic");
      expect(await plot.plotType("bar")).toBe("bar");
      minsky.canvas.copyItem();
-     expect(await minsky.model.items.size()).toBe(2);
-     expect(await minsky.model.items.elem(1).classType()).toBe("PlotWidget");
+     expect(await minsky.model.contents.items.size()).toBe(2);
+     expect(await minsky.model.contents.items.elem(1).classType()).toBe("PlotWidget");
    });
  
    test('defaultRotation',async ()=>{
@@ -207,10 +207,10 @@ describe('Minsky tests', ()=>{
    });
    test('deleteItem',async ()=>{
      minsky.canvas.addPlot();
-     expect(await minsky.model.items.size()).toBe(1);
+     expect(await minsky.model.contents.items.size()).toBe(1);
      minsky.canvas.getItemAt(0,0);
      minsky.canvas.deleteItem();
-     expect(await minsky.model.items.size()).toBe(0);
+     expect(await minsky.model.contents.items.size()).toBe(0);
    });
    test('add/delete wire',async ()=>{
      minsky.canvas.addOperation("time");
@@ -222,11 +222,11 @@ describe('Minsky tests', ()=>{
      minsky.canvas.getItemAt(200,200);
      minsky.canvas.mouseDown(src[0],src[1]);
      minsky.canvas.mouseUp(await minsky.canvas.item.portX(1), await minsky.canvas.item.portY(1)); // should add a wire
-     expect(await minsky.model.wires.size()).toBe(1);
+     expect(await minsky.model.contents.wires.size()).toBe(1);
      minsky.canvas.getWireAt(150,150);
      expect(await minsky.canvas.wire.$properties()).not.toBe({});
      minsky.canvas.deleteWire();
-     expect(await minsky.model.wires.size()).toBe(0);
+     expect(await minsky.model.contents.wires.size()).toBe(0);
    });
   test('command hook',async ()=>{
     expect(await minsky.edited()).toBe(false);

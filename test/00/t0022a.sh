@@ -22,7 +22,7 @@ cat >reload.py <<EOF
 from pyminsky import minsky
 minsky.load('saved.mky')
 assert len(minsky.model.items)==1
-item=minsky.model.items[0]
+item=minsky.model.contents.items[0]
 assert "foobar"==item.tooltip()
 assert "some longer text"==item.detailedText()
 EOF

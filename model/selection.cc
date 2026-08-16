@@ -29,8 +29,8 @@ namespace minsky
 {
   void Selection::clear()
   {
-    for (auto& i: items) i->selected=false;
-    for (auto& i: groups) i->selected=false;
+    for (auto& i: contents->items) i->selected=false;
+    for (auto& i: contents->groups) i->selected=false;
     Group::clear();
   }
 
@@ -40,14 +40,14 @@ namespace minsky
     if (removeItem(*item))
       {
         item->selected=false;
-        item->removeControlledItems(*this);
+        item->removeControlledItems(*contents);
       }
     else if (auto gPtr=std::dynamic_pointer_cast<Group>(item))
       {
-        auto it=find(groups.begin(), groups.end(),gPtr);
-        if (it!=groups.end())
+        auto it=find(contents->groups.begin(), contents->groups.end(),gPtr);
+        if (it!=contents->groups.end())
           {
-            groups.erase(it);
+            contents->groups.erase(it);
             gPtr->selected=false;
           }
         else
@@ -65,22 +65,22 @@ namespace minsky
         ensureGroupInserted(g);
         return;
       }
-    auto i=find(items.begin(), items.end(), item);
-    if (i==items.end())
+    auto i=find(contents->items.begin(), contents->items.end(), item);
+    if (i==contents->items.end())
       insertItem(item);
   }
 
   void Selection::ensureGroupInserted(const GroupPtr& item)
   {
     if (!item) return; //nothing to do
-    auto i=find(groups.begin(), groups.end(), item);
-    if (i==groups.end())
+    auto i=find(contents->groups.begin(), contents->groups.end(), item);
+    if (i==contents->groups.end())
       insertGroup(item);
   }
 
   void Selection::insertItem(const ItemPtr& item)
   {
-    items.push_back(item);
+    contents->items.push_back(item);
     item->insertControlled(*this);
     item->selected=true;
     // insert any attached wires that connect to already selected items
@@ -91,10 +91,10 @@ namespace minsky
           for (auto w: p->wires())
             {
               auto& other_end=p->input()? w->from()->item(): w->to()->item();
-              if (find_if(items.begin(), items.end(),
+              if (find_if(contents->items.begin(), contents->items.end(),
                           [&](const ItemPtr& i) {return i.get()==&other_end;})
-                  !=items.end())
-                wires.push_back(g->findWire(*w));
+                  !=contents->items.end())
+                contents->wires.push_back(g->findWire(*w));
             }
         }
     }
@@ -104,15 +104,15 @@ namespace minsky
     if (!item) return false;
     if (auto g=std::dynamic_pointer_cast<Group>(item))
       {
-        if (find(groups.begin(), groups.end(), g)!=groups.end())
+        if (find(contents->groups.begin(), contents->groups.end(), g)!=contents->groups.end())
           return true;
       }
-    else if (find(items.begin(), items.end(), item)!=items.end())
+    else if (find(contents->items.begin(), contents->items.end(), item)!=contents->items.end())
       return true;
     // at this point, we need to check if item is contained in any of
     // the selected groups
     if (auto gi=item->group.lock())
-      for (auto& g: groups)
+      for (auto& g: contents->groups)
         if (g==gi || g->higher(*gi))
           return true;
     return false;
@@ -159,8 +159,8 @@ namespace minsky
         }
     };
 
-    for (auto& i: items) apply(i);
-    for (auto& g: groups) apply(g);
+    for (auto& i: contents->items) apply(i);
+    for (auto& g: contents->groups) apply(g);
   }
 }
 

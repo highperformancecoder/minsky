@@ -130,7 +130,7 @@ namespace minsky
     WirePtr wp;
     // one hit find and remove wire from its map, saving the wire
     dest.globalGroup().recursiveDo
-      (&Group::wires, 
+      (&GroupItems::wires, 
        [&](Wires& wires, Wires::iterator i) {
         if (i->get()==this) 
           {
@@ -524,22 +524,22 @@ namespace
           {
             // check if this wire is in from group
             auto cmp=[&](const WirePtr& w) {return w.get()==this;};
-            auto i=find_if(fg->wires.begin(), fg->wires.end(), cmp);
-            if (i==fg->wires.end())
+            auto i=find_if(fg->contents->wires.begin(), fg->contents->wires.end(), cmp);
+            if (i==fg->contents->wires.end())
               {
                 fg->addOutputVar();
-                assert(fg->outVariables.back()->portsSize()>1);
-                fg->addWire(new Wire(from(),fg->outVariables.back()->ports(1)));
-                moveToPorts(fg->outVariables.back()->ports(0).lock(), to());
+                assert(fg->contents->outVariables.back()->portsSize()>1);
+                fg->addWire(new Wire(from(),fg->contents->outVariables.back()->ports(1)));
+                moveToPorts(fg->contents->outVariables.back()->ports(0).lock(), to());
               }
             // check if this wire is in to group
-            i=find_if(tg->wires.begin(), tg->wires.end(), cmp);
-            if (i==tg->wires.end())
+            i=find_if(tg->contents->wires.begin(), tg->contents->wires.end(), cmp);
+            if (i==tg->contents->wires.end())
               {
                 tg->addInputVar();
-                assert(tg->inVariables.back()->portsSize()>1);
-                tg->addWire(new Wire(tg->inVariables.back()->ports(0),to()));
-                moveToPorts(from(), tg->inVariables.back()->ports(1).lock());
+                assert(tg->contents->inVariables.back()->portsSize()>1);
+                tg->addWire(new Wire(tg->contents->inVariables.back()->ports(0),to()));
+                moveToPorts(from(), tg->contents->inVariables.back()->ports(1).lock());
               }
           }
   }

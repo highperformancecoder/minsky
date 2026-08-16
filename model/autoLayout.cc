@@ -77,9 +77,9 @@ namespace minsky
     double totalArea(const Group& g)
     {
       double area=0;
-      for (auto& i: g.items)
+      for (auto& i: g.contents->items)
         area+=double(i->width())*i->height();
-      for (auto& i: g.groups)
+      for (auto& i: g.contents->groups)
         area+=double(i->width())*i->height();
       return area;
     }
@@ -90,9 +90,9 @@ namespace minsky
     const double layoutSize=sqrt(3*totalArea(g));
     default_random_engine gen;
     uniform_real_distribution<double> rng(0,1);
-    for (auto& i: g.items)
+    for (auto& i: g.contents->items)
       i->moveTo(layoutSize*rng(gen), layoutSize*rng(gen));
-    for (auto& i: g.groups)
+    for (auto& i: g.contents->groups)
       i->moveTo(layoutSize*rng(gen), layoutSize*rng(gen));
   }
 
@@ -100,24 +100,24 @@ namespace minsky
   
   void layoutGroup(Group& g)
   {
-    if (g.items.size()+g.groups.size()<2) return;
+    if (g.contents->items.size()+g.contents->groups.size()<2) return;
     const double layoutSize=sqrt(10*totalArea(g)); //half width of square to emplace the items
    
     Graph gg;
     map<Item*, decltype(gg.add_vertex())> vertexMap;
-    for (auto& i: g.items)
+    for (auto& i: g.contents->items)
       vertexMap.emplace(i.get(), gg.add_vertex(i.get())); 
-    for (auto& i: g.groups)
+    for (auto& i: g.contents->groups)
       {
         vertexMap.emplace(i.get(), gg.add_vertex(i.get()));
         // add I/O variables, as these may be wired too.
-        for (auto& j: i->inVariables)
+        for (auto& j: i->contents->inVariables)
           vertexMap.emplace(j.get(), gg.add_vertex(j.get()));
-        for (auto& j: i->outVariables)
+        for (auto& j: i->contents->outVariables)
           vertexMap.emplace(j.get(), gg.add_vertex(j.get()));
       }
 
-    for (auto& w: g.wires)
+    for (auto& w: g.contents->wires)
       gg.add_edge(vertexMap[&w->from()->item()], vertexMap[&w->to()->item()]);
 
     // add some additional vertices representing classes: functions, parameters, flowVars, stockVars etc
@@ -132,7 +132,7 @@ namespace minsky
     vertexMap.emplace(&intVars, gg.add_vertex(&intVars)); 
 
     // now bind items without outputs to this fixtures
-    for (auto& i: g.items)
+    for (auto& i: g.contents->items)
       {
         if (dynamic_cast<UserFunction*>(i.get()) && i->ports(0).lock()->wires().empty())
           gg.add_edge(vertexMap[&functions], vertexMap[i.get()]);

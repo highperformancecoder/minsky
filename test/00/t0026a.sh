@@ -36,9 +36,9 @@ assert model.numWires()==25
 
 # find a wire with internal control points
 wire=None
-for i in range(len(model.wires)):
-  if len(model.wires[i].coords())>4:
-    wire=model.wires[i]
+for i in range(len(model.contents.wires)):
+  if len(model.contents.wires[i].coords())>4:
+    wire=model.contents.wires[i]
     break
 assert wire is not None
 
@@ -46,8 +46,8 @@ wire.straighten()
 assert len(wire.coords())==4
 
 # some code that prints the values used in the next wiring op
-for i in range(len(model.items)):
-  item=model.items[i]
+for i in range(len(model.contents.items)):
+  item=model.contents.items[i]
   if item.classType()=="Operation:divide":
     x0=item.portX(0)
     y0=item.portY(0)

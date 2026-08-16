@@ -167,31 +167,31 @@ namespace minsky
   void Minsky::cut()
   {
     copy();
-    for (auto& i: canvas.selection.items)
+    for (auto& i: canvas.selection.contents->items)
       {
         if (auto v=i->variableCast())
           if (v->controller.lock())
             continue; // do not delete a variable controlled by another item
         model->deleteItem(*i);
       }
-    for (auto& i: canvas.selection.groups)
+    for (auto& i: canvas.selection.contents->groups)
       model->removeGroup(*i);
-    for (auto& i: canvas.selection.wires)
+    for (auto& i: canvas.selection.contents->wires)
       model->removeWire(*i);
     canvas.item.reset();
     canvas.itemFocus.reset();
 #ifndef NDEBUG
     garbageCollect();
-    for (auto& i: canvas.selection.items)
+    for (auto& i: canvas.selection.contents->items)
       {
         if (auto v=i->variableCast())
           if (v->controller.lock())
             continue; // variable controlled by another item is not being destroyed
         assert(i.use_count()==1);
       }
-    for (auto& i: canvas.selection.groups)
+    for (auto& i: canvas.selection.contents->groups)
       assert(i.use_count()==1);
-    for (auto& i: canvas.selection.wires)
+    for (auto& i: canvas.selection.contents->wires)
       assert(i.use_count()==1);
 #endif
     canvas.selection.clear();
@@ -216,7 +216,7 @@ namespace minsky
   {
     if (!model) return {};
     return dynamic_pointer_cast<VariableBase>
-      (model->findAny(&Group::items, [&](const ItemPtr& x) {
+      (model->findAny(&GroupItems::items, [&](const ItemPtr& x) {
         auto v=x->variableCast();
         return v && v->valueId()==valueId && v->defined();
       }));
@@ -246,7 +246,7 @@ namespace minsky
         m.populateGroup(*g);
         
         // stash values of parameters in the copied group, for ticket 1258
-        for (auto& i: g->items) 
+        for (auto& i: g->contents->items) 
           if (auto v=i->variableCast(); v && v->type()==VariableType::parameter)
             existingParms.emplace(v->valueId(),v->init());
         
@@ -300,8 +300,8 @@ namespace minsky
         }                              
 
         canvas.model->addGroup(g); // needed to ensure wires are correctly handled
-        auto copyOfItems=g->items;
-        auto copyOfGroups=g->groups;
+        auto copyOfItems=g->contents->items;
+        auto copyOfGroups=g->contents->groups;
     
         // ungroup g, putting all its contents on the canvas
         canvas.model->moveContents(*g); 
@@ -317,7 +317,7 @@ namespace minsky
         existingParms.clear();
 	
         // Attach mouse focus only to first visible item in selection. For ticket 1098.      
-        for (auto& i: canvas.selection.items)
+        for (auto& i: canvas.selection.contents->items)
           if (i->visible())
             {
               canvas.setItemFocus(i);
@@ -356,7 +356,7 @@ namespace minsky
     existingNames.insert("constant:zero");
     existingNames.insert("constant:one");
     vector<GodleyIcon*> godleysToUpdate;
-    model->recursiveDo(&Group::items, 
+    model->recursiveDo(&GroupItems::items, 
                        [&](Items&,Items::iterator i) {
                          if (auto v=(*i)->variableCast())
                            existingNames.insert(v->valueId());
@@ -417,7 +417,7 @@ namespace minsky
     // add all user defined functions to the global symbol tables
     userFunctions.clear();
     model->recursiveDo
-      (&Group::items,
+      (&GroupItems::items,
        [this](const Items&, Items::const_iterator it){
          if (auto f=dynamic_pointer_cast<CallableFunction>(*it))
            userFunctions[valueIdFromScope((*it)->group.lock(), canonicalName(f->name()))]=f;
@@ -425,7 +425,7 @@ namespace minsky
        });
     ++progressState;
     model->recursiveDo
-      (&Group::groups,
+      (&GroupItems::groups,
        [this](const Groups&, Groups::const_iterator it){
          userFunctions[valueIdFromScope((*it)->group.lock(), canonicalName((*it)->name()))]=*it;
          return false;
@@ -449,7 +449,7 @@ namespace minsky
     // increment varsPassed by one to prevent resettting the cache on each check
     const IncrDecrCounter vpIdc(VariableBase::varsPassed);
     model->recursiveDo
-      (&Group::items,
+      (&GroupItems::items,
        [&](Items& m, Items::iterator i)
        {
          if (auto v=(*i)->variableCast())
@@ -514,7 +514,7 @@ namespace minsky
     for (auto& v: variableValues)
       populateMissingDimensionsFromVariable(*v.second, incompatibleMessageDisplayed);
     model->recursiveDo
-      (&Group::items,[&](Items& m, Items::iterator it)
+      (&GroupItems::items,[&](Items& m, Items::iterator it)
       {
         if (auto ri=dynamic_cast<Ravel*>(it->get()))
           {
@@ -546,7 +546,7 @@ namespace minsky
       }
     // set all newly populated dimensions on Ravels to forward sort order
     model->recursiveDo
-      (&Group::items,[&](Items& m, Items::iterator it)
+      (&GroupItems::items,[&](Items& m, Items::iterator it)
       {
         if (auto ri=dynamic_cast<Ravel*>(it->get()))
           for (size_t i=0; i<ri->numHandles(); ++i)
@@ -598,7 +598,7 @@ namespace minsky
 
     std::set<string> duplicatedColumns;
     model->recursiveDo
-      (&Group::items,
+      (&GroupItems::items,
        [&](Items& m, Items::iterator it)
        {
          if (auto gi=dynamic_cast<GodleyIcon*>(it->get()))
@@ -639,7 +639,7 @@ namespace minsky
     try
       {
         model->recursiveDo
-          (&Group::items,
+          (&GroupItems::items,
            [&](Items& m, Items::iterator i)
            {
              if (auto gi=dynamic_cast<GodleyIcon*>(i->get()))
@@ -774,7 +774,7 @@ namespace minsky
 
     bool matchFound=false;
     model->recursiveDo
-      (&Group::items,
+      (&GroupItems::items,
        [&](Items& m, Items::iterator i)
        {
          if (auto gi=dynamic_cast<GodleyIcon*>(i->get()))
@@ -913,7 +913,7 @@ namespace minsky
 
         // populate ravel hypercubes first, before reattaching plots.
         model->recursiveDo
-          (&Group::items,
+          (&GroupItems::items,
            [&](Items& m, Items::iterator i)
            {
              if (auto r=dynamic_cast<Ravel*>(i->get()))
@@ -929,7 +929,7 @@ namespace minsky
 
         // attach the plots
         model->recursiveDo
-          (&Group::items,
+          (&GroupItems::items,
            [&](Items& m, Items::iterator it)
            {
              if (auto p=(*it)->plotWidgetCast())
@@ -995,7 +995,7 @@ namespace minsky
     logVariables();
 
     model->recursiveDo
-      (&Group::items, 
+      (&GroupItems::items, 
        [&](Items&, Items::iterator i) 
        {(*i)->updateIcon(t); return false;});
 
@@ -1086,7 +1086,7 @@ namespace minsky
     // try balancing all Godley tables
     try
       {
-        model->recursiveDo(&Group::items, 
+        model->recursiveDo(&GroupItems::items, 
                            [this](Items&,Items::iterator i) {
                              try
                                {
@@ -1109,7 +1109,7 @@ namespace minsky
     canvas.requestRedraw();
     canvas.moveTo(0,0); // force placement of ports
     // sometimes we need to recalculate the bounding boxes
-    model->recursiveDo(&Group::items,
+    model->recursiveDo(&GroupItems::items,
                        [](Items&,Items::iterator i) {
                          (*i)->updateBoundingBox();
                          return false;
@@ -1526,7 +1526,7 @@ namespace minsky
     i->second=VariableValuePtr(type,i->second->name);
     i->second->init(init);
     
-    model->recursiveDo(&Group::items,
+    model->recursiveDo(&GroupItems::items,
                        [&](Items&, Items::iterator i) {
                          if (auto v=VariablePtr(*i))
                            if (v->valueId()==name)
@@ -1564,7 +1564,7 @@ namespace minsky
   void Minsky::renderAllPlotsAsSVG(const string& prefix) const
   {
     unsigned plotNum=0;
-    model->recursiveDo(&Group::items,
+    model->recursiveDo(&GroupItems::items,
                        [&](Items&, Items::iterator i) {
                          if (auto p=(*i)->plotWidgetCast())
                            {
@@ -1579,7 +1579,7 @@ namespace minsky
   void Minsky::exportAllPlotsAsCSV(const string& prefix) const
   {
     unsigned plotNum=0;
-    model->recursiveDo(&Group::items,
+    model->recursiveDo(&GroupItems::items,
                        [&](Items&, Items::iterator i) {
                          if (auto p=(*i)->plotWidgetCast())
                            {
@@ -1735,7 +1735,7 @@ namespace minsky
   
   void Minsky::redrawAllGodleyTables()
   {
-    model->recursiveDo(&Group::items, 
+    model->recursiveDo(&GroupItems::items, 
                        [&](Items&,Items::iterator i) {
                          if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
                            g->popup.requestRedraw();
@@ -1746,7 +1746,7 @@ namespace minsky
   vector<string> Minsky::allGodleyTables() const
   {
     vector<string> r;
-    for (auto& i: canvas.model->items)
+    for (auto& i: canvas.model->contents->items)
       if (i->godleyIconCast())
         r.push_back(i->id());
     return r;

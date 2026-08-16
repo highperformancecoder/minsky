@@ -80,10 +80,10 @@ TEST_F(MdlReaderTest, ParseSimpleVariable)
   mdl << "  ~ units ~  |" << endl;
   mdl << "\\\\\\---/// sketch information" << endl;
   
-  size_t initialItems = group->items.size();
+  size_t initialItems = group->contents->items.size();
   EXPECT_NO_THROW(readMdl(*group, simParms, mdl));
   // Should have added a parameter variable
-  EXPECT_GT(group->items.size(), initialItems);
+  EXPECT_GT(group->contents->items.size(), initialItems);
 }
 
 TEST_F(MdlReaderTest, ParseIntegralEquation)
@@ -96,14 +96,14 @@ TEST_F(MdlReaderTest, ParseIntegralEquation)
   mdl << "  ~ units/time ~  |" << endl;
   mdl << "\\\\\\---/// sketch information" << endl;
   
-  size_t initialItems = group->items.size();
+  size_t initialItems = group->contents->items.size();
   EXPECT_NO_THROW(readMdl(*group, simParms, mdl));
   // Should have added integral and related variables
-  EXPECT_GT(group->items.size(), initialItems);
+  EXPECT_GT(group->contents->items.size(), initialItems);
   
   // Check that an IntOp was created
   bool hasIntOp = false;
-  for (auto& item : group->items) {
+  for (auto& item : group->contents->items) {
     if (dynamic_pointer_cast<IntOp>(item)) {
       hasIntOp = true;
       break;
@@ -120,10 +120,10 @@ TEST_F(MdlReaderTest, ParseLookupFunction)
   mdl << "  ~ ~  |" << endl;
   mdl << "\\\\\\---/// sketch information" << endl;
   
-  size_t initialItems = group->groups.size();
+  size_t initialItems = group->contents->groups.size();
   EXPECT_NO_THROW(readMdl(*group, simParms, mdl));
   // Should have created a group for the lookup function
-  EXPECT_GT(group->groups.size(), initialItems);
+  EXPECT_GT(group->contents->groups.size(), initialItems);
 }
 
 TEST_F(MdlReaderTest, ParseFlowVariable)
@@ -138,9 +138,9 @@ TEST_F(MdlReaderTest, ParseFlowVariable)
   mdl << "  ~ ~  |" << endl;
   mdl << "\\\\\\---/// sketch information" << endl;
   
-  size_t initialItems = group->items.size();
+  size_t initialItems = group->contents->items.size();
   EXPECT_NO_THROW(readMdl(*group, simParms, mdl));
-  EXPECT_GT(group->items.size(), initialItems);
+  EXPECT_GT(group->contents->items.size(), initialItems);
 }
 
 TEST_F(MdlReaderTest, HandleComments)
@@ -151,12 +151,12 @@ TEST_F(MdlReaderTest, HandleComments)
   mdl << "  ~ units ~  |" << endl;
   mdl << "\\\\\\---/// sketch information" << endl;
   
-  size_t initialItems = group->items.size();
+  size_t initialItems = group->contents->items.size();
   // Should parse successfully, ignoring comments
   EXPECT_NO_THROW(readMdl(*group, simParms, mdl));
-  EXPECT_GT(group->items.size(), initialItems);
+  EXPECT_GT(group->contents->items.size(), initialItems);
   bool foundVar1=false;
-  for (auto& i: group->items)
+  for (auto& i: group->contents->items)
     if (auto v=i->variableCast())
       if (v->name()=="var1")
         foundVar1=true;
@@ -174,9 +174,9 @@ TEST_F(MdlReaderTest, ParseSliderSpec)
   EXPECT_NO_THROW(readMdl(*group, simParms, mdl));
   
   // Find the variable and check slider bounds were set
-  EXPECT_GT(group->items.size(), 0);
+  EXPECT_GT(group->contents->items.size(), 0);
   bool varFound=false;
-  for (auto& item : group->items) {
+  for (auto& item : group->contents->items) {
     if (auto var = dynamic_pointer_cast<VariableBase>(item)) {
       if (auto vv = var->vValue()) {
         varFound=true;
@@ -223,12 +223,12 @@ TEST_F(MdlReaderTest, CollapseWhitespace)
   mdl << "  ~ ~  |" << endl;
   mdl << "\\\\\\---/// sketch information" << endl;
   
-  size_t initialItems = group->items.size();
+  size_t initialItems = group->contents->items.size();
   EXPECT_NO_THROW(readMdl(*group, simParms, mdl));
   // Should create variable with collapsed/camelCase name
-  EXPECT_GT(group->items.size(), initialItems);
+  EXPECT_GT(group->contents->items.size(), initialItems);
   bool varFound=false;
-  for (auto& item : group->items) {
+  for (auto& item : group->contents->items) {
     if (auto var = dynamic_pointer_cast<VariableBase>(item)) {
       if (var->name()=="multiWordVariable")
         {

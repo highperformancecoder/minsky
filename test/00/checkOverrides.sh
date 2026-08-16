@@ -9,10 +9,10 @@ import sys
 
 minsky.load(sys.argv[1])
 minsky.doPushHistory(False)
-numItems=len(minsky.model.items)
+numItems=len(minsky.model.contents.items)
 
 for i in range(numItems):
-    if minsky.canvas.getItemAt(minsky.model.items[i].x(), minsky.model.items[i].y()):
+    if minsky.canvas.getItemAt(minsky.model.contents.items[i].x(), minsky.model.contents.items[i].y()):
         origClassType=minsky.canvas.item.classType()
         # removing GodleyIcon removes dependent variables from model
         if origClassType=="Item" or origClassType=="GodleyIcon": continue
