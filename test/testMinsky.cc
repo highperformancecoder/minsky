@@ -1066,6 +1066,10 @@ TEST(TensorOps, evalOpEvaluate)
       VariablePtr c(VariableType::flow,":c");
       g3->addItem(c);
 
+      g0->title="g0";
+      g1->title="g1";
+      g2->title="g2";
+      g3->title="g3";
       g0->makeSubroutine();
       g1->makeSubroutine();
       g2->makeSubroutine();

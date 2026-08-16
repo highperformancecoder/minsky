@@ -59,6 +59,7 @@ namespace
       checkWiresConsistent();
 
       group0=model->addGroup(new Group);
+      group0->title="group0";
       checkWiresConsistent();
       group0->addItem(a);
       checkWiresConsistent();
