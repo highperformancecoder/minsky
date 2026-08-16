@@ -47,7 +47,7 @@ namespace minsky
     void insertItem(const ItemPtr& item);
 
     void insertGroup(const GroupPtr& g) {
-      contents->groups.push_back(g);
+      groups.push_back(g);
       g->selected=true;
     }
     /// return if item is contained in selection

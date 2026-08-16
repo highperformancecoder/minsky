@@ -43,7 +43,7 @@ TEST_F(RavelLockGroupTest, LockGroup)
 {
   auto a=make_shared<Ravel>(), b=make_shared<Ravel>(),
     c=make_shared<Ravel>(), d=make_shared<Ravel>();
-  selection.contents->items={a,b,c};
+  selection.items={a,b,c};
   lockRavelsInSelection();
   EXPECT_TRUE(a->lockGroup);
   EXPECT_TRUE(b->lockGroup);
@@ -70,7 +70,7 @@ TEST_F(RavelLockGroupTest, LockGroup)
                 [&](W w){return w.lock()==c;}) != lockGroup->ravels().end());
 
   // create a different group
-  selection.contents->items={a,d};
+  selection.items={a,d};
   lockRavelsInSelection();
   auto lockGroup1=a->lockGroup;
   EXPECT_TRUE(a->lockGroup);
@@ -79,7 +79,7 @@ TEST_F(RavelLockGroupTest, LockGroup)
   EXPECT_EQ(2, lockGroup1->ravels().size());
 
   // now try combining a and b into a group. This should create a 3rd lockGroup, and dissolve the first two
-  selection.contents->items={a,b};
+  selection.items={a,b};
   lockRavelsInSelection();
   EXPECT_TRUE(a->lockGroup==b->lockGroup);
   // check that the previous groups would deleted were it not for us holding a reference here
@@ -90,7 +90,7 @@ TEST_F(RavelLockGroupTest, LockGroup)
 
   lockGroup=a->lockGroup;
   // now add c back in, should be same as a & b
-  selection.contents->items={a,c};
+  selection.items={a,c};
   lockRavelsInSelection();
   EXPECT_TRUE(a->lockGroup==c->lockGroup);
   EXPECT_TRUE(b->lockGroup==c->lockGroup);

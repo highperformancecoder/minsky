@@ -10,7 +10,7 @@ from pyminsky import minsky
 minsky.load('$here/examples/GoodwinLinear02.mky')
 
 # Step 1: Access the first group directly from minsky.model.groups
-group = minsky.model.contents.groups[0]
+group = minsky.model.groups[0]
 assert group is not None, "No group found in the model."
 print(f"Found group at coordinates ({group.x()}, {group.y()})")
 

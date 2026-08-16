@@ -282,7 +282,8 @@ export class ContextMenuManager {
   }
 
   private static async canvasContext(): Promise<MenuItem[]> {
-    const selectionSize = await minsky.canvas.selection.contents.items.size();
+    const selectedItems = minsky.canvas.selection.items;
+    const selectionSize = await selectedItems.size();
     const ravelsSelected = await minsky.canvas.ravelsSelected();
 
     const menuItems = [

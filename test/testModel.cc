@@ -59,16 +59,15 @@ namespace
       checkWiresConsistent();
 
       group0=model->addGroup(new Group);
-      group0->title="group0";
       checkWiresConsistent();
       group0->addItem(a);
       checkWiresConsistent();
       group0->addItem(b);
       group0->splitBoundaryCrossingWires();
      
-      EXPECT_EQ(3,group0->contents->items.size());
-      EXPECT_EQ(2,group0->contents->wires.size());
-      EXPECT_EQ(1,model->contents->items.size());
+      EXPECT_EQ(3,group0->items.size());
+      EXPECT_EQ(2,group0->wires.size());
+      EXPECT_EQ(1,model->items.size());
       EXPECT_EQ(4,model->numItems());
       EXPECT_EQ(3,model->numWires());
       checkWiresConsistent();
@@ -82,7 +81,7 @@ namespace
     }
 
     void checkWiresConsistent() {
-      for (auto& i: model->contents->items)
+      for (auto& i: model->items)
         for (size_t pi=0; pi<i->portsSize(); ++pi)
           if (auto p=i->ports(pi).lock())
             for (auto& w: p->wires())
@@ -91,8 +90,8 @@ namespace
                 EXPECT_TRUE(p->input() || p==w->from());
                 EXPECT_TRUE(!p->input() || p==w->to());
               }
-      for (auto& g: model->contents->groups)
-        for (auto& i: g->contents->items)
+      for (auto& g: model->groups)
+        for (auto& i: g->items)
           for (size_t pi=0; pi<i->portsSize(); ++pi)
             if (auto p=i->ports(pi).lock())
               for (auto& w: p->wires())
@@ -141,7 +140,7 @@ TEST_F(ModelSuite, accessibleVars)
 TEST_F(ModelSuite, makeSubroutine)
 {
   group0->makeSubroutine();
-  for (auto& i: group0->contents->items)
+  for (auto& i: group0->items)
     if (auto v=i->variableCast())
       {EXPECT_TRUE(v->rawName()[0]!=':');}
 }
@@ -151,8 +150,8 @@ TEST_F(ModelSuite, SelectGroup)
   auto& g=*model->addGroup(new Group);
   g.addItem(a);
   g.addItem(b);
-  EXPECT_EQ(2, g.contents->items.size());
-  EXPECT_EQ(1, g.contents->wires.size());
+  EXPECT_EQ(2, g.items.size());
+  EXPECT_EQ(1, g.wires.size());
   EXPECT_TRUE(&g==a->group.lock().get());
   EXPECT_TRUE(!a->visible());
   EXPECT_TRUE(&g==b->group.lock().get());
@@ -161,7 +160,7 @@ TEST_F(ModelSuite, SelectGroup)
   EXPECT_TRUE(c->visible());
   EXPECT_TRUE(!model->findWire(*ab)->visible());
   EXPECT_TRUE(model->findWire(*bc)->visible());
-  EXPECT_TRUE(find(g.contents->wires.begin(), g.contents->wires.end(), ab) != g.contents->wires.end()); 
+  EXPECT_TRUE(find(g.wires.begin(), g.wires.end(), ab) != g.wires.end()); 
   EXPECT_TRUE(model->uniqueItems());
   model->removeGroup(g); // why is this needed???
 }
@@ -170,20 +169,20 @@ TEST_F(ModelSuite, addVariable)
 {
   group0->addItem(c);
   EXPECT_TRUE(model->uniqueItems());
-  EXPECT_EQ(4,group0->contents->items.size());
-  EXPECT_EQ(2,model->contents->items.size());
-  EXPECT_EQ(3,group0->contents->wires.size());
-  EXPECT_EQ(0,model->contents->wires.size());
+  EXPECT_EQ(4,group0->items.size());
+  EXPECT_EQ(2,model->items.size());
+  EXPECT_EQ(3,group0->wires.size());
+  EXPECT_EQ(0,model->wires.size());
     
   checkWiresConsistent();
 
   // now check removal
   group0->group.lock()->addItem(c);
 
-  EXPECT_EQ(3,group0->contents->items.size());
-  EXPECT_EQ(2,group0->contents->wires.size());
-  EXPECT_EQ(3,model->contents->items.size());
-  EXPECT_EQ(1,model->contents->wires.size());
+  EXPECT_EQ(3,group0->items.size());
+  EXPECT_EQ(2,group0->wires.size());
+  EXPECT_EQ(3,model->items.size());
+  EXPECT_EQ(1,model->wires.size());
 }
 
 TEST_F(ModelSuite, addIntegral)
@@ -244,22 +243,22 @@ TEST_F(ModelSuite, addBookmark)
 // check that removing then adding an item leaves the group idempotent
 TEST_F(ModelSuite, removeAddItem)
 {
-  EXPECT_EQ(1,group0->contents->createdIOvariables.size());
-  EXPECT_EQ(3,model->contents->items.size());
+  EXPECT_EQ(1,group0->createdIOvariables.size());
+  EXPECT_EQ(3,model->items.size());
   model->addItem(a);
   group0->splitBoundaryCrossingWires();
   save("x1.mky");
-  EXPECT_EQ(3,group0->contents->items.size()); // extra io var created
-  EXPECT_EQ(4,model->contents->items.size());
-  EXPECT_EQ(2,group0->contents->createdIOvariables.size());
+  EXPECT_EQ(3,group0->items.size()); // extra io var created
+  EXPECT_EQ(4,model->items.size());
+  EXPECT_EQ(2,group0->createdIOvariables.size());
   EXPECT_EQ(4,model->numWires());
   group0->addItem(a);
   group0->splitBoundaryCrossingWires();
-  EXPECT_EQ(3,group0->contents->items.size());
-  EXPECT_EQ(3,model->contents->items.size());
-  EXPECT_EQ(1,group0->contents->createdIOvariables.size());
+  EXPECT_EQ(3,group0->items.size());
+  EXPECT_EQ(3,model->items.size());
+  EXPECT_EQ(1,group0->createdIOvariables.size());
   EXPECT_EQ(3,model->numWires());
-  EXPECT_EQ(3,group0->contents->items.size());
+  EXPECT_EQ(3,group0->items.size());
 }
 
 TEST_F(ModelSuite, displayPlot)
@@ -300,39 +299,39 @@ TEST_F(ModelSuite, copy)
 
   save("copy.mky");
       
-  EXPECT_EQ(group0->contents->items.size(), g->contents->items.size());
-  EXPECT_EQ(group0->contents->inVariables.size(), g->contents->inVariables.size());
-  EXPECT_EQ(group0->contents->outVariables.size(), g->contents->outVariables.size());
-  EXPECT_TRUE(g->contents->createdIOvariables.empty());
-  EXPECT_EQ(group0->contents->wires.size(), g->contents->wires.size());
-  EXPECT_EQ(group0->contents->groups.size(), g->contents->groups.size());
+  EXPECT_EQ(group0->items.size(), g->items.size());
+  EXPECT_EQ(group0->inVariables.size(), g->inVariables.size());
+  EXPECT_EQ(group0->outVariables.size(), g->outVariables.size());
+  EXPECT_TRUE(g->createdIOvariables.empty());
+  EXPECT_EQ(group0->wires.size(), g->wires.size());
+  EXPECT_EQ(group0->groups.size(), g->groups.size());
   EXPECT_NEAR(group0->x(),g->x(),1e-2);
   EXPECT_NEAR(group0->y(),g->y(),1e-2);
       
-  for (size_t i=0; i<group0->contents->items.size(); i++)
+  for (size_t i=0; i<group0->items.size(); i++)
     {
-      EXPECT_TRUE(group0->contents->items[i]!=g->contents->items[i]);
-      EXPECT_EQ(group0->contents->items[i]->classType(),g->contents->items[i]->classType());
-      EXPECT_NEAR(group0->contents->items[i]->x(),g->contents->items[i]->x(),1e-2);
-      EXPECT_NEAR(group0->contents->items[i]->y(),g->contents->items[i]->y(),1e-2);
+      EXPECT_TRUE(group0->items[i]!=g->items[i]);
+      EXPECT_EQ(group0->items[i]->classType(),g->items[i]->classType());
+      EXPECT_NEAR(group0->items[i]->x(),g->items[i]->x(),1e-2);
+      EXPECT_NEAR(group0->items[i]->y(),g->items[i]->y(),1e-2);
     }
 
-  for (size_t i=0; i<group0->contents->inVariables.size(); i++)
+  for (size_t i=0; i<group0->inVariables.size(); i++)
     {
-      EXPECT_TRUE(group0->contents->inVariables[i]!=g->contents->inVariables[i]);
-      EXPECT_NEAR(group0->contents->inVariables[i]->x(), g->contents->inVariables[i]->x(),1e-2);
-      EXPECT_NEAR(group0->contents->inVariables[i]->y(), g->contents->inVariables[i]->y(),1e-2);
+      EXPECT_TRUE(group0->inVariables[i]!=g->inVariables[i]);
+      EXPECT_NEAR(group0->inVariables[i]->x(), g->inVariables[i]->x(),1e-2);
+      EXPECT_NEAR(group0->inVariables[i]->y(), g->inVariables[i]->y(),1e-2);
     }
-  for (size_t i=0; i<group0->contents->outVariables.size(); i++)
+  for (size_t i=0; i<group0->outVariables.size(); i++)
     {
-      EXPECT_TRUE(group0->contents->outVariables[i]!=g->contents->outVariables[i]);
-      EXPECT_NEAR(group0->contents->outVariables[i]->x(), g->contents->outVariables[i]->x(),1e-2);
-      EXPECT_NEAR(group0->contents->outVariables[i]->y(), g->contents->outVariables[i]->y(),1e-2);
+      EXPECT_TRUE(group0->outVariables[i]!=g->outVariables[i]);
+      EXPECT_NEAR(group0->outVariables[i]->x(), g->outVariables[i]->x(),1e-2);
+      EXPECT_NEAR(group0->outVariables[i]->y(), g->outVariables[i]->y(),1e-2);
     }
         
-  for (size_t i=0; i<group0->contents->wires.size(); i++)
+  for (size_t i=0; i<group0->wires.size(); i++)
     {
-      auto w1=group0->contents->wires[i], w2=g->contents->wires[i];
+      auto w1=group0->wires[i], w2=g->wires[i];
       EXPECT_TRUE(w1!=w2);
       EXPECT_TRUE(w1->to()->item().group.lock()==group0);
       EXPECT_TRUE(w1->from()->item().group.lock()==group0);
@@ -342,9 +341,9 @@ TEST_F(ModelSuite, copy)
       EXPECT_EQ(c1.size(), c2.size());
       for (size_t _i=0; _i<c1.size(); ++_i) EXPECT_NEAR(c1.data()[_i], c2.data()[_i], 1e-2);
     }
-  for (size_t i=0; i<group0->contents->groups.size(); i++)
+  for (size_t i=0; i<group0->groups.size(); i++)
     {
-      EXPECT_TRUE(group0->contents->groups[i]!=g->contents->groups[i]);
+      EXPECT_TRUE(group0->groups[i]!=g->groups[i]);
     }
 }
 
@@ -366,7 +365,7 @@ TEST_F(ModelSuite, removeGroup)
 {
   auto g=model->removeGroup(*group0);
   EXPECT_TRUE(g==group0);
-  EXPECT_TRUE(find(model->contents->groups.begin(),model->contents->groups.end(),group0)==model->contents->groups.end());
+  EXPECT_TRUE(find(model->groups.begin(),model->groups.end(),group0)==model->groups.end());
 }
    
 TEST_F(ModelSuite,moveContents)
@@ -396,10 +395,10 @@ TEST_F(GroupFixture, checkAddIORegion)
   outp->moveTo(x()+0.5*iWidth()*zoomFactor(), y());
   addItem(outp);
   checkAddIORegion(outp);
-  EXPECT_EQ(1,contents->inVariables.size());
-  EXPECT_EQ(1,contents->outVariables.size());
-  EXPECT_EQ("input",contents->inVariables[0]->name());
-  EXPECT_EQ("output",contents->outVariables[0]->name());
+  EXPECT_EQ(1,inVariables.size());
+  EXPECT_EQ(1,outVariables.size());
+  EXPECT_EQ("input",inVariables[0]->name());
+  EXPECT_EQ("output",outVariables[0]->name());
 }
     
 
@@ -453,7 +452,7 @@ TEST_F(CanvasFixture,findVariableDefinition)
   EXPECT_TRUE(findVariableDefinition());
   EXPECT_TRUE(itemIndicator==integ);
 
-  model->contents->items.clear();
+  model->items.clear();
   shared_ptr<GodleyIcon> godley(new GodleyIcon);
   model->addItem(godley);
   godley->table.resize(3,2);
@@ -546,8 +545,8 @@ TEST_F(ModelSuite,lasso)
   canvas.selection.clear();
   canvas.mouseDown(250,0); //Adjusted for new shape of operation icons. For ticket 362.
   canvas.mouseUp(350,150);
-  EXPECT_EQ(1,canvas.selection.contents->items.size());
-  EXPECT_TRUE(find(canvas.selection.contents->items.begin(),canvas.selection.contents->items.end(),c) !=canvas.selection.contents->items.end());
+  EXPECT_EQ(1,canvas.selection.items.size());
+  EXPECT_TRUE(find(canvas.selection.items.begin(),canvas.selection.items.end(),c) !=canvas.selection.items.end());
 
   // now check when the first click is in the bounding box of an icon, but outside it
   OperationPtr op(OperationType::time);
@@ -559,8 +558,8 @@ TEST_F(ModelSuite,lasso)
   canvas.selection.clear();
   canvas.mouseDown(x,y);
   canvas.mouseUp(x-17,y-17);
-  EXPECT_EQ(1,canvas.selection.contents->items.size());
-  EXPECT_TRUE(find(canvas.selection.contents->items.begin(),canvas.selection.contents->items.end(),op) !=canvas.selection.contents->items.end());
+  EXPECT_EQ(1,canvas.selection.items.size());
+  EXPECT_TRUE(find(canvas.selection.items.begin(),canvas.selection.items.end(),op) !=canvas.selection.items.end());
 
   group0->updateBoundingBox(); //why? for Travis.
       
@@ -571,33 +570,33 @@ TEST_F(ModelSuite,lasso)
   // nw -> se selection
   canvas.mouseDown(x,y);
   canvas.mouseUp(x+2*w,y+2*h);
-  EXPECT_EQ(0,canvas.selection.contents->items.size());
-  EXPECT_EQ(1,canvas.selection.contents->groups.size());
-  EXPECT_TRUE(find(canvas.selection.contents->groups.begin(),canvas.selection.contents->groups.end(),group0) !=canvas.selection.contents->groups.end());
+  EXPECT_EQ(0,canvas.selection.items.size());
+  EXPECT_EQ(1,canvas.selection.groups.size());
+  EXPECT_TRUE(find(canvas.selection.groups.begin(),canvas.selection.groups.end(),group0) !=canvas.selection.groups.end());
 
   // ne -> sw selection
   canvas.selection.clear();
   canvas.mouseDown(x+2*w,y);
   canvas.mouseUp(x-2*w,y+2*h);
-  EXPECT_EQ(0,canvas.selection.contents->items.size());
-  EXPECT_EQ(1,canvas.selection.contents->groups.size());
-  EXPECT_TRUE(find(canvas.selection.contents->groups.begin(),canvas.selection.contents->groups.end(),group0) !=canvas.selection.contents->groups.end());
+  EXPECT_EQ(0,canvas.selection.items.size());
+  EXPECT_EQ(1,canvas.selection.groups.size());
+  EXPECT_TRUE(find(canvas.selection.groups.begin(),canvas.selection.groups.end(),group0) !=canvas.selection.groups.end());
       
   // se -> nw selection
   canvas.selection.clear();
   canvas.mouseDown(x+2*w,y+2*h);
   canvas.mouseUp(x,y);
-  EXPECT_EQ(0,canvas.selection.contents->items.size());
-  EXPECT_EQ(1,canvas.selection.contents->groups.size());
-  EXPECT_TRUE(find(canvas.selection.contents->groups.begin(),canvas.selection.contents->groups.end(),group0) !=canvas.selection.contents->groups.end());
+  EXPECT_EQ(0,canvas.selection.items.size());
+  EXPECT_EQ(1,canvas.selection.groups.size());
+  EXPECT_TRUE(find(canvas.selection.groups.begin(),canvas.selection.groups.end(),group0) !=canvas.selection.groups.end());
       
   // sw -> ne selection
   canvas.selection.clear();
   canvas.mouseDown(x,y+2*h);
   canvas.mouseUp(x+2*w,y-2*h);
-  EXPECT_EQ(0,canvas.selection.contents->items.size());
-  EXPECT_EQ(1,canvas.selection.contents->groups.size());
-  EXPECT_TRUE(find(canvas.selection.contents->groups.begin(),canvas.selection.contents->groups.end(),group0) !=canvas.selection.contents->groups.end());
+  EXPECT_EQ(0,canvas.selection.items.size());
+  EXPECT_EQ(1,canvas.selection.groups.size());
+  EXPECT_TRUE(find(canvas.selection.groups.begin(),canvas.selection.groups.end(),group0) !=canvas.selection.groups.end());
 }
 
 TEST_F(CanvasFixture, wires)
@@ -675,7 +674,7 @@ TEST_F(CanvasFixture, moveIntoThenOutOfGroup)
   EXPECT_TRUE(b->group.lock()==model);
   EXPECT_EQ(1,model->numWires());
   EXPECT_EQ(2,model->numItems());
-  EXPECT_EQ(0,g->contents->inVariables.size());
+  EXPECT_EQ(0,g->inVariables.size());
 
   // move b into group.
   mouseDown(b->x()+5,b->y()+5);   
@@ -683,7 +682,7 @@ TEST_F(CanvasFixture, moveIntoThenOutOfGroup)
   EXPECT_TRUE(b->group.lock()==g);
   EXPECT_EQ(2,model->numWires());
   EXPECT_EQ(3,model->numItems());
-  EXPECT_EQ(1,g->contents->inVariables.size());
+  EXPECT_EQ(1,g->inVariables.size());
 
   // move b out of group
   item=g;
@@ -693,7 +692,7 @@ TEST_F(CanvasFixture, moveIntoThenOutOfGroup)
   EXPECT_TRUE(b->group.lock()==model);
   EXPECT_EQ(1,model->numWires());
   EXPECT_EQ(2,model->numItems());
-  EXPECT_EQ(0,g->contents->inVariables.size());
+  EXPECT_EQ(0,g->inVariables.size());
 }
     
 TEST_F(CanvasFixture, mouseFocus)
@@ -757,8 +756,8 @@ TEST_F(ModelSuite,selectAllVariables)
   canvas.copyItem();
   canvas.mouseUp(500,500);
   canvas.selectAllVariables();
-  EXPECT_EQ(2,canvas.selection.contents->items.size());
-  for (auto i: canvas.selection.contents->items)
+  EXPECT_EQ(2,canvas.selection.items.size());
+  for (auto i: canvas.selection.items)
     {
       auto ii=dynamic_cast<VariableBase*>(i.get());
       EXPECT_TRUE(ii);
@@ -767,8 +766,8 @@ TEST_F(ModelSuite,selectAllVariables)
 
   canvas.item=b;
   canvas.selectAllVariables();
-  EXPECT_EQ(1,canvas.selection.contents->items.size());
-  EXPECT_TRUE(canvas.selection.contents->items[0]==b);
+  EXPECT_EQ(1,canvas.selection.items.size());
+  EXPECT_TRUE(canvas.selection.items[0]==b);
 
   canvas.item=group0;
   canvas.selectAllVariables();
@@ -780,9 +779,9 @@ TEST_F(ModelSuite,selectAllVariables)
   integ->description("foo");
   save("foo.mky");
   canvas.selectAllVariables();
-  EXPECT_EQ(2,canvas.selection.contents->items.size());
-  EXPECT_TRUE(canvas.selection.contents->items[0]==integ->intVar);
-  EXPECT_TRUE(canvas.selection.contents->items[1].get()==integ);
+  EXPECT_EQ(2,canvas.selection.items.size());
+  EXPECT_TRUE(canvas.selection.items[0]==integ->intVar);
+  EXPECT_TRUE(canvas.selection.items[1].get()==integ);
 }
     
 TEST_F(ModelSuite,renameAllInstances)
@@ -809,7 +808,7 @@ TEST_F(ModelSuite,renameAllInstances)
   canvas.renameAllInstances("foobar");
   EXPECT_EQ(numItems, model->numItems());
   unsigned count=0;
-  for (auto i: model->contents->items)
+  for (auto i: model->items)
     if (auto v=dynamic_cast<VariableBase*>(i.get()))
       {
         EXPECT_TRUE(v->valueId()!=":a");
@@ -828,7 +827,7 @@ TEST_F(ModelSuite,renameAllInstances)
   // check no renaming should happen when item is not a variable 
   canvas.item=group0;
   canvas.renameAllInstances("foobar1");
-  for (auto i: model->contents->items)
+  for (auto i: model->items)
     if (auto v=dynamic_cast<VariableBase*>(i.get()))
       {EXPECT_TRUE(v->name()!="foobar1");}
         
@@ -859,7 +858,7 @@ TEST_F(ModelSuite,copyItem)
   canvas.copyItem();
   EXPECT_EQ(originalNumItems+1, model->numItems());
   EXPECT_EQ(dynamic_cast<VariableBase*>(a.get())->valueId(),
-            dynamic_cast<VariableBase*>(model->contents->items.back().get())->valueId());
+            dynamic_cast<VariableBase*>(model->items.back().get())->valueId());
 
   auto integ=new IntOp;
   canvas.item=model->addItem(integ);
@@ -868,7 +867,7 @@ TEST_F(ModelSuite,copyItem)
   canvas.copyItem();
   EXPECT_EQ(originalNumItems+1, model->numItems());
   EXPECT_EQ(integ->intVar->valueId(),
-            dynamic_cast<VariableBase*>(model->contents->items.back().get())->valueId());
+            dynamic_cast<VariableBase*>(model->items.back().get())->valueId());
 }
 
 TEST_F(ModelSuite,openGroupInCanvas)
@@ -876,8 +875,8 @@ TEST_F(ModelSuite,openGroupInCanvas)
   // remove a from group0, which should add an invariable
   model->addItem(a);
   group0->splitBoundaryCrossingWires();
-  EXPECT_TRUE(!group0->contents->inVariables.empty());
-  EXPECT_TRUE(!group0->contents->outVariables.empty());
+  EXPECT_TRUE(!group0->inVariables.empty());
+  EXPECT_TRUE(!group0->outVariables.empty());
   canvas.openGroupInCanvas(group0);
   EXPECT_TRUE(canvas.model==group0);
   EXPECT_TRUE(group0->displayContents());
@@ -904,11 +903,11 @@ TEST_F(CanvasFixture,copyVars)
   copyAllFlowVars();
   EXPECT_EQ(originalNumItems+godley->flowVars().size(),model->numItems());
   // Check that the number of items in selection after copyAllFlowVars() is equal to the number of flowVars attached to the Godley Icon. For ticket 1039.
-  EXPECT_EQ(godley->flowVars().size(),selection.contents->items.size());
+  EXPECT_EQ(godley->flowVars().size(),selection.items.size());
         
   //Check that there are two copies of the flowVars orginally attached to the Godley Icon. For ticket 1039.
   map<string,int> idCnt;
-  for (auto& i: model->contents->items)
+  for (auto& i: model->items)
     if (auto v=i->variableCast())
       idCnt[v->valueId()]++;
   for (auto v: godley->flowVars())
@@ -918,11 +917,11 @@ TEST_F(CanvasFixture,copyVars)
   copyAllStockVars();
   EXPECT_EQ(originalNumItems+godley->stockVars().size(),model->numItems());
   // Check that the number of items in selection after copyAllStockVars() is equal to the number of stockVars attached to the Godley Icon. For ticket 1039.
-  EXPECT_EQ(godley->stockVars().size(),selection.contents->items.size());     
+  EXPECT_EQ(godley->stockVars().size(),selection.items.size());     
         
   //Check that there are two copies of the stockVars orginally attached to the Godley Icon. For ticket 1039.
   idCnt.clear();
-  for (auto& i: model->contents->items)
+  for (auto& i: model->items)
     if (auto v=i->variableCast())
       if (v->isStock()) idCnt[v->valueId()]++;
   for (auto v: godley->stockVars())
@@ -952,8 +951,8 @@ TEST_F(ModelSuite,handleArrows)
     
 TEST_F(ModelSuite,selectVar)
 {
-  EXPECT_TRUE(!group0->contents->outVariables.empty());
-  auto v=group0->contents->outVariables[0];
+  EXPECT_TRUE(!group0->outVariables.empty());
+  auto v=group0->outVariables[0];
   canvas.item=group0;
   EXPECT_TRUE(canvas.selectVar(v->x(), v->y()));
   EXPECT_TRUE(canvas.item==v);
@@ -994,15 +993,15 @@ TEST_F(CanvasFixture, groupSelection)
   auto e=model->addItem(new Operation<OperationType::exp>);
   model->addWire(new Wire(t->ports(0),e->ports(1)));
   auto g=model->addGroup(new Group);
-  selection.contents->items.push_back(t);
-  selection.contents->items.push_back(e);
-  selection.contents->groups.push_back(g);
+  selection.items.push_back(t);
+  selection.items.push_back(e);
+  selection.groups.push_back(g);
   groupSelection();
-  auto newG=model->contents->groups.back();
+  auto newG=model->groups.back();
   EXPECT_TRUE(newG);
-  EXPECT_EQ(2,newG->contents->items.size());
-  EXPECT_EQ(1,newG->contents->groups.size());
-  EXPECT_EQ(1,newG->contents->wires.size());
+  EXPECT_EQ(2,newG->items.size());
+  EXPECT_EQ(1,newG->groups.size());
+  EXPECT_EQ(1,newG->wires.size());
   EXPECT_TRUE(model->uniqueItems());
   EXPECT_TRUE(model->nocycles());
 }
@@ -1095,7 +1094,7 @@ TEST_F(ModelSuite, update)
   table.deleteCol(3);
   godley->update();
   map<string,unsigned> varCount;
-  for (auto& i: model->contents->items)
+  for (auto& i: model->items)
     if (auto v=dynamic_cast<VariableBase*>(i.get()))
       varCount[v->name()]++;
 
@@ -1728,23 +1727,23 @@ TEST_F(ModelSuite, almalgamateLines)
 
 TEST_F(ModelSuite, saveAsGroup)
 {
-  group0->contents->inVariables.push_back(a);
+  group0->inVariables.push_back(a);
   group0->makeSubroutine();
   save("foo.mky");
-  EXPECT_TRUE(group0->contents->inVariables.size());
-  EXPECT_TRUE(group0->contents->outVariables.size());
+  EXPECT_TRUE(group0->inVariables.size());
+  EXPECT_TRUE(group0->outVariables.size());
   saveGroupAsFile(*group0,"group0.mky");
   insertGroupFromFile("group0.mky");
   Group& newGroup=dynamic_cast<Group&>(*canvas.itemFocus);
   // check I/O variables
-  EXPECT_EQ(group0->contents->inVariables.size(),newGroup.contents->inVariables.size());
-  EXPECT_EQ(group0->contents->outVariables.size(),newGroup.contents->outVariables.size());
-  for (size_t i=0; i<group0->contents->inVariables.size(); ++i)
-    EXPECT_EQ(group0->contents->inVariables[i]->name(), newGroup.contents->inVariables[i]->name());
-  for (size_t i=0; i<group0->contents->outVariables.size(); ++i)
-    EXPECT_EQ(group0->contents->outVariables[i]->name(), newGroup.contents->outVariables[i]->name());
+  EXPECT_EQ(group0->inVariables.size(),newGroup.inVariables.size());
+  EXPECT_EQ(group0->outVariables.size(),newGroup.outVariables.size());
+  for (size_t i=0; i<group0->inVariables.size(); ++i)
+    EXPECT_EQ(group0->inVariables[i]->name(), newGroup.inVariables[i]->name());
+  for (size_t i=0; i<group0->outVariables.size(); ++i)
+    EXPECT_EQ(group0->outVariables[i]->name(), newGroup.outVariables[i]->name());
   // check items
-  EXPECT_EQ(group0->contents->items.size(), newGroup.contents->items.size());
+  EXPECT_EQ(group0->items.size(), newGroup.items.size());
 }
      
 

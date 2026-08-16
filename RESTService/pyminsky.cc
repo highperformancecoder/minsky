@@ -38,9 +38,9 @@ namespace pyminsky
 
       bool found = false;
 
-      if (typeName == "Group" && !canvas.model->contents->groups.empty())
+      if (typeName == "Group" && !canvas.model->groups.empty())
       {
-          canvas.item = canvas.model->contents->groups.front();
+          canvas.item = canvas.model->groups.front();
           found = true;
       }
       else

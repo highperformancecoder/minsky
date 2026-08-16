@@ -476,7 +476,7 @@ namespace MathDAG
     
     // search through operations looking for integrals
     group.recursiveDo
-      (&GroupItems::items,
+      (&Group::items,
        [&](const Items&, Items::const_iterator it){
          if (auto v=(*it)->variableCast())
            {
@@ -556,7 +556,7 @@ namespace MathDAG
 
     // add groups to the userDefinedFunctions table
     group.recursiveDo
-      (&GroupItems::groups,
+      (&Group::groups,
        [&](const Groups&, Groups::const_iterator it){
          if (!(*it)->name().empty())
            try
@@ -570,7 +570,7 @@ namespace MathDAG
     
     // add input variables for all stock variables to the expression cache
     group.recursiveDo
-      (&GroupItems::items,
+      (&Group::items,
        [&](const Items&, Items::const_iterator it){
         if (auto i=dynamic_cast<Variable<VariableType::stock>*>(it->get()))
           if (!expressionCache.getIntegralInput(i->valueId()))
@@ -592,7 +592,7 @@ namespace MathDAG
     derivInputs.clear();
     map<string, GodleyColumnDAG> godleyVars;
     group.recursiveDo
-      (&GroupItems::items,
+      (&Group::items,
        [&](const Items&, Items::const_iterator i)
        {
          if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
@@ -663,7 +663,7 @@ namespace MathDAG
         const VariableDefOrder variableDefOrder(expressionCache.size()+m.variableValues.size());
         set<VariableDAG*,VariableDefOrder> variableSet(variableDefOrder);
         group.recursiveDo
-          (&GroupItems::items,
+          (&Group::items,
            [&](const Items&, Items::const_iterator it){
              if (auto v=(*it)->variableCast())
                if (auto vv=v->vValue())
@@ -1042,7 +1042,7 @@ namespace MathDAG
   {
     // ensure all variables have their output port's variable value up to date
     minsky.model->recursiveDo
-      (&GroupItems::items,
+      (&Group::items,
        [&](Items&, Items::iterator i)
        {
          if (auto v=(*i)->variableCast())

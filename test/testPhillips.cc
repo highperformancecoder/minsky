@@ -41,7 +41,7 @@ TEST_F(PhillipsSuite,fromInit)
     phillipsDiagram.clear();
     phillipsDiagram.init();
     set<string> stocks;
-    for (auto& i: model->contents->items)
+    for (auto& i: model->items)
       if (auto v=dynamic_cast<Variable<VariableType::stock>*>(i.get()))
         stocks.insert(v->rawName());
     EXPECT_EQ(stocks.size(), phillipsDiagram.stocks.size());
@@ -93,8 +93,8 @@ TEST_F(PhillipsSuite,fromInit)
     EXPECT_FALSE(phillipsDiagram.stocks.empty());
     EXPECT_FALSE(phillipsDiagram.flows.empty());
     // remove controlled items first to prevent foot-on-foot errors
-    for (auto& i: model->contents->items) i->removeControlledItems();
-    model->contents->items.clear();
+    for (auto& i: model->items) i->removeControlledItems();
+    model->items.clear();
     phillipsDiagram.init();
     EXPECT_TRUE(phillipsDiagram.stocks.empty());
     EXPECT_TRUE(phillipsDiagram.flows.empty());

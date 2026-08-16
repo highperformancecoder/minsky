@@ -225,11 +225,11 @@ namespace minsky
       const VariablePtr inVar(VariableType::flow,"in"), outVar(VariableType::flow,"out");
       f->addItem(inVar);
       f->addItem(outVar);
-      f->contents->inVariables.push_back(inVar);
-      f->contents->outVariables.push_back(outVar);
+      f->inVariables.push_back(inVar);
+      f->outVariables.push_back(outVar);
       f->addWire(*dataVar, *gather, 1);
-      f->addWire(*f->contents->inVariables[0], *gather, 2);
-      f->addWire(*gather, *f->contents->outVariables[0], 1);
+      f->addWire(*f->inVariables[0], *gather, 2);
+      f->addWire(*gather, *f->outVariables[0], 1);
       
       XVector xVals("0",{Dimension::value,""});
       auto& tensorInit=dataVar->vValue()->tensorInit;

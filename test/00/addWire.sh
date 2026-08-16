@@ -20,14 +20,14 @@ y1=minsky.canvas.itemFocus.portY(1)
 # add a wire
 minsky.canvas.mouseDown(x0, y0)
 minsky.canvas.mouseUp(x1, y1)
-assert len(minsky.model.contents.wires)==1
+assert len(minsky.model.wires)==1
 minsky.canvas.mouseDown(x0, y0)
 minsky.canvas.mouseUp(x1, y1)
 
-assert len(minsky.model.contents.wires)==1,"duplicate wire added!"
+assert len(minsky.model.wires)==1,"duplicate wire added!"
 minsky.canvas.mouseDown(x0, y0)
 minsky.canvas.mouseUp(x0, y0)
-assert len(minsky.model.contents.wires)==1,"self wire allowed!"
+assert len(minsky.model.wires)==1,"self wire allowed!"
 minsky.canvas.getWireAt(x0, y0)
 minsky.canvas.deleteWire()
 assert minsky.model.numWires()==0

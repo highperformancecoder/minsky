@@ -1012,8 +1012,13 @@ export class GodleyTableWindow extends CppClass {
 export class Group extends Item {
   bb: BoundingBox;
   bookmarks: Container<Bookmark>;
-  contents: GroupItems;
+  createdIOvariables: Sequence<VariableBase>;
+  groups: Sequence<Group>;
+  inVariables: Sequence<VariableBase>;
+  items: Sequence<Item>;
+  outVariables: Sequence<VariableBase>;
   svgRenderer: SVGRenderer;
+  wires: Sequence<Wire>;
   constructor(prefix: string|Item){
     if (typeof prefix==='string')
       super(prefix)
@@ -1021,8 +1026,13 @@ export class Group extends Item {
       super(prefix.$prefix())
     this.bb=new BoundingBox(this.$prefix()+'.bb');
     this.bookmarks=new Container<Bookmark>(this.$prefix()+'.bookmarks',Bookmark);
-    this.contents=new GroupItems(this.$prefix()+'.contents');
+    this.createdIOvariables=new Sequence<VariableBase>(this.$prefix()+'.createdIOvariables',VariableBase);
+    this.groups=new Sequence<Group>(this.$prefix()+'.groups',Group);
+    this.inVariables=new Sequence<VariableBase>(this.$prefix()+'.inVariables',VariableBase);
+    this.items=new Sequence<Item>(this.$prefix()+'.items',Item);
+    this.outVariables=new Sequence<VariableBase>(this.$prefix()+'.outVariables',VariableBase);
     this.svgRenderer=new SVGRenderer(this.$prefix()+'.svgRenderer');
+    this.wires=new Sequence<Wire>(this.$prefix()+'.wires',Wire);
   }
   async RESTProcess(a1: classdesc__RESTProcess_t,a2: string): Promise<void> {return this.$callMethod('RESTProcess',a1,a2);}
   async accessibleVars(): Promise<string[]> {return this.$callMethod('accessibleVars');}
@@ -1034,6 +1044,7 @@ export class Group extends Item {
   async addOutputVar(): Promise<void> {return this.$callMethod('addOutputVar');}
   async addWire(...args: any[]): Promise<object> {return this.$callMethod('addWire',...args);}
   async adjustBookmark(): Promise<void> {return this.$callMethod('adjustBookmark');}
+  async adjustWiresGroup(a1: Wire): Promise<void> {return this.$callMethod('adjustWiresGroup',a1);}
   async arguments(): Promise<string> {return this.$callMethod('arguments');}
   async autoLayout(): Promise<void> {return this.$callMethod('autoLayout');}
   async bookmark(...args: boolean[]): Promise<boolean> {return this.$callMethod('bookmark',...args);}
@@ -1176,6 +1187,7 @@ export class Group extends Item {
 }
 
 export class GroupItems extends CppClass {
+  bookmarks: Container<Bookmark>;
   createdIOvariables: Sequence<VariableBase>;
   groups: Sequence<Group>;
   inVariables: Sequence<VariableBase>;
@@ -1184,6 +1196,7 @@ export class GroupItems extends CppClass {
   wires: Sequence<Wire>;
   constructor(prefix: string){
     super(prefix);
+    this.bookmarks=new Container<Bookmark>(this.$prefix()+'.bookmarks',Bookmark);
     this.createdIOvariables=new Sequence<VariableBase>(this.$prefix()+'.createdIOvariables',VariableBase);
     this.groups=new Sequence<Group>(this.$prefix()+'.groups',Group);
     this.inVariables=new Sequence<VariableBase>(this.$prefix()+'.inVariables',VariableBase);
@@ -1191,6 +1204,8 @@ export class GroupItems extends CppClass {
     this.outVariables=new Sequence<VariableBase>(this.$prefix()+'.outVariables',VariableBase);
     this.wires=new Sequence<Wire>(this.$prefix()+'.wires',Wire);
   }
+  async addGroup(a1: Group): Promise<object> {return this.$callMethod('addGroup',a1);}
+  async addItem(a1: Item,a2: boolean): Promise<object> {return this.$callMethod('addItem',a1,a2);}
   async addWire(...args: any[]): Promise<object> {return this.$callMethod('addWire',...args);}
   async adjustWiresGroup(a1: Wire): Promise<void> {return this.$callMethod('adjustWiresGroup',a1);}
   async clear(): Promise<void> {return this.$callMethod('clear');}
@@ -1198,9 +1213,11 @@ export class GroupItems extends CppClass {
   async findGroup(a1: Group): Promise<object> {return this.$callMethod('findGroup',a1);}
   async findItem(a1: Item): Promise<object> {return this.$callMethod('findItem',a1);}
   async findWire(a1: Wire): Promise<object> {return this.$callMethod('findWire',a1);}
+  async nocycles(): Promise<boolean> {return this.$callMethod('nocycles');}
   async numGroups(): Promise<number> {return this.$callMethod('numGroups');}
   async numItems(): Promise<number> {return this.$callMethod('numItems');}
   async numWires(): Promise<number> {return this.$callMethod('numWires');}
+  async removeDisplayPlot(): Promise<void> {return this.$callMethod('removeDisplayPlot');}
   async removeGroup(a1: Group): Promise<object> {return this.$callMethod('removeGroup',a1);}
   async removeItem(a1: Item): Promise<object> {return this.$callMethod('removeItem',a1);}
   async removeWire(a1: Wire): Promise<object> {return this.$callMethod('removeWire',a1);}
@@ -1899,14 +1916,24 @@ export class SVGRenderer extends CppClass {
 export class Selection extends CppClass {
   bb: BoundingBox;
   bookmarks: Container<Bookmark>;
-  contents: GroupItems;
+  createdIOvariables: Sequence<VariableBase>;
+  groups: Sequence<Group>;
+  inVariables: Sequence<VariableBase>;
+  items: Sequence<Item>;
+  outVariables: Sequence<VariableBase>;
   svgRenderer: SVGRenderer;
+  wires: Sequence<Wire>;
   constructor(prefix: string){
     super(prefix);
     this.bb=new BoundingBox(this.$prefix()+'.bb');
     this.bookmarks=new Container<Bookmark>(this.$prefix()+'.bookmarks',Bookmark);
-    this.contents=new GroupItems(this.$prefix()+'.contents');
+    this.createdIOvariables=new Sequence<VariableBase>(this.$prefix()+'.createdIOvariables',VariableBase);
+    this.groups=new Sequence<Group>(this.$prefix()+'.groups',Group);
+    this.inVariables=new Sequence<VariableBase>(this.$prefix()+'.inVariables',VariableBase);
+    this.items=new Sequence<Item>(this.$prefix()+'.items',Item);
+    this.outVariables=new Sequence<VariableBase>(this.$prefix()+'.outVariables',VariableBase);
     this.svgRenderer=new SVGRenderer(this.$prefix()+'.svgRenderer');
+    this.wires=new Sequence<Wire>(this.$prefix()+'.wires',Wire);
   }
   async RESTProcess(a1: classdesc__RESTProcess_t,a2: string): Promise<void> {return this.$callMethod('RESTProcess',a1,a2);}
   async accessibleVars(): Promise<string[]> {return this.$callMethod('accessibleVars');}
@@ -1918,6 +1945,7 @@ export class Selection extends CppClass {
   async addOutputVar(): Promise<void> {return this.$callMethod('addOutputVar');}
   async addWire(...args: any[]): Promise<object> {return this.$callMethod('addWire',...args);}
   async adjustBookmark(): Promise<void> {return this.$callMethod('adjustBookmark');}
+  async adjustWiresGroup(a1: Wire): Promise<void> {return this.$callMethod('adjustWiresGroup',a1);}
   async align(a1: Item,a2: string): Promise<void> {return this.$callMethod('align',a1,a2);}
   async arguments(): Promise<string> {return this.$callMethod('arguments');}
   async autoLayout(): Promise<void> {return this.$callMethod('autoLayout');}

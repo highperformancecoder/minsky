@@ -50,7 +50,7 @@ namespace minsky
   
   double Group::operator()(const std::vector<double>& p) 
   {
-    if (contents->outVariables.empty()) return nan("");
+    if (outVariables.empty()) return nan("");
 
     MathDAG::SystemOfEquations system(minsky(), *this);
     EvalOpVector equations;
@@ -59,25 +59,25 @@ namespace minsky
     auto flow(ValueVector::flowVars);
 
     // assign values to unattached input variables
-    auto iVar=contents->inVariables.begin();
+    auto iVar=inVariables.begin();
     for (auto v: p)
       {
-        while (iVar!=contents->inVariables.end() && (*iVar)->inputWired()) ++iVar;
-        if (iVar==contents->inVariables.end()) break;
+        while (iVar!=inVariables.end() && (*iVar)->inputWired()) ++iVar;
+        if (iVar==inVariables.end()) break;
         flow[(*iVar)->vValue()->idx()]=v;
       }
 
     for (auto& i: equations)
       i->eval(flow.data(), flow.size(),ValueVector::stockVars.data());
-    return flow[contents->outVariables[0]->vValue()->idx()];
+    return flow[outVariables[0]->vValue()->idx()];
   }
 
   std::string Group::formula() const
   {
-    if (contents->outVariables.empty()) return "0";
+    if (outVariables.empty()) return "0";
     MathDAG::SystemOfEquations system(minsky(), *this);
     ostringstream o;
-    auto node=system.getNodeFromVar(*contents->outVariables[0]);
+    auto node=system.getNodeFromVar(*outVariables[0]);
     if (!node) return "0";
     if (node->rhs)
       node->rhs->matlab(o);
@@ -91,7 +91,7 @@ namespace minsky
     MathDAG::SystemOfEquations system(minsky(), *this);
     ostringstream r;
     r<<"(";
-    for (auto& i: contents->inVariables)
+    for (auto& i: inVariables)
       if (!i->inputWired())
         {
           if (r.str().size()>1) r<<",";
@@ -142,15 +142,15 @@ namespace minsky
     map<Item*,ItemPtr> cloneMap;
     map<IntOp*,bool> integrals;
     // cloning IntOps mutates items, as intVars get inserted and removed
-    auto itemsCopy=contents->items;
+    auto itemsCopy=items;
     for (auto& i: itemsCopy)
       if (auto integ=dynamic_cast<IntOp*>(i.get()))
         integrals.emplace(integ, integ->coupled());
     for (auto& i: itemsCopy)
       cloneMap[i.get()]=r->addItem(i->clone(),true);
-    for (auto& i: contents->groups)
+    for (auto& i: groups)
       cloneMap[i.get()]=r->addGroup(i->copyUnowned());
-    for (auto& w: contents->wires) 
+    for (auto& w: wires) 
       {
         auto f=w->from(), t=w->to();
         asgClonedPort(f,cloneMap);
@@ -158,17 +158,17 @@ namespace minsky
         r->addWire(new Wire(f,t,w->coords()));
       }
   
-    for (auto& v: contents->inVariables)
+    for (auto& v: inVariables)
       {
         assert(cloneMap.count(v.get()));
-        r->contents->inVariables.push_back(dynamic_pointer_cast<VariableBase>(cloneMap[v.get()]));
-        r->contents->inVariables.back()->controller=self;
+        r->inVariables.push_back(dynamic_pointer_cast<VariableBase>(cloneMap[v.get()]));
+        r->inVariables.back()->controller=self;
       }
-    for (auto& v: contents->outVariables)
+    for (auto& v: outVariables)
       {
         assert(cloneMap.count(v.get()));
-        r->contents->outVariables.push_back(dynamic_pointer_cast<VariableBase>(cloneMap[v.get()]));
-        r->contents->outVariables.back()->controller=self;
+        r->outVariables.push_back(dynamic_pointer_cast<VariableBase>(cloneMap[v.get()]));
+        r->outVariables.back()->controller=self;
       }
     // reattach integral variables to their cloned counterparts
     for (auto i: integrals)
@@ -200,7 +200,7 @@ namespace minsky
           {
             // walk up parent groups to see if this variable is mentioned
             for (auto g=group.lock(); g; g=g->group.lock())
-              for (auto& item: g->contents->items)
+              for (auto& item: g->items)
                 if (auto vi=item->variableCast())
                   if (vi->valueId()==v->valueId())
                     goto outer_scope_variable_found;
@@ -216,6 +216,8 @@ namespace minsky
   
   ItemPtr GroupItems::removeItem(const Item& it)
   {
+    if (it.plotWidgetCast()==displayPlot.get()) removeDisplayPlot();
+    if (!inDestructor) bookmarks.erase(it.bookmarkId());
     for (auto i=items.begin(); i!=items.end(); ++i)
       if (i->get()==&it)
         {
@@ -247,13 +249,6 @@ namespace minsky
     return ItemPtr();
   }
 
-  ItemPtr Group::removeItem(const Item& it)
-  {
-    if (it.plotWidgetCast()==displayPlot.get()) removeDisplayPlot();
-    if (!inDestructor) bookmarks.erase(it.bookmarkId());
-    return contents->removeItem(it);
-  }
-  
   void Group::deleteItem(const Item& i)
   {
     if (auto r=removeItem(i))
@@ -302,15 +297,15 @@ namespace minsky
   {
     // start by looking in the group it thnks it belongs to
     if (auto g=it.group.lock())
-      if (g->contents.get()!=this) 
+      if (g.get()!=this) 
         {
           auto i=g->findItem(it);
           if (i) return i;
         }
-    return findAny(&GroupItems::items, [&](const ItemPtr& x){return x.get()==&it;});
+    return findAny(&Group::items, [&](const ItemPtr& x){return x.get()==&it;});
   }
 
-  void Group::renameVar(const GroupPtr& origGroup, VariableBase& v)
+  void GroupItems::renameVar(const GroupPtr& origGroup, VariableBase& v)
   {
     if (auto thisGroup=self.lock())
       {
@@ -324,7 +319,7 @@ namespace minsky
           {
             // moving global var into an outer group, link up with variable of same name (if existing)
             if (v.name()[0]==':')
-              for (auto& i: contents->items)
+              for (auto& i: items)
                 if (auto vv=i->variableCast())
                   if (vv->name()==v.name().substr(1))
                     v.name(v.name().substr(1));
@@ -338,12 +333,9 @@ namespace minsky
   }
 
   
-  ItemPtr Group::addItem(const shared_ptr<Item>& it, bool inSchema)
+  ItemPtr GroupItems::addItem(const shared_ptr<Item>& it, bool inSchema)
   {
     if (!it) return it;
-    if (it->bookmark)
-      addBookmarkXY(it->left(),it->top(),it->bookmarkId());
-
     minsky().bookmarkRefresh();
     if (auto x=dynamic_pointer_cast<Group>(it))
       return addGroup(x);
@@ -386,7 +378,7 @@ namespace minsky
         for (auto& w: p->wires())
           {
             assert(w);
-            GroupItems::adjustWiresGroup(*w);
+            adjustWiresGroup(*w);
           }
       }
 
@@ -410,8 +402,8 @@ namespace minsky
             intOp->intVar->controller.reset();
         }
          
-    contents->items.push_back(it);
-    return contents->items.back();
+    items.push_back(it);
+    return items.back();
   }
 
   void GroupItems::adjustWiresGroup(Wire& w)
@@ -439,7 +431,7 @@ namespace minsky
     // Wire::split will invalidate the Items::iterator, so collect
     // wires to split first
     set<Wire*> wiresToSplit;
-    for (auto& i: contents->items)
+    for (auto& i: items)
       for (size_t p=0; p<i->portsSize(); ++p)
         for (auto w: i->ports(p).lock()->wires())
           wiresToSplit.insert(w);
@@ -448,7 +440,7 @@ namespace minsky
       w->split();
 
     // check if any created I/O variables can be removed
-    auto varsToCheck=contents->createdIOvariables;
+    auto varsToCheck=createdIOvariables;
     for (auto& iv: varsToCheck)
       {
         assert(iv->ports(1).lock()->input() && !iv->ports(1).lock()->multiWireAllowed());
@@ -478,7 +470,7 @@ namespace minsky
                     auto to=w->to();
                     iv->ports(0).lock()->eraseWire(w);
                     globalGroup().removeWire(*w);
-                    GroupItems::adjustWiresGroup(*addWire(iv->ports(1).lock()->wires()[0]->from(), to));
+                    adjustWiresGroup(*addWire(iv->ports(1).lock()->wires()[0]->from(), to));
                   }
           }
         
@@ -515,13 +507,13 @@ namespace minsky
          if (source.higher(*this))
              throw error("attempt to move a group into itself");
          // make temporary copies as addItem removes originals
-         auto copyOfItems=source.contents->items;
+         auto copyOfItems=source.items;
          for (auto& i: copyOfItems)
            {
              addItem(i);
              assert(!i->ioVar());
            }
-         auto copyOfGroups=source.contents->groups;
+         auto copyOfGroups=source.groups;
          for (auto& i: copyOfGroups)
            addGroup(i);
          /// no need to move wires, as these are handled above
@@ -534,7 +526,7 @@ namespace minsky
     const VariablePtr v(VariableType::flow,
                   uqName(cminsky().variableValues.newName(to_string(size_t(this))+":"+prefix)));
     addItem(v,true);
-    contents->createdIOvariables.push_back(v);
+    createdIOvariables.push_back(v);
     v->rotation(rotation());
     v->controller=self;
     bb.update(*this);
@@ -564,16 +556,16 @@ namespace minsky
   {
     if (auto v=dynamic_pointer_cast<VariableBase>(x))
       {
-        remove(contents->inVariables, v);
-        remove(contents->outVariables, v);
+        remove(inVariables, v);
+        remove(outVariables, v);
         switch (inIORegion(v->x(),v->y()))
           {
           case IORegion::input:
-            contents->inVariables.push_back(v);
+            inVariables.push_back(v);
             v->controller=self;
             break;
           case IORegion::output:
-            contents->outVariables.push_back(v);
+            outVariables.push_back(v);
             v->controller=self;
             break;
           default:
@@ -596,9 +588,9 @@ namespace minsky
     m_height=((y1-y0)+20*z)/z;
 
     // adjust contents by the offset
-    for (auto& i: contents->items)
+    for (auto& i: items)
       i->moveTo(i->x()-dx, i->y()-dy);
-    for (auto& i: contents->groups)
+    for (auto& i: groups)
       i->moveTo(i->x()-dx, i->y()-dy);
 
     moveTo(xx,yy);
@@ -648,12 +640,12 @@ namespace minsky
     z=zoomFactor();     // recalculate zoomFactor because relZoom changed above. for ticket 1243
     double x0, x1, y0, y1;
     contentBounds(x0,y0,x1,y1);
-    recentreItems(contents->items,0.5*(x0+x1)-x(),0.5*(y0+y1)-y());
-    recentreItems(contents->groups,0.5*(x0+x1)-x(),0.5*(y0+y1)-y());
+    recentreItems(items,0.5*(x0+x1)-x(),0.5*(y0+y1)-y());
+    recentreItems(groups,0.5*(x0+x1)-x(),0.5*(y0+y1)-y());
     double sx=(fabs(b.x0-b.x1)-z*(l+r))/(x1-x0), sy=(fabs(b.y0-b.y1)-2*z*topMargin)/(y1-y0);
     sx=std::min(sx,sy);
-    resizeItems(contents->items,sx,sx);
-    resizeItems(contents->groups,sx,sx);
+    resizeItems(items,sx,sx);
+    resizeItems(groups,sx,sx);
     
     moveTo(0.5*(b.x0+b.x1), 0.5*(b.y0+b.y1));
     bb.update(*this);
@@ -669,18 +661,18 @@ namespace minsky
     return true;
   }
 
-  GroupPtr Group::addGroup(const std::shared_ptr<Group>& g)
+  GroupPtr GroupItems::addGroup(const std::shared_ptr<Group>& g)
   {
     assert(g);
     auto origGroup=g->group.lock();
     if (origGroup.get()==this) return g; // nothing to do
     if (origGroup)
       origGroup->removeGroup(*g);
-    contents->groups.push_back(g);
+    groups.push_back(g);
     g->group=self;
-    g->self=contents->groups.back();
+    g->self=groups.back();
     assert(nocycles());
-    return contents->groups.back();
+    return groups.back();
   }
 
   WirePtr GroupItems::addWire(const std::shared_ptr<Wire>& w)
@@ -724,9 +716,9 @@ namespace minsky
 
   bool Group::higher(const Group& x) const
   {
-    for (auto& i: contents->groups)
+    for (auto& i: groups)
       if (i.get()==&x) return true;
-    return any_of(contents->groups.begin(), contents->groups.end(), [&](const GroupPtr& i){return i->higher(x);});
+    return any_of(groups.begin(), groups.end(), [&](const GroupPtr& i){return i->higher(x);});
   }
 
   unsigned Group::level() const
@@ -759,11 +751,11 @@ namespace minsky
   
   bool Group::uniqueItems(set<void*>& idset) const
   {
-    for (auto& i: contents->items)
+    for (auto& i: items)
       if (!idset.insert(i.get()).second) return false;
-    for (auto& i: contents->wires)
+    for (auto& i: wires)
       if (!idset.insert(i.get()).second) return false;
-    for (auto& i: contents->groups)
+    for (auto& i: groups)
       if (!idset.insert(i.get()).second || !i->uniqueItems(idset)) 
         return false;
     return true;
@@ -777,7 +769,7 @@ namespace minsky
     y0=numeric_limits<float>::max();
     y1=-numeric_limits<float>::max();
 
-    for (auto& i: contents->items)
+    for (auto& i: items)
       if (!i->ioVar())
         {
           if (i->left()<x0) x0=i->left();
@@ -786,7 +778,7 @@ namespace minsky
           if (i->bottom()>y1) y1=i->bottom();
         }  		
 			  
-    for (auto& i: contents->groups)
+    for (auto& i: groups)
       if (i->displayContents())
         {
           double left, top, right, bottom;
@@ -809,17 +801,17 @@ namespace minsky
     if (x0==numeric_limits<float>::max())
       {
         float cx=0, cy=0;
-        for (auto& i: contents->inVariables)
+        for (auto& i: inVariables)
           {
             cx+=i->x();
             cy+=i->y();
           }
-        for (auto& i: contents->outVariables)
+        for (auto& i: outVariables)
           {
             cx+=i->x();
             cy+=i->y();
           }
-        const int n=contents->inVariables.size()+contents->outVariables.size();
+        const int n=inVariables.size()+outVariables.size();
         if (n>0)
           {
             cx/=n;
@@ -881,7 +873,7 @@ namespace minsky
         y0<y()-0.5*z*iHeight() || y1>y()+0.5*z*iHeight())
       return nullptr;
     // at this point, this is a candidate. Check if any child groups are also
-    for (auto& g: contents->groups)
+    for (auto& g: groups)
       if (auto mg=g->minimalEnclosingGroup(x0,y0,x1,y1, ignore))
         if (mg->visible())
           return mg;
@@ -897,7 +889,7 @@ namespace minsky
       computeRelZoom();
     const float lzoom=localZoom();
     m_displayContentsChanged = dpc!=displayContents();
-    for (auto& i: contents->groups)
+    for (auto& i: groups)
       {
         i->setZoom(lzoom);
         m_displayContentsChanged|=i->displayContentsChanged();
@@ -912,7 +904,7 @@ namespace minsky
     m_displayContentsChanged = dpc!=displayContents();
     if (!group.lock())
       relZoom*=factor;
-    for (auto& i: contents->groups)
+    for (auto& i: groups)
       {
         if (displayContents() && !m_displayContentsChanged)
           i->zoom(i->x(), i->y(), factor);
@@ -1137,8 +1129,8 @@ namespace minsky
     float left, right; margins(left,right);    
     const cairo::CairoSave cs(cairo);
     const float z=zoomFactor();
-    draw1edge(contents->inVariables, cairo, -0.5*(iWidth()*z-left));
-    draw1edge(contents->outVariables, cairo, 0.5*(iWidth()*z-right));
+    draw1edge(inVariables, cairo, -0.5*(iWidth()*z-left));
+    draw1edge(outVariables, cairo, 0.5*(iWidth()*z-right));
   }
 
   namespace
@@ -1167,7 +1159,7 @@ namespace minsky
     float left, right; 
     margins(left,right);
     const float z=zoomFactor();
-    float y=notchY(contents->inVariables), dy=topMargin*edgeScale();
+    float y=notchY(inVariables), dy=topMargin*edgeScale();
     cairo_set_source_rgba(cairo,0,1,1,0.5);
     const float w=0.5*z*iWidth(), h=0.5*z*iHeight();
     
@@ -1184,7 +1176,7 @@ namespace minsky
     cairo_close_path(cairo);
     cairo_fill(cairo);
 
-    y=notchY(contents->outVariables);
+    y=notchY(outVariables);
     cairo_move_to(cairo,w,-h);
     // create notch in output region
     cairo_line_to(cairo,w,y-dy);
@@ -1213,13 +1205,13 @@ namespace minsky
     left=right=10;
     auto tmpMouseFocus=mouseFocus;
     mouseFocus=false; // disable mouseFocus for this calculation
-    for (auto& i: contents->inVariables)
+    for (auto& i: inVariables)
       {
         assert(i->type()!=VariableType::undefined);
         i->bb.update(*i);
         if (i->width()>left) left=i->width();
       }
-    for (auto& i: contents->outVariables)
+    for (auto& i: outVariables)
       {
         assert(i->type()!=VariableType::undefined);
         i->bb.update(*i);
@@ -1251,14 +1243,14 @@ namespace minsky
     margins(leftMargin, rightMargin);
     const float z = zoomFactor();
 
-    layoutEdgeVariables(contents->inVariables, -0.5f * (iWidth() * z - leftMargin), this, rotation());
-    layoutEdgeVariables(contents->outVariables, 0.5f * (iWidth() * z - rightMargin), this, rotation());
+    layoutEdgeVariables(inVariables, -0.5f * (iWidth() * z - leftMargin), this, rotation());
+    layoutEdgeVariables(outVariables, 0.5f * (iWidth() * z - rightMargin), this, rotation());
   }
 
   ItemPtr Group::select(float x, float y) const
   {
     // Short-circuit: no edge variables to hit-test.
-    if (contents->inVariables.empty() && contents->outVariables.empty())
+    if (inVariables.empty() && outVariables.empty())
       return nullptr;
 
     // Short-circuit: avoid the expensive positionEdgeVariables() call when
@@ -1274,10 +1266,10 @@ namespace minsky
     // Ensure edge variable positions are up-to-date before hit-testing.
     // (Positions are otherwise only set during draw1edge() in a render pass.)
     positionEdgeVariables();
-    for (auto& v: contents->inVariables)
+    for (auto& v: inVariables)
       if (RenderVariable(*v).inImage(x,y) || v->clickType(x,y) == ClickType::onPort)
         return v;
-    for (auto& v: contents->outVariables)
+    for (auto& v: outVariables)
       if (RenderVariable(*v).inImage(x,y) || v->clickType(x,y) == ClickType::onPort)
         return v;
     return nullptr;
@@ -1285,9 +1277,9 @@ namespace minsky
 
   void Group::normaliseGroupRefs(const shared_ptr<Group>& self)
   {
-    for (auto& i: contents->items)
+    for (auto& i: items)
         i->group=self;
-    for (auto& g: contents->groups)
+    for (auto& g: groups)
       {
         g->group=self;
         g->normaliseGroupRefs(g);
@@ -1297,12 +1289,12 @@ namespace minsky
   
   void Group::flipContents()
   {
-    for (auto& i: contents->items)
+    for (auto& i: items)
       {
         i->moveTo(x()-i->m_x,i->y());
         i->flip();
       }
-    for (auto& i: contents->groups)
+    for (auto& i: groups)
       {
         i->moveTo(x()-i->m_x,i->y());
         i->flip();
@@ -1313,13 +1305,13 @@ namespace minsky
 {
   set<string> r;
   // first add local variables
-  for (auto& i: contents->items)
+  for (auto& i: items)
     if (auto v=i->variableCast())
       r.insert(v->name());
   // now add variables in outer scopes, ensuring they qualified
   auto g=this;
   for (g=g->group.lock().get(); g;  g=g->group.lock().get())
-    for (auto& i: g->contents->items)
+    for (auto& i: g->items)
       if (auto v=i->variableCast())
         {
           auto n=v->name();

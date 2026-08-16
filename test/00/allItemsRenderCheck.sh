@@ -17,57 +17,57 @@ minsky.load('$here/test/allItems.mky')
 minsky.multipleEquities(1)
 minsky.canvas.renderToSVG('allItemsBare.svg')
 
-for i in range(len(minsky.model.contents.items)):
-    minsky.model.contents.items[i].mouseFocus(True)
-    minsky.model.contents.items[i].tooltip('tooltip')
+for i in range(len(minsky.model.items)):
+    minsky.model.items[i].mouseFocus(True)
+    minsky.model.items[i].tooltip('tooltip')
 
-for i in range(len(minsky.model.contents.groups)):
-    minsky.model.contents.groups[i].mouseFocus(1)
-    minsky.model.contents.groups[i].tooltip('tooltip')
+for i in range(len(minsky.model.groups)):
+    minsky.model.groups[i].mouseFocus(1)
+    minsky.model.groups[i].tooltip('tooltip')
 
 minsky.canvas.renderToSVG('allItemsMouseOver.svg')
 
-for i in range(len(minsky.model.contents.items)):
-  minsky.model.contents.items[i].mouseFocus(False)
-  minsky.model.contents.items[i].selected(True)
+for i in range(len(minsky.model.items)):
+  minsky.model.items[i].mouseFocus(False)
+  minsky.model.items[i].selected(True)
 
-for i in range(len(minsky.model.contents.groups)):
-  minsky.model.contents.groups[i].mouseFocus(False)
-  minsky.model.contents.groups[i].selected(True)
+for i in range(len(minsky.model.groups)):
+  minsky.model.groups[i].mouseFocus(False)
+  minsky.model.groups[i].selected(True)
 
 minsky.canvas.renderToSVG('allItemsSelected.svg')
 
-for i in range(len(minsky.model.contents.items)):
-  minsky.model.contents.items[i].selected(False)
-  minsky.model.contents.items[i].onBorder(True)
+for i in range(len(minsky.model.items)):
+  minsky.model.items[i].selected(False)
+  minsky.model.items[i].onBorder(True)
 
 minsky.canvas.renderToSVG('allItemsOnBorder.svg')
 
-for i in range(len(minsky.model.contents.items)):
-  if minsky.model.contents.items[i].classType() =="Sheet":
-    minsky.model.contents.items[i].showRowSlice("headAndTail")
-    minsky.model.contents.items[i].updateBoundingBox()
+for i in range(len(minsky.model.items)):
+  if minsky.model.items[i].classType() =="Sheet":
+    minsky.model.items[i].showRowSlice("headAndTail")
+    minsky.model.items[i].updateBoundingBox()
 
 minsky.canvas.renderToSVG('allItemsHeadAndTail.svg')
 
-for i in range(len(minsky.model.contents.items)):
-  if minsky.model.contents.items[i].classType()=="Sheet":
-    minsky.model.contents.items[i].showRowSlice("tail")           
-    minsky.model.contents.items[i].updateBoundingBox()
+for i in range(len(minsky.model.items)):
+  if minsky.model.items[i].classType()=="Sheet":
+    minsky.model.items[i].showRowSlice("tail")           
+    minsky.model.items[i].updateBoundingBox()
 
 minsky.canvas.renderToSVG('allItemsTail.svg')
 
-for i in range(len(minsky.model.contents.items)):
-  if minsky.model.contents.items[i].classType() =="Sheet":
-    minsky.model.contents.items[i].showColSlice("headAndTail")
-    minsky.model.contents.items[i].updateBoundingBox()
+for i in range(len(minsky.model.items)):
+  if minsky.model.items[i].classType() =="Sheet":
+    minsky.model.items[i].showColSlice("headAndTail")
+    minsky.model.items[i].updateBoundingBox()
 
 minsky.canvas.renderToSVG('allItemsColHeadAndTail.svg')
 
-for i in range(len(minsky.model.contents.items)):
-  if minsky.model.contents.items[i].classType()=="Sheet":
-    minsky.model.contents.items[i].showColSlice("tail")           
-    minsky.model.contents.items[i].updateBoundingBox()
+for i in range(len(minsky.model.items)):
+  if minsky.model.items[i].classType()=="Sheet":
+    minsky.model.items[i].showColSlice("tail")           
+    minsky.model.items[i].updateBoundingBox()
 
 minsky.canvas.renderToSVG('allItemsColTail.svg')
 EOF

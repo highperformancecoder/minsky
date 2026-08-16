@@ -122,7 +122,7 @@ void VariableBase::retype(VariableType::Type type)
   if (auto vv=vValue())
     if (type==vv->type())
       if (auto g=group.lock())
-        for (auto& i: g->contents->items)
+        for (auto& i: g->items)
           if (i.get()==this)
             {
               VariablePtr vp{i};

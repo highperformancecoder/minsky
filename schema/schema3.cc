@@ -335,9 +335,9 @@ namespace schema3
 
     // add any I/O variables
     vector<int> inVars, outVars;
-    for (auto& i: g.contents->inVariables)
+    for (auto& i: g.inVariables)
       inVars.push_back(itemMap[i.get()]);
-    for (auto& i: g.contents->outVariables)
+    for (auto& i: g.outVariables)
       outVars.push_back(itemMap[i.get()]);
     inVariables=inVars;
     outVariables=outVars;
@@ -373,7 +373,7 @@ namespace schema3
     g.recursiveDo(&minsky::GroupItems::groups,
                   [&](const minsky::Groups&,minsky::Groups::const_iterator i) {
                     groups.emplace_back(itemMap[i->get()], **i);
-                    for (auto& j: (*i)->contents->items)
+                    for (auto& j: (*i)->items)
                       {
                         // some invisible items are excluded from the schema 
                         assert(!j->visible() || itemMap.count(j.get()));
@@ -381,14 +381,14 @@ namespace schema3
                         if (j==(*i)->displayPlot)
                           groups.back().displayPlot=itemMap[j.get()];
                       }
-                    for (auto& j: (*i)->contents->groups)
+                    for (auto& j: (*i)->groups)
                       groups.back().items.push_back(itemMap[j.get()]);
-                   for (auto& v: (*i)->contents->inVariables)
+                   for (auto& v: (*i)->inVariables)
                       {
                         assert(itemMap.count(v.get()));
                         groups.back().inVariables->push_back(itemMap[v.get()]);
                       }
-                    for (auto& v: (*i)->contents->outVariables)
+                    for (auto& v: (*i)->outVariables)
                       {
                         assert(itemMap.count(v.get()));
                         groups.back().outVariables->push_back(itemMap[v.get()]);
@@ -673,10 +673,10 @@ namespace schema3
 
     if (inVariables)
       for (auto i: *inVariables)
-        g.contents->inVariables.push_back(itemMap[i]);
+        g.inVariables.push_back(itemMap[i]);
     if (outVariables)
       for (auto i: *outVariables)
-        g.contents->outVariables.push_back(itemMap[i]);
+        g.outVariables.push_back(itemMap[i]);
 
     // second loop over items to wire up integrals, and populate Godley table variables
     for (const auto& i: items)
@@ -804,7 +804,7 @@ namespace schema3
                     if (auto v=dynamic_pointer_cast<minsky::VariableBase>(it->second))
                       {
                         newG->addItem(it->second);
-                        newG->contents->inVariables.push_back(v);
+                        newG->inVariables.push_back(v);
                         v->controller=newG;
                       }
                 }
@@ -816,7 +816,7 @@ namespace schema3
                     if (auto v=dynamic_pointer_cast<minsky::VariableBase>(it->second))
                       {
                         newG->addItem(it->second);
-                        newG->contents->outVariables.push_back(v);
+                        newG->outVariables.push_back(v);
                         v->controller=newG;
                       }
                 }

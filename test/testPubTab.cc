@@ -156,7 +156,7 @@ TEST_F(PubTabSuite,removeSelf)
          setGodleyIconResource("bank.svg");
          load("1Free.mky");
          // send the Godley table to the pub tab
-         for (auto& i: model->contents->items)
+         for (auto& i: model->items)
            if (dynamic_cast<GodleyIcon*>(i.get()))
              {
                publicationTabs[0].items.emplace_back(i);
@@ -184,7 +184,7 @@ TEST_F(PubTabSuite,removeSelf)
        {
          canvas.addOperation(OperationType::time);
          canvas.mouseUp(100,100);
-         canvas.item=model->contents->items[0];
+         canvas.item=model->items[0];
          addCanvasItemToPublicationTab(0);
          EXPECT_EQ(1,publicationTabs.size());
          EXPECT_EQ(1,publicationTabs[0].items.size());

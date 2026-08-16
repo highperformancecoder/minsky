@@ -281,7 +281,7 @@ void GodleyTable::nameUnique()
       string trialName="Godley"+to_string(i);
       
       if (!cminsky().model->findAny
-          (&GroupItems::items,
+          (&Group::items,
            [&](const ItemPtr& i)
            {
              auto g=dynamic_cast<GodleyIcon*>(i.get());

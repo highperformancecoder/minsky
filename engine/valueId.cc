@@ -109,7 +109,7 @@ namespace minsky
       {
         // find maximum enclosing scope that has this same-named variable
         for (auto g=scope->group.lock(); g; g=g->group.lock())
-          for (auto& i: g->contents->items)
+          for (auto& i: g->items)
             if (auto v=i->variableCast())
               {
                 if (v->canonicalName()==name)

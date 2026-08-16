@@ -446,8 +446,8 @@ namespace minsky
 
   void ItemExclude::removeControlledItems()
   {
-    if (auto g=group.lock(); g && g->contents)
-      removeControlledItems(*g->contents);
+    if (auto g=group.lock())
+      removeControlledItems(*g);
   }
 
   ItemPtr Item::itemPtrFromThis() const

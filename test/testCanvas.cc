@@ -102,10 +102,10 @@ TEST(GroupIOTest, groupIOVarSelect)
 
     // Add an output variable to the group (populates outVariables).
     grp->addOutputVar();
-    ASSERT_EQ(1u, grp->contents->outVariables.size());
+    ASSERT_EQ(1u, grp->outVariables.size());
 
     // Update bounding box for the output variable so margins() works.
-    auto& outVar = *grp->contents->outVariables[0];
+    auto& outVar = *grp->outVariables[0];
     outVar.bb.update(outVar);
 
     // Compute the expected output-variable x position (right edge midpoint):
@@ -125,7 +125,7 @@ TEST(GroupIOTest, groupIOVarSelect)
         << "select() should find the output variable without a prior draw() call (issue #610)";
     if (found)
       {
-        EXPECT_EQ(grp->contents->outVariables[0].get(), found.get())
+        EXPECT_EQ(grp->outVariables[0].get(), found.get())
             << "select() should return the output variable, not some other item";
       }
 }
@@ -144,10 +144,10 @@ TEST(GroupIOTest, groupIOVarSelectZoomed)
     grp->setZoom(2.5f);
 
     grp->addOutputVar();
-    ASSERT_EQ(1u, grp->contents->outVariables.size());
+    ASSERT_EQ(1u, grp->outVariables.size());
 
     // Update bounding box for the output variable so margins() works.
-    auto& outVar = *grp->contents->outVariables[0];
+    auto& outVar = *grp->outVariables[0];
     outVar.bb.update(outVar);
 
     float leftMargin, rightMargin;

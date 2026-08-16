@@ -54,6 +54,7 @@ namespace minsky
   // items broken out in a separate structure, as copying is non-default
   class GroupItems
   {
+    bool inDestructor=false;
   protected:
     /// add a wire from item \a from, to item \a to, connecting to the
     /// toIdx port of \a to, with \a coordinates
@@ -67,20 +68,24 @@ namespace minsky
     WirePtr addWire(const std::weak_ptr<Port>& from,
                     const std::weak_ptr<Port>& to, 
                     const std::vector<float>& coords);
+    /// rename variable so that it maintains most general scope possible 
+    void renameVar(const GroupPtr& origGroup, VariableBase& v);
     CLASSDESC_ACCESS(GroupItems);
     friend class Canvas;
   public:
     Items items;
     Groups groups;
     Wires wires;
+    std::set<Bookmark> bookmarks;
     std::vector<VariablePtr> inVariables, outVariables;
     std::vector<VariablePtr> createdIOvariables;
     GroupItems() {}
+    virtual ~GroupItems() {inDestructor=true; clear();}
     // copy operations not deleted to allow ItemT<Group> to compile
     GroupItems(const GroupItems& x) {};
-    ~GroupItems() {clear();}
     GroupItems& operator=(const GroupItems&) {return *this;}
-
+    classdesc::Exclude<std::weak_ptr<Group>> self; ///< weak ref to this
+    
     void clear() {
       // controlled items need to be removed from a copy
       auto itemsCopy=items;
@@ -90,8 +95,12 @@ namespace minsky
       wires.clear();
       inVariables.clear();
       outVariables.clear();
+      bookmarks.clear();
     }
     bool empty() const {return items.empty() && groups.empty() && wires.empty();}
+
+    /// tests that groups are arranged heirarchically without any recurrence
+    virtual bool nocycles() const=0; 
 
     /// @{ Perform action heirarchically on elements of map \a map. If op returns true, the operation terminates.
     /// returns true if operation terminates early, false if every element processed.
@@ -150,14 +159,16 @@ namespace minsky
       return findAll<GroupPtr>(c,&GroupItems::groups,[](GroupPtr x){return x;});
     }
 
+    /// add item, ownership is passed
+    ItemPtr addItem(Item* it, bool inSchema=false) {return addItem(std::shared_ptr<Item>(it),inSchema);}
     /** add item. 
         @param inSchema - if building a group from schema processing, rather than generally. Does not adjust item position within group if true.
     */
-    //ItemPtr addItem(const std::shared_ptr<Item>&, bool inSchema=false);
+    virtual ItemPtr addItem(const std::shared_ptr<Item>&, bool inSchema=false);
     ItemPtr removeItem(const Item&);
 
-    //GroupPtr addGroup(const std::shared_ptr<Group>&);
-    //GroupPtr addGroup(Group* g) {return addGroup(std::shared_ptr<Group>(g));}
+    GroupPtr addGroup(const std::shared_ptr<Group>&);
+    GroupPtr addGroup(Group* g) {return addGroup(std::shared_ptr<Group>(g));}
 
     /// add a wire from item \a from, to item \a to, connecting to the
     /// toIdx port of \a to
@@ -177,6 +188,12 @@ namespace minsky
     std::size_t numWires() const; 
     /// total number of groups in this and child groups
     std::size_t numGroups() const; 
+    /// plot widget used for group icon
+    classdesc::Exclude<std::shared_ptr<PlotWidget>> displayPlot;
+    /// remove the display plot
+    void removeDisplayPlot() {
+      displayPlot.reset();
+    }
     
   };
 
@@ -198,13 +215,10 @@ namespace minsky
       return false;
     }
 
-  class Group: public ItemT<Group>, public CallableFunction
+  class Group: public ItemT<Group>, public GroupItems, public CallableFunction
   {
     bool m_displayContentsChanged=true;
-    bool inDestructor=false;
     VariablePtr addIOVar(const char*);
-    /// rename variable so that it maintains most general scope possible 
-    void renameVar(const GroupPtr& origGroup, VariableBase& v);
   protected:
     /// returns the smallest group whose icon completely encloses the
     /// rectangle given by the argument. If no candidate group found,
@@ -221,98 +235,7 @@ namespace minsky
     float contentBounds(double& x0, double& y0, double& x1, double& y1) const;
 
   public:
-    classdesc::Exclude<std::weak_ptr<Group>> self; ///< weak ref to this
-    std::shared_ptr<GroupItems> contents=std::make_shared<GroupItems>();
     std::string title;
-    std::set<Bookmark> bookmarks;
-
-//    const Items& items() const {return contents->items;}
-//    Items& items() {return contents->items;}
-//    const Wires& wires() const {return contents->wires;}
-//    Wires& wires() {return contents->wires;}
-//    const Groups& groups() const {return contents->groups;}
-//    Groups& groups() {return contents->groups;}
-    
-    /// plot widget used for group icon
-    classdesc::Exclude<std::shared_ptr<PlotWidget>> displayPlot;
-    /// remove the display plot
-    void removeDisplayPlot() {
-      displayPlot.reset();
-    }
-
-    bool empty() const {return contents->empty();}
-
-    // GroupItems API delegated
-    /// @{ Perform action heirarchically on elements of map \a map. If op returns true, the operation terminates.
-    /// returns true if operation terminates early, false if every element processed.
-    /// O has signature bool(M, M::const_iterator)
-    template <class M, class O>
-    bool recursiveDo(M GroupItems::*map, O op) const {return contents->recursiveDo(map,op);}
-    /// O has signature bool(M&, M::iterator)
-    template <class M, class O>
-    bool recursiveDo(M GroupItems::*map, O op) {return contents->recursiveDo(map,op);}
-    /// @}
-    
-    /// search for the first item in the heirarchy of \a map for which
-    /// \a c is true. M::value_type must evaluate in a boolean
-    /// environment to false if not valid
-    /// C is of signature bool(M::value_type)
-    template <class M, class C>
-    const typename M::value_type findAny(M GroupItems::*map, C c) const
-    {return contents->findAny(map,c);}
-
-    /// finds all items/wires matching criterion \a c. Found items are transformed by \a xfm
-    //TODO - when functional has lambda support, use type deduction to remove the extra template argument
-    template <class R, class M, class C, class X>
-    std::vector<R> findAll(C c, M (GroupItems::*m), X xfm) const
-    {return contents->findAll<R>(c,m,xfm);}
-
-    WirePtr removeWire(const Wire& w) {return contents->removeWire(w);}
-    GroupPtr removeGroup(const Group& g) {return contents->removeGroup(g);}
-
-    
-    /// finds item within this group or subgroups. Returns null if not found
-    ItemPtr findItem(const Item& it) const {return contents->findItem(it);}
-
-    /// finds group within this group or subgroups. Returns null if not found
-    GroupPtr findGroup(const Group& it) const {return contents->findGroup(it);}
-
-    /// finds wire within this group or subgroups. Returns null if not found
-    WirePtr findWire(const Wire& it) const {return contents->findWire(it);}
-
-    /// returns list of items matching criterion \a c
-    template <class C>
-    std::vector<ItemPtr> findItems(C c) const {return contents->findItems(c);}
-   
-    /// returns list of wires matching criterion \a c
-    template <class C>
-    std::vector<WirePtr> findWires(C c) const {return contents->findWires(c);}
-
-     /// returns list of groups matching criterion \a c
-    template <class C>
-    std::vector<GroupPtr> findGroups(C c) const {return contents->findGroups(c);}
-
-    ItemPtr removeItem(const Item&);
-
-    GroupPtr addGroup(const std::shared_ptr<Group>& g);
-    GroupPtr addGroup(Group* g)  {return addGroup(std::shared_ptr<Group>(g));}
-
-    /// add a wire from item \a from, to item \a to, connecting to the
-    /// toIdx port of \a to
-    WirePtr addWire(const Item& from, const Item& to, unsigned toPortIdx)
-    {return contents->addWire(from, to, toPortIdx);}
-    WirePtr addWire(const std::shared_ptr<Wire>& w) {return contents->addWire(w);}
-    WirePtr addWire(Wire* w) {return addWire(std::shared_ptr<Wire>(w));}
-    WirePtr addWire(const std::weak_ptr<Port>& from, const std::weak_ptr<Port>& to)
-    {return contents->addWire(from,to);}
-
-    /// total number of items in this and child groups
-    std::size_t numItems() const {return contents->numItems();}
-    /// total number of wires in this and child groups
-    std::size_t numWires() const {return contents->numWires();}
-    /// total number of groups in this and child groups
-    std::size_t numGroups() const  {return contents->numGroups();}
-    
     std:: string name() const override {return title;}
     /// evaluate function on arbitrary number of arguments (exprtk support)
     double operator()(const std::vector<double>& p) override;
@@ -322,9 +245,8 @@ namespace minsky
     std::string arguments() const;
     
     Group() {iWidth(100); iHeight(100);}
-    ~Group() {inDestructor=true; clear();}
     
-    bool nocycles() const; 
+    bool nocycles() const override; 
 
     /// Make a copy of this as a sibling group (owned by
     /// parent). Attempting to copying minsky.model is a null operation.
@@ -334,17 +256,14 @@ namespace minsky
     Group* clone() const override {throw error("Groups cannot be cloned");}
     static SVGRenderer svgRenderer;
 
-    /// add item, ownership is passed
-    ItemPtr addItem(Item* it, bool inSchema=false) {return addItem(std::shared_ptr<Item>(it),inSchema);}
-    /** add item. 
-        @param inSchema - if building a group from schema processing, rather than generally. Does not adjust item position within group if true.
-    */
-    ItemPtr addItem(const std::shared_ptr<Item>& it, bool inSchema=false);
-
-    void clear() {
-      contents->clear();
-      bookmarks.clear();
+    using GroupItems::addItem;
+    ItemPtr addItem(const std::shared_ptr<Item>& it, bool inSchema=false) override
+    {
+      if (it && it->bookmark)
+        addBookmarkXY(it->left(),it->top(),it->bookmarkId());
+      return GroupItems::addItem(it,inSchema);
     }
+
 
     /// Make all variables not present in outerscope local to this group
     void makeSubroutine();
@@ -373,15 +292,15 @@ namespace minsky
     /// check if item is a variable and located in an I/O region, and add it if it is
     void checkAddIORegion(const ItemPtr& x);
     
-    void addInputVar() {contents->inVariables.push_back(addIOVar("input"));}
-    void addOutputVar() {contents->outVariables.push_back(addIOVar("output"));}
+    void addInputVar() {inVariables.push_back(addIOVar("input"));}
+    void addOutputVar() {outVariables.push_back(addIOVar("output"));}
 
     /// remove item from group, and also all attached wires.
     void deleteItem(const Item&);
 
     void deleteAttachedWires() override {
-      for (auto& i: contents->inVariables) i->deleteAttachedWires();
-      for (auto& i: contents->outVariables) i->deleteAttachedWires();
+      for (auto& i: inVariables) i->deleteAttachedWires();
+      for (auto& i: outVariables) i->deleteAttachedWires();
     }
     
     /// adjust position and size of icon to just cover contents
@@ -529,7 +448,7 @@ namespace minsky
       if (c(i))
         return i;
     for (auto& g: groups)
-      if (auto& r=g->contents->findAny(map, c))
+      if (auto& r=g->findAny(map, c))
         return r;
     return typename M::value_type();
   }
@@ -546,7 +465,7 @@ namespace minsky
     for (auto& i: groups)
       {
         assert(i);
-        auto items=i->contents->findAll<R>(c,m,xfm);
+        auto items=i->findAll<R>(c,m,xfm);
         r.insert(r.end(), items.begin(), items.end());
       }
     return r;
