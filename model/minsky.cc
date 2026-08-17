@@ -1751,7 +1751,7 @@ namespace minsky
                                  sub!=subroutines.end())
                                archetype=sub->second;
                            if (!archetype || *i==archetype) return false;
-                           
+
                            // stash I/O variables for rewiring
                            map<string, VariablePtr> oldVars;
                            for (auto& v: (*i)->inVariables)
@@ -1801,7 +1801,7 @@ namespace minsky
                                  oldVar->second->ports(0).lock()->deleteWires();
                               }
                          }
-                           
+
                          return false;
                        });
     model->ensureValuesExist();
