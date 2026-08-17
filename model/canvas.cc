@@ -442,8 +442,11 @@ namespace minsky
 
   void Canvas::addSubroutine(const std::string& name) {
       if (auto subItr=minsky().subroutines.find(name);
-          subItr!=minsky().subroutines.end())
-        setItemFocus(model->addItem(subItr->second));
+          subItr!=minsky().subroutines.end()) 
+        if (auto newGroup=subItr->second->copyUnowned()) {
+          newGroup->archetype=subItr->second;
+          setItemFocus(model->addGroup(newGroup));
+        }
   }
   
   void Canvas::groupSelection()
@@ -705,7 +708,10 @@ namespace minsky
       {
         if (auto parent=model->group.lock())
           model->setZoom(parent->zoomFactor());
-        model=g;
+        if (auto a=g->archetype.lock())
+          model=a;
+        else
+          model=g;
         zoomToFit();
 
         minsky().bookmarkRefresh();

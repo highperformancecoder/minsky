@@ -85,7 +85,7 @@ namespace minsky
     GroupItems(const GroupItems& x) {};
     GroupItems& operator=(const GroupItems&) {return *this;}
     classdesc::Exclude<std::weak_ptr<Group>> self; ///< weak ref to this
-    
+
     void clear() {
       // controlled items need to be removed from a copy
       auto itemsCopy=items;
@@ -236,6 +236,8 @@ namespace minsky
 
   public:
     std::string title;
+    classdesc::Exclude<std::weak_ptr<Group>> archetype; ///< source of truth if this is a subroutine, null if not
+
     std:: string name() const override {return title;}
     /// evaluate function on arbitrary number of arguments (exprtk support)
     double operator()(const std::vector<double>& p) override;

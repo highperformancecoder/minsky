@@ -3,6 +3,7 @@
   "version":"3.28.1",
   "author": "High Performance Coders",
   "description": "Graphical dynamical systems simulator oriented towards economics",
+  "desktopName": "au.com.hpcoders.Minsky.desktop",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/highperformancecoder/minsky.git",
@@ -47,6 +48,7 @@
     },
     "linux": {
       "executableName": "minsky",
+      "syncDesktopName": true,
       "category": "Science"
     },
     "files": [

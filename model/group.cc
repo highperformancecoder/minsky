@@ -107,6 +107,7 @@ namespace minsky
   void asgClonedPort(shared_ptr<Port>& p, const map<Item*,ItemPtr>& cloneMap)
   {
     auto clone=cloneMap.find(&p->item());
+    assert(clone!=cloneMap.end());
     if (clone!=cloneMap.end())
       {
         for (size_t i=0; i<p->item().portsSize(); ++i)
@@ -131,7 +132,8 @@ namespace minsky
   {
     auto r=make_shared<Group>();
     r->self=r;
-    r->moveTo(x(),y());
+    r->archetype=archetype;
+    r->moveTo(m_x,m_y);
     // make new group owned by the top level group to prevent snarlups when called recursively
     if (group.lock())
       const_cast<Group*>(this)->globalGroup().addGroup(r);
@@ -148,14 +150,20 @@ namespace minsky
         integrals.emplace(integ, integ->coupled());
     for (auto& i: itemsCopy)
       cloneMap[i.get()]=r->addItem(i->clone(),true);
-    for (auto& i: groups)
-      cloneMap[i.get()]=r->addGroup(i->copyUnowned());
+    for (auto& g: groups) {
+      auto newGroup=g->copyUnowned();
+      cloneMap[g.get()]=r->addGroup(newGroup);
+      for (size_t i=0; i<g->inVariables.size(); ++i)
+        cloneMap[g->inVariables[i].get()]=newGroup->inVariables[i];
+      for (size_t i=0; i<g->outVariables.size(); ++i)
+        cloneMap[g->outVariables[i].get()]=newGroup->outVariables[i];
+    }
     for (auto& w: wires) 
       {
         auto f=w->from(), t=w->to();
-        asgClonedPort(f,cloneMap);
+        asgClonedPort(f,cloneMap); 
         asgClonedPort(t,cloneMap);
-        r->addWire(new Wire(f,t,w->coords()));
+        r->addWire(make_shared<Wire>(f,t,w->coords()));
       }
   
     for (auto& v: inVariables)
@@ -185,6 +193,9 @@ namespace minsky
               newIntegral->toggleCoupled();
           }
       }
+    r->m_width=m_width;
+    r->m_height=m_height;
+    r->updateBoundingBox();
     r->computeRelZoom();
     return r;
   }
@@ -209,8 +220,10 @@ namespace minsky
     outer_scope_variable_found:
       return false;
     });
-    if (auto ptr=groupPtrFromThis())
+    if (auto ptr=groupPtrFromThis()) {
+      archetype=ptr;
       minsky().subroutines[title]=ptr;
+    }
   }
 
   
