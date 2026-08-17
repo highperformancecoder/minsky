@@ -255,9 +255,7 @@ namespace minsky
 
     void clearAllMaps(bool clearHistory);
     void clearAllMaps() {clearAllMaps(true);}
-    // for TCL use
-    void clearAllMapsTCL() {clearAllMaps(true);}
-    
+   
     /// returns reference to variable defining (ie input wired) for valueId
     VariablePtr definingVar(const std::string& valueId) const;
 
@@ -536,6 +534,9 @@ namespace minsky
 
     /// reload all CSV parameters from latest values in files.
     void reloadAllCSVParameters();
+
+    /// restore all subroutine groups from their archetypes
+    void syncSubroutinesFromArchetypes();
   };
 
   /// global minsky object

@@ -441,6 +441,9 @@ namespace minsky
 
     /// return the smart pointer containing this object, if it is
     GroupPtr groupPtrFromThis() const;
+
+    /// ensure all variables have a VariableValue assigned
+    void ensureValuesExist();
   };
 
   template <class M, class C>

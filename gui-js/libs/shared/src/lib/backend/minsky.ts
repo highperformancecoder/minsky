@@ -1091,6 +1091,7 @@ export class Group extends Item {
   async editorMode(): Promise<boolean> {return this.$callMethod('editorMode');}
   async empty(): Promise<boolean> {return this.$callMethod('empty');}
   async ensureBBValid(): Promise<void> {return this.$callMethod('ensureBBValid');}
+  async ensureValuesExist(): Promise<void> {return this.$callMethod('ensureValuesExist');}
   async findGroup(a1: Group): Promise<object> {return this.$callMethod('findGroup',a1);}
   async findItem(a1: Item): Promise<object> {return this.$callMethod('findItem',a1);}
   async findWire(a1: Wire): Promise<object> {return this.$callMethod('findWire',a1);}
@@ -1356,7 +1357,6 @@ export class Minsky extends CppClass {
   async checkPushHistory(): Promise<void> {return this.$callMethod('checkPushHistory');}
   async classifyOp(a1: string): Promise<string> {return this.$callMethod('classifyOp',a1);}
   async clearAllMaps(...args: boolean[]): Promise<void> {return this.$callMethod('clearAllMaps',...args);}
-  async clearAllMapsTCL(): Promise<void> {return this.$callMethod('clearAllMapsTCL');}
   async clearBusyCursor(): Promise<void> {return this.$callMethod('clearBusyCursor');}
   async clearHistory(): Promise<void> {return this.$callMethod('clearHistory');}
   async clipboardEmpty(): Promise<boolean> {return this.$callMethod('clipboardEmpty');}
@@ -1469,6 +1469,7 @@ export class Minsky extends CppClass {
   async step(): Promise<number[]> {return this.$callMethod('step');}
   async stepMax(...args: number[]): Promise<number> {return this.$callMethod('stepMax',...args);}
   async stepMin(...args: number[]): Promise<number> {return this.$callMethod('stepMin',...args);}
+  async syncSubroutinesFromArchetypes(): Promise<void> {return this.$callMethod('syncSubroutinesFromArchetypes');}
   async t(...args: number[]): Promise<number> {return this.$callMethod('t',...args);}
   async t0(...args: number[]): Promise<number> {return this.$callMethod('t0',...args);}
   async timeUnit(...args: string[]): Promise<string> {return this.$callMethod('timeUnit',...args);}
@@ -1995,6 +1996,7 @@ export class Selection extends CppClass {
   async ensureBBValid(): Promise<void> {return this.$callMethod('ensureBBValid');}
   async ensureGroupInserted(a1: Group): Promise<void> {return this.$callMethod('ensureGroupInserted',a1);}
   async ensureItemInserted(a1: Item): Promise<void> {return this.$callMethod('ensureItemInserted',a1);}
+  async ensureValuesExist(): Promise<void> {return this.$callMethod('ensureValuesExist');}
   async findGroup(a1: Group): Promise<object> {return this.$callMethod('findGroup',a1);}
   async findItem(a1: Item): Promise<object> {return this.$callMethod('findItem',a1);}
   async findWire(a1: Wire): Promise<object> {return this.$callMethod('findWire',a1);}

@@ -130,14 +130,11 @@ namespace minsky
   
   GroupPtr Group::copyUnowned() const
   {
-    auto r=make_shared<Group>();
+    auto r=make_shared<Group>(*this);
+    r->GroupItems::clear();  // replace all contained items by copies
     r->self=r;
-    r->archetype=archetype;
-    r->moveTo(m_x,m_y);
-    // make new group owned by the top level group to prevent snarlups when called recursively
-    if (group.lock())
-      const_cast<Group*>(this)->globalGroup().addGroup(r);
-    else
+    r->group.reset(); // is unowned
+    if (!group.lock())
       return GroupPtr(); // do nothing if we attempt to clone the entire model
   
     // a map of original to cloned items (weak references)
@@ -193,10 +190,6 @@ namespace minsky
               newIntegral->toggleCoupled();
           }
       }
-    r->m_width=m_width;
-    r->m_height=m_height;
-    r->updateBoundingBox();
-    r->computeRelZoom();
     return r;
   }
 
@@ -1439,8 +1432,16 @@ namespace minsky
     return {};
   }
    
-
-  
+  void Group::ensureValuesExist()
+  {
+    recursiveDo
+          (&GroupItems::items, [&](Items&,Items::iterator i)
+           {
+             if (auto v=(*i)->variableCast())
+               v->ensureValueExists(nullptr);
+             return false;
+           });
+  }
 }
 
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Group);

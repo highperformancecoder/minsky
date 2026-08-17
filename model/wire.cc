@@ -114,14 +114,18 @@ namespace minsky
 
   void Wire::moveToPorts(const shared_ptr<Port>& from, const shared_ptr<Port>& to)
   {
-    if (auto f=this->from())
-      f->m_wires.erase(remove(f->m_wires.begin(), f->m_wires.end(), this), f->m_wires.end());
-    if (auto t=this->to())
-      t->m_wires.erase(remove(t->m_wires.begin(), t->m_wires.end(), this), t->m_wires.end());
-    m_from=from;
-    m_to=to;
-    from->m_wires.push_back(this);
-    to->m_wires.push_back(this);
+    if (auto f=this->from(); f && f!=from)
+      {
+        f->m_wires.erase(remove(f->m_wires.begin(), f->m_wires.end(), this), f->m_wires.end());
+        m_from=from;
+        from->m_wires.push_back(this);
+      }
+    if (auto t=this->to(); t && t!=to)
+      {
+        t->m_wires.erase(remove(t->m_wires.begin(), t->m_wires.end(), this), t->m_wires.end());
+        m_to=to;
+        to->m_wires.push_back(this);
+      }
   }
 
   

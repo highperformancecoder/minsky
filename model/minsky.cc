@@ -135,6 +135,7 @@ namespace minsky
 
   void Minsky::clearAllMaps(bool doClearHistory)
   {
+    subroutines.clear();
     model->clear();
     canvas.openGroupInCanvas(model);
     equations.clear();
@@ -886,7 +887,8 @@ namespace minsky
             flags |= reset_needed;
             if (RKThreadRunning) return;
           }
-
+        syncSubroutinesFromArchetypes();
+        
         auto start=chrono::high_resolution_clock::now();
         auto updateResetDuration=onStackExit([&]{resetDuration=chrono::duration_cast<chrono::milliseconds>(chrono::high_resolution_clock::now()-start);});
         canvas.itemIndicator.reset();
@@ -1027,6 +1029,8 @@ namespace minsky
 
   void Minsky::save(const std::string& filename)
   {
+    syncSubroutinesFromArchetypes();
+    
     // back up to temporary file name
     rename(filename.c_str(), (filename+"~").c_str());
     
@@ -1178,7 +1182,10 @@ namespace minsky
     // construct the network schematic
     Network net;
     for (auto& w: model->findWires([](const WirePtr&){return true;}))
-      net.emplace(w->from().get(), w->to().get());
+      {
+        assert(w->from() && w->to());
+        net.emplace(w->from().get(), w->to().get());
+      }
     for (auto& i: model->findItems([](const ItemPtr&){return true;}))
       if (!dynamic_cast<IntOp*>(i.get()) && !dynamic_cast<GodleyIcon*>(i.get()))
         for (unsigned j=1; j<i->portsSize(); ++j)
@@ -1732,6 +1739,73 @@ namespace minsky
                          });
   }
 
+  void Minsky::syncSubroutinesFromArchetypes() {
+    if (subroutines.empty()) return; // nothing to be done
+    model->recursiveDo(&Group::groups,
+                       [&](Groups&,Groups::iterator i) {
+                         /*if (auto sub=subroutines.find((*i)->title);
+                           sub!=subroutines.end())*/ {
+                           auto archetype=(*i)->archetype.lock();
+                           if (!archetype)
+                             if (auto sub=subroutines.find((*i)->title);
+                                 sub!=subroutines.end())
+                               archetype=sub->second;
+                           if (!archetype || *i==archetype) return false;
+                           
+                           // stash I/O variables for rewiring
+                           map<string, VariablePtr> oldVars;
+                           for (auto& v: (*i)->inVariables)
+                             oldVars[v->rawName()]=v;
+                           for (auto& v: (*i)->outVariables)
+                             oldVars[v->rawName()]=v;
+                           auto oldGroup=*i;
+                           *i=archetype->copyUnowned();
+                           (*i)->group=oldGroup->group;
+                           (*i)->moveTo(oldGroup->x(),oldGroup->y());
+                           // rewire to new ports
+                           for (auto& v: (*i)->inVariables)
+                             if (auto oldVar=oldVars.find(v->rawName());
+                                 oldVar!=oldVars.end())
+                               {
+                                 // stash a copy of the wires to
+                                 // iterate over, as moveToPorts
+                                 // mutates the list
+                                auto wireList=oldVar->second->ports(1).lock()->wires();
+                                for (auto& w: wireList)
+                                  if (auto fromOwner=w->from()->item().group.lock();
+                                      fromOwner && fromOwner!=oldGroup)
+                                    {
+                                      assert(w->from() && v->ports(1).lock());
+                                      w->moveToPorts(w->from(),v->ports(1).lock());
+                                      assert(w->from() && w->to());
+                                    }
+                                oldVar->second->ports(1).lock()->deleteWires();
+                               }
+                           for (auto& v: (*i)->outVariables)
+                             if (auto oldVar=oldVars.find(v->rawName());
+                                 oldVar!=oldVars.end())
+                               {
+                                 // stash a copy of the wires to
+                                 // iterate over, as moveToPorts
+                                 // mutates the list
+                                 auto wireList=oldVar->second->ports(0).lock()->wires();
+                                 for (auto& w: wireList)
+                                   if (auto toOwner=w->to()->item().group.lock();
+                                       toOwner && toOwner!=oldGroup)
+                                     {
+                                       assert(v->ports(0).lock() && w->to());
+                                       w->moveToPorts(v->ports(0).lock(),w->to());
+                                       assert(w->from() && w->to());
+                                       assert(w->from()->item().group.lock()==*i);
+                                     }
+                                 oldVar->second->ports(0).lock()->deleteWires();
+                              }
+                         }
+                           
+                         return false;
+                       });
+    model->ensureValuesExist();
+  }
   
   void Minsky::redrawAllGodleyTables()
   {

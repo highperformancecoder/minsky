@@ -103,7 +103,7 @@ bool RenderVariable::inImage(float x, float y)
 
 double RenderVariable::handlePos() const
 {
-  if (auto vv=var.vValue())
+  if (auto vv=var.vValue(); vv && vv->size()==1 && !isnan(vv->value()))
     {
       vv->adjustSliderBounds();
       assert(vv->sliderMin<vv->sliderMax);
