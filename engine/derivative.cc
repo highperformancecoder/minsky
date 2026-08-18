@@ -88,8 +88,15 @@ namespace MathDAG
         if (processingDerivative.contains(expr.name))
           throw error("definition loop detected in processing derivative of %s",expr.name.c_str());
         processingDerivative.insert(expr.name);
+        // exception-safe removal of the name from the processingDirective set.
+        struct Cleanup
+        {
+          set<string>& p;
+          const string& name;
+          Cleanup(set<string>& p, const string& name): p(p), name(name) {}
+          ~Cleanup() {p.erase(name);}
+        } cleanup(processingDerivative,expr.name);
         r->rhs=expr.rhs->derivative(*this);
-        processingDerivative.erase(expr.name);
       }
     else if (expr.type==VariableType::integral || expr.type==VariableType::stock)
       {
