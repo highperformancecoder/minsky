@@ -154,7 +154,7 @@ namespace minsky
           i->iWidth(ref.iWidth());
           break;
          case equal_height:
-          i->iWidth(ref.iWidth());
+          i->iHeight(ref.iHeight());
           break;
         }
     };
