@@ -167,7 +167,7 @@ namespace minsky
     void connectVar(const std::shared_ptr<VariableValue>& var, unsigned port);
     void disconnectAllVars();
     using ecolab::Plot::draw;
-    void draw(const ICairoShim& cairoShim) const override;
+    void draw(const mansoura::IMansoura& cairoShim) const override;
     void requestRedraw(); ///< redraw plot using current data to all open windows
     void redrawWithBounds() override {redraw(0,0,500,500);}    
     

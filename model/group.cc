@@ -25,7 +25,7 @@
 #include "autoLayout.h"
 #include "equations.h"
 #include <cairo_base.h>
-#include "../engine/cairoShimCairo.h"
+#include "mansouraCairo.h"
 #include "group.rcd"
 #include "itemT.rcd"
 #include "bookmark.rcd"
@@ -33,6 +33,7 @@
 #include "minsky_epilogue.h"
 using namespace std;
 using namespace ecolab::cairo;
+using namespace mansoura;
 
 // size of the top and bottom margins of the group icon
 static const int topMargin=10;
@@ -927,7 +928,7 @@ namespace minsky
     return ClickType::outside;
   }
 
-  void Group::draw(const ICairoShim& cairoShim) const
+  void Group::draw(const mansoura::IMansoura& cairoShim) const
   {
     auto [angle,flipped]=rotationAsRadians();
 
@@ -952,7 +953,7 @@ namespace minsky
 
     // display I/O region in grey
     // drawIORegion needs cairo_t* for now
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
+    auto& shimImpl = dynamic_cast<const MansouraCairo&>(cairoShim);
     cairo_t* cairo = shimImpl._internalGetCairoContext();
     drawIORegion(cairo);
 
@@ -1000,7 +1001,7 @@ namespace minsky
             {
               cairoShim.rectangle(0, 0,width, height);
               cairoShim.clip();
-              // Render SVG using ICairoShim abstraction
+              // Render SVG using mansoura::IMansoura abstraction
               cairoShim.renderSVG(svgRenderer, width, height);
             }
         }
@@ -1104,7 +1105,7 @@ namespace minsky
         // cairo context is already rotated, so antirotate
         cairo_rotate(cairo,-angle);
         {
-          CairoShimCairo shim(cairo);
+          MansouraCairo shim(cairo);
           v->draw(shim);
         }
 

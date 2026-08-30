@@ -20,7 +20,7 @@
 #include "minsky.h"
 #include "variablePane.h"
 #include "cairoItems.h"
-#include "../engine/cairoShimCairo.h"
+#include "mansouraCairo.h"
 #include "pannableTab.rcd"
 #include "pannableTab.xcd"
 #include "variableValue.h"

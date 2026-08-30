@@ -21,7 +21,7 @@
 
 #include "noteBase.h"
 #include "intrusiveMap.h"
-#include "ICairoShim.h"
+#include "IMansoura.h"
 
 #include <error.h>
 #include <arrays.h>
@@ -67,7 +67,7 @@ namespace minsky
     void storeCairoCoords(cairo_t* cairo) const;
     
     /// draw this item into a cairo context
-    virtual void draw(const ICairoShim& cairoShim, bool reverseArrow=false) const;
+    virtual void draw(const mansoura::IMansoura& cairoShim, bool reverseArrow=false) const;
     
     /// display coordinates 
     std::vector<float> coords() const;

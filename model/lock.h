@@ -39,9 +39,9 @@ namespace minsky
     bool locked() const {return !lockedState.empty();}
     void toggleLocked();
 
-    static SVGRenderer lockedIcon;
-    static SVGRenderer unlockedIcon;
-    void draw(const ICairoShim& cairoShim) const override;
+    static mansoura::SVGRenderer lockedIcon;
+    static mansoura::SVGRenderer unlockedIcon;
+    void draw(const mansoura::IMansoura& cairoShim) const override;
     Units units(bool) const override;
     /// Ravel this is connected to. nullptr if not connected to a Ravel
     Ravel* ravelInput() const;

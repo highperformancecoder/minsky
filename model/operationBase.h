@@ -34,8 +34,6 @@
 #include <pack_base.h>
 #include "operationType.h"
 
-namespace ecolab {class Pango;}
-
 namespace minsky
 {
   class OperationPtr;
@@ -46,7 +44,7 @@ namespace minsky
   {
     CLASSDESC_ACCESS(OperationBase);
   protected:
-    mutable classdesc::Exclude<std::shared_ptr<ecolab::Pango>> cachedPango;
+    mutable classdesc::Exclude<std::shared_ptr<mansoura::ICacheRender>> cachedPango;
     /// check if cachedPango is up to date, and if not recreate
     void setCachedText(cairo_t*, const std::string&, double) const;
   public:
@@ -62,7 +60,7 @@ namespace minsky
     OperationBase* operationCast() override {return this;}
 
     /// visual representation of operation on the canvas
-    virtual void iconDraw(const ICairoShim&) const=0;
+    virtual void iconDraw(const mansoura::IMansoura&) const=0;
 
     /// returns a list of values the ports currently have
     std::string portValues() const;
@@ -73,9 +71,9 @@ namespace minsky
     // manage the port structures associated with this operation
     virtual void addPorts();
 
-    void drawUserFunction(const ICairoShim& cairoShim) const;
+    void drawUserFunction(const mansoura::IMansoura& cairoShim) const;
     
-    void draw(const ICairoShim&) const override;
+    void draw(const mansoura::IMansoura&) const override;
     void resize(const LassoBox& b) override;
     float scaleFactor() const override;       
 

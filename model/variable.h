@@ -38,11 +38,6 @@
 #include "itemT.h"
 #include <cairo/cairo.h>
 
-namespace ecolab {
-  class Pango;
-  class Plot;
-}
-
 namespace minsky
 {
   class VariablePtr;
@@ -65,8 +60,8 @@ namespace minsky
   protected:
     /// cached font rendering objects
     mutable std::shared_ptr<RenderVariable> cachedNameRender;
-    mutable std::shared_ptr<ICacheRender> cachedMantissa;
-    mutable std::shared_ptr<ICacheRender> cachedExponent;
+    mutable std::shared_ptr<mansoura::ICacheRender> cachedMantissa;
+    mutable std::shared_ptr<mansoura::ICacheRender> cachedExponent;
     mutable double cachedValue, cachedTime;
   public:
     VariableCaches()=default;
@@ -198,7 +193,7 @@ namespace minsky
     /** draws the icon onto the given cairo context 
         @return cairo path of icon outline
     */
-    void draw(const ICairoShim&) const override;
+    void draw(const mansoura::IMansoura&) const override;
     void resize(const LassoBox& b) override;
     ClickType::Type clickType(float x, float y) const override;
 

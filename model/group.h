@@ -254,7 +254,7 @@ namespace minsky
     /// make a copy of this, that is not owned by any group
     GroupPtr copyUnowned() const;
     Group* clone() const override {throw error("Groups cannot be cloned");}
-    static SVGRenderer svgRenderer;
+    static mansoura::SVGRenderer svgRenderer;
 
     using GroupItems::addItem;
     ItemPtr addItem(const std::shared_ptr<Item>& it, bool inSchema=false) override
@@ -268,7 +268,7 @@ namespace minsky
     /// Make all variables not present in outerscope local to this group
     void makeSubroutine();
     
-    void draw(const ICairoShim&) const override;
+    void draw(const mansoura::IMansoura&) const override;
 
     /// draw representations of edge variables around group icon
     void drawEdgeVariables(cairo_t*) const;

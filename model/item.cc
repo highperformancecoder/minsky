@@ -20,7 +20,7 @@
 #include "cairoItems.h"
 #include "minsky.h"
 #include "item.h"
-#include "../engine/cairoShimCairo.h"
+#include "mansouraCairo.h"
 #include "group.h"
 #include "zoom.h"
 #include "variable.h"
@@ -28,7 +28,7 @@
 #include "geometry.h"
 #include "selection.h"
 #include "lasso.h"
-#include <pango.h>
+#include <IMansoura.h>
 #include <cairo_base.h>
 #include "item.rcd"
 #include "noteBase.rcd"
@@ -37,8 +37,7 @@
 #include "minsky_epilogue.h"
 #include <exception>
 
-using ecolab::Pango;
-using ecolab::cairo::CairoSave;
+using namespace mansoura;
 using namespace std;
 
 namespace minsky
@@ -61,7 +60,7 @@ namespace minsky
       {
         const cairo::CairoSave cs(surf.cairo());
         cairo_rotate(surf.cairo(),-x.rotation()*M_PI/180);
-        CairoShimCairo shim(surf.cairo());
+        MansouraCairo shim(surf.cairo());
         x.draw(shim);
       }
 #ifndef NDEBUG
@@ -293,7 +292,7 @@ namespace minsky
     return ClickType::outside;
   }
 
-  void Item::drawPorts(const ICairoShim& cairoShim) const
+  void Item::drawPorts(const mansoura::IMansoura& cairoShim) const
   {
     cairoShim.save();
     cairoShim.newPath();
@@ -308,7 +307,7 @@ namespace minsky
     cairoShim.restore();
   }
 
-  void Item::drawSelected(const ICairoShim& cairoShim)
+  void Item::drawSelected(const mansoura::IMansoura& cairoShim)
   {
     // implemented by filling the clip region with a transparent grey
     cairoShim.save();
@@ -317,7 +316,7 @@ namespace minsky
     cairoShim.restore();
   }
 
-  void Item::drawResizeHandle(const ICairoShim& cairoShim, double x, double y, double sf, double angle)
+  void Item::drawResizeHandle(const mansoura::IMansoura& cairoShim, double x, double y, double sf, double angle)
   {
     cairoShim.save();
     cairoShim.translate(x,y);
@@ -345,7 +344,7 @@ namespace minsky
     scaleFactor(std::max(1.0f,std::min(iWidth()/w,iHeight()/h)));
   }
   
-  void Item::drawResizeHandles(const ICairoShim& cairoShim) const
+  void Item::drawResizeHandles(const mansoura::IMansoura& cairoShim) const
   {
     auto sf=resizeHandleSize();
     double angle=0.5*M_PI;
@@ -357,14 +356,14 @@ namespace minsky
     cairoShim.stroke();
   }
 
-  void BottomRightResizerItem::drawResizeHandles(const ICairoShim& cairoShim) const
+  void BottomRightResizerItem::drawResizeHandles(const mansoura::IMansoura& cairoShim) const
   { 			  			
     const Point p=resizeHandleCoords();
     drawResizeHandle(cairoShim,p.x()-x(),p.y()-y(),resizeHandleSize(),0);
     cairoShim.stroke();
   }
   
-  void Item::draw(const ICairoShim& cairoShim) const
+  void Item::draw(const mansoura::IMansoura& cairoShim) const
   {
     auto [angle,flipped]=rotationAsRadians();
     const Rotate r(rotation()+(flipped? 180:0),0,0);
@@ -396,11 +395,11 @@ namespace minsky
   void Item::dummyDraw() const
   {
     const ecolab::cairo::Surface s(cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
-    CairoShimCairo shim(s.cairo());
+    MansouraCairo shim(s.cairo());
     draw(shim);
   }
 
-  void Item::displayTooltip(const ICairoShim& cairoShim, const std::string& tooltip) const
+  void Item::displayTooltip(const mansoura::IMansoura& cairoShim, const std::string& tooltip) const
   {
     const string unitstr=units().latexStr();
     if (!tooltip.empty() || !unitstr.empty())

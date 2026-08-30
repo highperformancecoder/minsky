@@ -20,8 +20,8 @@
 #ifndef FONTDISPLAY_H
 #define FONTDISPLAY_H
 #include "renderNativeWindow.h"
+#include "mansouraCairo.h"
 #include "classdesc_access.h"
-#include <pango.h>
 
 namespace minsky
 {
@@ -29,11 +29,9 @@ namespace minsky
   class FontDisplay: public RenderNativeWindow
   {
     bool redraw(int, int, int width, int height) override {
-      cairo_move_to(surface->cairo(),0,0);
-      ecolab::Pango pango(surface->cairo());
-      pango.setFontSize(10);
-      pango.setText("←→↑↓—▼αΣ∫√⊗≤");
-      pango.show();
+      mansoura::MansouraCairo mans(surface->cairo());
+      mans.moveTo(0,0);
+      mans.showPlainText("←→↑↓—▼αΣ∫√⊗≤",10);
       return true;
     }
     CLASSDESC_ACCESS(FontDisplay);

@@ -59,7 +59,7 @@ namespace minsky
     double titleOffs() const {return !table.title.empty()? 15*zoomFactor(): 0;}
     
   public:
-    static SVGRenderer svgRenderer; ///< SVG icon to display when not in editor mode
+    static mansoura::SVGRenderer svgRenderer; ///< SVG icon to display when not in editor mode
     
     GodleyIcon();
     GodleyIcon(const GodleyIcon&)=default;
@@ -137,7 +137,7 @@ namespace minsky
     ClickType::Type clickType(float x, float y) const override;
 
     /// draw icon to \a context
-    void draw(const ICairoShim& cairoShim) const override;
+    void draw(const mansoura::IMansoura& cairoShim) const override;
 
     /// return the A-L-E row sum for \a row
     std::string rowSum(int row) const;

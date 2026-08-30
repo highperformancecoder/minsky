@@ -99,6 +99,14 @@ ifneq ($(strip $(build_ravelcapi)),ravelcapi built)
 $(error Making RavelCAPI failed: check RavelCAPI/build.log)
 endif
 
+# Mansoura
+build_mansoura:=$(shell cd mansoura; if  $(MAKE) $(JOBS) $(MAKEOVERRIDES) >build.log 2>&1; then echo "mansoura built"; fi) 
+$(warning $(build_mansoura))
+ifneq ($(strip $(build_mansoura)),mansoura built)
+$(error Making Mansoura failed: check mansoura/build.log)
+endif
+
+
 ifndef MXE
 # libclipboard
 build_libclipboard:=$(shell cd libclipboard; if cmake -DBUILD_SHARED_LIBS=0 -DCMAKE_C_FLAGS=-fPIC . &>build.log && $(MAKE) $(JOBS) >>build.log 2>&1; then echo "libclipboard built"; fi) 
@@ -183,7 +191,7 @@ PREFIX=/usr/local
 # directory
 MODLINK=$(LIBMODS:%=$(ECOLAB_HOME)/lib/%)
 MODEL_OBJS=autoLayout.o cairoItems.o canvas.o CSVDialog.o dataOp.o equationDisplay.o godleyIcon.o godleyTable.o godleyTableWindow.o grid.o group.o item.o intOp.o lasso.o lock.o minsky.o operation.o operationRS.o operationRS1.o  operationRS2.o phillipsDiagram.o plotWidget.o port.o pubTab.o ravelWrap.o renderNativeWindow.o selection.o sheet.o SVGItem.o switchIcon.o userFunction.o userFunction_units.o variableInstanceList.o variable.o variablePane.o windowInformation.o wire.o 
-ENGINE_OBJS=clipboard.o cairoShimCairo.o databaseIngestor.o derivative.o equationDisplayRender.o equations.o evalGodley.o evalOp.o flowCoef.o \
+ENGINE_OBJS=clipboard.o databaseIngestor.o derivative.o equationDisplayRender.o equations.o evalGodley.o evalOp.o flowCoef.o \
 	godleyExport.o latexMarkup.o valueId.o variableValue.o node_latex.o node_matlab.o CSVParser.o \
 	minskyTensorOps.o mdlReader.o saver.o rungeKutta.o
 SCHEMA_OBJS=schema3.o schema2.o schema1.o schema0.o schemaHelper.o variableType.o \
@@ -229,7 +237,7 @@ ifdef CLASSDESC_ARITIES
 FLAGS+=-DUSE_UNROLLED -DCLASSDESC_ARITIES=$(CLASSDESC_ARITIES)
 endif
 
-FLAGS+=-UTR1 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -IRavelCAPI/civita -IRavelCAPI -Ilibclipboard/include -DCLASSDESC $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-attributes -DCIVITA_ALLOCATOR=civita::LibCAllocator
+FLAGS+=-UTR1 -Ischema -Iengine -Imodel -Icertify/include -Imansoura/src -IRESTService -IRavelCAPI/civita -IRavelCAPI -Ilibclipboard/include -DCLASSDESC $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-attributes -DCIVITA_ALLOCATOR=civita::LibCAllocator
 
 ifdef OBS
 # Fedora environments make duplicated macros a fatal error, and then
@@ -345,7 +353,7 @@ ifeq ($(OS),CYGWIN)
 FLAGS+=-Wa,-mbig-obj -Wl,-x -Wl,--oformat,pe-bigobj-x86-64
 endif
 
-LIBS:=-LRavelCAPI -lravelCAPI -LRavelCAPI/civita -lcivita  -lboost_date_time$(BOOST_EXT) -lgsl -lgslcblas -lssl -lcrypto $(LIBS)
+LIBS:=-Lmansoura -lmansoura -LRavelCAPI -lravelCAPI -LRavelCAPI/civita -lcivita  -lboost_date_time$(BOOST_EXT) -lgsl -lgslcblas -lssl -lcrypto $(LIBS)
 
 ifdef MXE
 LIBS+=-lgdi32 -lcrypt32 -lbcrypt -lshcore

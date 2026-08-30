@@ -18,7 +18,7 @@
 */
 
 #include "minsky.h"
-#include "cairoShimCairo.h"
+#include "mansouraCairo.h"
 #include "geometry.h"
 #include "valueId.h"
 #include "variable.h"

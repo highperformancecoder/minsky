@@ -18,7 +18,6 @@
 */
 
 #include "cairoItems.h"
-#include "cairoShimCairo.h"
 #include "operation.h"
 #include "group.h"
 #include "minsky.h"

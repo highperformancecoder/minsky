@@ -45,7 +45,7 @@ namespace  minsky
     double operator()(const std::vector<double>& p) override;
 
     Units units(bool check=false) const override;
-    void displayTooltip(const ICairoShim& cr, const std::string& tt) const override
+    void displayTooltip(const mansoura::IMansoura& cr, const std::string& tt) const override
     {Item::displayTooltip(cr,tt.empty()? expression: tt+" "+expression);}
 
     using NamedOp::description;
@@ -57,7 +57,7 @@ namespace  minsky
     static UserFunction* create(OperationType::Type t) 
     {return (t==OperationType::userFunction)? new UserFunction: nullptr;}
 
-    void draw(const ICairoShim& cairoShim) const override {drawUserFunction(cairoShim);}
+    void draw(const mansoura::IMansoura& cairoShim) const override {drawUserFunction(cairoShim);}
     
   };
 

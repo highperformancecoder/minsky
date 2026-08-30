@@ -27,13 +27,14 @@
 #include <arrays.h>
 #include <cairo_base.h>
 #include <ctype.h>
-#include "../engine/cairoShimCairo.h"
+#include "mansouraCairo.h"
 #include "godleyIcon.rcd"
 #include "itemT.rcd"
 #include "godleyTableWindow.xcd"
 #include "minsky_epilogue.h"
 #include <boost/locale.hpp>
 using namespace boost::locale::conv;
+using namespace mansoura;
 using namespace ecolab::cairo;
 using namespace ecolab;
 using namespace std;
@@ -53,9 +54,9 @@ namespace minsky
 
     struct DrawVarsShim
     {
-      const ICairoShim& cairoShim;
+      const mansoura::IMansoura& cairoShim;
       float x, y;
-      DrawVarsShim(const ICairoShim& cairoShim, float x, float y):
+      DrawVarsShim(const mansoura::IMansoura& cairoShim, float x, float y):
         cairoShim(cairoShim), x(x), y(y) {}
 
       void operator()(const GodleyIcon::Variables& vars) const
@@ -452,7 +453,7 @@ namespace minsky
     return r;
   }
 
-  void GodleyIcon::draw(const ICairoShim& cairoShim) const
+  void GodleyIcon::draw(const mansoura::IMansoura& cairoShim) const
   {
     positionVariables();
     const float z=zoomFactor()*scaleFactor();
@@ -495,7 +496,7 @@ namespace minsky
       {
         cairoShim.save();
         cairoShim.translate(left+leftMargin(),top);
-        // Render SVG using ICairoShim abstraction
+        // Render SVG using mansoura::IMansoura abstraction
         cairoShim.renderSVG(svgRenderer, w-leftMargin(), h-bottomMargin());
         titley=top+0.1*(h-bottomMargin());
         cairoShim.restore();

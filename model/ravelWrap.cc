@@ -24,7 +24,7 @@
 #include "dimension.h"
 #include "minskyTensorOps.h"
 #include "pango.h"
-#include "../engine/cairoShimCairo.h"
+#include "mansouraCairo.h"
 
 #include "capiRenderer.xcd"
 #include "CSVTools.xcd"

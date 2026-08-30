@@ -20,7 +20,7 @@
 #include "cairoItems.h"
 #include "minsky.h"
 #include "godleyTableWindow.h"
-#include "../engine/cairoShimCairo.h"
+#include "mansouraCairo.h"
 #include "selection.h"
 #include "latexMarkup.h"
 #include <pango.h>
@@ -34,7 +34,7 @@
 
 using namespace std;
 using namespace minsky;
-using ecolab::Pango;
+using namespace mansoura;
 using namespace ecolab::cairo;
 using namespace boost::locale::conv;
 
@@ -60,11 +60,11 @@ namespace
     {.6,.5,0}
   };
 
-  void showAsset(Pango& pango, cairo_t* cairo, GodleyAssetClass::AssetClass assetClass)
+  void showAsset(ICacheRender& pango, IMansoura& mans, GodleyAssetClass::AssetClass assetClass)
   {
-    const CairoSave cs(cairo);
+    const PreserveContext cs(mans);
     auto& colour=assetColour[assetClass];
-    cairo_set_source_rgb(cairo,colour.r,colour.g,colour.b);
+    mans.setSourceRGB(colour.r,colour.g,colour.b);
     pango.show();
   }
 
@@ -154,11 +154,11 @@ namespace minsky
     return m_godleyIcon.table.cellInTable(selectedRow, selectedCol);
   }
 
-  void GodleyTableEditor::draw(cairo_t *cairo)
+  void GodleyTableEditor::drawCairo(cairo_t* cairo)
   {
-    const CairoSave cs(cairo);
+    const ecolab::CairoSave cs(cairo);
     cairo_scale(cairo,zoomFactor,zoomFactor);
-    Pango pango(cairo);
+    ecolab::Pango pango(cairo);
     pango.setMarkup("Flows ↓ / Stock Vars →");
     rowHeight=pango.height()+2;
     const double tableHeight=(m_godleyIcon.table.rows()-scrollRowStart+1)*rowHeight;
@@ -1221,15 +1221,15 @@ namespace {
   }  
  
   template <ButtonWidgetEnums::RowCol rowCol>
-  void ButtonWidget<rowCol>::draw(const ICairoShim& cairoShim)
+  void ButtonWidget<rowCol>::draw(const mansoura::IMansoura& cairoShim)
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
+    auto& shimImpl = dynamic_cast<const MansouraCairo&>(cairoShim);
     draw(shimImpl._internalGetCairoContext());
   }
 
-  void GodleyTableEditor::draw(const ICairoShim& cairoShim)
+  void GodleyTableEditor::draw(const mansoura::IMansoura& cairoShim)
   {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
+    auto& shimImpl = dynamic_cast<const MansouraCairo&>(cairoShim);
     draw(shimImpl._internalGetCairoContext());
   }
 

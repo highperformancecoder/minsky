@@ -54,7 +54,7 @@ namespace minsky
       return r;
     }
     //void draw(cairo_t*);
-    void draw(const ICairoShim&, bool) const override;
+    void draw(const mansoura::IMansoura&, bool) const override;
   };
 
   
@@ -70,7 +70,7 @@ namespace minsky
     }
     static std::map<Units, double> maxStock;
     std::size_t numPorts() const override {return 2;}
-    void draw(const ICairoShim& cairoShim) const override;
+    void draw(const mansoura::IMansoura& cairoShim) const override;
   };
   
   class PhillipsDiagram: public RenderNativeWindow

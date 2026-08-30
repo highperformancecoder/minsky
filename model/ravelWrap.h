@@ -84,7 +84,7 @@ namespace minsky
     ravel::Op::ReductionOp m_nextReduction=ravel::Op::sum;
 
   public:
-    static SVGRenderer svgRenderer; ///< SVG icon to display when not in editor mode
+    static mansoura::SVGRenderer svgRenderer; ///< SVG icon to display when not in editor mode
     RavelPopup popup; ///< popup Ravel control window
     bool flipped=false;
     ravelCAPI::Database db; ///< backing database
@@ -110,7 +110,7 @@ namespace minsky
     void leaveLockGroup();
     void broadcastStateToLockGroup() const;
     
-    void draw(const ICairoShim& cairoShim) const override;
+    void draw(const mansoura::IMansoura& cairoShim) const override;
     void resize(const LassoBox&) override;
     bool inItem(float x, float y) const override;
     void onMouseDown(float x, float y) override;

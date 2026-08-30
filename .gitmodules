@@ -11,3 +11,6 @@
 [submodule "libclipboard"]
 	path = libclipboard
 	url = https://github.com/OfficialKris/libclipboard.git
+[submodule "mansoura"]
+	path = mansoura
+	url = git@github.com:highperformancecoder/mansoura.git

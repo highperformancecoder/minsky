@@ -20,9 +20,9 @@
 #define CAIRO_ITEMS_H
 #include <geometry.h>
 #include <plot.h>
-#include <pango.h>
 #include <cairo_base.h>
 #include <cairo/cairo.h>
+#include "IMansoura.h"
 #include "operation.h"
 #include "variable.h"
 
@@ -34,14 +34,14 @@ namespace minsky
   class RenderVariable
   {
     const VariableBase& var;
-    const ICairoShim& cairoShim;
+    const mansoura::IMansoura& cairoShim;
     // caching of text rendering
-    std::shared_ptr<ICacheRender> cachedRenderer;
+    std::shared_ptr<mansoura::ICacheRender> cachedRenderer;
     void* m_context;
     float w, h, hoffs;
   public:
     RenderVariable(const VariableBase& var);
-    RenderVariable(const VariableBase& var, const ICairoShim& shim);
+    RenderVariable(const VariableBase& var, const mansoura::IMansoura& shim);
     /// render the cairo image
     void draw() {var.draw(cairoShim);}
     /// render cached text
@@ -60,6 +60,6 @@ namespace minsky
   };
 
   void drawTriangle(cairo_t* cairo, double x, double y, const ecolab::cairo::Colour& col, double angle=0);
-  void drawTriangle(const ICairoShim& cairoShim, double x, double y, const ecolab::cairo::Colour& col, double angle=0);
+  void drawTriangle(const mansoura::IMansoura& cairoShim, double x, double y, const ecolab::cairo::Colour& col, double angle=0);
 }
 #endif

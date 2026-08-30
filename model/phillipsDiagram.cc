@@ -22,9 +22,10 @@
 #include "phillipsDiagram.rcd"
 #include "phillipsDiagram.xcd"
 #include "minsky.h"
-#include "../engine/cairoShimCairo.h"
+#include "mansouraCairo.h"
 #include "minsky_epilogue.h"
-using ecolab::cairo::CairoSave;
+
+using namespace mansoura;
 
 namespace minsky
 {
@@ -50,7 +51,7 @@ namespace minsky
 //    Wire::draw(cairo,value>=0);
 //  }
 
-  void PhillipsFlow::draw(const ICairoShim& cairoShim, bool) const
+  void PhillipsFlow::draw(const mansoura::IMansoura& cairoShim, bool) const
   {
     cairoShim.save();
     const double value=this->value();
@@ -70,7 +71,7 @@ namespace minsky
     cairoShim.restore();
   }
 
-  void PhillipsStock::draw(const ICairoShim& cairoShim) const
+  void PhillipsStock::draw(const mansoura::IMansoura& cairoShim) const
   {
     // Call parent draw (VariableBase still uses _internalGetCairoContext internally)
     StockVar::draw(cairoShim);
@@ -108,10 +109,10 @@ namespace minsky
     cairo_translate(cairo,x,y);
     for (auto& i: stocks)
       {
-        const CairoSave cs(cairo);
-        cairo_identity_matrix(cairo);
-        cairo_translate(cairo,i.second.x()+x, i.second.y()+y);
-        CairoShimCairo shim(cairo);
+        MansouraCairo shim(cairo);
+        const PreserveContext cs(shim);
+        mans.identityMatrix();
+        mans.translate(i.second.x()+x, i.second.y()+y);
         i.second.draw(shim);
       }
     for (auto& i: flows)

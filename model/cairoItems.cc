@@ -28,7 +28,7 @@
 #include "minsky.h"
 
 #include "cairoItems.h"
-#include "cairoShimCairo.h"
+#include "mansouraCairo.h"
 #include "operation.h"
 #include "latexMarkup.h"
 #include <arrays.h>
@@ -39,7 +39,7 @@
 #include <boost/locale.hpp>
 
 using namespace ecolab;
-using ecolab::cairo::CairoSave;
+using namespace mansoura;
 using namespace std;
 using namespace minsky;
 using namespace boost::geometry;
@@ -48,10 +48,10 @@ namespace
 {
   // for use when calculating bounding boxes, but not drawing to anything?
   cairo::Surface dummySurf(cairo_image_surface_create(CAIRO_FORMAT_A1, 100,100));
-  CairoShimCairo dummyCairoShim(dummySurf.cairo());
+  MansouraCairo dummyCairoShim(dummySurf.cairo());
 }
 
-RenderVariable::RenderVariable(const VariableBase& var, const ICairoShim& shim):
+RenderVariable::RenderVariable(const VariableBase& var, const mansoura::IMansoura& shim):
   var(var), cairoShim(shim), m_context(cairoShim.context())
 {
   TextProperties textProperties;
@@ -127,7 +127,7 @@ void minsky::drawTriangle
 }
 
 void minsky::drawTriangle
-(const ICairoShim& cairoShim, double x, double y, const cairo::Colour& col, double angle)
+(const mansoura::IMansoura& cairoShim, double x, double y, const cairo::Colour& col, double angle)
 {
   cairoShim.save();
   cairoShim.newPath();

@@ -17,7 +17,6 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-#include "cairoShimCairo.h"
 #include "lock.h"
 #include "minsky.h"
 #include "minsky_epilogue.h"

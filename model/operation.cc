@@ -27,7 +27,7 @@
 
 #include <cairo_base.h>
 #include <pango.h>
-#include "../engine/cairoShimCairo.h"
+#include "mansouraCairo.h"
 #include "minsky_epilogue.h"
 
 #include <math.h>
@@ -38,7 +38,7 @@
 #endif
 
 using namespace ecolab;
-using ecolab::cairo::CairoSave;
+using namespace mansoura;
 
 namespace minsky
 {
@@ -149,7 +149,7 @@ namespace minsky
     return std::max(1.0f,std::min(0.5f*iWidth()*z/std::max(l,r),0.5f*iHeight()*z/h));  
   }  
 
-  void OperationBase::drawUserFunction(const ICairoShim& cairoShim) const
+  void OperationBase::drawUserFunction(const IMansoura& cairoShim) const
   {
     // if rotation is in 1st or 3rd quadrant, rotate as
     // normal, otherwise flip the text so it reads L->R

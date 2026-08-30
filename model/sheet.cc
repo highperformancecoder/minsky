@@ -24,7 +24,7 @@
 #include "plotWidget.h"
 #include <cairo_base.h>
 #include <pango.h>
-#include "../engine/cairoShimCairo.h"
+#include "mansouraCairo.h"
 
 #include "itemT.rcd"
 #include "sheet.rcd"

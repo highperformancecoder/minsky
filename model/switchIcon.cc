@@ -21,7 +21,7 @@
 #include "itemT.rcd"
 #include "switchIcon.h"
 #include "switchIcon.rcd"
-#include "../engine/cairoShimCairo.h"
+#include "mansouraCairo.h"
 #include "minsky_epilogue.h"
 using namespace ecolab::cairo;
 using namespace ecolab;

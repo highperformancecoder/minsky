@@ -19,11 +19,13 @@
 
 #include "minsky.h"
 #include "cairoItems.h"
-#include "cairoShimCairo.h"
+#include "mansouraCairo.h"
 #include "intOp.h"
 #include "intOp.rcd"
 #include "itemT.rcd"
 #include "minsky_epilogue.h"
+
+using namespace mansoura;
 
 namespace minsky
 {
@@ -35,7 +37,7 @@ namespace minsky
     return r;
   }
   
-  void IntOp::draw(const ICairoShim& cairoShim) const
+  void IntOp::draw(const mansoura::IMansoura& cairoShim) const
   {
       // if rotation is in 1st or 3rd quadrant, rotate as
       // normal, otherwise flip the text so it reads L->R

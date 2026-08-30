@@ -220,7 +220,7 @@ namespace minsky
     }
     void setRavelIconResource(const string& s)
     {Ravel::svgRenderer.setResource(s);}
-    SVGRenderer histogramResource;
+    mansoura::SVGRenderer histogramResource;
     
     /// @return available matching columns from other Godley tables
     /// @param currTable - this table, not included in the matching process

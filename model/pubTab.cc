@@ -21,7 +21,7 @@
 #include "minsky.h"
 #include "cairoItems.h"
 #include "pubTab.h"
-#include "../engine/cairoShimCairo.h"
+#include "mansouraCairo.h"
 #include "publication.rcd"
 #include "pubTab.xcd"
 #include "pubTab.rcd"

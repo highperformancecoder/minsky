@@ -25,7 +25,7 @@
 #define GODLEYTABLEWINDOW_H
 #include "assetClass.h"
 #include "godleyTable.h"
-#include "ICairoShim.h"
+#include "IMansoura.h"
 #include "renderNativeWindow.h"
 #include <memory>
 #include <vector>
@@ -55,7 +55,7 @@ namespace minsky
     unsigned idx=0; ///< row or column this widget is located in
     
     void draw(cairo_t*);
-    void draw(const ICairoShim&);
+    void draw(const mansoura::IMansoura&);
     /// draw button \a idx, with label \a label and colour \a r, \a b, \a g
     void drawButton(cairo_t*, const std::string& label,
                     double r, double g, double b, int idx);
@@ -85,6 +85,8 @@ namespace minsky
       drawButtons=true; leftTableOffset=4*ButtonWidget<col>::buttonSpacing;
       topTableOffset=30;adjustWidgets();
     }
+  protected:
+    void drawCairo(cairo_t* cairo);
    public:
     static constexpr double columnButtonsOffset=12;
     /// offset of the table within the window
@@ -124,8 +126,7 @@ namespace minsky
     GodleyTableEditor(GodleyIcon& g): m_godleyIcon(g)
     {m_enableButtons(); adjustWidgets();}
 
-    void draw(cairo_t* cairo);
-    void draw(const ICairoShim& cairoShim);
+    void draw(const mansoura::IMansoura& cairoShim);
 
     double width() const {return colLeftMargin.empty()? 0: colLeftMargin.back();}
     double height() const;
@@ -225,7 +226,7 @@ namespace minsky
   protected:
     bool redraw(int, int, int width, int height) override {
       if (surface.get()) {
-        draw(surface->cairo());
+        drawCairo(surface->cairo());
         return true;
       }
       return false;

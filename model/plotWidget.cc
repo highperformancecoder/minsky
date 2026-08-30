@@ -26,7 +26,7 @@
 #include <cairo/cairo-ps.h>
 #include <cairo/cairo-pdf.h>
 #include <cairo/cairo-svg.h>
-#include "../engine/cairoShimCairo.h"
+#include "mansouraCairo.h"
 
 #include "CSVTools.xcd"
 #include "itemT.rcd"

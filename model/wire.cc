@@ -28,7 +28,7 @@
 #include "pango.h"
 #include "plotWidget.h"
 #include "SVGItem.h"
-#include "../engine/cairoShimCairo.h"
+#include "mansouraCairo.h"
 #include "wire.rcd"
 #include "minsky_epilogue.h"
 #include  <random>
