@@ -67,7 +67,7 @@ namespace minsky
     mutable std::shared_ptr<RenderVariable> cachedNameRender;
     mutable std::shared_ptr<ICacheRender> cachedMantissa;
     mutable std::shared_ptr<ICacheRender> cachedExponent;
-    mutable double cachedValue, cachedTime;
+    mutable double cachedValue, cachedTime, cachedMaxSliderSteps;
   public:
     VariableCaches()=default;
     VariableCaches(const VariableCaches&) {}
