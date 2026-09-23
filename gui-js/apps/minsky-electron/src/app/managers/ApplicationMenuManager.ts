@@ -133,8 +133,7 @@ export class ApplicationMenuManager {
           ],
         },
         {
-          label: 'Upgrade via Clerk',
-          enabled: false,
+          label: 'Upgrade via Ravelation.net',
           submenu: [
             {
               label: 'Upgrade',
