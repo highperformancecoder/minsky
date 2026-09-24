@@ -118,7 +118,7 @@ namespace minsky
 
   enum ItemType {wire, op, var, group, godley, plot};
 
-  class Minsky: public Exclude<MinskyExclude>, public RungeKutta
+  class Minsky: public classdesc::Exclude<MinskyExclude>, public RungeKutta
   {
     CLASSDESC_ACCESS(Minsky);
 
@@ -202,6 +202,9 @@ namespace minsky
     std::map<Units, double> maxValue;
     std::map<Units, double> maxFlowValue; // max flow values along wires
     /// fills in dimensions table with all loaded ravel axes
+    
+    // used to avoid excessive recursion in populateMissingDimensionsFromVariable 
+    bool inPopulateMissingDimensions=false; 
     void populateMissingDimensions();
     /// populate missing dimensions from a variableValue
     /// @param incompatibleMessageDisplayed boolean flag to make message display single shot
@@ -210,6 +213,9 @@ namespace minsky
     {bool dummy; populateMissingDimensionsFromVariable(v,dummy);}
     void renameDimension(const std::string& oldName, const std::string& newName);
     
+    bool m_publicationMode=false;
+    bool publicationMode() const {return m_publicationMode;}
+    void publicationMode(bool x) {m_publicationMode=x;}
     void setGodleyIconResource(const string& s)
     {GodleyIcon::svgRenderer.setResource(s);}
     void setGroupIconResource(const string& s)

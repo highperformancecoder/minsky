@@ -18,6 +18,7 @@
 */
 #include "minsky.h"
 #include "plotWidget.h"
+#include "canvas.h"
 #include "variable.h"
 #include "cairoItems.h"
 #include "latexMarkup.h"
@@ -110,77 +111,112 @@ namespace minsky
     yoffs=0;
     if (!title.empty())
       {
-        const CairoSave cs(cairo);
-        const double fy=titleHeight*iHeight();
-        
         Pango pango(cairo);
-        pango.setFontSize(fabs(fy));
+        pango.setFontSize(fabs(titleHeight*iHeight()));
         pango.setMarkup(latexToPango(title));   
         cairo_set_source_rgb(cairo,0,0,0);
-        cairo_move_to(cairo,0.5*(w-pango.width()), 0);
+        cairo_move_to(cairo,0.5*(w-pango.width())-pango.left(), -pango.top());
         pango.show();
-
+        
         // allow some room for the title
         yoffs=pango.height();
-        h-=yoffs;
       }
 
     // draw bounding box ports
-    
     size_t i=0;
     // draw bounds input ports
     for (; i<nBoundsPorts; ++i)
       {
-        const float x=boundX[i]*w, y=boundY[i]*h;
+        // boundY is relative to total height h, from center.
+        const float x=boundX[i]*w;
+        const float y=boundY[i]*h;
         if (!justDataChanged)
-          m_ports[i]->moveTo(x*z + this->x(), y*z + this->y()+0.5*yoffs);
-        drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i/2)%palette.size()].colour, orient[i]);
-        
+        {
+          if (i < m_ports.size() && m_ports[i])
+            m_ports[i]->moveTo(x*z + this->x(), y*z + this->y());
+        }
+        if (mouseFocus && !cminsky().publicationMode())
+        {
+          if (!palette.empty())
+            drawTriangle(cairo, x+0.5*w, y+0.5*h, palette[(i/2)%palette.size()].colour, orient[i]);
+        }
       }
 
-    const float xLeft = -0.5*w, dx=w/(2*m_numLines+1); // x location of ports
-    const float dy = h/m_numLines;
-    // draw y data ports
+    const float plot_area_w = w - 2*portSpace;
+    const float plot_area_h = h - yoffs - portSpace;
+    if (m_numLines == 0) return;
+    const float dx = plot_area_w / (2*m_numLines + 1);
+    const float dy = plot_area_h / m_numLines;
+
+    // draw y data ports (left side)
     for (; i<m_numLines+nBoundsPorts; ++i)
       {
-        const float y=0.5*(dy-h) + (i-nBoundsPorts)*dy;
+        size_t k = i - nBoundsPorts;
+        const float y = yoffs + (k + 0.5) * dy;
+        const float x = portSpace;
         if (!justDataChanged)
-          m_ports[i]->moveTo(xLeft*z + this->x(), y*z + this->y()+0.5*yoffs);
-        drawTriangle(cairo, xLeft+0.5*w, y+0.5*h+yoffs, palette[(i-nBoundsPorts)%palette.size()].colour, 0);
+        {
+          if (i < m_ports.size() && m_ports[i])
+            m_ports[i]->moveTo((x-0.5*w)*z + this->x(), (y-0.5*h)*z + this->y());
+        }
+        if (mouseFocus && !cminsky().publicationMode())
+          drawTriangle(cairo, x - portSpace, y, palette[k%palette.size()].colour, 0);
       }
     
     // draw RHS y data ports
     for (; i<2*m_numLines+nBoundsPorts; ++i)
       {
-        const float y=0.5*(dy-h) + (i-m_numLines-nBoundsPorts)*dy, x=0.5*w;
+        size_t k = i - m_numLines - nBoundsPorts;
+        const float y = yoffs + (k + 0.5) * dy;
+        const float x = w - portSpace;
         if (!justDataChanged)
-          m_ports[i]->moveTo(x*z + this->x(), y*z + this->y()+0.5*yoffs);
-        drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-nBoundsPorts)%palette.size()].colour, M_PI);
+        {
+          if (i < m_ports.size() && m_ports[i])
+            m_ports[i]->moveTo((x-0.5*w)*z + this->x(), (y-0.5*h)*z + this->y());
+        }
+        if (mouseFocus && !cminsky().publicationMode())
+          drawTriangle(cairo, x + portSpace, y, palette[k%palette.size()].colour, M_PI);
       }
-
-    // draw x data ports
-    const float yBottom=0.5*h;
-    for (; i<4*m_numLines+nBoundsPorts; ++i)
+    
+    // draw x data ports (bottom side)
+    for (; i<m_ports.size(); ++i)
       {
-        const float x=dx-0.5*w + (i-2*m_numLines-nBoundsPorts)*dx;
+        size_t k = i - 2*m_numLines - nBoundsPorts;
+        const float x = portSpace + (k + 1) * dx;
+        const float y = h - portSpace;
         if (!justDataChanged)
-          m_ports[i]->moveTo(x*z + this->x(), yBottom*z + this->y()+0.5*yoffs);
-        drawTriangle(cairo, x+0.5*w, yBottom+0.5*h+yoffs, palette[(i-2*m_numLines-nBoundsPorts)%palette.size()].colour, -0.5*M_PI);
+        {
+          if (i < m_ports.size() && m_ports[i])
+            m_ports[i]->moveTo((x-0.5*w)*z + this->x(), (y-0.5*h)*z + this->y());
+        }
+        if (mouseFocus && !cminsky().publicationMode())
+          drawTriangle(cairo, x, y + portSpace, palette[(k/2)%palette.size()].colour, -0.5*M_PI);
       }
 
-    cairo_translate(cairo, portSpace, yoffs);
-    cairo_set_line_width(cairo,1);
-    const double gw=w-2*portSpace, gh=h-portSpace;
+    // if any titling, draw an extra bounding box (ticket #285)
+    if (mouseFocus && !cminsky().publicationMode() && (!title.empty()||!xlabel().empty()||!ylabel().empty()||!y1label().empty()))
+      {
+        cairo_rectangle(cairo, portSpace, yoffs, plot_area_w, plot_area_h);
+        cairo_set_line_width(cairo,1);
+        cairo_stroke(cairo);
+      }
 
-    Plot::draw(cairo,gw,gh);
+    // Translate to account for title and portSpace, then draw the plot content
+    cairo_translate(cairo, portSpace, yoffs);
+    Plot::draw(cairo, plot_area_w, plot_area_h);
+    
+    // Draw port triangles for bounds again if they moved? No, done once.
+    justDataChanged=false;
+    cairo_set_line_width(cairo,1);
+
     if (mouseFocus && legend)
       {
-        double width,height,x,y;
-        legendSize(x,y,width,height,gw,gh);
+        double x,y,width,height;
+        legendSize(x,y,width,height,plot_area_w,plot_area_h);
         // following code puts x,y at centre point of legend
         x+=0.5*width;
         const double arrowLength=6;
-        y=(h-portSpace)-y+0.5*height;
+        y=(h-yoffs-portSpace)-y+0.5*height;
         cairo_move_to(cairo,x-arrowLength,y);
         cairo_rel_line_to(cairo,2*arrowLength,0);
         cairo_move_to(cairo,x,y-arrowLength);
@@ -196,6 +232,7 @@ namespace minsky
         drawTriangle(cairo,x,y+0.5*height+arrowLength,{0,0,0,1},M_PI/2);
 
         cairo_rectangle(cairo,x-0.5*width,y-0.5*height,width,height);
+        cairo_stroke(cairo);
       }
     cs.restore();
 
@@ -381,9 +418,17 @@ namespace minsky
   {
     if (surface.get())
       {
-        auto sf=RenderNativeWindow::scaleFactor();
-        Plot::draw(surface->cairo(),width/sf,height/sf);
+        auto savedMouseFocus=mouseFocus;
+        auto savedSelected=selected;
+        auto savedJustDataChanged=justDataChanged;
+        mouseFocus=false; // suppress interactive elements
+        selected=false;
+        justDataChanged=true; // avoid moving ports
+        draw(surface->cairo());
         surface->blit();
+        mouseFocus=savedMouseFocus;
+        selected=savedSelected;
+        justDataChanged=savedJustDataChanged;
       }
     return surface.get();
   }
