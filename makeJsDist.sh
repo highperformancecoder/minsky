@@ -8,6 +8,7 @@ else
 fi
 pushd gui-js
 npm run export:package:linux
+cp node_modules/electron/dist/chrome-sandbox dist/executables/linux-unpacked/
 pushd dist/executables/
 rm -rf $name
 mkdir $name
