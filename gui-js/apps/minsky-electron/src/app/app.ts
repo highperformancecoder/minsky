@@ -210,13 +210,13 @@ export default class App {
     {
       let parsePositionalOnly=false;
       // process CLI options prior to running up any GUI
-      for (var arg in process.argv) {
+      for (const arg of process.argv) {
         if (parsePositionalOnly)
         {
-          App.cliArguments.push(process.argv[arg]);
+          App.cliArguments.push(arg);
           continue;
         }
-        switch(process.argv[arg]) {
+        switch(arg) {
         case '--version': {
             let minskyVersion=backendSync("minsky.minskyVersion");
             if (minskyVersion===version)
@@ -235,10 +235,10 @@ export default class App {
           parsePositionalOnly=true;
           break;
         default:
-          if (process.argv[arg][0]==='-')
+          if (arg[0]==='-')
           {
             // pass unknown command line flags through to Electron/Chromium
-            const flag=process.argv[arg].replace(/^-+/, '');
+            const flag=arg.replace(/^-+/, '');
             if (flag.length>0)
             {
               const splitAt=flag.indexOf('=');
@@ -250,7 +250,7 @@ export default class App {
           }
           else
             // pass argument on for an initial model load
-            App.cliArguments.push(process.argv[arg]);
+            App.cliArguments.push(arg);
           break;
         }
       }
