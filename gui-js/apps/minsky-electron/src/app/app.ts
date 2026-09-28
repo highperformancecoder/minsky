@@ -207,8 +207,15 @@ export default class App {
 
     // when run from npm start, argv[0] is 'electron'
     if (process.argv[0].slice(-8)!=='electron')
+    {
+      let parsePositionalOnly=false;
       // process CLI options prior to running up any GUI
       for (var arg in process.argv) {
+        if (parsePositionalOnly)
+        {
+          App.cliArguments.push(process.argv[arg]);
+          continue;
+        }
         switch(process.argv[arg]) {
         case '--version': {
             let minskyVersion=backendSync("minsky.minskyVersion");
@@ -223,6 +230,9 @@ export default class App {
               process.exit(1);
             }
           }
+          break;
+        case '--':
+          parsePositionalOnly=true;
           break;
         default:
           if (process.argv[arg][0]==='-')
@@ -244,6 +254,7 @@ export default class App {
           break;
         }
       }
+    }
 
     // we pass the Electron.App object and the
     // Electron.BrowserWindow into this function
