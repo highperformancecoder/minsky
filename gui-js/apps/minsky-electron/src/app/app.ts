@@ -235,7 +235,7 @@ export default class App {
           parsePositionalOnly=true;
           break;
         default:
-          if (arg[0]==='-')
+          if (arg.startsWith('--'))
           {
             // pass unknown command line flags through to Electron/Chromium
             const flag=arg.replace(/^-+/, '');
@@ -248,7 +248,7 @@ export default class App {
                 app.commandLine.appendSwitch(flag);
             }
           }
-          else
+          else if (arg[0]!=='-')
             // pass argument on for an initial model load
             App.cliArguments.push(arg);
           break;
