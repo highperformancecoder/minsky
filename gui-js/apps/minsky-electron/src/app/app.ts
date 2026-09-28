@@ -225,8 +225,21 @@ export default class App {
           }
           break;
         default:
-          // pass argument on for an initial model load
-          if (process.argv[arg][0]!=='-')
+          if (process.argv[arg][0]==='-')
+          {
+            // pass unknown command line flags through to Electron/Chromium
+            const flag=process.argv[arg].replace(/^-+/, '');
+            if (flag.length>0)
+            {
+              const splitAt=flag.indexOf('=');
+              if (splitAt>=0)
+                app.commandLine.appendSwitch(flag.slice(0, splitAt), flag.slice(splitAt+1));
+              else
+                app.commandLine.appendSwitch(flag);
+            }
+          }
+          else
+            // pass argument on for an initial model load
             App.cliArguments.push(process.argv[arg]);
           break;
         }
