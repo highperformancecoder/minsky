@@ -8,6 +8,23 @@
     Sign Out
   </button>
   } @else {
+  @if (needsSecondFactor) {
+  <p class="verification-message">We sent a verification code to your email. Enter it below to finish signing in.</p>
+  <form [formGroup]="secondFactorForm" (ngSubmit)="onSubmitSecondFactor()">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Verification code</mat-label>
+      <input matInput type="text" formControlName="code" autocomplete="one-time-code" />
+      <mat-error *ngIf="code?.hasError('required')">Verification code is required.</mat-error>
+    </mat-form-field>
+
+    <p *ngIf="errorMessage" class="error-message" role="alert">{{ errorMessage }}</p>
+
+    <button mat-raised-button color="primary" type="submit" [disabled]="secondFactorForm.invalid || isLoading" class="full-width">
+      <mat-spinner *ngIf="isLoading" diameter="20"></mat-spinner>
+      Verify
+    </button>
+  </form>
+  } @else {
   @if (oauthStrategies.length) {
   <div class="social-row">
     @for (strategy of oauthStrategies; track strategy) {
@@ -96,5 +113,6 @@
       Sign In
     </button>
   </form>
+  }
   }
 </div>
