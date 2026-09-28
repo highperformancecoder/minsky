@@ -9,6 +9,10 @@ describe('requiresNoSandboxOnLinux', () => {
     expect(requiresNoSandboxOnLinux('linux', 'ID=ubuntu\nVERSION_ID="26.04"\n', false)).toBe(true);
   });
 
+  it('normalizes quoted/mixed-case Ubuntu distro IDs', () => {
+    expect(requiresNoSandboxOnLinux('linux', 'ID="Ubuntu"\nVERSION_ID="24.04"\n', false)).toBe(true);
+  });
+
   it('returns false for Ubuntu 24.04 when setuid sandbox is available', () => {
     expect(requiresNoSandboxOnLinux('linux', 'ID=ubuntu\nVERSION_ID="24.04"\n', true)).toBe(false);
   });

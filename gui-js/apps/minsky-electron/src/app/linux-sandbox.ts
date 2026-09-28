@@ -9,7 +9,7 @@ function parseOsReleaseValue(osReleaseContent: string, key: string): string {
 export function requiresNoSandboxOnLinux(
   platform=process.platform,
   osReleaseContent?: string,
-  hasUsableSandbox=hasUsableChromeSandbox()
+  hasUsableSandbox?: boolean
 ): boolean {
   if (platform!=='linux') return false;
   try {
@@ -22,6 +22,8 @@ export function requiresNoSandboxOnLinux(
     const distro=parseOsReleaseValue(osReleaseContent, 'ID');
     const versionId=parseOsReleaseValue(osReleaseContent, 'VERSION_ID');
     const versionMajor=Number(versionId.split('.')[0]);
+    if (hasUsableSandbox===undefined)
+      hasUsableSandbox=hasUsableChromeSandbox();
     return distro==='ubuntu' && Number.isFinite(versionMajor) && versionMajor>=24 && !hasUsableSandbox;
   } catch {
     return false;
