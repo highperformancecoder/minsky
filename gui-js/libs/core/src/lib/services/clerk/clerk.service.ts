@@ -156,7 +156,9 @@ export class ClerkService {
       if (enabled.length > 0) return enabled;
     }
     // Fallback: common providers
-    return ['oauth_github', 'oauth_google', 'oauth_apple', 'oauth_microsoft'];
+    // TODO: enable Apple and Microsoft OAuth providers
+    //return ['oauth_github', 'oauth_google', 'oauth_apple', 'oauth_microsoft'];
+    return ['oauth_github', 'oauth_google'];
   }
 
   async sendTokenToElectron(): Promise<void> {
