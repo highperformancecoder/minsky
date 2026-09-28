@@ -769,7 +769,7 @@ void VariableBase::draw(const ICairoShim& cairoShim) const
             auto l_cachedExponent=cachedExponent;
             auto val=engExp();    
             if (!l_cachedMantissa || l_cachedMantissa->context()!=cairoShim.context() ||
-               value()!=cachedValue)
+               value()!=cachedValue || cachedMaxSliderSteps!=vv->maxSliderSteps())
               {
          
                 cachedValue=value();

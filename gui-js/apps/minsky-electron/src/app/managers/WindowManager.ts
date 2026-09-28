@@ -409,10 +409,15 @@ export class WindowManager {
     });
   }
 
-  static openOAuthPopup(oauthUrl: string): void {
+  // Opens the OAuth provider's verification URL in a popup and resolves with the
+  // callback URL Clerk redirects to once authentication completes. This is invoked
+  // as the `open()` half of the OAuthTransport passed to Clerk (see ClerkService),
+  // which is how clerk-js completes OAuth flows in environments where it can't rely
+  // on a same-document redirect (e.g. this Electron popup, or a custom URL scheme).
+  static openOAuthPopup(oauthUrl: string): Promise<string> {
     if (WindowManager._oauthPopup && !WindowManager._oauthPopup.isDestroyed()) {
       WindowManager._oauthPopup.focus();
-      return;
+      return Promise.reject(new Error('An OAuth sign-in is already in progress.'));
     }
     const popup = WindowManager.createWindow({
       width: 600,
@@ -423,24 +428,30 @@ export class WindowManager {
     WindowManager._oauthPopup = popup;
 
     // Intercept the OAuth callback redirect. Clerk redirects the popup to
-    // http://localhost/oauth-callback?... when authentication completes.
-    // We catch it before the browser makes any request to localhost, then
-    // forward the full URL to the login window renderer for session finalisation.
+    // http://localhost/oauth-callback?... when authentication completes. We catch it
+    // before the browser makes any request to localhost, since nothing listens there.
     const CALLBACK_PREFIX = 'http://localhost/oauth-callback';
     let callbackCaptured = false;
-    const handleCallbackNavigation = (event: Electron.Event, url: string) => {
-      if (!callbackCaptured && url.startsWith(CALLBACK_PREFIX)) {
-        callbackCaptured = true;
-        event.preventDefault();
-        WindowManager.getLoginWindow()?.webContents.send(events.OAUTH_CALLBACK, url);
-        setTimeout(() => WindowManager.closeOAuthPopup(), 0);
-      }
-    };
-    popup.webContents.on('will-navigate', handleCallbackNavigation as any);
-    popup.webContents.on('will-redirect', handleCallbackNavigation as any);
 
-    popup.loadURL(oauthUrl);
-    popup.on('closed', () => { WindowManager._oauthPopup = null; });
+    return new Promise<string>((resolve, reject) => {
+      const handleCallbackNavigation = (event: Electron.Event, url: string) => {
+        if (!callbackCaptured && url.startsWith(CALLBACK_PREFIX)) {
+          callbackCaptured = true;
+          event.preventDefault();
+          resolve(url);
+          setTimeout(() => WindowManager.closeOAuthPopup(), 0);
+        }
+      };
+      popup.webContents.on('will-navigate', handleCallbackNavigation as any);
+      popup.webContents.on('will-redirect', handleCallbackNavigation as any);
+
+      popup.on('closed', () => {
+        WindowManager._oauthPopup = null;
+        if (!callbackCaptured) reject(new Error('Sign-in was cancelled.'));
+      });
+
+      popup.loadURL(oauthUrl);
+    });
   }
 
   static closeOAuthPopup(): void {

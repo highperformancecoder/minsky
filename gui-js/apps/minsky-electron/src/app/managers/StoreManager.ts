@@ -19,6 +19,7 @@ interface MinskyStore {
   defaultDataDirectory: string;
   ravelPlugin: DownloadDetails|null; // used for post installation installation of Ravel
   authToken?: string;
+  clerkClientJwt?: string;
 }
 
 class StoreManager {
