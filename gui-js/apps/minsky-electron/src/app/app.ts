@@ -16,6 +16,7 @@ import { ApplicationMenuManager } from './managers/ApplicationMenuManager';
 import { BookmarkManager } from './managers/BookmarkManager';
 import { CommandsManager } from './managers/CommandsManager';
 import { HelpFilesManager } from './managers/HelpFilesManager';
+import { requiresNoSandboxOnLinux } from './linux-sandbox';
 import { RecentFilesManager } from './managers/RecentFilesManager';
 import { StoreManager } from './managers/StoreManager';
 import { WindowManager } from './managers/WindowManager';
@@ -238,6 +239,11 @@ export default class App {
     // makes the code easier to write tests for
     App.BrowserWindow = browserWindow;
     App.application = app;
+    
+    if (requiresNoSandboxOnLinux()) {
+      app.commandLine.appendSwitch('no-sandbox');
+      log.info('Enabled --no-sandbox for Ubuntu 24.04+ compatibility');
+    }
 
     // Rendering was not working on some window's machines without disabling gpu
     if (process.platform === 'win32') {
