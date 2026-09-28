@@ -240,7 +240,7 @@ export default class App {
     App.application = app;
 
     // Rendering was not working on some window's machines without disabling gpu
-    if (process.platform === 'win32') {
+    /*if (process.platform === 'win32')*/ {
       app.commandLine.appendSwitch('disable-gpu');
       app.commandLine.appendSwitch('disable-direct-composition');
     }
