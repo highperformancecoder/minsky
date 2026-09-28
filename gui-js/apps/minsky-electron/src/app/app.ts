@@ -28,7 +28,7 @@ export default class App {
   static application: Electron.App;
   static BrowserWindow;
   static directlyClose = false;
-  static cliArguments=[]; // first argument passed on command line
+  static cliArguments=[]; // positional arguments passed on command line
   
   private static onWindowAllClosed() {
       App.application.quit();
@@ -66,12 +66,12 @@ export default class App {
     await App.initMenu();
     App.loadMainWindow();
     backend('minsky.popFlags');
-    if (App.cliArguments.length>1) {
-      if (!isAbsolute(App.cliArguments[1]))
-        App.cliArguments[1]=join(initialWorkingDirectory,App.cliArguments[1]);
+    if (App.cliArguments.length>0) {
+      if (!isAbsolute(App.cliArguments[0]))
+        App.cliArguments[0]=join(initialWorkingDirectory,App.cliArguments[0]);
 	try
 	{
-          await CommandsManager.openNamedFile(App.cliArguments[1]);
+          await CommandsManager.openNamedFile(App.cliArguments[0]);
           BookmarkManager.updateBookmarkList();
 	}
 	catch (err) {
@@ -208,9 +208,10 @@ export default class App {
     // when run from npm start, argv[0] is 'electron'
     if (process.argv[0].slice(-8)!=='electron')
     {
+      const cliArgs=process.argv.slice(1);
       let parsePositionalOnly=false;
       // process CLI options prior to running up any GUI
-      for (const arg of process.argv) {
+      for (const arg of cliArgs) {
         if (parsePositionalOnly)
         {
           App.cliArguments.push(arg);
