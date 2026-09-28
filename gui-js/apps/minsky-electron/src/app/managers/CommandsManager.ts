@@ -45,7 +45,7 @@ function semVerLess(x: string, y: string): boolean {
     );
 }
 
-const backendAPI='https://minskybe-x7dj1.sevalla.app/api';
+const backendAPI='https://minsky-be.ravelation.net/api';
 // perform a call on the backend API, returning the JSON encoded result
 // options is passed to the constructor of a ClienRequest object https://www.electronjs.org/docs/latest/api/client-request#requestendchunk-encoding-callback
 async function callBackendAPI(options: string|Object, token: string) {
