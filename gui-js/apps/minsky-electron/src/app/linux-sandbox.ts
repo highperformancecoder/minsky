@@ -20,11 +20,13 @@ export function requiresNoSandboxOnLinux(
       osReleaseContent=readFileSync(osRelease, 'utf8');
     }
     const distro=parseOsReleaseValue(osReleaseContent, 'ID');
+    const distroLike=parseOsReleaseValue(osReleaseContent, 'ID_LIKE');
     const versionId=parseOsReleaseValue(osReleaseContent, 'VERSION_ID');
     const versionMajor=Number(versionId.split('.')[0]);
+    const isUbuntuLike=distro==='ubuntu' || distroLike.split(/\s+/).includes('ubuntu');
     if (hasUsableSandbox===undefined)
       hasUsableSandbox=hasUsableChromeSandbox();
-    return distro==='ubuntu' && Number.isFinite(versionMajor) && versionMajor>=24 && !hasUsableSandbox;
+    return isUbuntuLike && Number.isFinite(versionMajor) && versionMajor>=24 && !hasUsableSandbox;
   } catch {
     return false;
   }

@@ -25,6 +25,10 @@ describe('requiresNoSandboxOnLinux', () => {
     expect(requiresNoSandboxOnLinux('linux', 'ID=debian\nVERSION_ID="12"\n', false)).toBe(false);
   });
 
+  it('returns true for Ubuntu-like distro IDs on Linux 24+', () => {
+    expect(requiresNoSandboxOnLinux('linux', 'ID=linuxmint\nID_LIKE="ubuntu debian"\nVERSION_ID="24.04"\n', false)).toBe(true);
+  });
+
   it('returns false for non-Linux platforms', () => {
     expect(requiresNoSandboxOnLinux('darwin', 'ID=ubuntu\nVERSION_ID="24.04"\n', false)).toBe(false);
   });
