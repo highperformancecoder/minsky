@@ -28,7 +28,7 @@ export default class App {
   static application: Electron.App;
   static BrowserWindow;
   static directlyClose = false;
-  static cliArguments=[]; // first argument passed on command line
+  static cliArguments=[]; // positional arguments passed on command line
   
   private static onWindowAllClosed() {
       App.application.quit();
@@ -66,12 +66,12 @@ export default class App {
     await App.initMenu();
     App.loadMainWindow();
     backend('minsky.popFlags');
-    if (App.cliArguments.length>1) {
-      if (!isAbsolute(App.cliArguments[1]))
-        App.cliArguments[1]=join(initialWorkingDirectory,App.cliArguments[1]);
+    if (App.cliArguments.length>0) {
+      if (!isAbsolute(App.cliArguments[0]))
+        App.cliArguments[0]=join(initialWorkingDirectory,App.cliArguments[0]);
 	try
 	{
-          await CommandsManager.openNamedFile(App.cliArguments[1]);
+          await CommandsManager.openNamedFile(App.cliArguments[0]);
           BookmarkManager.updateBookmarkList();
 	}
 	catch (err) {
@@ -207,9 +207,17 @@ export default class App {
 
     // when run from npm start, argv[0] is 'electron'
     if (process.argv[0].slice(-8)!=='electron')
+    {
+      const cliArgs=process.argv.slice(1);
+      let parsePositionalOnly=false;
       // process CLI options prior to running up any GUI
-      for (var arg in process.argv) {
-        switch(process.argv[arg]) {
+      for (const arg of cliArgs) {
+        if (parsePositionalOnly)
+        {
+          App.cliArguments.push(arg);
+          continue;
+        }
+        switch(arg) {
         case '--version': {
             let minskyVersion=backendSync("minsky.minskyVersion");
             if (minskyVersion===version)
@@ -224,13 +232,30 @@ export default class App {
             }
           }
           break;
+        case '--':
+          parsePositionalOnly=true;
+          break;
         default:
-          // pass argument on for an initial model load
-          if (process.argv[arg][0]!=='-')
-            App.cliArguments.push(process.argv[arg]);
+          if (arg.startsWith('--'))
+          {
+            // pass unknown command line flags through to Electron/Chromium
+            const flag=arg.replace(/^-+/, '');
+            if (flag.length>0)
+            {
+              const splitAt=flag.indexOf('=');
+              if (splitAt>=0)
+                app.commandLine.appendSwitch(flag.slice(0, splitAt), flag.slice(splitAt+1));
+              else
+                app.commandLine.appendSwitch(flag);
+            }
+          }
+          else if (arg[0]!=='-')
+            // pass argument on for an initial model load
+            App.cliArguments.push(arg);
           break;
         }
       }
+    }
 
     // we pass the Electron.App object and the
     // Electron.BrowserWindow into this function
