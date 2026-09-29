@@ -166,7 +166,7 @@ void macOSXRedraw(RenderNativeWindow& window,std::recursive_mutex& cmdMutex)
     GetScaleFactorForMonitor(MonitorFromPoint(POINT{0,0}, MONITOR_DEFAULTTOPRIMARY), &scaleFactor);
     return int(scaleFactor)/100.0;
 #else
-    return 1;
+    return minsky().fontScale();
 #endif
   }
 

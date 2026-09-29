@@ -204,7 +204,8 @@ export default class App {
   }
 
   static main(app: Electron.App, browserWindow: typeof BrowserWindow) {
-
+    let setDefaultDisplayScale=true;
+    
     // when run from npm start, argv[0] is 'electron'
     if (process.argv[0].slice(-8)!=='electron')
     {
@@ -236,6 +237,13 @@ export default class App {
           parsePositionalOnly=true;
           break;
         default:
+          if (arg.startsWith('--force-device-scale-factor')) {
+            setDefaultDisplayScale=false;
+            // TODO - how to scale and set the canvas for non-Windows platforms
+            // const splitAt=arg.indexOf('=');
+            // if (splitAt>0)
+            //   backendSync('minsky.fontScale', +arg.slice(splitAt+1));
+          }
           if (arg.startsWith('--'))
           {
             // pass unknown command line flags through to Electron/Chromium
@@ -273,13 +281,15 @@ export default class App {
     App.application.commandLine.appendSwitch('high-dpi-support', '1');
     // This probably supports high-res fonts, but we don't know exactly what implications it has!
 
-    //This effects how display scaling is handled -  if set to 1, then it will ignore the scale factor (always set it to 1).
-    // Typically, effects are visible on display resolutions > 2MP. Electron seems to scale down its window
-    // when native display resolution is > 2MP by default. If we force to 1, it will not scale down
-    let displayScale=backendSync('minsky.canvas.scaleFactor');
-    App.application.commandLine.appendSwitch('force-device-scale-factor', displayScale.toString());
-    // invert the effect of display scaling on canvas fonts.
-    backendSync('minsky.fontScale', (1/displayScale));
+    if (setDefaultDisplayScale) {
+      //This effects how display scaling is handled -  if set to 1, then it will ignore the scale factor (always set it to 1).
+      // Typically, effects are visible on display resolutions > 2MP. Electron seems to scale down its window
+      // when native display resolution is > 2MP by default. If we force to 1, it will not scale down
+      let displayScale=backendSync('minsky.canvas.scaleFactor');
+      App.application.commandLine.appendSwitch('force-device-scale-factor', displayScale.toString());
+      // invert the effect of display scaling on canvas fonts.
+      backendSync('minsky.fontScale', (1/displayScale));
+    }
     loadResources();
     sanityCheck();
     
