@@ -199,7 +199,7 @@
     "@angular/forms": "^21.2.19",
     "@angular/platform-browser": "^21.2.19",
     "@angular/platform-browser-dynamic": "^21.2.19",
-    "@angular/router": "^21.2.19",
+    "@angular/router": "^21.2.24",
     "@clerk/clerk-js": "^6.3.3",
     "bindings": "^1.5.0",
     "call-bind-apply-helpers": "^1.0.2",
