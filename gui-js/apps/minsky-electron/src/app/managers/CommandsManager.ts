@@ -1247,7 +1247,7 @@ export class CommandsManager {
   }
 
   // handler for downloading Ravel and installing it
-  static downloadRavel(event,item,webContents,asset: DownloadDetails=null) {
+  static downloadRavel(event,item,webContents,frame,asset: DownloadDetails=null) {
     
     switch (process.platform) {
     case 'win32':
@@ -1315,7 +1315,7 @@ export class CommandsManager {
   }
 
   // handler for downloading Minsky
-  static downloadMinsky(event,item,webContents,asset: DownloadDetails=null) {
+  static downloadMinsky(event,item,webContents,webFrame,asset: DownloadDetails=null) {
     item.setSavePath(join(tmpdir(),item.getFilename()));
 
     let progress=new ProgressBar({text:"Downloading Ravel application",value: 0, indeterminate:false, closeOnComplete: true,});
@@ -1501,6 +1501,7 @@ export class CommandsManager {
       const installables=await window.webContents.executeJavaScript('document.getElementById("installables")?.innerText');
       if (installables) {
         let params=new URLSearchParams(installables);
+
         let minskyFile=params.get('minsky-asset');
         let ravelFile=params.get('ravel-asset');
         if (minskyFile && installCase===InstallCase.theLot) {
