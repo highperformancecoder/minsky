@@ -6,6 +6,7 @@ import {
   VariableBase,
 } from '@minsky/shared';
 import {
+  BrowserWindow,
   dialog,
   Menu,
   MenuItem,
@@ -365,6 +366,21 @@ export class ApplicationMenuManager {
     };
   }
 
+  /**
+   * On macOS the application menu (and its Cmd-X/C/V accelerators) is
+   * global, so it intercepts clipboard shortcuts even when a popup window
+   * (eg the sign-in dialog) has focus. If the focused window is not the
+   * main canvas window, apply the clipboard operation to its web contents
+   * instead of the Minsky canvas. Returns true if handled.
+   */
+  private static forwardToPopup(op: 'cut' | 'copy' | 'paste'): boolean {
+    const focused = BrowserWindow.getFocusedWindow();
+    if (!focused || focused === WindowManager.getMainWindow())
+      return false;
+    focused.webContents[op]();
+    return true;
+  }
+
   private static getEditMenu(): MenuItemConstructorOptions {
     return {
       label: 'Edit',
@@ -383,21 +399,24 @@ export class ApplicationMenuManager {
           label: 'Cut',
           accelerator: 'CmdOrCtrl + X',
           async click() {
-            await CommandsManager.cut();
+            if (!ApplicationMenuManager.forwardToPopup('cut'))
+              await CommandsManager.cut();
           },
         },
         {
           label: 'Copy',
           accelerator: 'CmdOrCtrl + C',
           async click() {
-            await CommandsManager.copy();
+            if (!ApplicationMenuManager.forwardToPopup('copy'))
+              await CommandsManager.copy();
           },
         },
         {
           label: 'Paste',
           accelerator: 'CmdOrCtrl + V',
           async click() {
-            await CommandsManager.paste();
+            if (!ApplicationMenuManager.forwardToPopup('paste'))
+              await CommandsManager.paste();
           },
         },
         {
