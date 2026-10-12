@@ -216,5 +216,9 @@
     "utf8": "^3.0.0",
     "webpack-node-externals": "^3.0.0",
     "zone.js": "^0.15.1"
+  },
+  "comment: this override allows this package to be bumped without also bumping nx to 23": "",
+  "overrides": {
+    "smol-toml": "^1.9.0"
   }
 }
