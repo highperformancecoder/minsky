@@ -48,10 +48,9 @@
 using namespace boost::locale::conv;
 
 using namespace classdesc;
-using namespace ecolab;
+using namespace mansoura;
 
 using namespace minsky;
-using namespace ecolab::cairo;
 
 void VariableBase::addPorts()
 {
@@ -602,8 +601,8 @@ bool VariableBase::miniPlotEnabled(bool enabled)
 {
   if (enabled)
     {
-      miniPlot=make_shared<ecolab::Plot>();
-      miniPlot->plotType=ecolab::Plot::PlotType::bar;
+      miniPlot=make_shared<mansoura::Plot>();
+      miniPlot->plotType=mansoura::Plot::PlotType::bar;
     }
   else
     miniPlot=nullptr;
@@ -706,7 +705,7 @@ bool VariableBase::enableSlider(bool x) const
   return false;
 }
 
-void VariableBase::draw(const ICairoShim& cairoShim) const
+void VariableBase::draw(const IMansoura& cairoShim) const
 {
   auto [angle,flipped]=rotationAsRadians();
   const float z=zoomFactor();
@@ -727,7 +726,7 @@ void VariableBase::draw(const ICairoShim& cairoShim) const
   const double h=std::max(l_cachedNameRender->height(), 0.5f*iHeight());
   const double hoffs=l_cachedNameRender->top();
   
-  auto cairo=dynamic_cast<const CairoShimCairo&>(cairoShim)._internalGetCairoContext();
+  auto cairo=dynamic_cast<const MansouraCairo&>(cairoShim)._internalGetCairoContext();
  
   unique_ptr<cairo::Path> clipPath;
   {
@@ -755,7 +754,7 @@ void VariableBase::draw(const ICairoShim& cairoShim) const
             }
           cairoShim.save();
           cairoShim.translate(-w,-h);
-          miniPlot->draw(cairo,2*w,2*h);
+          miniPlot->draw(cairoShim,2*w,2*h);
           cairoShim.restore();
         }
       catch (...) {} // ignore errors in obtaining values
@@ -769,7 +768,7 @@ void VariableBase::draw(const ICairoShim& cairoShim) const
             auto l_cachedExponent=cachedExponent;
             auto val=engExp();    
             if (!l_cachedMantissa || l_cachedMantissa->context()!=cairoShim.context() ||
-               value()!=cachedValue)
+               value()!=cachedValue || cachedMaxSliderSteps!=vv->maxSliderSteps())
               {
          
                 cachedValue=value();
@@ -803,7 +802,7 @@ void VariableBase::draw(const ICairoShim& cairoShim) const
             cairoShim.moveTo(r.x(w-mantissaBB.width-2,-h-hoffs+2),
                              r.y(w-mantissaBB.width-2,-h-hoffs+2));
             {
-              CairoShimSave cs(cairoShim);
+              PreserveContext cs(cairoShim);
               cairoShim.rotate(angle+(flipped? M_PI:0));
               l_cachedMantissa->show();
             }
@@ -812,7 +811,7 @@ void VariableBase::draw(const ICairoShim& cairoShim) const
               {
                 auto exponentBB=l_cachedExponent->extents();
                 cairoShim.moveTo(r.x(w-exponentBB.width-2,0),r.y(w-exponentBB.width-2,0));
-                CairoShimSave cs(cairoShim);
+                PreserveContext cs(cairoShim);
                 cairoShim.rotate(angle+(flipped? M_PI:0));
                 l_cachedExponent->show();
               }

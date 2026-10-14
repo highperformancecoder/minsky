@@ -32,7 +32,6 @@
 #include "progress.h"
 #include "minsky_epilogue.h"
 using namespace std;
-using namespace ecolab::cairo;
 using namespace mansoura;
 
 // size of the top and bottom margins of the group icon
@@ -986,15 +985,15 @@ namespace minsky
                   cairoShim.rotate(M_PI);  // rotate plot to keep it right way up.
                 }
               // propagate plot type to underling ecolab::Plot
-              auto& pt=const_cast<Plot*>(static_cast<const Plot*>(displayPlot.get()))->plotType;
+              auto& pt=const_cast<mansoura::Plot*>(static_cast<const mansoura::Plot*>(displayPlot.get()))->plotType;
               switch (displayPlot->plotType)
                 {
-                case PlotWidget::line: pt=Plot::line; break;
-                case PlotWidget::bar:  pt=Plot::bar;  break;
+                case PlotWidget::line: 
+                case PlotWidget::bar:
+                  pt=displayPlot->plotType;  break;
                 default: break;
                 }
-              // Plot::draw needs cairo_t*
-              displayPlot->Plot::draw(cairo, width, height);
+              displayPlot->Plot::draw(cairoShim, width, height);
               cairoShim.restore();
             }
           else

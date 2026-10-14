@@ -255,7 +255,7 @@ int main()
   api.addClass<civita::XVector>();
   api.addClass<CSVDialog>();
   api.addClass<DataSpecSchema>();
-  api.addClass<ecolab::Plot::LineStyle>();
+  api.addClass<mansoura::Plot::LineStyle>();
   api.addClass<EngNotation>();
   api.addClass<EventInterface>();
   api.addClass<GroupItems>();

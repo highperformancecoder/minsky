@@ -22,6 +22,7 @@
 #include "noteBase.h"
 #include "intrusiveMap.h"
 #include "IMansoura.h"
+#include "IMansoura.cd"
 
 #include <error.h>
 #include <arrays.h>

@@ -482,7 +482,7 @@ namespace minsky
         // TODO - maybe move this stuff into update()
         const Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR, nullptr));
         const_cast<GodleyTableEditor&>(editor).zoomFactor=1;
-        const_cast<GodleyTableEditor&>(editor).draw(surf.cairo());
+        const_cast<GodleyTableEditor&>(editor).draw(cairoShim);
         const_cast<GodleyTableEditor&>(editor).zoomFactor=min((w-leftMargin()-2*border*z)/surf.width(),(h-bottomMargin()-2*border*z-titleOffs())/surf.height());
         const_cast<GodleyTableEditor&>(editor).draw(cairoShim);
         titley=-0.5*h;

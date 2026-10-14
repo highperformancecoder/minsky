@@ -127,7 +127,7 @@ namespace minsky
           cairoShim.closePath();        
         }
     
-      auto cairo=dynamic_cast<const CairoShimCairo&>(cairoShim)._internalGetCairoContext();
+      auto cairo=dynamic_cast<const MansouraCairo&>(cairoShim)._internalGetCairoContext();
       cairo::Path clipPath(cairo);
 
       double x0=r, y0=0, x1=l, y1=numPorts() > 2? -h+3: 0,

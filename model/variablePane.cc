@@ -30,6 +30,7 @@
 #include "minsky_epilogue.h"
 #include <stdexcept>
 using namespace std;
+using namespace mansoura;
 
 namespace minsky
 {
@@ -39,7 +40,7 @@ namespace minsky
     const ecolab::cairo::Surface surf
       (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
     cairo_move_to(surf.cairo(),0,0);
-    CairoShimCairo shim(surf.cairo());
+    MansouraCairo shim(surf.cairo());
     RenderVariable rv(*this->var, shim);
     rv.draw();
     double l,t;
@@ -49,7 +50,7 @@ namespace minsky
   void VariablePaneCell::show()
   {
     if (!cachedCairo || !var || var->type()==VariableType::undefined) return;
-    CairoShimCairo shim(cachedCairo);
+    MansouraCairo shim(cachedCairo);
     RenderVariable rv(*var, shim);
     const ecolab::cairo::CairoSave cs(cachedCairo);
     cairo_translate(cachedCairo,0.5*m_width,0.5*m_height);

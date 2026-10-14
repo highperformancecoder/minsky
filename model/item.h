@@ -27,6 +27,7 @@
 #include "str.h"
 #include "polyRESTProcessBase.h"
 #include "IMansoura.h"
+#include "IMansoura.cd"
 
 #include <json_pack_base.h>
 

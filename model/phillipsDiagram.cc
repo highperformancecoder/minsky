@@ -111,13 +111,13 @@ namespace minsky
       {
         MansouraCairo shim(cairo);
         const PreserveContext cs(shim);
-        mans.identityMatrix();
-        mans.translate(i.second.x()+x, i.second.y()+y);
+        shim.identityMatrix();
+        shim.translate(i.second.x()+x, i.second.y()+y);
         i.second.draw(shim);
       }
     for (auto& i: flows)
       {
-        CairoShimCairo shim(cairo);
+        MansouraCairo shim(cairo);
         i.second.draw(shim,true);
       }
     return true;

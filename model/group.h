@@ -20,6 +20,7 @@
 #ifndef GROUP_H
 #define GROUP_H
 #include "SVGItem.h"
+#include "SVGItem.cd"
 #include "callableFunction.h"
 
 #include <assert.h>         // for assert

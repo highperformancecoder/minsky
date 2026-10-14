@@ -26,6 +26,7 @@
 #include "intrusiveMap.h"
 #include "classdesc_access.h"
 #include "SVGItem.h"
+#include "SVGItem.cd"
 #include "group.h"
 #include "valueId.h"
 #include "variableValue.h"

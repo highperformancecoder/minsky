@@ -23,8 +23,7 @@
 #include "switchIcon.rcd"
 #include "mansouraCairo.h"
 #include "minsky_epilogue.h"
-using namespace ecolab::cairo;
-using namespace ecolab;
+using namespace mansoura;
 using namespace std;
 
 namespace minsky
@@ -73,7 +72,7 @@ namespace minsky
     return r;
   } 
 
-  void SwitchIcon::draw(const ICairoShim& cairoShim) const
+  void SwitchIcon::draw(const IMansoura& cairoShim) const
   {
     auto z=zoomFactor();
     const float width=m_width*z, height=m_height*z;
@@ -84,17 +83,17 @@ namespace minsky
     const float w=flipped? -width: width;
     const float o=flipped? -8: 8;
     // output port
-    drawTriangle(cairoShim, 0.5*w, 0, palette[0], flipped? M_PI: 0);
+    drawTriangle(cairoShim, 0.5*w, 0, mansoura::palette[0], flipped? M_PI: 0);
     m_ports[0]->moveTo(x()+0.5*w, y());
     // control port
-    drawTriangle(cairoShim, 0, -0.5*height-8, palette[0], M_PI/2);
+    drawTriangle(cairoShim, 0, -0.5*height-8, mansoura::palette[0], M_PI/2);
     m_ports[1]->moveTo(x(), y()-0.5*height-8);
     const float dy=height/numCases();
     float y1=-0.5*height+0.5*dy;
     // case ports
     for (size_t i=2; i<m_ports.size(); ++i, y1+=dy)
       {
-        drawTriangle(cairoShim, -0.5*w-o, y1, palette[(i-2)%paletteSz], flipped? M_PI: 0);
+        drawTriangle(cairoShim, -0.5*w-o, y1, mansoura::palette[(i-2)%mansoura::paletteSz], flipped? M_PI: 0);
         m_ports[i]->moveTo(x()+-0.5*w-o, y()+y1);
       }
     // draw indicating arrow

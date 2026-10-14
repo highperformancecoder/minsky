@@ -23,7 +23,7 @@
 #include "selection.h"
 #include "lasso.h"
 #include "userFunction.h"
-#include <pango.h>
+#include "ecolab/include/pango.h"
 #include "minsky_epilogue.h"
 using namespace ecolab;
 using ecolab::cairo::Surface;
@@ -65,7 +65,7 @@ namespace MathDAG
     // move current point to RHS of text, and returns the height
     double print(cairo_t* cairo, const string& text, Anchor anchor)
     {
-      Pango pango(cairo);
+      ecolab::Pango pango(cairo);
       {
         const CairoSave cs(cairo);
         pango.setMarkup(text);
@@ -92,7 +92,7 @@ namespace MathDAG
  
       RecordingSurface r;
       x(r);
-      Pango pango(s.cairo());
+      ecolab::Pango pango(s.cairo());
       const double oldFs=pango.getFontSize();
       pango.setFontSize(r.height());
       pango.setMarkup(left);
@@ -143,7 +143,7 @@ namespace MathDAG
     double x, y; // starting position of current line
     cairo_get_current_point(dest.cairo(),&x,&y);
     const double origin=-y;
-    Pango den(dest.cairo());
+    ecolab::Pango den(dest.cairo());
     den.setMarkup("dt");
 
     const double fontHeight=30;
@@ -173,7 +173,7 @@ namespace MathDAG
                  latexToPango(latexInit(i->init)),Anchor::nw);   
         
         // differential equation
-        Pango num(dest.cairo());
+        ecolab::Pango num(dest.cairo());
         num.setMarkup("d"+latexToPango(mathrm(i->name)));
         double lineSpacing=num.height()+den.height()+2;
 
@@ -398,7 +398,7 @@ namespace MathDAG
       RecordingSurface r;
       arguments[0][0]->render(r);
 
-      Pango pango(s.cairo());
+      ecolab::Pango pango(s.cairo());
       const double oldFs=pango.getFontSize();
       pango.setFontSize(r.height());     
       cairo_rel_move_to(s.cairo(),0,-(r.height()-oldFs));
@@ -435,7 +435,7 @@ namespace MathDAG
         arguments[0][0]->render(arg);
 
         // display a scaled surd.
-        Pango pango(surf.cairo());
+        ecolab::Pango pango(surf.cairo());
         {
           const CairoSave cs(surf.cairo());
           const double oldFs=pango.getFontSize();
@@ -566,7 +566,7 @@ namespace MathDAG
       RecordingSurface r;
       arguments[0][0]->render(r);
 
-      Pango pango(s.cairo());
+      ecolab::Pango pango(s.cairo());
       const double oldFs=pango.getFontSize();
       pango.setFontSize(r.height());
       pango.setMarkup("|");
@@ -591,7 +591,7 @@ namespace MathDAG
       RecordingSurface r;
       arguments[0][0]->render(r);
 
-      Pango pango(s.cairo());
+      ecolab::Pango pango(s.cairo());
       const double oldFs=pango.getFontSize();
       pango.setFontSize(r.height());
       pango.setMarkup("⌊");
@@ -653,7 +653,7 @@ namespace MathDAG
       RecordingSurface r;
       arguments[0][0]->render(r);
 
-      Pango pango(s.cairo());
+      ecolab::Pango pango(s.cairo());
       const double oldFs=pango.getFontSize();
       pango.setFontSize(r.height());
       cairo_rel_move_to(s.cairo(),0,-(r.height()-oldFs));

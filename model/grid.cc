@@ -23,11 +23,9 @@
 #include "grid.h"
 #include "variablePane.h"
 #include "lasso.h"
-#include <pango.h>
+#include "ecolab/include/pango.h"
 #include "grid.rcd"
 #include "grid.xcd"
-#include "pango.rcd"
-#include "pango.xcd"
 #include "minsky_epilogue.h"
 #include <algorithm>
 

@@ -29,6 +29,8 @@
 #include "item.rcd"
 #include "noteBase.rcd"
 #include "port.rcd"
+#include "IMansoura.h"
+#include "IMansoura.cd"
 #include "minsky_epilogue.h"
 
 namespace minsky

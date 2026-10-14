@@ -24,6 +24,7 @@
 #include "ravelState.h"
 #include "ravelWrap.h"
 #include "SVGItem.h"
+#include "SVGItem.cd"
 
 namespace minsky
 {

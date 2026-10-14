@@ -19,7 +19,7 @@ import {
   DownloadCSVPayload,
   VariableBase,
 } from '@minsky/shared';
-import { BrowserWindow, dialog, ipcMain } from 'electron';
+import { BrowserWindow, dialog, ipcMain, safeStorage } from 'electron';
 import { BookmarkManager } from '../managers/BookmarkManager';
 import { CommandsManager } from '../managers/CommandsManager';
 import { ContextMenuManager } from '../managers/ContextMenuManager';
@@ -294,6 +294,34 @@ ipcMain.handle(events.SET_AUTH_TOKEN, async (event, token: string | null) => {
   return { success: true };
 });
 
-ipcMain.handle(events.OAUTH_OPEN_POPUP, (event, oauthUrl: string) => {
-  WindowManager.openOAuthPopup(oauthUrl);
+ipcMain.handle(events.OAUTH_OPEN_POPUP, async (event, oauthUrl: string) => {
+  return await WindowManager.openOAuthPopup(oauthUrl);
+});
+
+// Persists the Clerk client JWT that bridges Frontend API requests across the
+// cross-origin renderer/API boundary, where the SameSite=Lax __client cookie
+// Clerk normally relies on gets dropped by the browser (see ClerkService.initialize).
+ipcMain.handle(events.GET_CLERK_CLIENT_JWT, async () => {
+  const stored = StoreManager.store.get('clerkClientJwt');
+  if (!stored) return null;
+  if (safeStorage.isEncryptionAvailable()) {
+    try {
+      return safeStorage.decryptString(Buffer.from(stored, 'latin1'));
+    } catch {
+      return null;
+    }
+  }
+  return stored;
+});
+
+ipcMain.handle(events.SET_CLERK_CLIENT_JWT, async (event, token: string | null) => {
+  if (!token) {
+    StoreManager.store.delete('clerkClientJwt');
+    return { success: true };
+  }
+  StoreManager.store.set(
+    'clerkClientJwt',
+    safeStorage.isEncryptionAvailable() ? safeStorage.encryptString(token).toString('latin1') : token
+  );
+  return { success: true };
 });

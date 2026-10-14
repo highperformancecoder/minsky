@@ -21,7 +21,7 @@
 #include "variable.h"
 #include "cairoItems.h"
 #include "latexMarkup.h"
-#include "pango.h"
+#include "ecolab/include/pango.h"
 #include <timer.h>
 #include <cairo/cairo-ps.h>
 #include <cairo/cairo-pdf.h>
@@ -31,8 +31,8 @@
 #include "CSVTools.xcd"
 #include "itemT.rcd"
 #include "plotOptions.rcd"
-#include "plot.rcd"
-#include "plot.xcd"
+//#include "plot.rcd"
+//#include "plot.xcd"
 #include "tensorInterface.rcd"
 #include "tensorInterface.xcd"
 #include "tensorVal.rcd"
@@ -42,8 +42,7 @@
 
 #include <algorithm>
 #include <numeric>
-using namespace ecolab::cairo;
-using namespace ecolab;
+using namespace mansoura;
 using namespace std;
 using namespace boost;
 using namespace boost::posix_time;
@@ -113,7 +112,7 @@ namespace minsky
         const CairoSave cs(cairo);
         const double fy=titleHeight*iHeight();
         
-        Pango pango(cairo);
+        ecolab::Pango pango(cairo);
         pango.setFontSize(fabs(fy));
         pango.setMarkup(latexToPango(title));   
         cairo_set_source_rgb(cairo,0,0,0);
@@ -172,11 +171,12 @@ namespace minsky
     cairo_set_line_width(cairo,1);
     const double gw=w-2*portSpace, gh=h-portSpace;
 
-    Plot::draw(cairo,gw,gh);
+    MansouraCairo mans(cairo);
+    Plot::draw(mans,gw,gh);
     if (mouseFocus && legend)
       {
         double width,height,x,y;
-        legendSize(x,y,width,height,gw,gh);
+        legendSize(mans,x,y,width,height,gw,gh);
         // following code puts x,y at centre point of legend
         x+=0.5*width;
         const double arrowLength=6;
@@ -199,7 +199,7 @@ namespace minsky
       }
     cs.restore();
 
-    CairoShimCairo cairoShim(cairo);
+    mansoura::MansouraCairo cairoShim(cairo);
     if (mouseFocus)
       {
         drawPorts(cairoShim);
@@ -216,10 +216,10 @@ namespace minsky
 
   }
 
-  void PlotWidget::draw(const ICairoShim& cairoShim) const
+  void PlotWidget::draw(const mansoura::IMansoura& cairoShim) const
   {
     // TODO: Implement properly without cairo_t* delegation
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
+    auto& shimImpl = dynamic_cast<const mansoura::MansouraCairo&>(cairoShim);
     draw(shimImpl._internalGetCairoContext());
   }
   
@@ -382,7 +382,8 @@ namespace minsky
     if (surface.get())
       {
         auto sf=RenderNativeWindow::scaleFactor();
-        Plot::draw(surface->cairo(),width/sf,height/sf);
+        MansouraCairo mans(surface->cairo());
+        Plot::draw(mans,width/sf,height/sf);
         surface->blit();
       }
     return surface.get();
@@ -415,7 +416,8 @@ namespace minsky
       }
 
     double legendWidth, legendHeight, lx, ly;
-    legendSize(lx, ly, legendWidth, legendHeight, z*(iWidth()-2*portSpace), z*(iHeight()-portSpace-yoffs));
+    MansouraCairo mans(surface->cairo());
+    legendSize(mans, lx, ly, legendWidth, legendHeight, z*(iWidth()-2*portSpace), z*(iHeight()-portSpace-yoffs));
     // xx & yy are in plot user coordinates
     const double xx= x-this->x() + z*(0.5*iWidth()-portSpace) - lx;
     const double yy= z*(0.5*iHeight()-portSpace)-y+this->y()  - ly+legendHeight;

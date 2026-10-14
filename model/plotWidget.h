@@ -22,7 +22,8 @@
 #include "renderNativeWindow.h"
 #include "classdesc_access.h"
 #include "latexMarkup.h"
-#include "plot.h"
+#include "mansouraPlot.h"
+#include "mansouraPlot.cd"
 #include "variable.h"
 #include "variableValue.h"
 #include "zoom.h"
@@ -39,7 +40,7 @@ namespace minsky
   using namespace ecolab;
 
   struct PlotWidgetSuper: public ItemT<PlotWidget>,
-                          public ecolab::Plot, public RenderNativeWindow {};
+                          public mansoura::Plot, public RenderNativeWindow {};
 
   /// a container item for a plot widget
   class PlotWidget: public PlotWidgetSuper
@@ -139,17 +140,17 @@ namespace minsky
     /// shadowed label commands to allow latex intepretation
     std::string const& xlabel() const {return m_xlabel;}
     std::string const& xlabel(const std::string& x) {
-      ecolab::Plot::xlabel=latexToPangoNonItalicised(x);
+      mansoura::Plot::xlabel=latexToPangoNonItalicised(x);
       return m_xlabel=x;
     }
     std::string const& ylabel() const {return m_ylabel;}
     std::string const& ylabel(const std::string& x) {
-      ecolab::Plot::ylabel=latexToPangoNonItalicised(x);
+      mansoura::Plot::ylabel=latexToPangoNonItalicised(x);
       return m_ylabel=x;
     }
     std::string const& y1label() const {return m_y1label;}
     std::string const& y1label(const std::string& x) {
-      ecolab::Plot::y1label=latexToPangoNonItalicised(x);
+      mansoura::Plot::y1label=latexToPangoNonItalicised(x);
       return m_y1label=x;
     }
 
@@ -166,7 +167,7 @@ namespace minsky
     /// connect variable \a var to port \a port. 
     void connectVar(const std::shared_ptr<VariableValue>& var, unsigned port);
     void disconnectAllVars();
-    using ecolab::Plot::draw;
+    using mansoura::Plot::draw;
     void draw(const mansoura::IMansoura& cairoShim) const override;
     void requestRedraw(); ///< redraw plot using current data to all open windows
     void redrawWithBounds() override {redraw(0,0,500,500);}    
@@ -203,7 +204,7 @@ namespace minsky
 
     /// export the plotted data as a CSV file
     // implemented as a single argument function here for exposure to TCL
-    void exportAsCSV(const string& filename) {ecolab::Plot::exportAsCSV(filename);}
+    void exportAsCSV(const string& filename) {mansoura::Plot::exportAsCSV(filename);}
 
     void destroyFrame() override {RenderNativeWindow::destroyFrame();}
 

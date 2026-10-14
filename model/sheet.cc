@@ -34,7 +34,7 @@
 #include "minsky_epilogue.h"
 
 using namespace minsky;
-using namespace ecolab;
+using namespace mansoura;
 using namespace std;
 
 // width of draggable border 
@@ -74,7 +74,7 @@ bool Sheet::onResizeHandle(float xx, float yy) const
 }
 
 
-void Sheet::drawResizeHandles(const ICairoShim& cairo) const
+void Sheet::drawResizeHandles(const IMansoura& cairo) const
 {
   auto sf=resizeHandleSize();
   const float w=0.5f*m_width*zoomFactor(), h=0.5f*m_height*zoomFactor();
@@ -272,10 +272,10 @@ void Sheet::computeValue()
 
 namespace {
   /// A pango that clips text to a standard area suitable for numbers
-  struct ClippedPango: public Pango
+  struct ClippedPango: public ecolab::Pango
   {
     double m_width, m_height;
-    ClippedPango(cairo_t* cairo): Pango(cairo) {
+    ClippedPango(cairo_t* cairo): ecolab::Pango(cairo) {
       setText(str(-std::numeric_limits<double>::max()));
       m_width=5+width();
       m_height=height();
@@ -294,7 +294,7 @@ namespace {
 
 void Sheet::draw(cairo_t* cairo) const
 {
-  CairoShimCairo cairoShim(cairo);
+  MansouraCairo cairoShim(cairo);
   auto z=zoomFactor();
   m_ports[0]->moveTo(x()-0.5*m_width*z,y());
   if (mouseFocus)
@@ -331,7 +331,7 @@ void Sheet::draw(cairo_t* cairo) const
   try
     {
       if (!value || !m_ports[0] || m_ports[0]->numWires()==0) return;
-      Pango pango(cairo);
+      ecolab::Pango pango(cairo);
       pango.setFontSize(12.0);
       double x0=-0.5*m_width+border, y0=-0.5*m_height+border;
       const size_t vertDim=value->rank()>1? 1: 0, horizDim=0;
@@ -522,10 +522,10 @@ void Sheet::draw(cairo_t* cairo) const
   cairo_clip(cairo);
 }
 
-void Sheet::draw(const ICairoShim& cairoShim) const
+void Sheet::draw(const IMansoura& cairoShim) const
 {
   // TODO: Implement properly without cairo_t* delegation
-  auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
+  auto& shimImpl = dynamic_cast<const MansouraCairo&>(cairoShim);
   draw(shimImpl._internalGetCairoContext());
 }
 

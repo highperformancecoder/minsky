@@ -8,11 +8,12 @@ using namespace std;
 int main()
 {
   const double width=30, height=10;
-  for (int i=0; i<paletteSz; ++i)
+  mansoura::Plot plot;
+  for (int i=0; i<plot.palette.size(); ++i)
     {
       const cairo::Surface surface(cairo_image_surface_create(CAIRO_FORMAT_ARGB32,width,height));
       auto cr=surface.cairo();
-      auto c=palette[i];
+      auto c=plot.palette[i].colour;
       cairo_set_source_rgba(cr,0.5*c.r,0.5*c.g,0.5*c.b,0.5*c.a);
       cairo_rectangle(cr,0,0,width,height);
       cairo_fill(cr);

@@ -25,6 +25,7 @@
 #include "variableInstanceList.h"
 
 #include <cairo_base.h>
+#include "ecolab/include/pango.h"
 
 #include "schema3.h"
 

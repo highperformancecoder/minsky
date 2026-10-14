@@ -38,7 +38,6 @@
 
 #include <boost/locale.hpp>
 
-using namespace ecolab;
 using namespace mansoura;
 using namespace std;
 using namespace minsky;
@@ -113,7 +112,7 @@ double RenderVariable::handlePos() const
 }
 
 void minsky::drawTriangle
-(cairo_t* cairo, double x, double y, const cairo::Colour& col, double angle)
+(cairo_t* cairo, double x, double y, const Colour& col, double angle)
 {
   const CairoSave cs(cairo);
   cairo_new_path(cairo);
@@ -127,7 +126,7 @@ void minsky::drawTriangle
 }
 
 void minsky::drawTriangle
-(const mansoura::IMansoura& cairoShim, double x, double y, const cairo::Colour& col, double angle)
+(const mansoura::IMansoura& cairoShim, double x, double y, const Colour& col, double angle)
 {
   cairoShim.save();
   cairoShim.newPath();

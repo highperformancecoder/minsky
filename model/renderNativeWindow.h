@@ -23,7 +23,7 @@
 #include "eventInterface.h"
 
 #include <cairoSurfaceImage.h>
-#include <plot.h>
+#include <mansouraPlot.h>
 
 #include <mutex>
 
@@ -44,7 +44,7 @@ namespace minsky
   class RenderNativeWindow : public ecolab::CairoSurface, public EventInterface
   {
   public:
-    static ecolab::cairo::Colour backgroundColour;
+    static mansoura::Colour backgroundColour;
 
     struct RenderFrameArgs
     {

@@ -27,6 +27,7 @@
 #include "handleLockInfo.h"
 #include "renderNativeWindow.h"
 #include "SVGItem.h"
+#include "SVGItem.cd"
 
 namespace minsky 
 {

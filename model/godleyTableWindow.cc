@@ -24,10 +24,13 @@
 #include "selection.h"
 #include "latexMarkup.h"
 #include <pango.h>
+#include "ecolab/include/pango.h"
 
 #include "assetClass.rcd"
 #include "godleyTableWindow.rcd"
 #include "godleyTableWindow.xcd"
+#include "cairo_base.h"
+#include "IMansoura.cd"
 #include "minsky_epilogue.h"
 
 #include <boost/locale.hpp>
@@ -35,7 +38,6 @@
 using namespace std;
 using namespace minsky;
 using namespace mansoura;
-using namespace ecolab::cairo;
 using namespace boost::locale::conv;
 
 #include <cairo/cairo-ps.h>
@@ -65,6 +67,15 @@ namespace
     const PreserveContext cs(mans);
     auto& colour=assetColour[assetClass];
     mans.setSourceRGB(colour.r,colour.g,colour.b);
+    pango.show();
+  }
+
+  // legacy
+  void showAsset(ecolab::Pango& pango, cairo_t* cairo, GodleyAssetClass::AssetClass assetClass)
+  {
+    const CairoSave cs(cairo);
+    auto& colour=assetColour[assetClass];
+    cairo_set_source_rgb(cairo,colour.r,colour.g,colour.b);
     pango.show();
   }
 
@@ -156,7 +167,7 @@ namespace minsky
 
   void GodleyTableEditor::drawCairo(cairo_t* cairo)
   {
-    const ecolab::CairoSave cs(cairo);
+    const ecolab::cairo::CairoSave cs(cairo);
     cairo_scale(cairo,zoomFactor,zoomFactor);
     ecolab::Pango pango(cairo);
     pango.setMarkup("Flows ↓ / Stock Vars →");
@@ -460,7 +471,7 @@ namespace minsky
   int GodleyTableEditor::textIdx(double x) const
   {
     const cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,NULL));
-    Pango pango(surf.cairo());
+    ecolab::Pango pango(surf.cairo());
     if (selectedCellInTable() && (selectedRow!=1 || selectedCol!=0)) // No text index needed for a cell that is immutable. For ticket 1064
       {
 		// Make sure non-utf8 chars converted to utf8 as far as possible. for ticket 1166.  
@@ -1176,7 +1187,7 @@ namespace {
     cairo_get_current_point(cairo,&x0, &y0);
     
     const CairoSave cs(cairo);
-    Pango pango(cairo);
+    ecolab::Pango pango(cairo);
     // increase text size a bit for the buttons
     pango.setFontSize(0.8*buttonSpacing);
     pango.setMarkup(label);
@@ -1230,7 +1241,7 @@ namespace {
   void GodleyTableEditor::draw(const mansoura::IMansoura& cairoShim)
   {
     auto& shimImpl = dynamic_cast<const MansouraCairo&>(cairoShim);
-    draw(shimImpl._internalGetCairoContext());
+    drawCairo(shimImpl._internalGetCairoContext());
   }
 
   template class ButtonWidget<ButtonWidgetEnums::row>;

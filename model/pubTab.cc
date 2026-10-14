@@ -28,7 +28,7 @@
 #include "pannableTab.rcd"
 #include "pannableTab.xcd"
 #include "minsky_epilogue.h"
-using namespace ecolab::cairo;
+using namespace mansoura;
 
 namespace minsky
 {
@@ -160,7 +160,7 @@ namespace minsky
         try
           {
             const EnsureEditorMode ensureEditorMode(i);
-            CairoShimCairo shim(cairo);
+            MansouraCairo shim(cairo);
             i.itemRef->draw(shim);
           }
         catch (...) {}

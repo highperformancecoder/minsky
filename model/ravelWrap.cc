@@ -47,13 +47,14 @@
 #include "tensorInterface.xcd"
 #include "xvector.rcd"
 #include "minskyCairoRenderer.h"
+#include "SVGItem.h"
 #include "minsky_epilogue.h"
 
 
 #include <string>
 #include <cmath>
 using namespace std;
-
+using namespace mansoura;
 
 namespace minsky
 {
@@ -83,7 +84,7 @@ namespace minsky
     wrappedRavel.setOutputHandleIds({0,2});
   }
 
-  void Ravel::draw(const ICairoShim& cairoShim) const
+  void Ravel::draw(const IMansoura& cairoShim) const
   {
     const double  z=zoomFactor(), r=m_editorMode? 1.1*z*wrappedRavel.radius(): 30*z;
     if (flipped)
@@ -111,9 +112,9 @@ namespace minsky
     if (onBorder || lockGroup)
       { // shadow the border when mouse is over it
         cairoShim.save();
-        cairo::Colour c{1,1,1,0};
+        Colour c{1,1,1,0};
         if (lockGroup)
-          c=palette[ lockGroup->colour() % paletteSz ];
+          c=mansoura::palette[ lockGroup->colour() % mansoura::paletteSz ];
         c.r*=0.5; c.g*=0.5; c.b*=0.5;
         c.a=onBorder? 0.5:0.3;
         cairoShim.setSourceRGBA(c.r,c.g,c.b,c.a);
@@ -131,15 +132,15 @@ namespace minsky
       if (m_editorMode)
         {
           cairoShim.scale(z,z);
-          // TODO: CairoRenderer needs ICairoShim support
-          auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
+          // TODO: CairoRenderer needs IMansoura support
+          auto& shimImpl = dynamic_cast<const MansouraCairo&>(cairoShim);
           CairoRenderer cr(shimImpl._internalGetCairoContext());
           wrappedRavel.render(cr);
         }
       else
         {
           cairoShim.translate(-r,-r);
-          // Render SVG using ICairoShim abstraction
+          // Render SVG using IMansoura abstraction
           cairoShim.renderSVG(svgRenderer, 2*r, 2*r);
         }
       cairoShim.restore();
@@ -174,6 +175,8 @@ namespace minsky
   {
     const double invZ=1/zoomFactor();
     wrappedRavel.onMouseUp((xx-x())*invZ,(yy-y())*invZ);
+    if (db && m_ports[1]->wires().empty())
+      db.fullHypercube(wrappedRavel); // reduce slice labels according to slicer and caliper settings
     resortHandleIfDynamic();
     broadcastStateToLockGroup();
     return m_ports[1]->numWires(); // only reset if input port connected. Don't if sourced from database

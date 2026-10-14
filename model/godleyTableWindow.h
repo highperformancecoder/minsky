@@ -26,6 +26,7 @@
 #include "assetClass.h"
 #include "godleyTable.h"
 #include "IMansoura.h"
+#include "IMansoura.cd"
 #include "renderNativeWindow.h"
 #include <memory>
 #include <vector>

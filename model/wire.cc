@@ -25,7 +25,7 @@
 #include "selection.h"
 #include "lasso.h"
 #include "operation.h"
-#include "pango.h"
+#include "ecolab/include/pango.h"
 #include "plotWidget.h"
 #include "SVGItem.h"
 #include "mansouraCairo.h"
@@ -35,6 +35,7 @@
 #include  <iterator>
 
 using namespace std;
+using namespace mansoura;
 using ecolab::cairo::CairoSave;
 
 namespace minsky
@@ -441,7 +442,7 @@ namespace
 
     // draw arrow
     {
-      const CairoSave cs(cairo);
+      const ecolab::cairo::CairoSave cs(cairo);
       auto lw=cairo_get_line_width(cairo);
       cairo_translate(cairo, lastx, lasty);
       cairo_rotate(cairo,angle);
@@ -507,11 +508,11 @@ namespace
       }
   }
 
-  void Wire::draw(const ICairoShim& cairoShim, bool reverseArrow) const
+  void Wire::draw(const IMansoura& cairoShim, bool reverseArrow) const
   {
     // Wire drawing is complex and uses storeCairoCoords which requires cairo_t*
     // TODO: This will be properly refactored in a separate PR (per owner comment)
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
+    auto& shimImpl = dynamic_cast<const MansouraCairo&>(cairoShim);
     draw(shimImpl._internalGetCairoContext(), reverseArrow);
   }
 

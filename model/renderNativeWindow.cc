@@ -56,7 +56,7 @@ using namespace ecolab;
 
 namespace minsky
 {
-  ecolab::cairo::Colour RenderNativeWindow::backgroundColour{0.8,0.8,0.8,1};
+  mansoura::Colour RenderNativeWindow::backgroundColour{0.8,0.8,0.8,1};
   
   namespace
   {
@@ -166,7 +166,7 @@ void macOSXRedraw(RenderNativeWindow& window,std::recursive_mutex& cmdMutex)
     GetScaleFactorForMonitor(MonitorFromPoint(POINT{0,0}, MONITOR_DEFAULTTOPRIMARY), &scaleFactor);
     return int(scaleFactor)/100.0;
 #else
-    return 1;
+    return minsky().fontScale();
 #endif
   }
 

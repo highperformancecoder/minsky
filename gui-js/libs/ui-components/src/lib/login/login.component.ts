@@ -1,4 +1,4 @@
-import { ChangeDetectorRef,Component, OnInit, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef,Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormControl, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
@@ -9,7 +9,6 @@ import { MatDividerModule } from '@angular/material/divider';
 import { MatTooltipModule } from '@angular/material/tooltip';
 import { ClerkService } from '@minsky/core';
 import { ElectronService } from '@minsky/core';
-import { events } from '@minsky/shared';
 import { ActivatedRoute } from '@angular/router';
 import { take } from 'rxjs';
 
@@ -29,15 +28,20 @@ import { take } from 'rxjs';
     MatTooltipModule,
   ],
 })
-export class LoginComponent implements OnInit, OnDestroy {
+export class LoginComponent implements OnInit {
   loginForm = new FormGroup({
     email: new FormControl('', [Validators.required, Validators.email]),
     password: new FormControl('', [Validators.required]),
   });
 
+  secondFactorForm = new FormGroup({
+    code: new FormControl('', [Validators.required]),
+  });
+
   isLoading = false;
   errorMessage = '';
   isAuthenticated = false;
+  needsSecondFactor = false;
   oauthStrategies: string[] = [];
 
   private readonly PROVIDER_LABELS: Record<string, string> = {
@@ -51,8 +55,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     oauth_discord: 'Discord',
   };
 
-  private oauthCallbackListener: ((_event: any, callbackUrl: string) => void) | null = null;
-
   constructor(
     private clerkService: ClerkService,
     private electronService: ElectronService,
@@ -64,29 +66,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.route.queryParams.pipe(take(1)).subscribe((params) => {
       this.initializeSession(params['authToken']);
     });
-
-    if (this.electronService.isElectron) {
-      this.oauthCallbackListener = async (_event: any, callbackUrl: string) => {
-        this.isLoading = true;
-        try {
-          await this.clerkService.handleOAuthCallback(callbackUrl);
-          this.isAuthenticated = true;
-          this.electronService.closeWindow();
-        } catch (err: any) {
-          this.errorMessage = err?.message ?? 'OAuth sign-in failed.';
-        } finally {
-          this.isLoading = false;
-        }
-      };
-      this.electronService.on(events.OAUTH_CALLBACK, this.oauthCallbackListener);
-    }
-  }
-
-  ngOnDestroy() {
-    if (this.oauthCallbackListener) {
-      this.electronService.removeListener(events.OAUTH_CALLBACK, this.oauthCallbackListener);
-      this.oauthCallbackListener = null;
-    }
   }
 
   private async initializeSession(authToken: string | undefined) {
@@ -119,6 +98,10 @@ export class LoginComponent implements OnInit, OnDestroy {
     return this.loginForm.get('password');
   }
 
+  get code() {
+    return this.secondFactorForm.get('code');
+  }
+
   async onSubmit() {
     if (this.loginForm.invalid) return;
 
@@ -126,14 +109,35 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.errorMessage = '';
 
     try {
-      await this.clerkService.signInWithEmailPassword(
+      const status = await this.clerkService.signInWithEmailPassword(
         this.loginForm.value.email,
         this.loginForm.value.password
       );
+      if (status === 'complete') {
+        this.isAuthenticated = true;
+        this.electronService.closeWindow();
+      } else {
+        this.needsSecondFactor = true;
+      }
+    } catch (err: any) {
+      this.errorMessage = err?.errors?.[0]?.message ?? err?.message ?? 'Authentication failed.';
+    } finally {
+      this.isLoading = false;
+    }
+  }
+
+  async onSubmitSecondFactor() {
+    if (this.secondFactorForm.invalid) return;
+
+    this.isLoading = true;
+    this.errorMessage = '';
+
+    try {
+      await this.clerkService.attemptSecondFactorEmailCode(this.secondFactorForm.value.code);
       this.isAuthenticated = true;
       this.electronService.closeWindow();
     } catch (err: any) {
-      this.errorMessage = err?.errors?.[0]?.message ?? err?.message ?? 'Authentication failed.';
+      this.errorMessage = err?.errors?.[0]?.message ?? err?.message ?? 'Verification failed.';
     } finally {
       this.isLoading = false;
     }
@@ -143,13 +147,18 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.isLoading = true;
     this.errorMessage = '';
     try {
-      const oauthUrl = await this.clerkService.getOAuthRedirectUrl(strategy);
-      await this.electronService.invoke(events.OAUTH_OPEN_POPUP, oauthUrl);
+      const status = await this.clerkService.signInWithOAuth(strategy);
+      if (status === 'complete') {
+        this.isAuthenticated = true;
+        this.electronService.closeWindow();
+      } else {
+        this.needsSecondFactor = true;
+      }
     } catch (err: any) {
       this.errorMessage = err?.errors?.[0]?.long_message ?? err?.errors?.[0]?.message ?? err?.message ?? 'OAuth sign-in failed.';
+    } finally {
       this.isLoading = false;
     }
-    // isLoading intentionally left true while popup is open; cleared in callback handler
   }
 
   async onSignOut() {

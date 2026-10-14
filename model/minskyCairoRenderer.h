@@ -20,7 +20,7 @@
 #ifndef MINSKYCAIRORENDERER_H
 #define MINSKYCAIRORENDERER_H
 #include "cairoRenderer.h"
-#include "pango.h"
+#include "ecolab/include/pango.h"
 
 namespace minsky
 {
