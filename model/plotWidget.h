@@ -24,6 +24,7 @@
 #include "latexMarkup.h"
 #include "mansouraPlot.h"
 #include "mansouraPlot.cd"
+#include "mansouraPlot.xcd"
 #include "variable.h"
 #include "variableValue.h"
 #include "zoom.h"
