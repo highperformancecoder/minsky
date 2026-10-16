@@ -46,7 +46,6 @@ namespace minsky
     size_t scrollOffset=0, scrollMax=1;
     size_t scrollDelta=0;
     std::string sliceIndicator;
-    void draw(cairo_t* cairoShim) const;
   public:
     Sheet();
 

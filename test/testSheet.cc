@@ -190,4 +190,25 @@ namespace
     // Check that sliceIndicator is set to something useful
     EXPECT_FALSE(sheet.setSliceIndicator().empty());
   }
+
+  TEST_F(SheetTest, draw)
+  {
+    cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR, nullptr));
+    const mansoura::MansouraCairo shim(surf.cairo());
+    // unconnected sheet
+    EXPECT_NO_THROW(draw(shim));
+
+    for (const char* init: {"1","rand(3)","rand(3,3)","rand(3,3,3)"})
+      {
+        minsky::minsky().clearAllMaps();
+        minsky::minsky().canvas.addVariable("v",VariableType::parameter);
+        auto& param=*minsky::minsky().canvas.itemFocus->variableCast();
+        param.init(init);
+        minsky::minsky().canvas.addSheet();
+        auto& sheet=dynamic_cast<Sheet&>(*minsky::minsky().canvas.itemFocus);
+        minsky::minsky().model->addWire(param, sheet, 0);
+        minsky::minsky().reset();
+        EXPECT_NO_THROW(sheet.draw(shim)) << init;
+      }
+  }
 }
