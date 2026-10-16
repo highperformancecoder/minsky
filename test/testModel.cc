@@ -27,17 +27,37 @@
 #include <gtest/gtest.h>
 
 using namespace minsky;
+using namespace mansoura;
 using namespace std;
 
 namespace
 {
 
+  // gtest requires all fixtures to be derived from Test, alas!
+  class CanvasFixture: public Canvas, public ::testing::Test
+  {
+    Minsky lminsky;
+    LocalMinsky lm;
+  public:
+    CanvasFixture(): lm(lminsky) {}
+  };
+  class GodleyIconFixture: public GodleyIcon, public ::testing::Test {};
+  class GroupFixture: public Group, public ::testing::Test {};
+
+  struct RecordingCairoShim: public cairo::Surface, public MansouraCairo
+  {
+    RecordingCairoShim():
+      cairo::Surface(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr)),
+      MansouraCairo(cairo::Surface::cairo()) {}
+  };
+  
   struct ModelSuite: public Minsky, public ::testing::Test
   {
     GroupPtr group0;
     ItemPtr a,b,c;
     WirePtr ab,bc; 
     LocalMinsky lm;
+    RecordingCairoShim mans;
 
     ModelSuite(): lm(*this)
     {
@@ -102,24 +122,7 @@ namespace
     }
   };
 
-  // gtest requires all fixtures to be derived from Test, alas!
-  class CanvasFixture: public Canvas, public ::testing::Test
-  {
-    Minsky lminsky;
-    LocalMinsky lm;
-  public:
-    CanvasFixture(): lm(lminsky) {}
-  };
-  class GodleyIconFixture: public GodleyIcon, public ::testing::Test {};
-  class GroupFixture: public Group, public ::testing::Test {};
 
-  struct RecordingCairoShim: public cairo::Surface, public CairoShimCairo
-  {
-    RecordingCairoShim():
-      cairo::Surface(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr)),
-      CairoShimCairo(cairo::Surface::cairo()) {}
-  };
-  
 }
 
 
@@ -1641,8 +1644,7 @@ TEST_F(ModelSuite, copyBetweenCols)
 
   GodleyTableWindow gw(*godley1);
   // render GodleyTableWindow to compute column/row boundaries
-  ecolab::cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,nullptr));
-  gw.draw(surf.cairo());
+  gw.draw(mans);
   // positions of the 2,1 and 2,2 cells
   double x1=gw.colLeftMargin[1]+5, x2=gw.colLeftMargin[2]+5, y=2*gw.rowHeight+gw.topTableOffset;
   EXPECT_EQ(1,gw.colXZoomed(x1));

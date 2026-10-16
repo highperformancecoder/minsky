@@ -154,6 +154,6 @@ TEST_F(LockTest, Draw)
   
   // Test that lock can be drawn (uses different icons for locked/unlocked)
   cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR, nullptr));
-  EXPECT_NO_THROW(lock.draw(CairoShimCairo(surf.cairo())));
+  EXPECT_NO_THROW(lock.draw(mansoura::MansouraCairo(surf.cairo())));
 }
 

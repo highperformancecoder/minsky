@@ -85,16 +85,17 @@ ClickType::Type VariableBase::clickType(float xx, float yy) const
   const Rotate r(rotation()+(flipped(rotation())? 180: 0),0,0); // rotate into variable's frame of reference
   const RenderVariable rv(*this);
   const double z=zoomFactor();
-  try
-    {
-      const double hpx=z*rv.handlePos();
-      double hpy=-z*rv.height();
-      if (rv.height()<0.5*iHeight()) hpy=-z*0.5*iHeight(); 
-      const double dx=xx-x(), dy=yy-y();         
-      if (type()!=constant && hypot(dx - r.x(hpx,hpy), dy-r.y(hpx,hpy)) < 5)
-        return ClickType::inItem;
-    }
-  catch (...) {}
+  if (sliderVisible())
+    try
+      {
+        const double hpx=z*rv.handlePos();
+        double hpy=-z*rv.height();
+        if (rv.height()<0.5*iHeight()) hpy=-z*0.5*iHeight(); 
+        const double dx=xx-x(), dy=yy-y();         
+        if (type()!=constant && hypot(dx - r.x(hpx,hpy), dy-r.y(hpx,hpy)) < 5)
+          return ClickType::inItem;
+      }
+    catch (...) {}
   return Item::clickType(xx,yy);
 }
 

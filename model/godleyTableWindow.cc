@@ -177,7 +177,8 @@ namespace minsky
     double lastAssetBoundary=x;
     auto assetClass=GodleyAssetClass::noAssetClass;
     // only recalculate colmn widths when no cell is selected.
-    const bool resizeGrid=selectedCol<0 || selectedRow<0 || motionRow>=0 || motionCol>=0;
+    const bool resizeGrid=selectedCol<0 || selectedRow<0 || motionRow>=0 || motionCol>=0 ||
+      colLeftMargin.size()<m_godleyIcon.table.cols();
     if (resizeGrid)
       colLeftMargin.clear();
   
@@ -834,7 +835,7 @@ namespace minsky
 
     if (r==0)
       {
-        if (colLeftMargin[c+1]-x < pulldownHot)
+        if (c+1<colLeftMargin.size() && colLeftMargin[c+1]-x < pulldownHot)
           return importStock;
         return row0;
       }

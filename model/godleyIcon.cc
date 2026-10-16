@@ -462,17 +462,16 @@ namespace minsky
     
     if (m_editorMode)
       {
-        cairoShim.save();
+        PreserveContext stash(cairoShim);
         cairoShim.rectangle(left, top, w, h);
         cairoShim.rectangle(left-border*z, top-border*z, w+2*border*z, h+2*border*z);
         cairoShim.strokePreserve();
         if (onBorder)
           { // shadow the border when mouse is over it
-            cairoShim.save();
+            PreserveContext stash(cairoShim);
             cairoShim.setSourceRGBA(0.5,0.5,0.5,0.5);
             cairoShim.setFillRule(CAIRO_FILL_RULE_EVEN_ODD);
             cairoShim.fill();
-            cairoShim.restore();
           }
         cairoShim.newPath();
         cairoShim.rectangle(left, top, w, h);
@@ -481,8 +480,9 @@ namespace minsky
         // render to a recording surface to determine size of editor table
         // TODO - maybe move this stuff into update()
         const Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR, nullptr));
+        MansouraCairo recorder(surf.cairo());
         const_cast<GodleyTableEditor&>(editor).zoomFactor=1;
-        const_cast<GodleyTableEditor&>(editor).draw(cairoShim);
+        const_cast<GodleyTableEditor&>(editor).draw(recorder);
         const_cast<GodleyTableEditor&>(editor).zoomFactor=min((w-leftMargin()-2*border*z)/surf.width(),(h-bottomMargin()-2*border*z-titleOffs())/surf.height());
         const_cast<GodleyTableEditor&>(editor).draw(cairoShim);
         titley=-0.5*h;
@@ -490,27 +490,24 @@ namespace minsky
         h+=2*border*z;
         left-=border*z;
         top-=border*z;
-        cairoShim.restore();
       }
     else
       {
-        cairoShim.save();
+        PreserveContext stash(cairoShim);
         cairoShim.translate(left+leftMargin(),top);
         // Render SVG using mansoura::IMansoura abstraction
         cairoShim.renderSVG(svgRenderer, w-leftMargin(), h-bottomMargin());
         titley=top+0.1*(h-bottomMargin());
-        cairoShim.restore();
       }
     
     if (!table.title.empty())
       {
-        cairoShim.save();
+        PreserveContext stash(cairoShim);
         TextProperties tp("<b>"+latexToPango(table.title)+"</b>");
         tp.fontSize=titleOffs();
         auto bbox=cairoShim.textExtents(tp);
         cairoShim.moveTo(-0.5*(bbox.width-leftMargin()), titley);
         cairoShim.showText(tp);
-        cairoShim.restore();
       }
       
           

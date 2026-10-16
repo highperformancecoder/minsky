@@ -48,7 +48,7 @@ TEST_F(CanvasTest, defaultPlotOptions)
     originalPlot->y1label("y1");
     originalPlot->palette.emplace_back();
     originalPlot->palette.back().width=2;
-    originalPlot->palette.back().dashStyle=ecolab::Plot::LineStyle::dash;
+    originalPlot->palette.back().dashStyle=mansoura::Plot::LineStyle::dash;
     
     addPlot();
     auto firstItem=itemFocus;

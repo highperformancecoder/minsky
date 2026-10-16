@@ -839,7 +839,6 @@ namespace minsky
     auto cairo=surface()->cairo();
     MansouraCairo mans(cairo);
     
-    const PreserveContext cs(mans);
     mans.rectangle(updateRegion.x0,updateRegion.y0,updateRegion.x1-updateRegion.x0,updateRegion.y1-updateRegion.y0);
     mans.clip();
     mans.setLineWidth(1);
@@ -849,20 +848,23 @@ namespace minsky
        {
          auto& it=**i;
          if (it.visible() && updateRegion.intersects(it))
-           {
-             didDrawSomething = true;
-             const PreserveContext cs(mans);
-             mans.identityMatrix();
-             mans.translate(it.x(), it.y());
-             try
-               {
-                 it.draw(mans);
-               }
-             catch (const std::exception& ex)
-               {
-                 cerr << ex.what() << endl;
-               }
-           }
+           try
+             {
+               didDrawSomething = true;
+               MansouraCairo mans(cairo);
+               const PreserveContext cs(mans);
+               mans.identityMatrix();
+               mans.translate(it.x(), it.y());
+               it.draw(mans);
+             }
+           catch (const std::exception& ex)
+             {
+               cout<<it.classType();
+               if (auto v=it.variableCast())
+                 cout<<" "<<v->name();
+               cout<<endl;
+               cerr << ex.what() << endl;
+             }
          return false;
        });
 

@@ -31,8 +31,8 @@
 #include "CSVTools.xcd"
 #include "itemT.rcd"
 #include "plotOptions.rcd"
-//#include "plot.rcd"
-//#include "plot.xcd"
+#include "mansouraPlot.rcd"
+#include "mansouraPlot.xcd"
 #include "tensorInterface.rcd"
 #include "tensorInterface.xcd"
 #include "tensorVal.rcd"
@@ -416,6 +416,10 @@ namespace minsky
       }
 
     double legendWidth, legendHeight, lx, ly;
+    // ensure there is a surface here to refer to
+    if (!surface)
+      const_cast<PlotWidget*>(this)->surface=
+        make_shared<ecolab::cairo::Surface>(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr));
     MansouraCairo mans(surface->cairo());
     legendSize(mans, lx, ly, legendWidth, legendHeight, z*(iWidth()-2*portSpace), z*(iHeight()-portSpace-yoffs));
     // xx & yy are in plot user coordinates
@@ -863,3 +867,4 @@ namespace minsky
   }
 }
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::PlotWidget);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(mansoura::Plot);

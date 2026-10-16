@@ -40,6 +40,7 @@
 #include "itemT.tcd"
 #include "lasso.tcd"
 #include "lock.tcd"
+#include "mansouraPlot.tcd"
 #include "noteBase.tcd"
 #include "operation.tcd"
 #include "operationBase.tcd"
@@ -47,7 +48,6 @@
 #include "pango.tcd"
 #include "pannableTab.tcd"
 #include "phillipsDiagram.tcd"
-#include "plot.tcd"
 #include "plotOptions.tcd"
 #include "plotWidget.tcd"
 #include "polyRESTProcessBase.tcd"
@@ -64,6 +64,7 @@
 #include "simulation.tcd"
 #include "slider.tcd"
 #include "SVGItem.tcd"
+#include "SVGItem.xcd"
 #include "switchIcon.tcd"
 #include "tensorInterface.tcd"
 #include "tensorVal.tcd"
@@ -255,11 +256,11 @@ int main()
   api.addClass<civita::XVector>();
   api.addClass<CSVDialog>();
   api.addClass<DataSpecSchema>();
-  api.addClass<mansoura::Plot::LineStyle>();
   api.addClass<EngNotation>();
   api.addClass<EventInterface>();
   api.addClass<GroupItems>();
   api.addClass<HandleLockInfo>();
+  api.addClass<mansoura::Plot::LineStyle>();
   api.addClass<Port>();
   api.addClass<PubItem>();
   api.addClass<ravel::DataSpec>();
@@ -317,7 +318,7 @@ int main()
   cout << "class classdesc__pack_t {}\n";
   cout << "class classdesc__RESTProcess_t {}\n";
   cout << "class ecolab__cairo__Surface {}\n";
-  cout << "class ICairoShim {}\n";
+  cout << "class mansoura__IMansoura {}\n";
   cout<<endl;
   
   // these need to be declared in a specific order

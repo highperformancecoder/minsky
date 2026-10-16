@@ -55,6 +55,8 @@
 #include "pannableTab.rcd"
 #include "pannableTab.xcd"
 #include "polyRESTProcessBase.h"
+#include "SVGItem.rcd"
+#include "SVGItem.xcd"
 #include "xvector.rcd"
 #include "minsky_epilogue.h"
 
@@ -1785,6 +1787,8 @@ namespace minsky
   {
     _defaultFont.reset(new char[x.length()+1]);
     strncpy(_defaultFont.get(),x.c_str(),x.length()+1);
+    mansoura::Pango::defaultFamily=_defaultFont.get();
+    // TODO: remove once ecolab::Pango has been eradicated
     ecolab::Pango::defaultFamily=_defaultFont.get();
     return x;
   }
@@ -1860,3 +1864,4 @@ CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(classdesc::Signature);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(classdesc::PolyRESTProcessBase);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::CallableFunction);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(ravelCAPI::Database);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(mansoura::SVGRenderer);

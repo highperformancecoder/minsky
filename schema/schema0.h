@@ -34,8 +34,8 @@
 #include "variableType.h"
 #include "assetClass.h"
 #include <arrays.h>
-#include "plot.h"
-#include "plot.xcd"
+#include "mansouraPlot.h"
+#include "mansouraPlot.xcd"
 
 namespace schema0
 {
