@@ -18,7 +18,6 @@
 */
 
 #include "minsky.h"
-#include "mansouraCairo.h"
 #include "geometry.h"
 #include "valueId.h"
 #include "variable.h"
@@ -727,9 +726,7 @@ void VariableBase::draw(const IMansoura& cairoShim) const
   const double h=std::max(l_cachedNameRender->height(), 0.5f*iHeight());
   const double hoffs=l_cachedNameRender->top();
   
-  auto cairo=dynamic_cast<const MansouraCairo&>(cairoShim)._internalGetCairoContext();
- 
-  unique_ptr<cairo::Path> clipPath;
+  unique_ptr<IPath> clipPath;
   {
     cairoShim.save();
     cairoShim.scale(z,z);
@@ -841,7 +838,7 @@ void VariableBase::draw(const IMansoura& cairoShim) const
       cairoShim.lineTo(w+2,0);
       cairoShim.lineTo(w,-h);
       cairoShim.closePath();
-      clipPath.reset(new cairo::Path(cairo));
+      clipPath=cairoShim.copyPath();
       cairoShim.stroke();
       if (sliderVisible())
         {
@@ -881,7 +878,7 @@ void VariableBase::draw(const IMansoura& cairoShim) const
     }  
 
   cairoShim.newPath();
-  clipPath->appendToCurrent(cairo);
+  clipPath->appendToCurrent(cairoShim);
   // Rescale size of variable attached to intop. For ticket 94
   cairoShim.clip();
   if (selected) drawSelected(cairoShim);

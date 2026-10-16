@@ -36,7 +36,6 @@
 #include <polyPackBase.h>
 #include "variableType.h"
 #include "itemT.h"
-#include <cairo/cairo.h>
 #include "mansouraPlot.h"
 
 namespace minsky
