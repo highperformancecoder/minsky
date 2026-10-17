@@ -80,7 +80,6 @@ namespace minsky
 
     bool clearPensOnLabelling=false;
     
-    void draw(cairo_t* cairoShim) const;
   public:
     using Item::x;
     using Item::y;

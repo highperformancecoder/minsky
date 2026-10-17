@@ -42,6 +42,18 @@ namespace minsky
       PlotWidgetTest() {surface=surf;}
     };
 
+    TEST_F(PlotWidgetTest, drawWithTitleAndLegend)
+    {
+      title="A title";
+      xlabel("x");
+      legend=true;
+      addPt(0,0.0,1.0);
+      addPt(0,1.0,0.0);
+      mouseFocus=true;
+      selected=true;
+      EXPECT_NO_THROW(draw(mans));
+    }
+
     TEST_F(PlotWidgetTest, legendMove)
     {
       legend=true;
