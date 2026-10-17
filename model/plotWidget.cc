@@ -405,12 +405,8 @@ namespace minsky
       }
 
     double legendWidth, legendHeight, lx, ly;
-    // ensure there is a surface here to refer to
-    if (!surface)
-      const_cast<PlotWidget*>(this)->surface=
-        make_shared<ecolab::cairo::Surface>(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr));
-    MansouraCairo mans(surface->cairo());
-    legendSize(mans, lx, ly, legendWidth, legendHeight, z*(iWidth()-2*portSpace), z*(iHeight()-portSpace-yoffs));
+    // uses legend extents cached when last drawn
+    legendSizeFromCache(lx, ly, legendWidth, legendHeight, z*(iWidth()-2*portSpace), z*(iHeight()-portSpace-yoffs));
     // xx & yy are in plot user coordinates
     const double xx= x-this->x() + z*(0.5*iWidth()-portSpace) - lx;
     const double yy= z*(0.5*iHeight()-portSpace)-y+this->y()  - ly+legendHeight;

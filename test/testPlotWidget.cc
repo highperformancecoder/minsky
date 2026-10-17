@@ -54,6 +54,29 @@ namespace minsky
       EXPECT_NO_THROW(draw(mans));
     }
 
+    TEST_F(PlotWidgetTest, legendSizeFromCache)
+    {
+      legend=true;
+      addPt(0,0.0,1.0);
+      addPt(0,1.0,0.0);
+      labelPen(0,"a legend label");
+      double xoffs, yoffs, w, h, cw, ch;
+      // nothing measured yet, so unknown width, but height is computable
+      legendSizeFromCache(xoffs, yoffs, cw, ch, iWidth(), iHeight()-10);
+      EXPECT_EQ(0, cw);
+      EXPECT_GT(ch, 0);
+      legendSize(mans, xoffs, yoffs, w, h, iWidth(), iHeight()-10);
+      EXPECT_GT(w, 0);
+      // cached estimate at the measured size is exact...
+      legendSizeFromCache(xoffs, yoffs, cw, ch, iWidth(), iHeight()-10);
+      EXPECT_DOUBLE_EQ(w, cw);
+      EXPECT_DOUBLE_EQ(h, ch);
+      // ...and approximately right at a different size
+      legendSize(mans, xoffs, yoffs, w, h, 2*iWidth(), 2*(iHeight()-10));
+      legendSizeFromCache(xoffs, yoffs, cw, ch, 2*iWidth(), 2*(iHeight()-10));
+      EXPECT_NEAR(w, cw, 0.01*w);
+    }
+
     TEST_F(PlotWidgetTest, legendMove)
     {
       legend=true;
