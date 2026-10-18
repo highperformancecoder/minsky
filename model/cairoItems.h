@@ -20,8 +20,6 @@
 #define CAIRO_ITEMS_H
 #include <geometry.h>
 #include <plot.h>
-#include <cairo_base.h>
-#include <cairo/cairo.h>
 #include "IMansoura.h"
 #include "IMansoura.cd"
 #include "operation.h"
@@ -60,7 +58,6 @@ namespace minsky
     void* context() const {return m_context;}
   };
 
-  void drawTriangle(cairo_t* cairo, double x, double y, const mansoura::Colour& col, double angle=0);
   void drawTriangle(const mansoura::IMansoura& cairoShim, double x, double y, const mansoura::Colour& col, double angle=0);
 }
 #endif

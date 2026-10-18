@@ -28,11 +28,9 @@
 #include "minsky.h"
 
 #include "cairoItems.h"
-#include "mansouraCairo.h"
 #include "operation.h"
 #include "latexMarkup.h"
 #include <arrays.h>
-#include <pango.h>
 #include "ravelWrap.xcd"
 #include "minsky_epilogue.h"
 
@@ -42,13 +40,6 @@ using namespace mansoura;
 using namespace std;
 using namespace minsky;
 using namespace boost::geometry;
-
-namespace
-{
-  // for use when calculating bounding boxes, but not drawing to anything?
-  cairo::Surface dummySurf(cairo_image_surface_create(CAIRO_FORMAT_A1, 100,100));
-  MansouraCairo dummyCairoShim(dummySurf.cairo());
-}
 
 RenderVariable::RenderVariable(const VariableBase& var, const mansoura::IMansoura& shim):
   var(var), cairoShim(shim), m_context(cairoShim.context())
@@ -89,7 +80,7 @@ RenderVariable::RenderVariable(const VariableBase& var, const mansoura::IMansour
 }
 
 RenderVariable::RenderVariable(const VariableBase& var):
-  RenderVariable(var, dummyCairoShim) {}
+  RenderVariable(var, measuringContext()) {}
 
 bool RenderVariable::inImage(float x, float y)
 {
@@ -109,20 +100,6 @@ double RenderVariable::handlePos() const
       return (w<0.5*var.iWidth()? 0.5*var.iWidth() : w)*(vv->value()-0.5*(vv->sliderMin+vv->sliderMax))/(vv->sliderMax-vv->sliderMin);
     }
   return 0;
-}
-
-void minsky::drawTriangle
-(cairo_t* cairo, double x, double y, const Colour& col, double angle)
-{
-  const CairoSave cs(cairo);
-  cairo_new_path(cairo);
-  cairo_set_source_rgba(cairo,col.r,col.g,col.b,col.a);
-  cairo_translate(cairo,x,y);
-  cairo_rotate(cairo, angle);
-  cairo_move_to(cairo,10,0);
-  cairo_line_to(cairo,0,-3);
-  cairo_line_to(cairo,0,3);
-  cairo_fill(cairo);
 }
 
 void minsky::drawTriangle
