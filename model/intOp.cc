@@ -19,7 +19,6 @@
 
 #include "minsky.h"
 #include "cairoItems.h"
-#include "mansouraCairo.h"
 #include "intOp.h"
 #include "intOp.rcd"
 #include "itemT.rcd"
@@ -127,8 +126,7 @@ namespace minsky
           cairoShim.closePath();        
         }
     
-      auto cairo=dynamic_cast<const MansouraCairo&>(cairoShim)._internalGetCairoContext();
-      cairo::Path clipPath(cairo);
+      auto clipPath=cairoShim.copyPath();
 
       double x0=r, y0=0, x1=l, y1=numPorts() > 2? -h+3: 0,
         x2=l, y2=numPorts() > 2? h-3: 0;
@@ -164,7 +162,7 @@ namespace minsky
       if (onResizeHandles) drawResizeHandles(cairoShim);
 
       cairoShim.newPath();
-      clipPath.appendToCurrent(cairo);
+      clipPath->appendToCurrent(cairoShim);
       cairoShim.clip();          
       if (selected) drawSelected(cairoShim);       
   }

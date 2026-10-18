@@ -46,7 +46,6 @@ namespace minsky
   protected:
     mutable classdesc::Exclude<std::shared_ptr<mansoura::ICacheRender>> cachedPango;
     /// check if cachedPango is up to date, and if not recreate
-    void setCachedText(cairo_t*, const std::string&, double) const;
   public:
     static constexpr float l=-8, h=12, r=12;
     typedef OperationType::Type Type;

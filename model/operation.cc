@@ -25,9 +25,7 @@
 #include "str.h"
 #include "cairoItems.h"
 
-#include <cairo_base.h>
 #include <pango.h>
-#include "mansouraCairo.h"
 #include "minsky_epilogue.h"
 
 #include <math.h>
@@ -237,12 +235,6 @@ namespace minsky
     if (selected) drawSelected(cairoShim);
   }
   
-  void OperationBase::setCachedText(cairo_t* cairo, const std::string& text, double size) const
-  {
-    if (cachedPango && cairo==cachedPango->context()) return;
-    cachedPango=shared_ptr<ICacheRender>(MansouraCairo(cairo).cachedRender({text,size}));
-  }
-
   void OperationBase::draw(const IMansoura& cairoShim) const
   {
     // if rotation is in 1st or 3rd quadrant, rotate as
@@ -280,8 +272,7 @@ namespace minsky
     cairoShim.setSourceRGB(0,0,1);
     cairoShim.strokePreserve();
 
-    auto& shimImpl = dynamic_cast<const MansouraCairo&>(cairoShim);
-    cairo::Path clipPath(shimImpl._internalGetCairoContext());
+    auto clipPath=cairoShim.copyPath();
 
     // compute port coordinates relative to the icon's
     // point of reference. Move outport 2 pixels right for ticket For ticket 362.
@@ -332,7 +323,7 @@ namespace minsky
       }
           
     cairoShim.newPath();
-    clipPath.appendToCurrent(shimImpl._internalGetCairoContext());
+    clipPath->appendToCurrent(cairoShim);
     cairoShim.clip();          
     if (selected) drawSelected(cairoShim);          
   }    
