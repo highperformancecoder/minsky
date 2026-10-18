@@ -535,6 +535,7 @@ clean:
 	-cd engine && $(BASIC_CLEAN)
 	-cd schema && $(BASIC_CLEAN)
 	-cd ecolab && $(MAKE) clean
+	-cd mansoura && $(MAKE) clean
 	-cd RavelCAPI && $(MAKE) clean
 	-cd libclipboard && $(MAKE) clean ; rm -f CMakeCache.txt
 

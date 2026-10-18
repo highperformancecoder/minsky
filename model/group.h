@@ -31,7 +31,6 @@
 #include <vector>           // for vector
 #include "arrays.h"         // for array
 #include "bookmark.h"       // for Bookmark
-#include "cairo.h"          // for cairo_t
 #include "classdesc.h"      // for Exclude, NullDescriptor
 #include "error.h"          // for error
 #include "item.h"           // for ItemPtr, Item, ItemPortVector, ItemT, Items
@@ -272,13 +271,13 @@ namespace minsky
     void draw(const mansoura::IMansoura&) const override;
 
     /// draw representations of edge variables around group icon
-    void drawEdgeVariables(cairo_t*) const;
+    void drawEdgeVariables(const mansoura::IMansoura&) const;
     /// draw the variables of one of the edges
-    void draw1edge(const std::vector<VariablePtr>& vars, cairo_t* cairo, 
+    void draw1edge(const std::vector<VariablePtr>& vars, const mansoura::IMansoura& cairoShim, 
                    float x) const;
     /// draw notches in the I/O region to indicate dockability of
     /// variables there
-    void drawIORegion(cairo_t*) const;
+    void drawIORegion(const mansoura::IMansoura&) const;
     /// position edge I/O variables at their correct rendered locations
     /// without requiring a Cairo context (used by select() for hit-testing)
     void positionEdgeVariables() const;

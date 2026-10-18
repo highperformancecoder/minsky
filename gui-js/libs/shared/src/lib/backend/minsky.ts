@@ -1079,9 +1079,9 @@ export class Group extends Item {
   async displayTooltip(a1: mansoura__IMansoura,a2: string): Promise<void> {return this.$callMethod('displayTooltip',a1,a2);}
   async displayZoom(...args: number[]): Promise<number> {return this.$callMethod('displayZoom',...args);}
   async draw(a1: mansoura__IMansoura): Promise<void> {return this.$callMethod('draw',a1);}
-  async draw1edge(a1: Sequence<VariableBase>,a2: minsky__dummy,a3: number): Promise<void> {return this.$callMethod('draw1edge',a1,a2,a3);}
-  async drawEdgeVariables(a1: minsky__dummy): Promise<void> {return this.$callMethod('drawEdgeVariables',a1);}
-  async drawIORegion(a1: minsky__dummy): Promise<void> {return this.$callMethod('drawIORegion',a1);}
+  async draw1edge(a1: Sequence<VariableBase>,a2: mansoura__IMansoura,a3: number): Promise<void> {return this.$callMethod('draw1edge',a1,a2,a3);}
+  async drawEdgeVariables(a1: mansoura__IMansoura): Promise<void> {return this.$callMethod('drawEdgeVariables',a1);}
+  async drawIORegion(a1: mansoura__IMansoura): Promise<void> {return this.$callMethod('drawIORegion',a1);}
   async drawPorts(a1: mansoura__IMansoura): Promise<void> {return this.$callMethod('drawPorts',a1);}
   async drawResizeHandles(a1: mansoura__IMansoura): Promise<void> {return this.$callMethod('drawResizeHandles',a1);}
   async drawSelected(a1: mansoura__IMansoura): Promise<void> {return this.$callMethod('drawSelected',a1);}
@@ -1969,9 +1969,9 @@ export class Selection extends CppClass {
   async displayTooltip(a1: mansoura__IMansoura,a2: string): Promise<void> {return this.$callMethod('displayTooltip',a1,a2);}
   async displayZoom(...args: number[]): Promise<number> {return this.$callMethod('displayZoom',...args);}
   async draw(a1: mansoura__IMansoura): Promise<void> {return this.$callMethod('draw',a1);}
-  async draw1edge(a1: Sequence<VariableBase>,a2: minsky__dummy,a3: number): Promise<void> {return this.$callMethod('draw1edge',a1,a2,a3);}
-  async drawEdgeVariables(a1: minsky__dummy): Promise<void> {return this.$callMethod('drawEdgeVariables',a1);}
-  async drawIORegion(a1: minsky__dummy): Promise<void> {return this.$callMethod('drawIORegion',a1);}
+  async draw1edge(a1: Sequence<VariableBase>,a2: mansoura__IMansoura,a3: number): Promise<void> {return this.$callMethod('draw1edge',a1,a2,a3);}
+  async drawEdgeVariables(a1: mansoura__IMansoura): Promise<void> {return this.$callMethod('drawEdgeVariables',a1);}
+  async drawIORegion(a1: mansoura__IMansoura): Promise<void> {return this.$callMethod('drawIORegion',a1);}
   async drawPorts(a1: mansoura__IMansoura): Promise<void> {return this.$callMethod('drawPorts',a1);}
   async drawResizeHandles(a1: mansoura__IMansoura): Promise<void> {return this.$callMethod('drawResizeHandles',a1);}
   async drawSelected(a1: mansoura__IMansoura): Promise<void> {return this.$callMethod('drawSelected',a1);}
