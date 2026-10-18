@@ -1322,8 +1322,10 @@ namespace minsky
 
   void Group::gotoBookmark_b(const Bookmark& b)
   {
-    moveTo(b.x, b.y);
+    // zoom first (about the group origin), then position, so the
+    // bookmarked offset is not distorted by the zoom
     zoom(x(),y(),b.zoom/(relZoom*zoomFactor()));
+    moveTo(b.x, b.y);
     // TODO add canvas::gotoBookmark to avoid dependency inversion
     if (this==cminsky().canvas.model.get()) minsky().canvas.requestRedraw();
   }
