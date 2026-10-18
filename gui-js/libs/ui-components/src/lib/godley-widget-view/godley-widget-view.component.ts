@@ -256,6 +256,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
 
   async onRowAdd(i) {
     await this.finishEditing();
+    await this.namedItemSubCommand.pushHistory();
     this.godleyIcon.table.insertRow(i+3);
     await this.hardRefresh();
   }
@@ -268,24 +269,28 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
 
   async onRowMove(i, n) {
     await this.finishEditing();
+    await this.namedItemSubCommand.pushHistory();
     this.godleyIcon.table.moveRow(i+2,n);
     await this.hardRefresh();
   }
 
   async onColumnAdd(i) {
     await this.finishEditing();
+    await this.namedItemSubCommand.pushHistory();
     this.godleyIcon.table.insertCol(i+2);
     await this.hardRefresh();
   }
 
   async onColumnDelete(i) {
     await this.finishEditing();
+    await this.namedItemSubCommand.pushHistory();
     this.godleyIcon.table.deleteCol(i+2);
     await this.hardRefresh();
   }
 
   async onColumnMove(i, n) {
     await this.finishEditing();
+    await this.namedItemSubCommand.pushHistory();
     this.godleyIcon.table.moveCol(i+1,n);
     await this.hardRefresh();
   }

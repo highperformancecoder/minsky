@@ -20,7 +20,7 @@ export class GodleyMenuManager {
     const godley = new GodleyIcon(minsky.namedItems.elem(itemInfo.id));
     const menu = Menu.buildFromTemplate([
       scope.getGodleyFileMenuItem(window, godley),
-      scope.getGodleyEditMenuItem(godley),
+      scope.getGodleyEditMenuItem(window, godley),
       scope.getGodleyViewMenuItem(window),
       scope.getGodleyOptionsMenuItem(window),
       new MenuItem({
@@ -188,6 +188,7 @@ export class GodleyMenuManager {
   }
 
   private static getGodleyEditMenuItem(
+    window: Electron.BrowserWindow,
     godley: GodleyIcon
   ) {
     return new MenuItem({
@@ -196,12 +197,18 @@ export class GodleyMenuManager {
         {
           label: 'Undo',
           accelerator: 'CmdOrCtrl + z',
-          click: () => {godley.popup.undo(1);},
+          click: async () => {
+            await godley.popup.undo(1);
+            GodleyMenuManager.refresh(window);
+          },
         },
         {
           label: 'Redo',
           accelerator: 'CmdOrCtrl + y',
-          click: () => {godley.popup.undo(-1);},
+          click: async () => {
+            await godley.popup.undo(-1);
+            GodleyMenuManager.refresh(window);
+          },
         },
         {
           label: 'Title',
@@ -281,4 +288,3 @@ export class GodleyMenuManager {
       menu.popup();
   }
 }
-

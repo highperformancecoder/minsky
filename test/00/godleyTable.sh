@@ -75,6 +75,31 @@ assert minsky.canvas.item.table.rowSum(1)=='0'
 assert minsky.canvas.item.table.rowSum(2)=='b'
 assert minsky.canvas.item.table.getVariables()()==['a', 'b']
 
+# popup undo/redo tracks cell edits and discards stale redo states
+originalCell = item.table.getCell(2, 1)
+item.setCell(2, 1, 'changed')
+item.popup.undo(1)
+assert item.table.getCell(2, 1)==originalCell
+item.popup.undo(-1)
+assert item.table.getCell(2, 1)=='changed'
+item.popup.undo(1)
+item.setCell(2, 1, 'branched')
+item.popup.undo(-1)
+assert item.table.getCell(2, 1)=='branched'
+item.popup.undo(1)
+assert item.table.getCell(2, 1)==originalCell
+item.popup.undo(-1)
+assert item.table.getCell(2, 1)=='branched'
+
+# row edits made through the popup are also undoable
+rows = item.table.rows()
+item.popup.addFlowByRow(rows-1)
+assert item.table.rows()==rows+1
+item.popup.undo(1)
+assert item.table.rows()==rows
+item.popup.undo(-1)
+assert item.table.rows()==rows+1
+
 minsky.canvas.deleteItem()
 assert minsky.model.numItems()==0
 EOF
