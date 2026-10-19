@@ -2,12 +2,12 @@ export class SvgVariableTypes {
     public static constant = {
         name: 'constant',
         points: (x: number, y: number, width: number, height: number) => {
-            return `${x-width},${y-height} ${x+width*0.75},${y-height} ${x+width},${y} ${x+width*0.75},${y+height} ${x-width},${y+height}`;
+            return `${x-width},${y-height} ${x+width},${y-height} ${x+width+4},${y} ${x+width},${y+height} ${x-width},${y+height}`;
         },
         connectors: [
             {
             type: 'out',
-            position: (x: number, y: number, width: number, height: number) => [x+width,y,0]
+            position: (x: number, y: number, width: number, height: number) => [x+width+4,y,0]
             }
         ],
         getDimensions(length: number) {
@@ -15,7 +15,7 @@ export class SvgVariableTypes {
             return {
                 length: length,
                 boundingbox: [-4 * lengthPart,-25,8 * lengthPart,50],
-                labelbox: [-4 * lengthPart,-22.5,6 * lengthPart,45],
+                labelbox: [-4 * lengthPart,-22.5,8 * lengthPart,45],
                 valuebox: [lengthPart * 1,-20,lengthPart * 6,25],
                 exponentbox: [lengthPart * 1,5,lengthPart * 6,25],
                 valueline: [[-4 * lengthPart,-25],[3 * lengthPart,-25]]
@@ -28,16 +28,16 @@ export class SvgVariableTypes {
     public static flow = {
         name: 'flow',
         points: (x: number, y: number, width: number, height: number) => {
-            return `${x-width},${y-height} ${x+width*0.75},${y-height} ${x+width},${y} ${x+width*0.75},${y+height} ${x-width},${y+height} ${x-width*0.75},${y}`;
+            return `${x-width},${y-height} ${x+width},${y-height} ${x+width+4},${y} ${x+width},${y+height} ${x-width},${y+height} ${x-width+4},${y}`;
         },
         connectors: [
             {
             type: 'out',
-            position: (x: number, y: number, width: number, height: number) => [x+width,y,0]
+            position: (x: number, y: number, width: number, height: number) => [x+width+4,y,0]
             },
             {
             type: 'in',
-            position: (x: number, y: number, width: number, height: number) => [x-width*0.75,y,Math.PI]
+            position: (x: number, y: number, width: number, height: number) => [x-width+4,y,Math.PI]
             }
         ],
         getDimensions(length: number) {
@@ -45,7 +45,7 @@ export class SvgVariableTypes {
             return {
                 length: length,
                 boundingbox: [-lengthPart * 4,-25,lengthPart * 8,50],
-                labelbox: [-lengthPart * 4,-22.5,lengthPart * 6,45],
+                labelbox: [-lengthPart * 4,-22.5,lengthPart * 8,45],
                 valuebox: [lengthPart * 1,-20,lengthPart * 6,25],
                 exponentbox: [lengthPart * 1,5,lengthPart * 6,25],
                 valueline: [[-lengthPart * 4,-25],[lengthPart * 3,-25]]
@@ -57,12 +57,12 @@ export class SvgVariableTypes {
     public static stock = {
         name: 'stock',
         points: (x: number, y: number, width: number, height: number) => {
-            return `${x-width},${y-height} ${x+width*0.75},${y-height} ${x+width},${y} ${x+width*0.75},${y+height} ${x-width},${y+height}`;
+            return `${x-width},${y-height} ${x+width},${y-height} ${x+width+4},${y} ${x+width},${y+height} ${x-width},${y+height}`;
         },
         connectors: [
             {
             type: 'out',
-            position: (x: number, y: number, width: number, height: number) => [x+width,y,0]
+            position: (x: number, y: number, width: number, height: number) => [x+width+4,y,0]
             },
             {
             type: 'in',
@@ -74,7 +74,7 @@ export class SvgVariableTypes {
             return {
                 length: length,
                 boundingbox: [-lengthPart * 4,-25,lengthPart * 8,50],
-                labelbox: [-lengthPart * 4,-22.5,lengthPart * 6,45],
+                labelbox: [-lengthPart * 4,-22.5,lengthPart * 8,45],
                 valuebox: [lengthPart * 1,-20,lengthPart * 6,25],
                 exponentbox: [lengthPart * 1,5,lengthPart * 6,25],
                 valueline: [[-lengthPart * 4,-25],[lengthPart * 3,-25]]
@@ -86,12 +86,12 @@ export class SvgVariableTypes {
     public static integral = {
         name: 'integral',
         points: (x: number, y: number, width: number, height: number) => {
-            return `${x-width},${y-height} ${x+width*0.75},${y-height} ${x+width},${y} ${x+width*0.75},${y+height} ${x-width},${y+height}`;
+            return `${x-width},${y-height} ${x+width},${y-height} ${x+width+4},${y} ${x+width},${y+height} ${x-width},${y+height}`;
         },
         connectors: [
             {
             type: 'out',
-            position: (x: number, y: number, width: number, height: number) => [x+width,y,0]
+            position: (x: number, y: number, width: number, height: number) => [x+width+4,y,0]
             },
             {
             type: 'in',
@@ -103,7 +103,7 @@ export class SvgVariableTypes {
             return {
                 length: length,
                 boundingbox: [-lengthPart * 4,-25,lengthPart * 8,50],
-                labelbox: [-lengthPart * 4,-22.5,lengthPart * 6,45],
+                labelbox: [-lengthPart * 4,-22.5,lengthPart * 8,45],
                 valuebox: [lengthPart * 1,-20,lengthPart * 6,25],
                 exponentbox: [lengthPart * 1,5,lengthPart * 6,25],
                 valueline: [[-lengthPart * 4,-25],[lengthPart * 3,-25]]
@@ -115,12 +115,12 @@ export class SvgVariableTypes {
     public static parameter = {
         name: 'parameter',
         points: (x: number, y: number, width: number, height: number) => {
-            return `${x-width},${y-height} ${x+width*0.75},${y-height} ${x+width},${y} ${x+width*0.75},${y+height} ${x-width},${y+height}`;
+            return `${x-width},${y-height} ${x+width},${y-height} ${x+width+4},${y} ${x+width},${y+height} ${x-width},${y+height}`;
         },
         connectors: [
             {
             type: 'out',
-            position: (x: number, y: number, width: number, height: number) => [x+width,y,0]
+            position: (x: number, y: number, width: number, height: number) => [x+width+4,y,0]
             }
         ],
         getDimensions(length: number) {
@@ -128,7 +128,7 @@ export class SvgVariableTypes {
             return {
                 length: length,
                 boundingbox: [-4 * lengthPart,-25,8 * lengthPart,50],
-                labelbox: [-4 * lengthPart,-22.5,6 * lengthPart,45],
+                labelbox: [-4 * lengthPart,-22.5,8 * lengthPart,45],
                 valuebox: [lengthPart * 1,-20,lengthPart * 6,25],
                 exponentbox: [lengthPart * 1,5,lengthPart * 6,25],
                 valueline: [[-4 * lengthPart,-25],[3 * lengthPart,-25]]
