@@ -23,7 +23,6 @@
 #include "selection.h"
 #include "dimension.h"
 #include "minskyTensorOps.h"
-#include "pango.h"
 #include "mansouraCairo.h"
 
 #include "capiRenderer.xcd"
@@ -46,7 +45,7 @@
 #include "tensorInterface.rcd"
 #include "tensorInterface.xcd"
 #include "xvector.rcd"
-#include "minskyCairoRenderer.h"
+#include "ravelRenderer.h"
 #include "SVGItem.h"
 #include "minsky_epilogue.h"
 
@@ -132,9 +131,7 @@ namespace minsky
       if (m_editorMode)
         {
           cairoShim.scale(z,z);
-          // TODO: CairoRenderer needs IMansoura support
-          auto& shimImpl = dynamic_cast<const MansouraCairo&>(cairoShim);
-          CairoRenderer cr(shimImpl._internalGetCairoContext());
+          RavelRenderer cr(cairoShim);
           wrappedRavel.render(cr);
         }
       else
@@ -895,12 +892,13 @@ namespace minsky
   {
     if (!surface.get()) return false;
     this->width=width; this->height=height;
-    const ecolab::cairo::CairoSave cs(surface->cairo());
-    cairo_translate(surface->cairo(),0.5*width,0.5*height);
+    const MansouraCairo shim(surface->cairo());
+    const PreserveContext cs(shim);
+    shim.translate(0.5*width,0.5*height);
     auto z=0.4*min(width,height)/ravel.wrappedRavel.radius();
     scale=1/z;
-    cairo_scale(surface->cairo(), z,z);
-    CairoRenderer cr(surface->cairo());
+    shim.scale(z,z);
+    RavelRenderer cr(shim);
     ravel.wrappedRavel.render(cr);
     return true;
   }

@@ -7,7 +7,6 @@
 #include "bookmark.h"
 #include "bookmark.tcd"
 #include "cairoSurfaceImage.tcd"
-#include "cairoRenderer.tcd"
 #include "callableFunction.tcd"
 #include "canvas.tcd"
 #define CLASSDESC_typescriptAPI___CAPIRenderer

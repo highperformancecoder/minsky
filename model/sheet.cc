@@ -25,7 +25,6 @@
 
 #include "itemT.rcd"
 #include "sheet.rcd"
-#include "minskyCairoRenderer.h"
 #include "ravelWrap.h"
 #include "tensorOp.h"
 #include "minsky_epilogue.h"

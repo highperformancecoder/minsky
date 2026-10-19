@@ -21,7 +21,7 @@
 #define RAVELWRAP_H
 
 #include "operation.h"
-#include "cairoRenderer.h"
+#include "capiRenderer.h"
 #include "dynamicRavelCAPI.h"
 #include "hypercube.h"
 #include "handleLockInfo.h"
