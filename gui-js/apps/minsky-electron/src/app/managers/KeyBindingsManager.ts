@@ -186,10 +186,6 @@ export class KeyBindingsManager {
       await this.handlePlusKey(payload);
       break;
 
-    case '-':
-      await this.handleMinusKey(payload);
-      break;
-
     case '*':
       minsky.canvas.addOperation("multiply");
       await CommandsManager.mouseUp(payload.mouseX, payload.mouseY);
@@ -280,12 +276,6 @@ export class KeyBindingsManager {
 //    // <Key-KP_Add>
 //    await this.zoom(ZOOM_IN_FACTOR);
 //    return;
-  }
-
-  private static async handleMinusKey(payload: MinskyProcessPayload) {
-    minsky.canvas.addOperation("subtract");
-    await CommandsManager.mouseUp(payload.mouseX, payload.mouseY);
-    return;
   }
 
   private static async zoom(factor: number) {
