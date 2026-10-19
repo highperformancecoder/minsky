@@ -20,7 +20,6 @@
 #ifndef FONTDISPLAY_H
 #define FONTDISPLAY_H
 #include "renderNativeWindow.h"
-#include "mansouraCairo.h"
 #include "classdesc_access.h"
 
 namespace minsky
@@ -28,15 +27,14 @@ namespace minsky
   // display a sample of the current selected font
   class FontDisplay: public RenderNativeWindow
   {
-    bool redraw(int, int, int width, int height) override {
-      mansoura::MansouraCairo mans(surface->cairo());
+    bool redraw(const mansoura::IMansoura& mans, int, int, int width, int height) override {
       mans.moveTo(0,0);
       mans.showPlainText("←→↑↓—▼αΣ∫√⊗≤",10);
       return true;
     }
     CLASSDESC_ACCESS(FontDisplay);
   public:
-    void requestRedraw() {if (surface.get()) surface->requestRedraw();}
+    void requestRedraw() {RenderNativeWindow::requestRedraw();}
     FontDisplay()=default;
     FontDisplay(const FontDisplay&)=default;
     FontDisplay& operator=(const FontDisplay&) {return *this;}

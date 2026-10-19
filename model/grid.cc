@@ -23,7 +23,6 @@
 #include "grid.h"
 #include "variablePane.h"
 #include "lasso.h"
-#include "ecolab/include/pango.h"
 #include "grid.rcd"
 #include "grid.xcd"
 #include "minsky_epilogue.h"
@@ -37,7 +36,7 @@ namespace minsky
   }
   
   template <class Cell>
-  void Grid<Cell>::draw()
+  void Grid<Cell>::draw(const mansoura::IMansoura& cairoShim)
   {
     bottomRowMargin.clear();
     if (evenHeight())
@@ -87,8 +86,8 @@ namespace minsky
               case right: offset+=colWidth-currentCell.width(); break;
               case centre: offset+=0.5*(colWidth-currentCell.width()); break;
               }
-            moveCursorTo(x+offset+0.5*padx,y);
-            currentCell.show();
+            moveCursorTo(cairoShim,x+offset+0.5*padx,y);
+            currentCell.show(cairoShim);
             colWidth=std::max(colWidth, currentCell.width()+padx);
             y=bottomRowMargin[row];
           }
@@ -116,10 +115,8 @@ namespace minsky
   }
 
   template class Grid<ICell>;
-  template class Grid<ecolab::Pango>;
-  template class Grid<VariablePaneCell>;
+    template class Grid<VariablePaneCell>;
 
 }
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Grid<minsky::ICell>);
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Grid<ecolab::Pango>);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::Grid<minsky::VariablePaneCell>);

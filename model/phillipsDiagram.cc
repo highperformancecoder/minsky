@@ -101,15 +101,12 @@ namespace minsky
   }
 
   
-  bool PhillipsDiagram::redraw(int, int, int width, int height)
+  bool PhillipsDiagram::redraw(const IMansoura& shim, int, int, int width, int height)
   {
-    if  (!surface.get()) return false;
-    auto cairo=surface->cairo();
-    const CairoSave cs(cairo);
-    cairo_translate(cairo,x,y);
+    const PreserveContext cs(shim);
+    shim.translate(x,y);
     for (auto& i: stocks)
       {
-        MansouraCairo shim(cairo);
         const PreserveContext cs(shim);
         shim.identityMatrix();
         shim.translate(i.second.x()+x, i.second.y()+y);
@@ -117,7 +114,6 @@ namespace minsky
       }
     for (auto& i: flows)
       {
-        MansouraCairo shim(cairo);
         i.second.draw(shim,true);
       }
     return true;

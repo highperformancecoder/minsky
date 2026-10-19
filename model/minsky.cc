@@ -18,6 +18,7 @@
 */
 #include "minsky.h"
 #include "cairoItems.h"
+#include <pango.h>
 #include "classdesc_access.h"
 #include "flowCoef.h"
 #include "userFunction.h"

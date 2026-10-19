@@ -17,6 +17,7 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "mansouraCairo.h"
 #include "cairoItems.h"
 #include "operation.h"
 #include "group.h"
@@ -1320,9 +1321,7 @@ struct GodleyTableWindowFixture: private EmbedGodleyIcon, public GodleyTableWind
 TEST_F(GodleyTableWindowFixture, mouseMove)
 {
   godleyIcon().table.cell(1,1)="hello";
-  surface.reset(new ecolab::cairo::Surface
-                (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL)));
-  redraw(0,0,0,0);
+  redraw(*mansoura::makeRecordingContext(),0,0,0,0);
   double x=colLeftMargin[1]+10, y=topTableOffset+rowHeight+5;
   EXPECT_EQ(1, colX(x));
   EXPECT_EQ(1, rowY(y));
@@ -1345,9 +1344,7 @@ TEST_F(GodleyTableWindowFixture, mouseMove)
 TEST_F(GodleyTableWindowFixture, mouseSelect)
 {
   godleyIcon().table.cell(1,1)="hello";
-  surface.reset(new ecolab::cairo::Surface
-                (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL)));
-  redraw(0,0,0,0);
+  redraw(*mansoura::makeRecordingContext(),0,0,0,0);
   double x=colLeftMargin[1], y=topTableOffset+rowHeight+5;
   EXPECT_EQ(1, colX(x));
   EXPECT_EQ(1, rowY(y));
@@ -1375,9 +1372,7 @@ TEST_F(GodleyTableWindowFixture, mouseButtons)
   godleyIcon().table.cell(3,1)="r3c1";
   godleyIcon().table.cell(3,2)="r3c2";      
       
-  surface.reset(new ecolab::cairo::Surface
-                (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL)));
-  redraw(0,0,0,0);
+  redraw(*mansoura::makeRecordingContext(),0,0,0,0);
   double x=colLeftMargin[1]+2*ButtonWidget<row>::buttonSpacing+1, y=5+columnButtonsOffset;
   EXPECT_EQ(colWidget, clickType(x,y));
   mouseDown(x,y);
@@ -1414,9 +1409,7 @@ TEST_F(GodleyTableWindowFixture, moveRowColCell)
   godleyIcon().table.cell(1,2)="r1c2";
   godleyIcon().table.cell(2,1)="r2c1";
   godleyIcon().table.cell(2,2)="r2c2";
-  surface.reset(new ecolab::cairo::Surface
-                (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL)));
-  redraw(0,0,0,0);
+  redraw(*mansoura::makeRecordingContext(),0,0,0,0);
   double x=colLeftMargin[1]+10, y=topTableOffset+5;
   EXPECT_EQ(1,colX(x));
   EXPECT_EQ(0,rowY(y));
@@ -1575,9 +1568,7 @@ TEST_F(GodleyTableWindowFixture, keyPress)
   
 TEST_F(GodleyTableWindowFixture, addDelVars)
 {
-  surface.reset(new ecolab::cairo::Surface
-                (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL)));
-  redraw(0,0,0,0);
+  redraw(*mansoura::makeRecordingContext(),0,0,0,0);
   double x=colLeftMargin[1]+10, y=topTableOffset+5+rowHeight;
   EXPECT_EQ(1,colX(x));
   EXPECT_EQ(1,rowY(y));

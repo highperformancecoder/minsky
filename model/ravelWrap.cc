@@ -888,11 +888,9 @@ namespace minsky
         r->lockGroup.reset(); // this may delete this, so should be last
   }
 
-  bool RavelPopup::redraw(int x0, int y0, int width, int height)
+  bool RavelPopup::redraw(const IMansoura& shim, int x0, int y0, int width, int height)
   {
-    if (!surface.get()) return false;
     this->width=width; this->height=height;
-    const MansouraCairo shim(surface->cairo());
     const PreserveContext cs(shim);
     shim.translate(0.5*width,0.5*height);
     auto z=0.4*min(width,height)/ravel.wrappedRavel.radius();

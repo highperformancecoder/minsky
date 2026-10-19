@@ -143,33 +143,28 @@ namespace minsky
     }
   }
  
-  bool PubTab::redraw(int x0, int y0, int width, int height)
+  bool PubTab::redraw(const IMansoura& cairo, int x0, int y0, int width, int height)
   {
-    if (!surface.get()) {
-      return false;
-    }
-    auto cairo=surface->cairo();
-    const CairoSave cs(cairo);
-    cairo_translate(cairo, offsx, offsy);
-    cairo_scale(cairo, m_zoomFactor, m_zoomFactor);
-    cairo_set_line_width(cairo, 1);
+    const PreserveContext cs(cairo);
+    cairo.translate(offsx, offsy);
+    cairo.scale(m_zoomFactor, m_zoomFactor);
+    cairo.setLineWidth(1);
     for (auto& i: items)
       {
-        const CairoSave cs(cairo);
-        cairo_translate(cairo, i.x, i.y);
+        const PreserveContext cs(cairo);
+        cairo.translate(i.x, i.y);
         try
           {
             const EnsureEditorMode ensureEditorMode(i);
-            MansouraCairo shim(cairo);
-            i.itemRef->draw(shim);
+            i.itemRef->draw(cairo);
           }
         catch (...) {}
       }
     if (clickType==ClickType::onResize)
       {
-        cairo_rectangle(cairo,std::min(lasso.x0,lasso.x1), std::min(lasso.y0,lasso.y1),
+        cairo.rectangle(std::min(lasso.x0,lasso.x1), std::min(lasso.y0,lasso.y1),
                         abs(lasso.x0-lasso.x1), abs(lasso.y0-lasso.y1));
-        cairo_stroke(cairo);
+        cairo.stroke();
       }
     return !items.empty() || clickType!=ClickType::outside;
   }

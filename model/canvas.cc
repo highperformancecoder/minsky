@@ -797,7 +797,7 @@ namespace minsky
     return false;
   }
 
-  bool Canvas::redraw(int x0, int y0, int width, int height)
+  bool Canvas::redraw(const IMansoura& cairoShim, int x0, int y0, int width, int height)
   {
     updateRegion.x0=x0;
     updateRegion.y0=y0;
@@ -806,7 +806,7 @@ namespace minsky
     // redraw of canvas may throw if called during a reset operation
     try
       {
-        return redrawUpdateRegion();
+        return redrawUpdateRegion(cairoShim);
       }
 #ifndef NDEBUG
     catch (std::exception& ex)
@@ -823,21 +823,10 @@ namespace minsky
     return false;
   }
   
-  bool Canvas::redraw()
-  {
-    // nb using maxint here doesn't seem to work
-    return redraw(-1e6,-1e6,2e6,2e6);
-  }
-
-  bool Canvas::redrawUpdateRegion()
+  bool Canvas::redrawUpdateRegion(const IMansoura& mans)
   {
     bool didDrawSomething = false;
-    if (!surface().get()) {
-      return didDrawSomething;
-    }
     m_redrawRequested=false;
-    auto cairo=surface()->cairo();
-    MansouraCairo mans(cairo);
     
     mans.rectangle(updateRegion.x0,updateRegion.y0,updateRegion.x1-updateRegion.x0,updateRegion.y1-updateRegion.y0);
     mans.clip();
@@ -851,7 +840,6 @@ namespace minsky
            try
              {
                didDrawSomething = true;
-               MansouraCairo mans(cairo);
                const PreserveContext cs(mans);
                mans.identityMatrix();
                mans.translate(it.x(), it.y());
@@ -877,8 +865,8 @@ namespace minsky
            {
              didDrawSomething = true;
              const PreserveContext cs(mans);
-             cairo_identity_matrix(cairo);
-             cairo_translate(cairo,it.x(), it.y());
+             mans.identityMatrix();
+             mans.translate(it.x(), it.y());
              {
                it.draw(mans);
              }
@@ -931,17 +919,13 @@ namespace minsky
         mans.stroke();
       }
 
-    surface()->blit();
     return didDrawSomething;
   }
 
   void Canvas::recentre()
   {
-    const SurfacePtr tmp(surface());
-    surface().reset(new Surface(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr)));
-    redraw();
-    model->moveTo(model->x()-surface()->left(), model->y()-surface()->top());
-    surface()=tmp;
+    const auto ink=mansoura::inkExtents([this](const IMansoura& shim){redraw(shim,-1e6,-1e6,2e6,2e6);});
+    model->moveTo(model->x()-ink.left, model->y()-ink.top);
     requestRedraw();
   }
 
@@ -955,11 +939,8 @@ namespace minsky
   {
     model->zoom(model->x(),model->y(),z.zoom);
     model->moveTo(model->x()-z.left,model->y()-z.top);
-    cairo::SurfacePtr tmp(new cairo::Surface(cairo_image_surface_create(CAIRO_FORMAT_ARGB32,z.width,z.height)));
-    tmp.swap(surface());
-    redraw(0,0,z.width,z.height);
-    tmp.swap(surface());
-    cairo_surface_write_to_png(tmp->surface(),filename.c_str());
+    mansoura::renderToPNG(filename,z.width,z.height,
+                          [&](const IMansoura& shim){redraw(shim,0,0,z.width,z.height);});
     model->moveTo(model->x()+z.left,model->y()+z.top);
     model->zoom(model->x(),model->y(),1/z.zoom);
   }

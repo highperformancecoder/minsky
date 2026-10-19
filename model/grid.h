@@ -21,6 +21,7 @@
 #define GRID_H
 #include <vector>
 #include "classdesc_access.h"
+#include "IMansoura.h"
 
 namespace minsky
 {
@@ -29,7 +30,7 @@ namespace minsky
   {
   public:
     virtual ~ICell()=default;
-    virtual void show()=0;           ///< render onto cairo surface
+    virtual void show(const mansoura::IMansoura&)=0;  ///< render using the drawing context
     virtual double width() const=0;  ///< width of cell on canvas
     virtual double height() const=0; ///< height of cell
   };
@@ -43,7 +44,7 @@ namespace minsky
   class Grid: public JustificationStruct
   {
     /// move current cursor to \a x,y
-    virtual void moveCursorTo(double x, double y)=0;
+    virtual void moveCursorTo(const mansoura::IMansoura&, double x, double y)=0;
     CLASSDESC_ACCESS(Grid);
   public:
     virtual ~Grid()=default;
@@ -58,7 +59,7 @@ namespace minsky
     /// coordinates of right and bottom margins of cells. Valid after draw()
     std::vector<double> rightColMargin, bottomRowMargin;
     /// draw the grid
-    void draw();
+    void draw(const mansoura::IMansoura&);
     /// column at \a x in unzoomed coordinates
     int colX(double x) const;
     /// row at \a y in unzoomed coordinates

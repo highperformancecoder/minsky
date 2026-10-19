@@ -37,25 +37,27 @@ namespace minsky
   VariablePaneCell::VariablePaneCell(const VariableValue& var):
     var(var.type(), ':'+uqName(var.name))
   {
-    const ecolab::cairo::Surface surf
-      (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
-    cairo_move_to(surf.cairo(),0,0);
-    MansouraCairo shim(surf.cairo());
-    RenderVariable rv(*this->var, shim);
-    rv.draw();
-    double l,t;
-    cairo_recording_surface_ink_extents(surf.surface(),&l,&t,&m_width,&m_height);
+    const auto ink=mansoura::inkExtents
+      ([&](const IMansoura& shim)
+       {
+         shim.moveTo(0,0);
+         RenderVariable rv(*this->var, shim);
+         rv.draw();
+       });
+    m_width=ink.width;
+    m_height=ink.height;
   }
 
-  void VariablePaneCell::show()
+  void VariablePaneCell::show(const IMansoura& shim)
   {
-    if (!cachedCairo || !var || var->type()==VariableType::undefined) return;
-    MansouraCairo shim(cachedCairo);
+    if (!var || var->type()==VariableType::undefined) return;
     RenderVariable rv(*var, shim);
-    const ecolab::cairo::CairoSave cs(cachedCairo);
-    cairo_translate(cachedCairo,0.5*m_width,0.5*m_height);
-    rv.draw();
-    cairo_reset_clip(cachedCairo);
+    {
+      const PreserveContext cs(shim);
+      shim.translate(0.5*m_width,0.5*m_height);
+      rv.draw();
+    }
+    shim.resetClip();
   }
 
   void VariablePaneCell::emplace() const
@@ -103,27 +105,20 @@ namespace minsky
     m_numCols=vars.size()/m_numRows+1;
     const unsigned gridSize=m_numRows*m_numCols;
     while (vars.size()<gridSize) vars.emplace_back();
-    if (surface.get()) surface->requestRedraw(); // TODO, plain requestRedraw doesn't work for Tk here...
+    RenderNativeWindow::requestRedraw();
   }
 
-  bool VariablePane::redraw(int, int, int, int)
+  bool VariablePane::redraw(const IMansoura& shim, int, int, int, int)
   {
-    if (surface.get()) {
-      cairo_t* cairo=surface->cairo();
-      for (auto& i: vars) i.reset(cairo);
-      cairo_identity_matrix(cairo); 
-      Grid<VariablePaneCell>::draw(); 
-    }
-    return surface.get();
+    shim.identityMatrix(); 
+    Grid<VariablePaneCell>::draw(shim); 
+    return true;
   }    
 
-  void VariablePane::moveCursorTo(double x, double y)
+  void VariablePane::moveCursorTo(const IMansoura& shim, double x, double y)
   {
-    if (surface.get())
-      {
-        cairo_identity_matrix(surface->cairo());
-        cairo_translate(surface->cairo(), x+offsx, y+offsy);
-      }
+    shim.identityMatrix();
+    shim.translate(x+offsx, y+offsy);
   }
 }
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::VariablePaneBase);

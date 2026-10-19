@@ -36,10 +36,8 @@ namespace minsky
     class PlotWidgetTest : public PlotWidget, public ::testing::Test
     {
     public:
-      ecolab::cairo::SurfacePtr surf{
-        std::make_shared<ecolab::cairo::Surface>(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr))};
-      mansoura::MansouraCairo mans{surf->cairo()};
-      PlotWidgetTest() {surface=surf;}
+      std::unique_ptr<mansoura::IMansoura> mansPtr{mansoura::makeRecordingContext()};
+      mansoura::IMansoura& mans{*mansPtr};
     };
 
     TEST_F(PlotWidgetTest, drawWithTitleAndLegend)

@@ -27,7 +27,7 @@ namespace
 {
   struct SizedCellMock: public ICell
   {
-    void show() override {}
+    void show(const mansoura::IMansoura&) override {}
     SizedCellMock(double width=10, double height=5):
       m_width(width), m_height(height) {}
     double m_width, m_height;
@@ -40,7 +40,7 @@ namespace
     unsigned numRows() const override {return 10;}
     unsigned numCols() const override {return 10;}
     vector<double> xpos, ypos; // capture moveTos
-    void moveCursorTo(double x, double y) override {
+    void moveCursorTo(const mansoura::IMansoura&, double x, double y) override {
       xpos.push_back(x);
       ypos.push_back(y);
     }
@@ -76,7 +76,7 @@ const double padx=2;
 
 TEST_F(EvenHeightLeftGrid, draw)
   {
-    draw();
+    draw(mansoura::measuringContext());
     EXPECT_TRUE(numCols()>1 && numRows()>1);
     EXPECT_EQ(numCols(), rightColMargin.size());
     EXPECT_EQ(numRows(), bottomRowMargin.size());
@@ -96,7 +96,7 @@ TEST_F(EvenHeightLeftGrid, draw)
 
 TEST_F(UnevenHeightGridMock, left)
   {
-    draw();
+    draw(mansoura::measuringContext());
     EXPECT_TRUE(numCols()>1 && numRows()>1);
     EXPECT_EQ(numCols(), rightColMargin.size());
     EXPECT_EQ(numRows(), bottomRowMargin.size());
@@ -128,7 +128,7 @@ TEST_F(UnevenHeightGridMock, left)
 TEST_F(UnevenHeightGridMock, right)
   {
     m_justification=right;
-    draw();
+    draw(mansoura::measuringContext());
     EXPECT_TRUE(numCols()>1 && numRows()>1);
     EXPECT_EQ(numCols(), rightColMargin.size());
     EXPECT_EQ(numRows(), bottomRowMargin.size());
@@ -160,7 +160,7 @@ TEST_F(UnevenHeightGridMock, right)
 TEST_F(UnevenHeightGridMock, centre)
   {
     m_justification=centre;
-    draw();
+    draw(mansoura::measuringContext());
     EXPECT_TRUE(numCols()>1 && numRows()>1);
     EXPECT_EQ(numCols(), rightColMargin.size());
     EXPECT_EQ(numRows(), bottomRowMargin.size());
@@ -191,7 +191,7 @@ TEST_F(UnevenHeightGridMock, centre)
 
 TEST_F(UnevenHeightGridMock, colX)
   {
-    draw();
+    draw(mansoura::measuringContext());
     EXPECT_EQ(-1, colX(-1));
     EXPECT_EQ(-1, colX(rightColMargin.back()));
     for (size_t i=0; i<rightColMargin.size(); ++i)
@@ -200,7 +200,7 @@ TEST_F(UnevenHeightGridMock, colX)
 
 TEST_F(UnevenHeightGridMock, rowY)
   {
-    draw();
+    draw(mansoura::measuringContext());
     EXPECT_EQ(-1, rowY(-1));
     EXPECT_EQ(-1, rowY(bottomRowMargin.back()));
     for (size_t i=0; i<bottomRowMargin.size(); ++i)

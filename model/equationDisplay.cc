@@ -35,28 +35,40 @@
 
 namespace minsky
 {
-  bool EquationDisplay::redraw(int x0, int y0, int width, int height)
+  bool EquationDisplay::redraw(const mansoura::IMansoura& shim, int x0, int y0, int width, int height)
   {
-    if (surface.get()) {
-      const BusyCursor busy(m);
-      const MathDAG::SystemOfEquations system(m);
-      cairo_rectangle(surface->cairo(),0,0,width,height);
-      cairo_clip(surface->cairo());
-      cairo_move_to(surface->cairo(),offsx,offsy);
-      cairo_scale(surface->cairo(),m_zoomFactor,m_zoomFactor);
-      system.renderEquations(*surface,height);
-      if (m.flags & Minsky::fullEqnDisplay_needed)
-        {
-          ecolab::cairo::Surface surf
-            (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
-          system.renderEquations(surf,std::numeric_limits<double>::max());
-          m_width=surf.width();
-          m_height=surf.height();
-          m.flags &= ~Minsky::fullEqnDisplay_needed;
-        }
-      return true;
+    const BusyCursor busy(m);
+    const MathDAG::SystemOfEquations system(m);
+    shim.rectangle(0,0,width,height);
+    shim.clip();
+    shim.moveTo(offsx,offsy);
+    shim.scale(m_zoomFactor,m_zoomFactor);
+    // TODO: remove this bridge once SystemOfEquations::renderEquations
+    // is migrated to IMansoura. It draws on a second cairo context
+    // sharing the target surface and the state set up above.
+    {
+      auto cr=static_cast<cairo_t*>(shim.context());
+      double x,y;
+      shim.getCurrentPoint(x,y);
+      ecolab::cairo::Surface surf(cairo_surface_reference(cairo_get_target(cr)));
+      cairo_rectangle(surf.cairo(),0,0,width,height);
+      cairo_clip(surf.cairo());
+      cairo_matrix_t ctm;
+      cairo_get_matrix(cr,&ctm);
+      cairo_set_matrix(surf.cairo(),&ctm);
+      cairo_move_to(surf.cairo(),x,y);
+      system.renderEquations(surf,height);
     }
-    return surface.get();
+    if (m.flags & Minsky::fullEqnDisplay_needed)
+      {
+        ecolab::cairo::Surface surf
+          (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
+        system.renderEquations(surf,std::numeric_limits<double>::max());
+        m_width=surf.width();
+        m_height=surf.height();
+        m.flags &= ~Minsky::fullEqnDisplay_needed;
+      }
+    return true;
   }
 }
 

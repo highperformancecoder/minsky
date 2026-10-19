@@ -63,8 +63,9 @@ namespace minsky
     friend struct PlotItem;
 
     bool xIsSecsSinceEpoch=false;
-    bool redraw(int, int, int, int) override;
+    bool redraw(const mansoura::IMansoura&, int, int, int, int) override;
     using Plot::redraw;
+    void redrawWithBounds(const mansoura::IMansoura& shim) override {redraw(shim,0,0,500,500);}
 
     // shadow labels, so we can interpret as LaTeX code rather than Pango markup
     std::string m_xlabel, m_ylabel, m_y1label;
@@ -83,7 +84,6 @@ namespace minsky
   public:
     using Item::x;
     using Item::y;
-    using RenderNativeWindow::surface;
     using RenderNativeWindow::requestRedraw;
     using RenderNativeWindow::renderToSVG;
 
@@ -170,7 +170,6 @@ namespace minsky
     using mansoura::Plot::draw;
     void draw(const mansoura::IMansoura& cairoShim) const override;
     void requestRedraw(); ///< redraw plot using current data to all open windows
-    void redrawWithBounds() override {redraw(0,0,500,500);}    
     
     /// add this as a display plot to its group
     void makeDisplayPlot();

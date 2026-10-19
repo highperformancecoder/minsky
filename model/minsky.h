@@ -20,6 +20,7 @@
 #ifndef MINSKY_H
 #define MINSKY_H
 
+#include <pango/pangocairo.h>
 #include "stringKeyMap.h"
 #include "intrusiveMap.h"
 #include "bookmark.h"

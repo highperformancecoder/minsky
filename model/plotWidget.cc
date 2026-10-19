@@ -362,20 +362,14 @@ namespace minsky
     justDataChanged=true; // assume plot same size, don't do unnecessary stuff
     // store previous min/max values to determine if plot scale changes
     scalePlot();
-    if (surface.get())
-      surface->requestRedraw();
+    RenderNativeWindow::requestRedraw();
   }
 
-  bool PlotWidget::redraw(int x0, int y0, int width, int height) 
+  bool PlotWidget::redraw(const IMansoura& mans, int x0, int y0, int width, int height) 
   {
-    if (surface.get())
-      {
-        auto sf=RenderNativeWindow::scaleFactor();
-        MansouraCairo mans(surface->cairo());
-        Plot::draw(mans,width/sf,height/sf);
-        surface->blit();
-      }
-    return surface.get();
+    auto sf=RenderNativeWindow::scaleFactor();
+    Plot::draw(mans,width/sf,height/sf);
+    return true;
   }
 
   

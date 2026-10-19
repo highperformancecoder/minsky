@@ -6,7 +6,6 @@
 #include "assetClass.tcd"
 #include "bookmark.h"
 #include "bookmark.tcd"
-#include "cairoSurfaceImage.tcd"
 #include "callableFunction.tcd"
 #include "canvas.tcd"
 #define CLASSDESC_typescriptAPI___CAPIRenderer
@@ -44,7 +43,6 @@
 #include "operation.tcd"
 #include "operationBase.tcd"
 #include "operationType.tcd"
-#include "pango.tcd"
 #include "pannableTab.tcd"
 #include "phillipsDiagram.tcd"
 #include "plotOptions.tcd"

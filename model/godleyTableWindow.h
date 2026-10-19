@@ -225,17 +225,14 @@ namespace minsky
   {
     CLASSDESC_ACCESS(GodleyTableWindow);
   protected:
-    bool redraw(int, int, int width, int height) override {
-      if (surface.get()) {
-        drawCairo(surface->cairo());
-        return true;
-      }
-      return false;
+    bool redraw(const mansoura::IMansoura& cairoShim, int, int, int width, int height) override {
+      draw(cairoShim);
+      return true;
     }
   public:
     using GodleyTableEditor::draw;
     GodleyTableWindow(GodleyIcon& g): GodleyTableEditor(g) {}
-    void requestRedraw() {if (surface.get()) surface->requestRedraw();}
+    void requestRedraw() {RenderNativeWindow::requestRedraw();}
     void requestRedrawCanvas() override {requestRedraw();}
 
     void mouseDown(float x, float y) override {GodleyTableEditor::mouseDown(x,y);}

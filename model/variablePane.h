@@ -19,7 +19,7 @@
 
 #ifndef VARIABLEPANE_H
 #define VARIABLEPANE_H
-#include "cairo.h"
+#include "IMansoura.h"
 #include "classdesc_access.h"
 #include "grid.h"
 #include "pannableTab.h"
@@ -33,13 +33,11 @@ namespace minsky
   {
     VariablePtr var;
     double m_width=0, m_height=0;
-    cairo_t* cachedCairo=nullptr;
     CLASSDESC_ACCESS(VariablePaneCell);
   public:
     VariablePaneCell() {}
     VariablePaneCell(const VariableValue& var);
-    void reset(cairo_t* cairo) {cachedCairo=cairo;}
-    void show();
+    void show(const mansoura::IMansoura&);
     double width() const {return m_width+2;}
     double height() const {return m_height+4;}
     void emplace() const;
@@ -53,7 +51,7 @@ namespace minsky
     unsigned m_numRows=0, m_numCols=0;
     classdesc::Exclude<std::vector<VariablePaneCell>> vars;
     CLASSDESC_ACCESS(VariablePane);
-    bool redraw(int, int, int width, int height) override;
+    bool redraw(const mansoura::IMansoura&, int, int, int width, int height) override;
   public:
     bool shift=false; ///< true if shift pressed
     std::set<Type> selection;
@@ -68,7 +66,7 @@ namespace minsky
     unsigned numRows() const override {return m_numRows;}
     unsigned numCols() const override {return m_numCols;}
     bool evenHeight() const override {return false;}
-    void moveCursorTo(double,double) override;
+    void moveCursorTo(const mansoura::IMansoura&, double, double) override;
     void mouseDown(float x,float y) override {
       if (shift) return PannableTab<VariablePaneBase>::mouseDown(x,y);
       cell(rowY(y-offsy),colX(x-offsx)).emplace();
