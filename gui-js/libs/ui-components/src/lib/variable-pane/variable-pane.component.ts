@@ -13,7 +13,6 @@ import {
   ElectronService,
 } from '@minsky/core';
 import {
-  VariablePane,
   VariableValue,
   VariableValues,
   minsky
@@ -58,7 +57,6 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
   width: number;
   variablePaneContainer: HTMLElement;
   mouseMove$: Observable<MouseEvent>;
-  variablePane: VariablePane;
 
   containerWidth$ = new BehaviorSubject<string>(null);
   
@@ -72,7 +70,6 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
       this.itemId = params.itemId;
       this.systemWindowId = params.systemWindowId;
     });
-    this.variablePane=electronService.minsky.variablePane;
   }
 
   ngAfterViewInit() {
@@ -95,12 +92,10 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
     }, { passive: false });
 
     this.height = Math.round(this.variablePaneContainer.clientHeight);
-    this.variablePane.updateWithHeight(this.height);
     // set initial value of form elements from C++
-    let selected=await this.variablePane.selection.properties();
     const supportedTypes = ['flow','parameter','stock','integral'];
     for (let i of supportedTypes)
-      document.forms['variablePane']['variablePane::'+i].checked=selected.includes(i);
+      document.forms['variablePane']['variablePane::'+i].checked=true;
 
     this.allSvgData = [];
     const varValues: VariableValues = await minsky.variableValues;
@@ -169,8 +164,6 @@ export class VariablePaneComponent implements OnDestroy, AfterViewInit {
   }
 
   select(id) {
-    if (document.forms['variablePane']['variablePane::'+id].checked) this.variablePane.select(id);
-    else this.variablePane.deselect(id);
     this.setPositions();
   }
 

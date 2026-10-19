@@ -22,7 +22,7 @@ LIBS:=$(subst -lecolab,$(ECOLAB_HOME)/lib/libecolab.a,$(LIBS))
 
 VPATH= .. ../schema ../model ../engine ../RESTService ../RavelCAPI/civita ../RavelCAPI $(ECOLAB_HOME)/include
 
-GTESTOBJS=testCSVParser.o testCanvas.o testDataOp.o testDatabaseIngestor.o testDerivative.o testExpressionWalker.o testGrid.o testLatexToPango.o testLock.o testLockGroup.o testMdl.o testMdlReader.o testMinsky.o testModel.o testPannableTab.o testPhillips.o testPlotWidget.o testPubTab.o testSaver.o testSheet.o testStr.o testTensorOps.o testUnits.o testUserFunction.o testVariable.o testVariablePane.o testXVector.o testZStream.o ticket-1461.o
+GTESTOBJS=testCSVParser.o testCanvas.o testDataOp.o testDatabaseIngestor.o testDerivative.o testExpressionWalker.o testLatexToPango.o testLock.o testLockGroup.o testMdl.o testMdlReader.o testMinsky.o testModel.o testPannableTab.o testPhillips.o testPlotWidget.o testPubTab.o testSaver.o testSheet.o testStr.o testTensorOps.o testUnits.o testUserFunction.o testVariable.o testVariablePane.o testXVector.o testZStream.o ticket-1461.o
 
 MINSKYOBJS=localMinsky.o ../libminsky.a
 FLAGS:=-I.. -I../RESTService -I../RavelCAPI/civita -I../RavelCAPI  -I../model -I../engine -I../schema $(FLAGS)

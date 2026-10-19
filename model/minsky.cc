@@ -140,7 +140,6 @@ namespace minsky
     equations.clear();
     integrals.clear();
     variableValues.clear();
-    variablePane.update();
     maxValue.clear();
     PhillipsFlow::maxFlow.clear();
     PhillipsStock::maxStock.clear();

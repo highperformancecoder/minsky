@@ -49,7 +49,6 @@
 #include "rungeKutta.h"
 #include "saver.h"
 #include "stringKeyMap.h"
-#include "variablePane.h"
 #include "version.h"
 
 #include <vector>
@@ -164,7 +163,6 @@ namespace minsky
     void markEdited() {
       flags |= is_edited | fullEqnDisplay_needed;
       if (!running) flags|=reset_needed; // don't reset when running
-      variablePane.update();
       canvas.requestRedraw();
       canvas.model.updateTimestamp();
     }
@@ -524,8 +522,6 @@ namespace minsky
     std::map<std::string,std::weak_ptr<Item>> namedItems;
     void nameCurrentItem(const std::string& name) {namedItems[name]=canvas.item;}
     void itemFromNamedItem(const std::string& name);
-
-    VariablePane variablePane;
 
     /// Used to implement a pause until return pressed for attaching debugger purposes
     char getc() const {return std::getc(stdin);}
