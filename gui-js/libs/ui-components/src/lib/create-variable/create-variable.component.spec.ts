@@ -1,4 +1,5 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { RouterTestingModule } from '@angular/router/testing';
 
 import { CreateVariableComponent } from './create-variable.component';
 
@@ -8,7 +9,7 @@ describe('CreateVariableComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [CreateVariableComponent],
+      imports: [CreateVariableComponent, RouterTestingModule],
     }).compileComponents();
   });
 

@@ -7,7 +7,7 @@ describe('SimulationParametersComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [SimulationParametersComponent],
+      imports: [SimulationParametersComponent],
     }).compileComponents();
   });
 
