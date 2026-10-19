@@ -233,7 +233,7 @@ string VariableBase::name(const std::string& name)
   m_name=name;
   m_canonicalName=minsky::canonicalName(name);
   ensureValueExists(tmpVV.get());
-  assert(vValue() && vValue()->valueId()==valueId());
+  assert(!vValue() || vValue()->valueId()==valueId());
   cachedNameRender.reset();
   bb.update(*this); // adjust bounding box for new name - see ticket #704
   if (auto controllingItem=controller.lock())
@@ -769,7 +769,7 @@ void VariableBase::draw(const ICairoShim& cairoShim) const
             auto l_cachedExponent=cachedExponent;
             auto val=engExp();    
             if (!l_cachedMantissa || l_cachedMantissa->context()!=cairoShim.context() ||
-               value()!=cachedValue)
+               value()!=cachedValue || cachedMaxSliderSteps!=vv->maxSliderSteps())
               {
          
                 cachedValue=value();

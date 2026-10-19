@@ -1,3 +1,13 @@
+/*
+ * Ascii85 (Base85) encoding and decoding functions.
+ * Origin: Derived from the standard Adobe Systems PostScript/PDF Ascii85 
+ *         specification algorithm (5-character to 4-byte chunk decoding).
+ * 
+ * License: Public Domain / CC0 (Creative Commons Zero)
+ * This implementation is a standard mathematical translation of an open
+ * specification, completely freestanding, and free of third-party copyright.
+ */
+
 #ifndef A85_H
 #define A85_H
 

@@ -69,7 +69,8 @@ export const events = {
   LOG_MESSAGE: 'log-message',
   SET_AUTH_TOKEN: 'set-auth-token',
   OAUTH_OPEN_POPUP: 'oauth-open-popup',
-  OAUTH_CALLBACK: 'oauth-callback',
+  GET_CLERK_CLIENT_JWT: 'get-clerk-client-jwt',
+  SET_CLERK_CLIENT_JWT: 'set-clerk-client-jwt',
 };
 
 // add non exposed commands here to get intellisense on the terminal popup

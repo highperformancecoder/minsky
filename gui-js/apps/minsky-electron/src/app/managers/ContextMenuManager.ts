@@ -536,6 +536,11 @@ export class ContextMenuManager {
         label: `Delete ${itemInfo.classType}`,
         click: () => CommandsManager.deleteCurrentItemHavingId(itemInfo.id)
       }),
+      // put a separator at the bottom to prevent unintentional deletions
+      new MenuItem({
+        label: '      ',
+        enabled: false,
+      }),
     ];
     
     return menuItems;
@@ -1430,6 +1435,8 @@ export class ContextMenuManager {
        ['middle', 'Middle'],
        ['bottom', 'Bottom'],
        ['top_bottom', 'Top & Bottom'],
+       ['equal_width', 'Equal width'],
+       ['equal_height', 'Equal height'],
      ];
     return labels.map(([alignment, label]) =>
        new MenuItem({
