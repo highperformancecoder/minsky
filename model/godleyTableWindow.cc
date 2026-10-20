@@ -1074,8 +1074,10 @@ namespace {
         auto& d=history[historyPtr-1];
         // Perform deep comparison of Godley tables in history to avoid spurious noAssetClass columns from arising during undo. For ticket 1118.
         if (d.getData().empty()) return; // should not happen
-		m_godleyIcon.table=d; 
+        const GodleyTable restoredTable=d;
+        m_godleyIcon.table=restoredTable;
         m_godleyIcon.update();
+        m_godleyIcon.table=restoredTable;
         adjustWidgets();
         requestRedrawCanvas();
       }

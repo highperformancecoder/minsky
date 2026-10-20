@@ -91,6 +91,15 @@ assert item.table.getCell(2, 1)==originalCell
 item.popup.undo(-1)
 assert item.table.getCell(2, 1)=='branched'
 
+# updating after undo must not change a restored blank initial condition
+item.popup.pushHistory()
+item.table.setCell(1, 1, '')
+item.setCell(2, 1, 'changed')
+item.popup.undo(1)
+assert item.table.getCell(1, 1)==''
+item.popup.undo(-1)
+assert item.table.getCell(2, 1)=='changed'
+
 # row edits made through the popup are also undoable
 rows = item.table.rows()
 item.popup.addFlowByRow(rows-1)
