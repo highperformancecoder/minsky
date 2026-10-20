@@ -103,7 +103,6 @@ namespace minsky
   bool Minsky::multipleEquities(const bool& m) {
     m_multipleEquities=m;
     canvas.requestRedraw();
-    redrawAllGodleyTables();
     return m_multipleEquities;
   }
 
@@ -1737,16 +1736,6 @@ namespace minsky
   }
 
   
-  void Minsky::redrawAllGodleyTables()
-  {
-    model->recursiveDo(&Group::items, 
-                       [&](Items&,Items::iterator i) {
-                         if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
-                           g->popup.requestRedraw();
-                         return false;
-                       });
-  }
-
   vector<string> Minsky::allGodleyTables() const
   {
     vector<string> r;

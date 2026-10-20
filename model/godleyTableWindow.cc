@@ -1117,7 +1117,6 @@ namespace {
             g->update();
       }
     minsky().canvas.requestRedraw();
-    minsky().redrawAllGodleyTables();
   }
 
   void GodleyTableEditor::checkCell00()

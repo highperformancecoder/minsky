@@ -430,9 +430,6 @@ namespace minsky
     /// import a Vensim file
     void importVensim(const std::string&);
     
-    /// request all Godley table windows to redraw
-    void redrawAllGodleyTables();
-
     /// returns list of ids of all Godley tables in the current top level canvas
     std::vector<std::string> allGodleyTables() const;
     

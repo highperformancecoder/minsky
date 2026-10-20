@@ -1208,9 +1208,9 @@ export class ContextMenuManager {
   private static async initContextMenuForGodleyPopup(namedItemSubCommand: string, x: number, y: number)
   {
     const godley=new GodleyIcon(namedItemSubCommand);
-    const r=await godley.popup.rowYZoomed(y);
-    const c=await godley.popup.colXZoomed(x);
-    const clickType = await godley.popup.clickTypeZoomed(x, y);
+    const r=await godley.editor.rowYZoomed(y);
+    const c=await godley.editor.colXZoomed(x);
+    const clickType = await godley.editor.clickTypeZoomed(x, y);
     this.initContextMenuForGodley(godley, r, c, clickType, CommandsManager.requestRedraw);
   }
 
@@ -1238,18 +1238,18 @@ export class ContextMenuManager {
       menu.append(new MenuItem({
         label: "Add new stock variable",
         click: async ()=> {
-          await godley.popup.addStockVarByCol(c);
+          await godley.editor.addStockVarByCol(c);
           await refreshFunction();
         },
       }));
       
       var importMenu=new Menu();
-      var importables=await godley.popup.matchingTableColumnsByCol(c);
+      var importables=await godley.editor.matchingTableColumnsByCol(c);
       for (var i in importables)
         importMenu.append(new MenuItem({
           label: importables[i],
           click: async (item)=> {
-            await godley.popup.importStockVarByCol(item.label, c);
+            await godley.editor.importStockVarByCol(item.label, c);
             await refreshFunction();
           },
         }));
@@ -1262,7 +1262,7 @@ export class ContextMenuManager {
       menu.append(new MenuItem({
         label: "Delete stock variable",
         click: async ()=> {
-          await godley.popup.deleteStockVarByCol(c);
+          await godley.editor.deleteStockVarByCol(c);
           await refreshFunction();
         },
       }));
@@ -1271,14 +1271,14 @@ export class ContextMenuManager {
       menu.append(new MenuItem({
         label: "Add flow",
         click: async ()=> {
-          await godley.popup.addFlowByRow(r);
+          await godley.editor.addFlowByRow(r);
           await refreshFunction();
         },
       }));
       menu.append(new MenuItem({
         label: "Delete flow",
         click: async ()=> {
-          await godley.popup.deleteFlowByRow(r);
+          await godley.editor.deleteFlowByRow(r);
           await refreshFunction();
         },
       }));
@@ -1286,10 +1286,10 @@ export class ContextMenuManager {
       case "internal": break;
     } // switch clickType
     
-    const selecteds = await Promise.all([godley.popup.selectedRow(),godley.popup.selectedCol()]);
+    const selecteds = await Promise.all([godley.editor.selectedRow(),godley.editor.selectedCol()]);
     if (r!=selecteds[0] || c!=selecteds[1])
     {
-      await Promise.all([godley.popup.selectedRow(r), godley.popup.selectedCol(c), godley.popup.insertIdx(0), godley.popup.selectIdx(0)]);
+      await Promise.all([godley.editor.selectedRow(r), godley.editor.selectedCol(c), godley.editor.insertIdx(0), godley.editor.selectIdx(0)]);
     }
     var cell=await godley.table.getCell(r,c);
     if (cell.length>0 && (r!=1 || c!=0))
@@ -1297,13 +1297,13 @@ export class ContextMenuManager {
       menu.append(new MenuItem({
         label: "Cut",
         click: async ()=> {
-          await godley.popup.cut();
+          await godley.editor.cut();
           await refreshFunction();
         }
       }));
       menu.append(new MenuItem({
         label: "Copy",
-        click: async ()=> {godley.popup.copy();}
+        click: async ()=> {godley.editor.copy();}
       }));
     }
     
@@ -1314,7 +1314,7 @@ export class ContextMenuManager {
         label: "Paste",
         enabled: !clip,
         click: async ()=> {
-          await godley.popup.paste();
+          await godley.editor.paste();
           await refreshFunction();
         }
       }));

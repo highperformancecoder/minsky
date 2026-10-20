@@ -81,15 +81,11 @@ namespace minsky
     GodleyTable table;
     /// rendering as a godley table
     GodleyTableEditor editor{*this};
-    /// for rendering the popup window
-    GodleyTableWindow popup{*this};
 
     /// whether to display values in this table
     bool displayValues=false;
     void toggleDisplayValues() {displayValues=!displayValues;}
     
-    void adjustPopupWidgets() {popup.adjustWidgets();}
-
     /// scale icon until it's height or width matches \a h or \a w depending on which is minimum             
     void scaleIcon(float w, float h);         
     
@@ -163,9 +159,6 @@ namespace minsky
     void onMouseLeave() override;
     bool onKeyPress(int, const std::string&, int) override;
     bool inItem(float, float) const override;
-
-    /// clean up popup window structures on window close
-    void destroyFrame() override {popup.destroyFrame();}
 
     /// return true if any wires are attached to the variables
     bool wiresAttached() const;
