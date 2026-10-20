@@ -57,6 +57,7 @@ namespace minsky
     }
 
     double titleOffs() const {return !table.title.empty()? 15*zoomFactor(): 0;}
+    void setCellImpl(int row, int col, const string& val, bool recordHistory);
     
   public:
     static SVGRenderer svgRenderer; ///< SVG icon to display when not in editor mode

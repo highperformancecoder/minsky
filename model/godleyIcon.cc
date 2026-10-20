@@ -223,8 +223,14 @@ namespace minsky
 
   void GodleyIcon::setCell(int row, int col, const string& newVal) 
   {
+    setCellImpl(row, col, newVal, true);
+  }
+
+  void GodleyIcon::setCellImpl(int row, int col, const string& newVal,
+                               bool recordHistory)
+  {
     if (!table.cellInTable(row,col)) return;
-    popup.pushHistory();
+    if (recordHistory) popup.pushHistory();
     // if this operation is clearing an initial condition cell, set it to 0
     string& c=table.cell(row,col);
     if (newVal.empty() && !c.empty() && table.initialConditionRow(row))
@@ -263,8 +269,8 @@ namespace minsky
         // create a copy here, as setCell may resize the array, changing 
         // what the reference referred to.
         const string oldVal=table.cell(args.srcRow, args.srcCol);
-        setCell(args.destRow, args.destCol, oldVal);
-        setCell(args.srcRow, args.srcCol, "");
+        setCellImpl(args.destRow, args.destCol, oldVal, false);
+        setCellImpl(args.srcRow, args.srcCol, "", false);
       }
     else // within a column, just move the data without affecting any linked column
       {
