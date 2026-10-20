@@ -1,6 +1,5 @@
 import {
   MinskyProcessPayload,
-  ZOOM_OUT_FACTOR,
   minsky, RenderNativeWindow,
 } from '@minsky/shared';
 import utf8 from 'utf8';
@@ -187,14 +186,6 @@ export class KeyBindingsManager {
       await this.handlePlusKey(payload);
       break;
 
-    case '-':
-      if (payload.location !== 3) {
-        executed = false;
-      } else {
-        await this.handleMinusKey(payload);
-      }
-      break;
-
     case '*':
       minsky.canvas.addOperation("multiply");
       await CommandsManager.mouseUp(payload.mouseX, payload.mouseY);
@@ -285,12 +276,6 @@ export class KeyBindingsManager {
 //    // <Key-KP_Add>
 //    await this.zoom(ZOOM_IN_FACTOR);
 //    return;
-  }
-
-  private static async handleMinusKey(payload: MinskyProcessPayload) {
-    // <Key-KP_Subtract>
-    await this.zoom(ZOOM_OUT_FACTOR);
-    return;
   }
 
   private static async zoom(factor: number) {
