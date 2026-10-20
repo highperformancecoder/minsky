@@ -104,6 +104,10 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
     this.windowId = (await this.electronService.getCurrentWindow()).id;
 
     if(!this.canvasMode) {
+      this.electronService.on(events.GODLEY_POPUP_UNDO_REQUEST, async (e, payload) => {
+        await this.finishEditing();
+        await this.electronService.invoke(events.GODLEY_POPUP_UNDO, payload);
+      });
       this.electronService.on(events.GODLEY_POPUP_REFRESH, async e => {
         await this.hardRefresh();
       });
