@@ -304,7 +304,7 @@ namespace minsky
     return r;
   }
   
-  void GodleyIcon::update()
+  void GodleyIcon::update(bool preserveTable)
   {
     updateVars(m_stockVars, table.getColumnVariables(), VariableType::stock);
     updateVars(m_flowVars, table.getVariables(), VariableType::flow);
@@ -332,16 +332,16 @@ namespace minsky
                       fc1.coef*=fc.coef;
                       v.init(fc1.str());	
                     }       
-                v.godleyOverridden=true;
               }
+            else if (preserveTable)
+              v.init("");
             else
               { 
                 // populate cell with current variable's initial value
                 const FlowCoef fc(v.init());   
                 table.cell(r,c)=fc.str();
-                v.godleyOverridden=true;
               }
-
+            v.godleyOverridden=true;
           }
 
     if (m_variableDisplay)

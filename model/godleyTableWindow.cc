@@ -1076,8 +1076,7 @@ namespace {
         if (d.getData().empty()) return; // should not happen
         const GodleyTable restoredTable=d;
         m_godleyIcon.table=restoredTable;
-        m_godleyIcon.update();
-        m_godleyIcon.table=restoredTable;
+        m_godleyIcon.update(true);
         adjustWidgets();
         requestRedrawCanvas();
       }

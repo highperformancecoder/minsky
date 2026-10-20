@@ -121,7 +121,8 @@ namespace minsky
     std::vector<Summary> summarise() const;
     
     /// updates the variable lists with the Godley table
-    void update();
+    /// @param preserveTable - do no populate table's initial conditions from variable init conditions
+    void update(bool preserveTable=false);
     
     GodleyIcon* clone() const override {
       auto r=new GodleyIcon(*this);  
