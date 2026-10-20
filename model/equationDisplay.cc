@@ -43,29 +43,16 @@ namespace minsky
     shim.clip();
     shim.moveTo(offsx,offsy);
     shim.scale(m_zoomFactor,m_zoomFactor);
-    // TODO: remove this bridge once SystemOfEquations::renderEquations
-    // is migrated to IMansoura. It draws on a second cairo context
-    // sharing the target surface and the state set up above.
-    {
-      auto cr=static_cast<cairo_t*>(shim.context());
-      double x,y;
-      shim.getCurrentPoint(x,y);
-      ecolab::cairo::Surface surf(cairo_surface_reference(cairo_get_target(cr)));
-      cairo_rectangle(surf.cairo(),0,0,width,height);
-      cairo_clip(surf.cairo());
-      cairo_matrix_t ctm;
-      cairo_get_matrix(cr,&ctm);
-      cairo_set_matrix(surf.cairo(),&ctm);
-      cairo_move_to(surf.cairo(),x,y);
-      system.renderEquations(surf,height);
-    }
+    system.renderEquations(shim,height);
     if (m.flags & Minsky::fullEqnDisplay_needed)
       {
-        ecolab::cairo::Surface surf
-          (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
-        system.renderEquations(surf,std::numeric_limits<double>::max());
-        m_width=surf.width();
-        m_height=surf.height();
+        const auto ink=mansoura::inkExtents([&](const mansoura::IMansoura& rec)
+        {
+          rec.moveTo(0,0);
+          system.renderEquations(rec,std::numeric_limits<double>::max());
+        });
+        m_width=ink.width;
+        m_height=ink.height;
         m.flags &= ~Minsky::fullEqnDisplay_needed;
       }
     return true;
