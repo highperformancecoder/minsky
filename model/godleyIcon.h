@@ -21,7 +21,7 @@
 
 #include "variable.h"
 #include "godleyTable.h"
-#include "godleyTableWindow.h"
+#include "godleyTableEditor.h"
 #include "zoom.h"
 #include "intrusiveMap.h"
 #include "classdesc_access.h"

@@ -19,7 +19,6 @@
 #include "minsky.h"
 #include "variable.h"
 #include "godleyIcon.h"
-#include "godleyTableWindow.h"
 #include "cairoItems.h"
 #include "selection.h"
 #include <flowCoef.h>
@@ -29,7 +28,7 @@
 #include "mansouraCairo.h"
 #include "godleyIcon.rcd"
 #include "itemT.rcd"
-#include "godleyTableWindow.xcd"
+#include "godleyTableEditor.xcd"
 #include "minsky_epilogue.h"
 #include <boost/locale.hpp>
 using namespace boost::locale::conv;

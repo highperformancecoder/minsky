@@ -27,7 +27,7 @@
 #include "fontDisplay.tcd"
 #include "godleyIcon.tcd"
 #include "godleyTable.tcd"
-#include "godleyTableWindow.tcd"
+#include "godleyTableEditor.tcd"
 #include "grid.tcd"
 #include "group.tcd"
 #include "handleLockInfo.tcd"

@@ -19,7 +19,7 @@
 
 #include "cairoItems.h"
 #include "minsky.h"
-#include "godleyTableWindow.h"
+#include "godleyTableEditor.h"
 #include "mansouraCairo.h"
 #include "selection.h"
 #include "latexMarkup.h"
@@ -27,8 +27,8 @@
 #include "ecolab/include/pango.h"
 
 #include "assetClass.rcd"
-#include "godleyTableWindow.rcd"
-#include "godleyTableWindow.xcd"
+#include "godleyTableEditor.rcd"
+#include "godleyTableEditor.xcd"
 #include "cairo_base.h"
 #include "IMansoura.cd"
 #include "minsky_epilogue.h"

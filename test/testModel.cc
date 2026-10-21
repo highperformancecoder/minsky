@@ -22,7 +22,7 @@
 #include "operation.h"
 #include "group.h"
 #include "minsky.h"
-#include "godleyTableWindow.h"
+#include "godleyTableEditor.h"
 #include "minsky_epilogue.h"
 
 #include <gtest/gtest.h>
@@ -1491,7 +1491,7 @@ TEST_F(GodleyTableWindowFixture, keyPress)
   keyPress(XK_Left,"");
   EXPECT_EQ(-1,selectedCol);   
   EXPECT_EQ(-1,selectedRow);      
-  keyPress(XK_Tab,"");          //  No cell selected, selectedRow = 0 and selectedCol = 1 when tab button is pressed, see godleyTableWindow line 633
+  keyPress(XK_Tab,"");          //  No cell selected, selectedRow = 0 and selectedCol = 1 when tab button is pressed
   EXPECT_EQ(1,selectedCol);  
   keyPress(XK_Tab,"");
   EXPECT_EQ(2,selectedCol);

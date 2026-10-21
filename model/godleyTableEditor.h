@@ -222,5 +222,5 @@ namespace minsky
   };
 }
 
-#include "godleyTableWindow.cd"
+#include "godleyTableEditor.cd"
 #endif

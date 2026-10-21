@@ -17,7 +17,7 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "minsky.h"
-#include "godleyTableWindow.h"
+#include "godleyTableEditor.h"
 #include "matrix.h"
 #include "minsky_epilogue.h"
 #undef True
