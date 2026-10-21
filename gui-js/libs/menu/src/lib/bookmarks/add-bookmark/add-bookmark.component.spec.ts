@@ -8,7 +8,7 @@ describe('AddBookmarkComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [AddBookmarkComponent],
+      imports: [AddBookmarkComponent],
     }).compileComponents();
   });
 

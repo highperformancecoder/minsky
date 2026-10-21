@@ -1,0 +1,133 @@
+.modal-container {
+    width: 40vw;
+}
+
+h1[mat-dialog-title] {
+    padding-left: 57px;
+}
+
+.select-container {
+    display: grid;
+    grid-template-columns: 20% 70% 10%;
+    grid-template-areas: 
+    'symbollabel symbolinput'
+    'latexlabel latexdisplay'
+    'valuelabel valueinput'
+    'minimumlabel minimuminput'
+    'maximumlabel maximuminput'
+    'namelabel nameinput'
+    'descriptionlabel descriptioninput';
+}
+
+mat-select {
+    background-color: #eaf2ff;
+}
+
+.symbolinput {
+    grid-area: symbolinput;
+    height: 35px;
+    margin-top: 8px !important;
+    margin-right: -18px;
+    padding-left: 10px;
+}
+
+.symbollabel {
+    text-align: right;
+    grid-area: symbollabel;
+}
+
+.descriptioninput {
+    grid-area: descriptioninput;
+    height: 100px;
+    margin-top: 8px !important;
+    margin-right: -18px;
+    padding-left: 10px;
+}
+
+.descriptionlabel {
+    text-align: right;
+    grid-area: descriptionlabel;
+}
+
+.latexlabel {
+    text-align: right;
+    grid-area: latexlabel;
+}
+
+.latexdisplay {
+    grid-area: latexdisplay;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.valueinput {
+    grid-area: valueinput;
+    height: 35px;
+    margin-top: 8px !important;
+    margin-right: -18px;
+    padding-left: 10px;
+}
+
+.valuelabel {
+    text-align: right;
+    grid-area: valuelabel;
+}
+
+.minimuminput {
+    grid-area: minimuminput;
+    height: 35px;
+    margin-top: 8px !important;
+    margin-right: -18px;
+    padding-left: 10px;
+}
+
+.minimumlabel {
+    text-align: right;
+    grid-area: minimumlabel;
+}
+
+.maximuminput {
+    grid-area: maximuminput;
+    height: 35px;
+    margin-top: 8px !important;
+    margin-right: -18px;
+    padding-left: 10px;
+}
+
+.maximumlabel {
+    text-align: right;
+    grid-area: maximumlabel;
+}
+
+.nameinput {
+    grid-area: nameinput;
+    height: 35px;
+    margin-top: 8px !important;
+    margin-right: -18px;
+    padding-left: 10px;
+}
+
+.namelabel {
+    text-align: right;
+    grid-area: namelabel;
+}
+
+.dialog-actions {
+    flex-direction: row;
+    justify-content: end;
+    padding-right: 57px;
+}
+
+.dialog-actions-gap {
+    flex: 1;
+}
+
+.dialog-actions-button {
+    flex: 0 0 100px;
+}
+
+.select-container > .selectlabel {
+    margin: 10px;
+    padding: 10px;
+}

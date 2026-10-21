@@ -28,7 +28,6 @@
 #include "godleyIcon.tcd"
 #include "godleyTable.tcd"
 #include "godleyTableEditor.tcd"
-#include "grid.tcd"
 #include "group.tcd"
 #include "handleLockInfo.tcd"
 #include "hypercube.tcd"
@@ -71,7 +70,6 @@
 #include "variableInstanceList.h"
 #include "variableInstanceList.tcd"
 #include "variable.tcd"
-#include "variablePane.tcd"
 #include "variableType.tcd"
 #include "variableValue.tcd"
 #include "variableValues.tcd"
@@ -266,8 +264,6 @@ int main()
   api.addClass<ravelCAPI::Database>();
   api.addClass<ravelCAPI::Ravel>();
   api.addClass<Units>();
-  api.addClass<VariablePaneCell>();
-  api.addClass<VariableValue>();
   api.addClass<VariableValues>();
   api["VariableValues"].valueType="VariableValue";
   

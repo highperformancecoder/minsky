@@ -1194,7 +1194,6 @@ export class Minsky extends CppClass {
   publicationTabs: Sequence<PubTab>;
   stockVars: Sequence<number>;
   variableInstanceList: VariableInstanceList;
-  variablePane: VariablePane;
   variableValues: VariableValues;
   constructor(prefix: string){
     super(prefix);
@@ -1216,7 +1215,6 @@ export class Minsky extends CppClass {
     this.publicationTabs=new Sequence<PubTab>(this.$prefix()+'.publicationTabs',PubTab);
     this.stockVars=new Sequence<number>(this.$prefix()+'.stockVars');
     this.variableInstanceList=new VariableInstanceList(this.$prefix()+'.variableInstanceList');
-    this.variablePane=new VariablePane(this.$prefix()+'.variablePane');
     this.variableValues=new VariableValues(this.$prefix()+'.variableValues');
   }
   async addCanvasItemToPublicationTab(a1: number): Promise<void> {return this.$callMethod('addCanvasItemToPublicationTab',a1);}
@@ -2044,6 +2042,7 @@ export class VariableInstanceList extends CppClass {
   async names(): Promise<string[]> {return this.$callMethod('names');}
 }
 
+<<<<<<< HEAD
 export class VariablePane extends CppClass {
   backgroundColour: mansoura__Colour;
   bottomRowMargin: Sequence<number>;
@@ -2116,6 +2115,8 @@ export class VariablePaneCell extends CppClass {
   async width(): Promise<number> {return this.$callMethod('width');}
 }
 
+=======
+>>>>>>> develop
 export class VariableValue extends CppClass {
   rhs: civita__ITensor;
   spec: DataSpec;

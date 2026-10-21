@@ -28,8 +28,6 @@ interface Palette {
     imports: [
     FormsModule,
     ReactiveFormsModule,
-    LatexDirective,
-    ColorPickerComponent,
     ColorPickerDirective
 ],
 })

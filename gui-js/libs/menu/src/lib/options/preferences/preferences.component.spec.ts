@@ -8,7 +8,7 @@ describe('PreferencesComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [PreferencesComponent],
+      imports: [PreferencesComponent],
     }).compileComponents();
   });
 
