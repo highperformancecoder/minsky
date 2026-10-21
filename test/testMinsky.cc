@@ -963,19 +963,21 @@ TEST(TensorOps, evalOpEvaluate)
     {
       auto g=new GodleyIcon;
       model->addItem(g);
-      g->table.resize(2,3);
+      g->table.resize(3,3);
       g->table.cell(0,1)="a";
       g->table.cell(0,2)="b";
-      g->table.cell(1,1)="flow";
+      g->table.cell(2,1)="flow";
+      model->addItem(VariablePtr(VariableBase::flow,"flow"));
+      g->update();
       g->popup.pushHistory();
 
-      g->moveCell({1,1,1,2});
-      EXPECT_EQ("",g->table.cell(1,1));
-      EXPECT_EQ("flow",g->table.cell(1,2));
+      g->moveCell({2,1,2,2});
+      EXPECT_EQ("",g->table.cell(2,1));
+      EXPECT_EQ("flow",g->table.cell(2,2));
 
       g->popup.undo(1);
-      EXPECT_EQ("flow",g->table.cell(1,1));
-      EXPECT_EQ("",g->table.cell(1,2));
+      EXPECT_EQ("flow",g->table.cell(2,1));
+      EXPECT_EQ("",g->table.cell(2,2));
     }
 
   TEST_F(MinskySuite,godleyRowSums)
