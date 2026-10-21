@@ -123,7 +123,8 @@ namespace minsky
     
     /// updates the variable lists with the Godley table
     /// @param preserveTable - do no populate table's initial conditions from variable init conditions
-    void update(bool preserveTable=false);
+    void update() {update(false);}
+    void update(bool preserveTable);
     
     GodleyIcon* clone() const override {
       auto r=new GodleyIcon(*this);  
