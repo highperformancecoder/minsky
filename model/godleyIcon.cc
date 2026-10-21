@@ -25,7 +25,6 @@
 #include <flowCoef.h>
 #include <evalGodley.h>
 #include <arrays.h>
-#include <cairo_base.h>
 #include <ctype.h>
 #include "mansouraCairo.h"
 #include "godleyIcon.rcd"
@@ -35,8 +34,6 @@
 #include <boost/locale.hpp>
 using namespace boost::locale::conv;
 using namespace mansoura;
-using namespace ecolab::cairo;
-using namespace ecolab;
 using namespace std;
 
 // width of draggable border 
@@ -477,13 +474,11 @@ namespace minsky
         cairoShim.rectangle(left, top, w, h);
         cairoShim.clip();
         cairoShim.translate(left+border*z+leftMargin(),top+border*z+titleOffs()/* space for title*/);
-        // render to a recording surface to determine size of editor table
-        // TODO - maybe move this stuff into update()
-        const Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR, nullptr));
-        MansouraCairo recorder(surf.cairo());
         const_cast<GodleyTableEditor&>(editor).zoomFactor=1;
-        const_cast<GodleyTableEditor&>(editor).draw(recorder);
-        const_cast<GodleyTableEditor&>(editor).zoomFactor=min((w-leftMargin()-2*border*z)/surf.width(),(h-bottomMargin()-2*border*z-titleOffs())/surf.height());
+        auto recorder=makeRecordingContext();
+        const_cast<GodleyTableEditor&>(editor).draw(*recorder);
+        auto extents=recordedInkExtents(*recorder);
+        const_cast<GodleyTableEditor&>(editor).zoomFactor=min((w-leftMargin()-2*border*z)/extents.width,(h-bottomMargin()-2*border*z-titleOffs())/extents.height);
         const_cast<GodleyTableEditor&>(editor).draw(cairoShim);
         titley=-0.5*h;
         w+=2*border*z;

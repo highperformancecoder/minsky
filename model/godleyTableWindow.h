@@ -220,31 +220,6 @@ namespace minsky
     void handleDelete();
     virtual void requestRedrawCanvas() {} // request redraw of canvas if a canvas
   };
-
-  class GodleyTableWindow: public RenderNativeWindow, public GodleyTableEditor
-  {
-    CLASSDESC_ACCESS(GodleyTableWindow);
-  protected:
-    bool redraw(const mansoura::IMansoura& cairoShim, int, int, int width, int height) override {
-      draw(cairoShim);
-      return true;
-    }
-  public:
-    using GodleyTableEditor::draw;
-    GodleyTableWindow(GodleyIcon& g): GodleyTableEditor(g) {}
-    void requestRedraw() {RenderNativeWindow::requestRedraw();}
-    void requestRedrawCanvas() override {requestRedraw();}
-
-    void mouseDown(float x, float y) override {GodleyTableEditor::mouseDown(x,y);}
-    void mouseUp(float x, float y) override {GodleyTableEditor::mouseUp(x,y);}
-    void mouseMove(float x, float y) override {GodleyTableEditor::mouseMove(x,y);}
-    void zoom(double, double, double z) override {GodleyTableEditor::zoomFactor*=z; requestRedraw();}
-    double zoomFactor() const override {return GodleyTableEditor::zoomFactor;}
-    bool keyPress(const EventInterface::KeyPressArgs& args) override
-    {GodleyTableEditor::keyPress(args.keySym,args.utf8); return true;}
-    bool hasScrollBars() const override {return true;}
-  };
-
 }
 
 #include "godleyTableWindow.cd"

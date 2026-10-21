@@ -32,8 +32,6 @@ Please especially review the lifecycle (constructors, desctructors and copy cons
 #include "windowInformation.h"
 #include "renderNativeWindow.rcd"
 #include "renderNativeWindow.xcd"
-#include "plot.rcd"
-#include "plot.xcd"
 
 #include "minsky_epilogue.h"
 

@@ -22,9 +22,6 @@
 #include "cairoItems.h"
 #include "latexMarkup.h"
 #include <timer.h>
-#include <cairo/cairo-ps.h>
-#include <cairo/cairo-pdf.h>
-#include <cairo/cairo-svg.h>
 #include "mansouraCairo.h"
 
 #include "CSVTools.xcd"

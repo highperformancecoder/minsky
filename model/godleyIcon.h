@@ -32,8 +32,6 @@
 #include "variableValue.h"
 
 #include <map>
-#include <cairo.h>
-#include <cairo_base.h>
 
 namespace minsky
 {
