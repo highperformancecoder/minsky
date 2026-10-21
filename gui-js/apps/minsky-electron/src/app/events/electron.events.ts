@@ -150,6 +150,15 @@ ipcMain.handle(
   }
 );
 
+ipcMain.handle(
+  events.GODLEY_POPUP_UNDO,
+  async (event, payload: { itemId: string; changes: number }) => {
+    const godley = new GodleyIcon(minsky.namedItems.elem(payload.itemId));
+    await godley.popup.undo(payload.changes);
+    event.sender.send(events.GODLEY_POPUP_REFRESH);
+  }
+);
+
 ipcMain.on(
   events.REFRESH_ALL_GODLEY_POPUPS, async () => {
     WindowManager.refreshAllGodleyPopups();
