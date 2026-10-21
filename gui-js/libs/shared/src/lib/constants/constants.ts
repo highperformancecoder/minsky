@@ -35,6 +35,8 @@ export const events = {
   GET_CURRENT_WINDOW: 'get-current-window',
   GET_PREFERENCES: 'get-preferences',
   GODLEY_POPUP_REFRESH: 'godley-popup-refresh',
+  GODLEY_POPUP_UNDO: 'godley-popup-undo',
+  GODLEY_POPUP_UNDO_REQUEST: 'godley-popup-undo-request',
   GODLEY_VIEW_MOUSEDOWN: 'godley-view-mousedown',
   GODLEY_VIEW_IMPORT_STOCK: 'godley-view-import-stock',
   HELP_FOR: 'help-for',
