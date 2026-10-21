@@ -846,9 +846,9 @@ export class GodleyTableEditor extends CppClass {
   async enableButtons(): Promise<void> {return this.$callMethod('enableButtons');}
   async godleyIcon(): Promise<GodleyIcon> {return this.$callMethod('godleyIcon');}
   async height(): Promise<number> {return this.$callMethod('height');}
-  async highlightCell(a1: minsky__dummy,a2: number,a3: number): Promise<void> {return this.$callMethod('highlightCell',a1,a2,a3);}
-  async highlightColumn(a1: minsky__dummy,a2: number): Promise<void> {return this.$callMethod('highlightColumn',a1,a2);}
-  async highlightRow(a1: minsky__dummy,a2: number): Promise<void> {return this.$callMethod('highlightRow',a1,a2);}
+  async highlightCell(a1: mansoura__IMansoura,a2: number,a3: number): Promise<void> {return this.$callMethod('highlightCell',a1,a2,a3);}
+  async highlightColumn(a1: mansoura__IMansoura,a2: number): Promise<void> {return this.$callMethod('highlightColumn',a1,a2);}
+  async highlightRow(a1: mansoura__IMansoura,a2: number): Promise<void> {return this.$callMethod('highlightRow',a1,a2);}
   async historyPtr(...args: number[]): Promise<number> {return this.$callMethod('historyPtr',...args);}
   async hoverCol(...args: number[]): Promise<number> {return this.$callMethod('hoverCol',...args);}
   async hoverRow(...args: number[]): Promise<number> {return this.$callMethod('hoverRow',...args);}
@@ -2042,81 +2042,6 @@ export class VariableInstanceList extends CppClass {
   async names(): Promise<string[]> {return this.$callMethod('names');}
 }
 
-<<<<<<< HEAD
-export class VariablePane extends CppClass {
-  backgroundColour: mansoura__Colour;
-  bottomRowMargin: Sequence<number>;
-  item: Item;
-  rightColMargin: Sequence<number>;
-  selection: Container<string>;
-  wire: Wire;
-  constructor(prefix: string){
-    super(prefix);
-    this.backgroundColour=new mansoura__Colour(this.$prefix()+'.backgroundColour');
-    this.bottomRowMargin=new Sequence<number>(this.$prefix()+'.bottomRowMargin');
-    this.item=new Item(this.$prefix()+'.item');
-    this.rightColMargin=new Sequence<number>(this.$prefix()+'.rightColMargin');
-    this.selection=new Container<string>(this.$prefix()+'.selection');
-    this.wire=new Wire(this.$prefix()+'.wire');
-  }
-  async cell(a1: number,a2: number): Promise<VariablePaneCell> {return this.$callMethod('cell',a1,a2);}
-  async colX(a1: number): Promise<number> {return this.$callMethod('colX',a1);}
-  async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
-  async deselect(a1: string): Promise<void> {return this.$callMethod('deselect',a1);}
-  async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
-  async draw(...args: mansoura__IMansoura[]): Promise<void> {return this.$callMethod('draw',...args);}
-  async evenHeight(): Promise<boolean> {return this.$callMethod('evenHeight');}
-  async frameArgs(): Promise<minsky__RenderNativeWindow__RenderFrameArgs> {return this.$callMethod('frameArgs');}
-  async getItemAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getItemAt',a1,a2);}
-  async getWireAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getWireAt',a1,a2);}
-  async hasScrollBars(): Promise<boolean> {return this.$callMethod('hasScrollBars');}
-  async init(): Promise<void> {return this.$callMethod('init');}
-  async justification(a1: number): Promise<string> {return this.$callMethod('justification',a1);}
-  async keyPress(a1: minsky__EventInterface__KeyPressArgs): Promise<boolean> {return this.$callMethod('keyPress',a1);}
-  async m_zoomFactor(...args: number[]): Promise<number> {return this.$callMethod('m_zoomFactor',...args);}
-  async mouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseDown',a1,a2);}
-  async mouseMove(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseMove',a1,a2);}
-  async mouseUp(a1: number,a2: number): Promise<void> {return this.$callMethod('mouseUp',a1,a2);}
-  async moveCursorTo(a1: mansoura__IMansoura,a2: number,a3: number): Promise<void> {return this.$callMethod('moveCursorTo',a1,a2,a3);}
-  async moveTo(a1: number,a2: number): Promise<void> {return this.$callMethod('moveTo',a1,a2);}
-  async numCols(): Promise<number> {return this.$callMethod('numCols');}
-  async numRows(): Promise<number> {return this.$callMethod('numRows');}
-  async offsx(...args: number[]): Promise<number> {return this.$callMethod('offsx',...args);}
-  async offsy(...args: number[]): Promise<number> {return this.$callMethod('offsy',...args);}
-  async position(): Promise<number[]> {return this.$callMethod('position');}
-  async renderFrame(a1: minsky__RenderNativeWindow__RenderFrameArgs): Promise<void> {return this.$callMethod('renderFrame',a1);}
-  async renderToEMF(a1: string): Promise<void> {return this.$callMethod('renderToEMF',a1);}
-  async renderToPDF(a1: string): Promise<void> {return this.$callMethod('renderToPDF',a1);}
-  async renderToPNG(a1: string): Promise<void> {return this.$callMethod('renderToPNG',a1);}
-  async renderToPS(a1: string): Promise<void> {return this.$callMethod('renderToPS',a1);}
-  async renderToSVG(a1: string): Promise<void> {return this.$callMethod('renderToSVG',a1);}
-  async reportDrawTime(a1: number): Promise<void> {return this.$callMethod('reportDrawTime',a1);}
-  async requestRedraw(): Promise<void> {return this.$callMethod('requestRedraw');}
-  async resolutionScaleFactor(...args: any[]): Promise<number> {return this.$callMethod('resolutionScaleFactor',...args);}
-  async rowY(a1: number): Promise<number> {return this.$callMethod('rowY',a1);}
-  async scaleFactor(): Promise<number> {return this.$callMethod('scaleFactor');}
-  async select(a1: string): Promise<void> {return this.$callMethod('select',a1);}
-  async shift(...args: boolean[]): Promise<boolean> {return this.$callMethod('shift',...args);}
-  async typeName(a1: number): Promise<string> {return this.$callMethod('typeName',a1);}
-  async update(): Promise<void> {return this.$callMethod('update');}
-  async updateWithHeight(a1: number): Promise<void> {return this.$callMethod('updateWithHeight',a1);}
-  async zoom(a1: number,a2: number,a3: number): Promise<void> {return this.$callMethod('zoom',a1,a2,a3);}
-  async zoomFactor(): Promise<number> {return this.$callMethod('zoomFactor');}
-}
-
-export class VariablePaneCell extends CppClass {
-  constructor(prefix: string){
-    super(prefix);
-  }
-  async emplace(): Promise<void> {return this.$callMethod('emplace');}
-  async height(): Promise<number> {return this.$callMethod('height');}
-  async show(a1: mansoura__IMansoura): Promise<void> {return this.$callMethod('show',a1);}
-  async variable(): Promise<VariableBase> {return this.$callMethod('variable');}
-  async width(): Promise<number> {return this.$callMethod('width');}
-}
-
-=======
->>>>>>> develop
 export class VariableValue extends CppClass {
   rhs: civita__ITensor;
   spec: DataSpec;
