@@ -55,10 +55,9 @@ namespace minsky
     Pos pos=middle;
     unsigned idx=0; ///< row or column this widget is located in
     
-    void draw(cairo_t*);
     void draw(const mansoura::IMansoura&);
     /// draw button \a idx, with label \a label and colour \a r, \a b, \a g
-    void drawButton(cairo_t*, const std::string& label,
+    void drawButton(const mansoura::IMansoura&, const std::string& label,
                     double r, double g, double b, int idx);
     /// invoke action associated with button at x
     void invoke(double x);
@@ -87,7 +86,6 @@ namespace minsky
       topTableOffset=30;adjustWidgets();
     }
   protected:
-    void drawCairo(cairo_t* cairo);
    public:
     static constexpr double columnButtonsOffset=12;
     /// offset of the table within the window
@@ -170,9 +168,9 @@ namespace minsky
     // warn user when a stock variable column is going to be swapped with a column from a different asset class on mouse click and drag. For ticket 1072.
     std::string swapAssetClass(double x, double y);
 
-    void highlightColumn(cairo_t* cairo,unsigned col);
-    void highlightRow(cairo_t* cairo,unsigned row);
-    void highlightCell(cairo_t* cairo,unsigned row, unsigned col);
+    void highlightColumn(const mansoura::IMansoura& cairo,unsigned col);
+    void highlightRow(const mansoura::IMansoura& cairo,unsigned row);
+    void highlightCell(const mansoura::IMansoura& cairo,unsigned row, unsigned col);
 
     // support cut/copy/paste operations
     void delSelection();

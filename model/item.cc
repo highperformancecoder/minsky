@@ -29,7 +29,6 @@
 #include "selection.h"
 #include "lasso.h"
 #include <IMansoura.h>
-#include <cairo_base.h>
 #include "item.rcd"
 #include "noteBase.rcd"
 #include "noteBase.xcd"
@@ -45,8 +44,6 @@ namespace minsky
 
   void BoundingBox::update(const Item& x)
   {
-    const ecolab::cairo::Surface surf
-      (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
     auto savedMouseFocus=x.mouseFocus;
     x.mouseFocus=false; // do not mark up icon with tooltips etc, which might invalidate this calc
     x.onResizeHandles=false;
@@ -56,27 +53,27 @@ namespace minsky
         stashedZf=parent->relZoom;
         parent->relZoom/=x.zoomFactor(); // undo any zooming coming from owning group
       }
-    try
-      {
-        const cairo::CairoSave cs(surf.cairo());
-        cairo_rotate(surf.cairo(),-x.rotation()*M_PI/180);
-        MansouraCairo shim(surf.cairo());
-        x.draw(shim);
-      }
+    const auto ink=inkExtents([&](const IMansoura& shim)
+    {
+      try
+        {
+          const PreserveContext cs(shim);
+          shim.rotate(-x.rotation()*M_PI/180);
+          x.draw(shim);
+        }
 #ifndef NDEBUG
-    catch (const std::exception& e) 
-      {cerr<<"illegal exception caught in draw(): "<<e.what()<<endl;}
-    catch (...) {cerr<<"illegal exception caught in draw()";}
+      catch (const std::exception& e) 
+        {cerr<<"illegal exception caught in draw(): "<<e.what()<<endl;}
+      catch (...) {cerr<<"illegal exception caught in draw()";}
 #else
-    catch(...) {}
+      catch(...) {}
 #endif
+    });
     x.mouseFocus=savedMouseFocus;
     if (auto parent=x.group.lock())
       parent->relZoom=stashedZf;
     
-    double l,t,w,h;
-    cairo_recording_surface_ink_extents(surf.surface(),
-                                        &l,&t,&w,&h);
+    const double l=ink.left, t=ink.top, w=ink.width, h=ink.height;
     // note (0,0) is relative to the (x,y) of icon.
     m_left=l;
     m_right=(l+w);
@@ -394,9 +391,7 @@ namespace minsky
 
   void Item::dummyDraw() const
   {
-    const ecolab::cairo::Surface s(cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
-    MansouraCairo shim(s.cairo());
-    draw(shim);
+    inkExtents([this](const IMansoura& shim) {draw(shim);});
   }
 
   void Item::displayTooltip(const mansoura::IMansoura& cairoShim, const std::string& tooltip) const
