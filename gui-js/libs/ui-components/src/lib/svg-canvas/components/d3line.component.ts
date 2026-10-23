@@ -1,13 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { ElementRef, Input, OnChanges, ViewChild, Component, SimpleChanges, Output, EventEmitter, ViewChildren } from '@angular/core';
 import * as d3 from 'd3';
-import { DragdropDirective } from '../directives/dragdrop.directive';
+import { DragdropDirective } from '../directives/dragdrop.directive';
 
 @Component({
   selector: '[d3line]',
   templateUrl: './d3line.component.html',
     styleUrls: ['./d3line.component.css'],
-    imports: [CommonModule, DragdropDirective],
+    imports: [CommonModule, DragdropDirective],
     standalone: true
 })
 export class D3LineComponent implements OnChanges {
@@ -24,10 +24,10 @@ export class D3LineComponent implements OnChanges {
     midpoints;
 
     @Input()
-    start: [number,number,number];
+    start: number[];
 
     @Input()
-    end: [number,number,number];
+    end: number[];
 
     @Input()
     dotsAt: number[];
@@ -85,10 +85,10 @@ export class D3LineComponent implements OnChanges {
         return {
           dragstarted: () => {
           },
-          dragged: () => {
+          dragged: (event) => {
             if(this.draggable) {
-                const x = d3.event.x;
-                const y = d3.event.y;
+                const x = event.x;
+                const y = event.y;
                 const point = [x,y];
 
                 const a1 = Math.max(0, Math.PI / 2 - this.getAngle(end, start, point));
