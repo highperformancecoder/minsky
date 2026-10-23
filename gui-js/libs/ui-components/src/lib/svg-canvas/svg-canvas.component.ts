@@ -14,13 +14,14 @@ import { SvgCanvasHelper } from './constants/svg-constants';
 import { DragStartEvent } from './interfaces/dragstart-event';
 import { DragEndEvent } from './interfaces/dragend-event';
 import { Connector } from './interfaces/connector';
+import { ConnectorDirective } from './directives/connector.directive';
 
 @Component({
   selector: 'svg-canvas',
   templateUrl: './svg-canvas.component.html',
   styleUrls: ['./svg-canvas.component.css'],
   standalone: true,
-  imports: [CommonModule, LatexDirective, DragdropDirective, D3LineComponent, FormsModule, ElementLabelComponent]
+  imports: [CommonModule, LatexDirective, DragdropDirective, ConnectorDirective, D3LineComponent, FormsModule, ElementLabelComponent]
 })
 export class SvgCanvasComponent implements AfterViewInit {
   @HostListener('window:resize', ['$event'])
@@ -170,7 +171,20 @@ export class SvgCanvasComponent implements AfterViewInit {
     .force('anchory', d3.forceY().y((d: DataPoint) => d.anchory || d.y).strength((d: DataPoint) => d.anchory ? 15 : 0))
   }
 
+  private dragHandlers = new WeakMap<object, any>();
+
+  // return a stable handler object per datum, so that change detection doesn't
+  // rebind DragdropDirective.dragfunctions (and reattach d3.drag) every cycle
   dragfunctions(d) {
+    let handlers = this.dragHandlers.get(d);
+    if(!handlers) {
+      handlers = this.createDragFunctions(d);
+      this.dragHandlers.set(d, handlers);
+    }
+    return handlers;
+  }
+
+  private createDragFunctions(d) {
     return {
       dragstarted: (e: any) => {
         this.dragStarted.emit({event: e, data: d});
