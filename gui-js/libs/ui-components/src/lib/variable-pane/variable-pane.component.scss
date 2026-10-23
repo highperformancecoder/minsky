@@ -4,9 +4,30 @@
   height: 100vh;
   width: 100vw;
   border: 1px solid $toolbar-box;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: stretch;
 }
 
 .variable-pane {
   height: 400vh;
-  width: 400vw;
+  width: 100%;
+
+  flex: 1;
+
+  overflow-x: auto;
+  overflow-y: hidden;
+
+  svg-canvas {
+    height: 400vh;
+  }
+}
+
+.selector-buttons {
+  flex: 0 0 30px;
+  form {
+    margin: 5px;
+  }
 }

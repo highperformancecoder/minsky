@@ -277,7 +277,6 @@ export default class App {
       app.commandLine.appendSwitch('disable-gpu');
       app.commandLine.appendSwitch('disable-direct-composition');
     }
-    // Rendering was not working on some window's machines without disabling gpu
     App.application.commandLine.appendSwitch('high-dpi-support', '1');
     // This probably supports high-res fonts, but we don't know exactly what implications it has!
 
