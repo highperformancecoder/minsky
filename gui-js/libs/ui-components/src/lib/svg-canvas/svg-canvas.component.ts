@@ -13,7 +13,6 @@ import { ElementLabelComponent } from './components/elementlabel.component';
 import { SvgCanvasHelper } from './constants/svg-constants';
 import { DragStartEvent } from './interfaces/dragstart-event';
 import { DragEndEvent } from './interfaces/dragend-event';
-import { Connector } from './interfaces/connector';
 import { ConnectorDirective } from './directives/connector.directive';
 
 @Component({
