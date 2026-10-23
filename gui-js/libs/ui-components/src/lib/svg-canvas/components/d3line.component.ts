@@ -1,12 +1,13 @@
 import { CommonModule } from '@angular/common';
 import { ElementRef, Input, OnChanges, ViewChild, Component, SimpleChanges, Output, EventEmitter, ViewChildren } from '@angular/core';
 import * as d3 from 'd3';
+import { DragdropDirective } from '../directives/dragdrop.directive';
 
 @Component({
   selector: '[d3line]',
   templateUrl: './d3line.component.html',
     styleUrls: ['./d3line.component.css'],
-    imports: [CommonModule],
+    imports: [CommonModule, DragdropDirective],
     standalone: true
 })
 export class D3LineComponent implements OnChanges {
