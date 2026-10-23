@@ -58,6 +58,9 @@ export class SvgCanvasComponent implements AfterViewInit {
   @Output()
   dragEnded = new EventEmitter<DragEndEvent>();
 
+  @Output()
+  geometryChanged = new EventEmitter<void>();
+  
   rectCollideForce;
 
   xScale;
@@ -503,6 +506,7 @@ export class SvgCanvasComponent implements AfterViewInit {
         if(result) {
           d.symbol = result.symbol;
           SvgCanvasHelper.updateGeometry(d);
+          this.geometryChanged.emit();
           d.name = result.name;
           d.description = result.description;
           if(['constant', 'stock'].includes(d.type.name)) {
