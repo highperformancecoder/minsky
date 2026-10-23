@@ -17,6 +17,7 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "cairoItems.h"
+#include "cairo_base.h"
 #include "lasso.h"
 #include "plotWidget.h"
 #include "minsky.h"
@@ -34,7 +35,45 @@ namespace minsky
   {
     class PlotWidgetTest : public PlotWidget, public ::testing::Test
     {
+    public:
+      std::unique_ptr<mansoura::IMansoura> mansPtr{mansoura::makeRecordingContext()};
+      mansoura::IMansoura& mans{*mansPtr};
     };
+
+    TEST_F(PlotWidgetTest, drawWithTitleAndLegend)
+    {
+      title="A title";
+      xlabel("x");
+      legend=true;
+      addPt(0,0.0,1.0);
+      addPt(0,1.0,0.0);
+      mouseFocus=true;
+      selected=true;
+      EXPECT_NO_THROW(draw(mans));
+    }
+
+    TEST_F(PlotWidgetTest, legendSizeFromCache)
+    {
+      legend=true;
+      addPt(0,0.0,1.0);
+      addPt(0,1.0,0.0);
+      labelPen(0,"a legend label");
+      double xoffs, yoffs, w, h, cw, ch;
+      // nothing measured yet, so unknown width, but height is computable
+      legendSizeFromCache(xoffs, yoffs, cw, ch, iWidth(), iHeight()-10);
+      EXPECT_EQ(0, cw);
+      EXPECT_GT(ch, 0);
+      legendSize(mans, xoffs, yoffs, w, h, iWidth(), iHeight()-10);
+      EXPECT_GT(w, 0);
+      // cached estimate at the measured size is exact...
+      legendSizeFromCache(xoffs, yoffs, cw, ch, iWidth(), iHeight()-10);
+      EXPECT_DOUBLE_EQ(w, cw);
+      EXPECT_DOUBLE_EQ(h, ch);
+      // ...and approximately right at a different size
+      legendSize(mans, xoffs, yoffs, w, h, 2*iWidth(), 2*(iHeight()-10));
+      legendSizeFromCache(xoffs, yoffs, cw, ch, 2*iWidth(), 2*(iHeight()-10));
+      EXPECT_NEAR(w, cw, 0.01*w);
+    }
 
     TEST_F(PlotWidgetTest, legendMove)
     {
@@ -46,7 +85,7 @@ namespace minsky
       labelPen(0,"hello");
       labelPen(1,"hello");
       double xoffs, yoffs, legendWidth, legendHeight;
-      legendSize(xoffs, yoffs, legendWidth, legendHeight, iWidth(), iHeight()-10);
+      legendSize(mans, xoffs, yoffs, legendWidth, legendHeight, iWidth(), iHeight()-10);
       double x=(legendLeft-0.5)*iWidth() +0.5*legendWidth;
       double y=(0.5-legendTop)*iHeight() + 0.5*legendHeight;
       EXPECT_EQ(ClickType::legendMove, clickType(x,y));
@@ -57,7 +96,7 @@ namespace minsky
       EXPECT_NEAR(oldLegendTop-20/(iHeight()-10),legendTop,0.01);
       // legend should not change size
       double newLegendWidth, newLegendHeight;
-      legendSize(xoffs, yoffs, newLegendWidth, newLegendHeight, iWidth(), iHeight()-10);
+      legendSize(mans, xoffs, yoffs, newLegendWidth, newLegendHeight, iWidth(), iHeight()-10);
       EXPECT_NEAR(legendWidth,newLegendWidth, 0.01);
       EXPECT_NEAR(legendHeight,newLegendHeight,0.01);
      }
@@ -72,7 +111,7 @@ namespace minsky
       labelPen(0,"hello");
       labelPen(1,"hello");
       double xoffs, yoffs, legendWidth, legendHeight;
-      legendSize(xoffs, yoffs, legendWidth, legendHeight, iWidth(), iHeight()-10);
+      legendSize(mans, xoffs, yoffs, legendWidth, legendHeight, iWidth(), iHeight()-10);
       double x=(legendLeft-0.5)*iWidth() +0.5*legendWidth;
       double y=(0.5-legendTop)*iHeight() + 0.95*legendHeight;
       EXPECT_EQ(ClickType::legendResize, clickType(x,y));
@@ -83,7 +122,7 @@ namespace minsky
       EXPECT_NEAR(oldLegendLeft,legendLeft, 0.01);
       EXPECT_NEAR(oldLegendTop,legendTop,0.01);
       double newLegendWidth, newLegendHeight;
-      legendSize(xoffs, yoffs, newLegendWidth, newLegendHeight, iWidth(), iHeight()-10);
+      legendSize(mans, xoffs, yoffs, newLegendWidth, newLegendHeight, iWidth(), iHeight()-10);
        // width change will be proportionate - just check the new height is about right
       EXPECT_NEAR(legendHeight+20,newLegendHeight,2);
     }

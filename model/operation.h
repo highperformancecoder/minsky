@@ -46,7 +46,7 @@ namespace minsky
   public:
     typedef OperationType::Type Type;
     Type type() const override {return T;}
-    void iconDraw(const ICairoShim&) const override;
+    void iconDraw(const mansoura::IMansoura&) const override;
     std::size_t numPorts() const override 
     {return OperationTypeInfo::numArguments<T>()+1;}
     Operation() {
@@ -108,12 +108,12 @@ namespace minsky
 
   };
 
-  /// helper class to draw port label symbols using ICairoShim
+  /// helper class to draw port label symbols using mansoura::IMansoura
   struct DrawBinOpShim
   {
-    const ICairoShim& cairoShim;
+    const mansoura::IMansoura& cairoShim;
     double zoomFactor;
-    DrawBinOpShim(const ICairoShim& cairoShim, double z=1): cairoShim(cairoShim), zoomFactor(z) {}
+    DrawBinOpShim(const mansoura::IMansoura& cairoShim, double z=1): cairoShim(cairoShim), zoomFactor(z) {}
 
     void drawPlus() const
     {

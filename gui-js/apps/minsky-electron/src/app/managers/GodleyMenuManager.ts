@@ -4,7 +4,7 @@ import {
   GodleyTableOutputStyles,
   Functions,
   minsky, GodleyIcon,
-  GodleyTableWindow,
+  GodleyTableEditor,
   events
 } from '@minsky/shared';
 import { Menu, MenuItem, IpcMainInvokeEvent } from 'electron';
@@ -196,12 +196,12 @@ export class GodleyMenuManager {
         {
           label: 'Undo',
           accelerator: 'CmdOrCtrl + z',
-          click: () => {godley.popup.undo(1);},
+          click: () => {godley.editor.undo(1);},
         },
         {
           label: 'Redo',
           accelerator: 'CmdOrCtrl + y',
-          click: () => {godley.popup.undo(-1);},
+          click: () => {godley.editor.undo(-1);},
         },
         {
           label: 'Title',
@@ -210,17 +210,17 @@ export class GodleyMenuManager {
         {
           label: 'Cut',
           accelerator: 'CmdOrCtrl + x',
-          click: () => {godley.popup.cut();},
+          click: () => {godley.editor.cut();},
         },
         {
           label: 'Copy',
           accelerator: 'CmdOrCtrl + c',
-          click: () => {godley.popup.copy();}
+          click: () => {godley.editor.copy();}
         },
         {
           label: 'Paste',
           accelerator: 'CmdOrCtrl + v',
-          click: () => {godley.popup.paste();}
+          click: () => {godley.editor.paste();}
         },
       ],
     });
@@ -258,7 +258,7 @@ export class GodleyMenuManager {
   }
 
   /// handle mouse down events in a Godley view
-  static async mouseDown(window: GodleyTableWindow, x: number, y: number) {
+  static async mouseDown(window: GodleyTableEditor, x: number, y: number) {
     var clickType=await window.clickTypeZoomed(x,y);
     if (clickType==="importStock")
     {
@@ -267,7 +267,7 @@ export class GodleyMenuManager {
     } else {window.mouseDown(x,y);}
   }
 
-  static async importStock(window: GodleyTableWindow, c, event?: IpcMainInvokeEvent) {
+  static async importStock(window: GodleyTableEditor, c, event?: IpcMainInvokeEvent) {
     var importOptions=await window.matchingTableColumnsByCol(c);
       var menu=new Menu();
       for (var v in importOptions) 

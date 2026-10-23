@@ -21,18 +21,17 @@
 
 #include "variable.h"
 #include "godleyTable.h"
-#include "godleyTableWindow.h"
+#include "godleyTableEditor.h"
 #include "zoom.h"
 #include "intrusiveMap.h"
 #include "classdesc_access.h"
 #include "SVGItem.h"
+#include "SVGItem.cd"
 #include "group.h"
 #include "valueId.h"
 #include "variableValue.h"
 
 #include <map>
-#include <cairo.h>
-#include <cairo_base.h>
 
 namespace minsky
 {
@@ -59,7 +58,7 @@ namespace minsky
     double titleOffs() const {return !table.title.empty()? 15*zoomFactor(): 0;}
     
   public:
-    static SVGRenderer svgRenderer; ///< SVG icon to display when not in editor mode
+    static mansoura::SVGRenderer svgRenderer; ///< SVG icon to display when not in editor mode
     
     GodleyIcon();
     GodleyIcon(const GodleyIcon&)=default;
@@ -80,15 +79,11 @@ namespace minsky
     GodleyTable table;
     /// rendering as a godley table
     GodleyTableEditor editor{*this};
-    /// for rendering the popup window
-    GodleyTableWindow popup{*this};
 
     /// whether to display values in this table
     bool displayValues=false;
     void toggleDisplayValues() {displayValues=!displayValues;}
     
-    void adjustPopupWidgets() {popup.adjustWidgets();}
-
     /// scale icon until it's height or width matches \a h or \a w depending on which is minimum             
     void scaleIcon(float w, float h);         
     
@@ -137,7 +132,7 @@ namespace minsky
     ClickType::Type clickType(float x, float y) const override;
 
     /// draw icon to \a context
-    void draw(const ICairoShim& cairoShim) const override;
+    void draw(const mansoura::IMansoura& cairoShim) const override;
 
     /// return the A-L-E row sum for \a row
     std::string rowSum(int row) const;
@@ -162,9 +157,6 @@ namespace minsky
     void onMouseLeave() override;
     bool onKeyPress(int, const std::string&, int) override;
     bool inItem(float, float) const override;
-
-    /// clean up popup window structures on window close
-    void destroyFrame() override {popup.destroyFrame();}
 
     /// return true if any wires are attached to the variables
     bool wiresAttached() const;

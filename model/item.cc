@@ -20,7 +20,7 @@
 #include "cairoItems.h"
 #include "minsky.h"
 #include "item.h"
-#include "../engine/cairoShimCairo.h"
+#include "mansouraCairo.h"
 #include "group.h"
 #include "zoom.h"
 #include "variable.h"
@@ -28,8 +28,7 @@
 #include "geometry.h"
 #include "selection.h"
 #include "lasso.h"
-#include <pango.h>
-#include <cairo_base.h>
+#include <IMansoura.h>
 #include "item.rcd"
 #include "noteBase.rcd"
 #include "noteBase.xcd"
@@ -37,8 +36,7 @@
 #include "minsky_epilogue.h"
 #include <exception>
 
-using ecolab::Pango;
-using ecolab::cairo::CairoSave;
+using namespace mansoura;
 using namespace std;
 
 namespace minsky
@@ -46,8 +44,6 @@ namespace minsky
 
   void BoundingBox::update(const Item& x)
   {
-    const ecolab::cairo::Surface surf
-      (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
     auto savedMouseFocus=x.mouseFocus;
     x.mouseFocus=false; // do not mark up icon with tooltips etc, which might invalidate this calc
     x.onResizeHandles=false;
@@ -57,27 +53,27 @@ namespace minsky
         stashedZf=parent->relZoom;
         parent->relZoom/=x.zoomFactor(); // undo any zooming coming from owning group
       }
-    try
-      {
-        const cairo::CairoSave cs(surf.cairo());
-        cairo_rotate(surf.cairo(),-x.rotation()*M_PI/180);
-        CairoShimCairo shim(surf.cairo());
-        x.draw(shim);
-      }
+    const auto ink=inkExtents([&](const IMansoura& shim)
+    {
+      try
+        {
+          const PreserveContext cs(shim);
+          shim.rotate(-x.rotation()*M_PI/180);
+          x.draw(shim);
+        }
 #ifndef NDEBUG
-    catch (const std::exception& e) 
-      {cerr<<"illegal exception caught in draw(): "<<e.what()<<endl;}
-    catch (...) {cerr<<"illegal exception caught in draw()";}
+      catch (const std::exception& e) 
+        {cerr<<"illegal exception caught in draw(): "<<e.what()<<endl;}
+      catch (...) {cerr<<"illegal exception caught in draw()";}
 #else
-    catch(...) {}
+      catch(...) {}
 #endif
+    });
     x.mouseFocus=savedMouseFocus;
     if (auto parent=x.group.lock())
       parent->relZoom=stashedZf;
     
-    double l,t,w,h;
-    cairo_recording_surface_ink_extents(surf.surface(),
-                                        &l,&t,&w,&h);
+    const double l=ink.left, t=ink.top, w=ink.width, h=ink.height;
     // note (0,0) is relative to the (x,y) of icon.
     m_left=l;
     m_right=(l+w);
@@ -293,7 +289,7 @@ namespace minsky
     return ClickType::outside;
   }
 
-  void Item::drawPorts(const ICairoShim& cairoShim) const
+  void Item::drawPorts(const mansoura::IMansoura& cairoShim) const
   {
     cairoShim.save();
     cairoShim.newPath();
@@ -308,7 +304,7 @@ namespace minsky
     cairoShim.restore();
   }
 
-  void Item::drawSelected(const ICairoShim& cairoShim)
+  void Item::drawSelected(const mansoura::IMansoura& cairoShim)
   {
     // implemented by filling the clip region with a transparent grey
     cairoShim.save();
@@ -317,7 +313,7 @@ namespace minsky
     cairoShim.restore();
   }
 
-  void Item::drawResizeHandle(const ICairoShim& cairoShim, double x, double y, double sf, double angle)
+  void Item::drawResizeHandle(const mansoura::IMansoura& cairoShim, double x, double y, double sf, double angle)
   {
     cairoShim.save();
     cairoShim.translate(x,y);
@@ -345,7 +341,7 @@ namespace minsky
     scaleFactor(std::max(1.0f,std::min(iWidth()/w,iHeight()/h)));
   }
   
-  void Item::drawResizeHandles(const ICairoShim& cairoShim) const
+  void Item::drawResizeHandles(const mansoura::IMansoura& cairoShim) const
   {
     auto sf=resizeHandleSize();
     double angle=0.5*M_PI;
@@ -357,14 +353,14 @@ namespace minsky
     cairoShim.stroke();
   }
 
-  void BottomRightResizerItem::drawResizeHandles(const ICairoShim& cairoShim) const
+  void BottomRightResizerItem::drawResizeHandles(const mansoura::IMansoura& cairoShim) const
   { 			  			
     const Point p=resizeHandleCoords();
     drawResizeHandle(cairoShim,p.x()-x(),p.y()-y(),resizeHandleSize(),0);
     cairoShim.stroke();
   }
   
-  void Item::draw(const ICairoShim& cairoShim) const
+  void Item::draw(const mansoura::IMansoura& cairoShim) const
   {
     auto [angle,flipped]=rotationAsRadians();
     const Rotate r(rotation()+(flipped? 180:0),0,0);
@@ -395,12 +391,10 @@ namespace minsky
 
   void Item::dummyDraw() const
   {
-    const ecolab::cairo::Surface s(cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
-    CairoShimCairo shim(s.cairo());
-    draw(shim);
+    inkExtents([this](const IMansoura& shim) {draw(shim);});
   }
 
-  void Item::displayTooltip(const ICairoShim& cairoShim, const std::string& tooltip) const
+  void Item::displayTooltip(const mansoura::IMansoura& cairoShim, const std::string& tooltip) const
   {
     const string unitstr=units().latexStr();
     if (!tooltip.empty() || !unitstr.empty())

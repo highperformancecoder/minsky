@@ -19,23 +19,20 @@
 #include "minsky.h"
 #include "variable.h"
 #include "godleyIcon.h"
-#include "godleyTableWindow.h"
 #include "cairoItems.h"
 #include "selection.h"
 #include <flowCoef.h>
 #include <evalGodley.h>
 #include <arrays.h>
-#include <cairo_base.h>
 #include <ctype.h>
-#include "../engine/cairoShimCairo.h"
+#include "mansouraCairo.h"
 #include "godleyIcon.rcd"
 #include "itemT.rcd"
-#include "godleyTableWindow.xcd"
+#include "godleyTableEditor.xcd"
 #include "minsky_epilogue.h"
 #include <boost/locale.hpp>
 using namespace boost::locale::conv;
-using namespace ecolab::cairo;
-using namespace ecolab;
+using namespace mansoura;
 using namespace std;
 
 // width of draggable border 
@@ -53,9 +50,9 @@ namespace minsky
 
     struct DrawVarsShim
     {
-      const ICairoShim& cairoShim;
+      const mansoura::IMansoura& cairoShim;
       float x, y;
-      DrawVarsShim(const ICairoShim& cairoShim, float x, float y):
+      DrawVarsShim(const mansoura::IMansoura& cairoShim, float x, float y):
         cairoShim(cairoShim), x(x), y(y) {}
 
       void operator()(const GodleyIcon::Variables& vars) const
@@ -452,7 +449,7 @@ namespace minsky
     return r;
   }
 
-  void GodleyIcon::draw(const ICairoShim& cairoShim) const
+  void GodleyIcon::draw(const mansoura::IMansoura& cairoShim) const
   {
     positionVariables();
     const float z=zoomFactor()*scaleFactor();
@@ -461,55 +458,50 @@ namespace minsky
     
     if (m_editorMode)
       {
-        cairoShim.save();
+        PreserveContext stash(cairoShim);
         cairoShim.rectangle(left, top, w, h);
         cairoShim.rectangle(left-border*z, top-border*z, w+2*border*z, h+2*border*z);
         cairoShim.strokePreserve();
         if (onBorder)
           { // shadow the border when mouse is over it
-            cairoShim.save();
+            PreserveContext stash(cairoShim);
             cairoShim.setSourceRGBA(0.5,0.5,0.5,0.5);
             cairoShim.setFillRule(CAIRO_FILL_RULE_EVEN_ODD);
             cairoShim.fill();
-            cairoShim.restore();
           }
         cairoShim.newPath();
         cairoShim.rectangle(left, top, w, h);
         cairoShim.clip();
         cairoShim.translate(left+border*z+leftMargin(),top+border*z+titleOffs()/* space for title*/);
-        // render to a recording surface to determine size of editor table
-        // TODO - maybe move this stuff into update()
-        const Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR, nullptr));
         const_cast<GodleyTableEditor&>(editor).zoomFactor=1;
-        const_cast<GodleyTableEditor&>(editor).draw(surf.cairo());
-        const_cast<GodleyTableEditor&>(editor).zoomFactor=min((w-leftMargin()-2*border*z)/surf.width(),(h-bottomMargin()-2*border*z-titleOffs())/surf.height());
+        auto recorder=makeRecordingContext();
+        const_cast<GodleyTableEditor&>(editor).draw(*recorder);
+        auto extents=recordedInkExtents(*recorder);
+        const_cast<GodleyTableEditor&>(editor).zoomFactor=min((w-leftMargin()-2*border*z)/extents.width,(h-bottomMargin()-2*border*z-titleOffs())/extents.height);
         const_cast<GodleyTableEditor&>(editor).draw(cairoShim);
         titley=-0.5*h;
         w+=2*border*z;
         h+=2*border*z;
         left-=border*z;
         top-=border*z;
-        cairoShim.restore();
       }
     else
       {
-        cairoShim.save();
+        PreserveContext stash(cairoShim);
         cairoShim.translate(left+leftMargin(),top);
-        // Render SVG using ICairoShim abstraction
+        // Render SVG using mansoura::IMansoura abstraction
         cairoShim.renderSVG(svgRenderer, w-leftMargin(), h-bottomMargin());
         titley=top+0.1*(h-bottomMargin());
-        cairoShim.restore();
       }
     
     if (!table.title.empty())
       {
-        cairoShim.save();
+        PreserveContext stash(cairoShim);
         TextProperties tp("<b>"+latexToPango(table.title)+"</b>");
         tp.fontSize=titleOffs();
         auto bbox=cairoShim.textExtents(tp);
         cairoShim.moveTo(-0.5*(bbox.width-leftMargin()), titley);
         cairoShim.showText(tp);
-        cairoShim.restore();
       }
       
           

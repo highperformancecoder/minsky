@@ -22,19 +22,15 @@
 #include "lasso.h"
 #include "minsky.h"
 #include "plotWidget.h"
-#include <cairo_base.h>
-#include <pango.h>
-#include "../engine/cairoShimCairo.h"
 
 #include "itemT.rcd"
 #include "sheet.rcd"
-#include "minskyCairoRenderer.h"
 #include "ravelWrap.h"
 #include "tensorOp.h"
 #include "minsky_epilogue.h"
 
 using namespace minsky;
-using namespace ecolab;
+using namespace mansoura;
 using namespace std;
 
 // width of draggable border 
@@ -74,7 +70,7 @@ bool Sheet::onResizeHandle(float xx, float yy) const
 }
 
 
-void Sheet::drawResizeHandles(const ICairoShim& cairo) const
+void Sheet::drawResizeHandles(const IMansoura& cairo) const
 {
   auto sf=resizeHandleSize();
   const float w=0.5f*m_width*zoomFactor(), h=0.5f*m_height*zoomFactor();
@@ -271,59 +267,64 @@ void Sheet::computeValue()
 
 
 namespace {
-  /// A pango that clips text to a standard area suitable for numbers
-  struct ClippedPango: public Pango
+  /// text renderer that clips text to a standard area suitable for numbers
+  struct ClippedPango
   {
+    const IMansoura& cairo;
+    unique_ptr<ICacheRender> render;
     double m_width, m_height;
-    ClippedPango(cairo_t* cairo): Pango(cairo) {
-      setText(str(-std::numeric_limits<double>::max()));
+    ClippedPango(const IMansoura& cairo): cairo(cairo) {
+      render=cairo.cachedRender(TextProperties("",str(-std::numeric_limits<double>::max())));
       m_width=5+width();
       m_height=height();
     }
+    double width() const {return render->extents().width;}
+    double height() const {return render->extents().height;}
+    void setMarkup(const string& m) {render->setMarkup(m);}
+    void setText(const string& t) {render->setText(t);}
     void show() {
-      const cairo::CairoSave cs(cairoContext());
+      const PreserveContext cs(cairo);
       double x,y;
-      cairo_get_current_point(cairoContext(),&x,&y);
-      cairo_rectangle(cairoContext(),x,y,m_width,m_height);
-      cairo_clip(cairoContext());
-      cairo_move_to(cairoContext(),x,y);
-      Pango::show();
+      cairo.getCurrentPoint(x,y);
+      cairo.rectangle(x,y,m_width,m_height);
+      cairo.clip();
+      cairo.moveTo(x,y);
+      render->show();
     }
   };
 }
 
-void Sheet::draw(cairo_t* cairo) const
+void Sheet::draw(const IMansoura& cairo) const
 {
-  CairoShimCairo cairoShim(cairo);
   auto z=zoomFactor();
   m_ports[0]->moveTo(x()-0.5*m_width*z,y());
   if (mouseFocus)
     {
-      drawPorts(cairoShim);
-      displayTooltip(cairoShim,tooltip());
+      drawPorts(cairo);
+      displayTooltip(cairo,tooltip());
       // Resize handles always visible on mousefocus. For ticket 92.
-      drawResizeHandles(cairoShim);
+      drawResizeHandles(cairo);
     }
 
-  cairo_scale(cairo,z,z);
+  cairo.scale(z,z);
 
-  cairo_rectangle(cairo,-0.5*m_width+border,-0.5*m_height+border,m_width-2*border,m_height-2*border);
-  cairo_stroke_preserve(cairo);
-  cairo_rectangle(cairo,-0.5*m_width,-0.5*m_height,m_width,m_height);
-  cairo_stroke_preserve(cairo);
+  cairo.rectangle(-0.5*m_width+border,-0.5*m_height+border,m_width-2*border,m_height-2*border);
+  cairo.strokePreserve();
+  cairo.rectangle(-0.5*m_width,-0.5*m_height,m_width,m_height);
+  cairo.strokePreserve();
   // draw border
   if (onBorder)
     { // shadow the border when mouse is over it
-      const cairo::CairoSave cs(cairo);
-      cairo_set_source_rgba(cairo,0.5,0.5,0.5,0.5);
-      cairo_set_fill_rule(cairo,CAIRO_FILL_RULE_EVEN_ODD);
-      cairo_fill(cairo);
+      const PreserveContext cs(cairo);
+      cairo.setSourceRGBA(0.5,0.5,0.5,0.5);
+      cairo.setFillRule(CAIRO_FILL_RULE_EVEN_ODD);
+      cairo.fill();
     }
-  cairo_new_path(cairo);
-  cairo_rectangle(cairo,-0.5*m_width+border,-0.5*m_height+border,m_width-2*border,m_height-2*border);
-  cairo_clip(cairo);
+  cairo.newPath();
+  cairo.rectangle(-0.5*m_width+border,-0.5*m_height+border,m_width-2*border,m_height-2*border);
+  cairo.clip();
   
-  if (selected) drawSelected(cairoShim);
+  if (selected) drawSelected(cairo);
 
   static const regex pangoMarkup("<[^<>]*>");
   smatch match;
@@ -331,8 +332,8 @@ void Sheet::draw(cairo_t* cairo) const
   try
     {
       if (!value || !m_ports[0] || m_ports[0]->numWires()==0) return;
-      Pango pango(cairo);
-      pango.setFontSize(12.0);
+      auto pango=cairo.cachedRender(TextProperties());
+      pango->setFontSize(12.0);
       double x0=-0.5*m_width+border, y0=-0.5*m_height+border;
       const size_t vertDim=value->rank()>1? 1: 0, horizDim=0;
 
@@ -342,9 +343,9 @@ void Sheet::draw(cairo_t* cairo) const
       
       if (value->hypercube().rank()==0)
         {
-          cairo_move_to(cairo,x0,y0);
-          pango.setMarkup(str((*value)[0]));
-          pango.show();
+          cairo.moveTo(x0,y0);
+          pango->setMarkup(str((*value)[0]));
+          pango->show();
         }
       else
         {
@@ -352,23 +353,23 @@ void Sheet::draw(cairo_t* cairo) const
           
           if (!value->hypercube().xvectors[vertDim].name.empty())
             {
-              const cairo::CairoSave cs(cairo);
-              pango.setMarkup(value->hypercube().xvectors[vertDim].name);
-              x0+=pango.height();
-              cairo_move_to(cairo,x0, -0.5*pango.width());
-              pango.angle=0.5*M_PI;
-              pango.show();
-              pango.angle=0;
+              const PreserveContext cs(cairo);
+              pango->setMarkup(value->hypercube().xvectors[vertDim].name);
+              x0+=pango->extents().height;
+              cairo.moveTo(x0, -0.5*pango->extents().width);
+              pango->setAngle(0.5*M_PI);
+              pango->show();
+              pango->setAngle(0);
               { // draw vertical grid line
-                const cairo::CairoSave cs(cairo);
-                cairo_set_source_rgba(cairo,0,0,0,0.5);
-                cairo_move_to(cairo,x0,-0.5*m_height);
-                cairo_line_to(cairo,x0,0.5*m_height);
-                cairo_stroke(cairo);
+                const PreserveContext cs(cairo);
+                cairo.setSourceRGBA(0,0,0,0.5);
+                cairo.moveTo(x0,-0.5*m_height);
+                cairo.lineTo(x0,0.5*m_height);
+                cairo.stroke();
               }                  				
             }
 
-          pango.setMarkup("9999");
+          pango->setMarkup("9999");
 
           ClippedPango cpango(cairo);
           const double rowHeight=cpango.m_height;
@@ -383,30 +384,30 @@ void Sheet::draw(cairo_t* cairo) const
               if (value->hypercube().rank()>2) // allow room for slice indicator
                 {
                   y+=rowHeight;
-                  const cairo::CairoSave cs(cairo);
+                  const PreserveContext cs(cairo);
                   cpango.setMarkup(sliceIndicator);
-                  cairo_move_to(cairo,0.5*(x0+colWidth+0.5*m_width-cpango.width()), y0);
+                  cairo.moveTo(0.5*(x0+colWidth+0.5*m_width-cpango.width()), y0);
                   y0+=cpango.height();
                   cpango.show();
                 }
               if (!value->hypercube().xvectors[horizDim].name.empty())
                 {
-                  const cairo::CairoSave cs(cairo);
+                  const PreserveContext cs(cairo);
                   cpango.setMarkup(value->hypercube().xvectors[horizDim].name);
-                  cairo_move_to(cairo,0.5*(x0+colWidth+0.5*m_width-cpango.width()), y0);
+                  cairo.moveTo(0.5*(x0+colWidth+0.5*m_width-cpango.width()), y0);
                   y0+=cpango.height();
                   cpango.show();
                 }
               
               { // draw horizontal grid lines
-                const cairo::CairoSave cs(cairo);
-                cairo_set_source_rgba(cairo,0,0,0,0.5);
-                cairo_move_to(cairo,-0.5*m_width,y0-2.5);
-                cairo_line_to(cairo,0.5*m_width,y0-2.5);
-                cairo_stroke(cairo);
-                cairo_move_to(cairo,x,y0+rowHeight-2.5);
-                cairo_line_to(cairo,0.5*m_width,y0+rowHeight-2.5);
-                cairo_stroke(cairo);
+                const PreserveContext cs(cairo);
+                cairo.setSourceRGBA(0,0,0,0.5);
+                cairo.moveTo(-0.5*m_width,y0-2.5);
+                cairo.lineTo(0.5*m_width,y0-2.5);
+                cairo.stroke();
+                cairo.moveTo(x,y0+rowHeight-2.5);
+                cairo.lineTo(0.5*m_width,y0+rowHeight-2.5);
+                cairo.stroke();
                     
               }
             }
@@ -426,7 +427,7 @@ void Sheet::draw(cairo_t* cairo) const
           for (size_t i=adjustRowAndFinish.startRow; i<xv.size(); ++i)
             {
               if (adjustRowAndFinish(i,y)) break;
-              cairo_move_to(cairo,x,y);
+              cairo.moveTo(x,y);
               auto sliceLabel=trimWS(str(xv[i],format));
               if (regex_search(sliceLabel,match,pangoMarkup))
                 cpango.setMarkup(sliceLabel);
@@ -440,16 +441,16 @@ void Sheet::draw(cairo_t* cairo) const
           if (value->hypercube().rank()==1)
             {
               { // draw vertical grid line
-                const cairo::CairoSave cs(cairo);
-                cairo_set_source_rgba(cairo,0,0,0,0.5);
-                cairo_move_to(cairo,x,-0.5*m_height);
-                cairo_line_to(cairo,x,0.5*m_height);
-                cairo_stroke(cairo);
+                const PreserveContext cs(cairo);
+                cairo.setSourceRGBA(0,0,0,0.5);
+                cairo.moveTo(x,-0.5*m_height);
+                cairo.lineTo(x,0.5*m_height);
+                cairo.stroke();
               }
               for (size_t i=adjustRowAndFinish.startRow; i<dims[vertDim]; ++i)
                 {
                   if (adjustRowAndFinish(i,y)) break;
-                  cairo_move_to(cairo,x,y);
+                  cairo.moveTo(x,y);
                   auto v=value->atHCIndex(i);
                   if (!std::isnan(v))
                     {
@@ -468,10 +469,10 @@ void Sheet::draw(cairo_t* cairo) const
                   if (adjustColAndFinish(i,x)) break;
                   y=y0;
                   {
-                    const cairo::CairoSave cs(cairo);
-                    cairo_rectangle(cairo,x,y,colWidth,rowHeight);
-                    cairo_clip(cairo);
-                    cairo_move_to(cairo,x,y);
+                    const PreserveContext cs(cairo);
+                    cairo.rectangle(x,y,colWidth,rowHeight);
+                    cairo.clip();
+                    cairo.moveTo(x,y);
                     auto sliceLabel=trimWS(str(value->hypercube().xvectors[horizDim][i],format));
                     if (regex_search(sliceLabel,match,pangoMarkup))
                       cpango.setMarkup(sliceLabel);
@@ -480,17 +481,17 @@ void Sheet::draw(cairo_t* cairo) const
                     cpango.show();
                   }
                   { // draw vertical grid line
-                    const cairo::CairoSave cs(cairo);
-                    cairo_set_source_rgba(cairo,0,0,0,0.5);
-                    cairo_move_to(cairo,x-2.5,y0);
-                    cairo_line_to(cairo,x-2.5,0.5*m_height);
-                    cairo_stroke(cairo);
+                    const PreserveContext cs(cairo);
+                    cairo.setSourceRGBA(0,0,0,0.5);
+                    cairo.moveTo(x-2.5,y0);
+                    cairo.lineTo(x-2.5,0.5*m_height);
+                    cairo.stroke();
                   }
                   for (size_t j=adjustRowAndFinish.startRow; j<dims[vertDim]; ++j)
                     {
                       if (adjustRowAndFinish(j,y)) break;
                       y+=rowHeight;
-                      cairo_move_to(cairo,x,y);
+                      cairo.moveTo(x,y);
                       assert(horizDim==0);
                       auto v=value->atHCIndex(i+j*dims[0]+scrollOffset);
                       if (!std::isnan(v))
@@ -505,29 +506,23 @@ void Sheet::draw(cairo_t* cairo) const
             }
           // draw grid
           {
-            const cairo::CairoSave cs(cairo);
-            cairo_set_source_rgba(cairo,0,0,0,0.2);
+            const PreserveContext cs(cairo);
+            cairo.setSourceRGBA(0,0,0,0.2);
             for (y=y0+0.8*rowHeight; y<0.5*m_height; y+=2*rowHeight)
               {
-                cairo_rectangle(cairo,x0,y,m_width,rowHeight);
-                cairo_fill(cairo);
+                cairo.rectangle(x0,y,m_width,rowHeight);
+                cairo.fill();
               }
           }
                 
         }
     }
   catch (...) {/* exception most likely invalid variable value */}
-  cairo_reset_clip(cairo);
-  cairo_rectangle(cairo,-0.5*m_width,-0.5*m_height,m_width,m_height);
-  cairo_clip(cairo);
+  cairo.resetClip();
+  cairo.rectangle(-0.5*m_width,-0.5*m_height,m_width,m_height);
+  cairo.clip();
 }
 
-void Sheet::draw(const ICairoShim& cairoShim) const
-{
-  // TODO: Implement properly without cairo_t* delegation
-  auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-  draw(shimImpl._internalGetCairoContext());
-}
 
 void Sheet::exportAsCSV(const string& filename, bool tabular) const
 {

@@ -26,7 +26,7 @@
 #include "ravelWrap.h"
 #include <cairo_base.h>
 
-#include "cairoShimCairo.h"
+#include "mansouraCairo.h"
 #include "canvas.rcd"
 #include "canvas.xcd"
 #include "eventInterface.rcd"
@@ -37,6 +37,7 @@
 using namespace std;
 using namespace ecolab::cairo;
 using namespace minsky;
+using namespace mansoura;
 
 namespace minsky
 {
@@ -796,7 +797,7 @@ namespace minsky
     return false;
   }
 
-  bool Canvas::redraw(int x0, int y0, int width, int height)
+  bool Canvas::redraw(const IMansoura& cairoShim, int x0, int y0, int width, int height)
   {
     updateRegion.x0=x0;
     updateRegion.y0=y0;
@@ -805,7 +806,7 @@ namespace minsky
     // redraw of canvas may throw if called during a reset operation
     try
       {
-        return redrawUpdateRegion();
+        return redrawUpdateRegion(cairoShim);
       }
 #ifndef NDEBUG
     catch (std::exception& ex)
@@ -822,45 +823,36 @@ namespace minsky
     return false;
   }
   
-  bool Canvas::redraw()
-  {
-    // nb using maxint here doesn't seem to work
-    return redraw(-1e6,-1e6,2e6,2e6);
-  }
-
-  bool Canvas::redrawUpdateRegion()
+  bool Canvas::redrawUpdateRegion(const IMansoura& mans)
   {
     bool didDrawSomething = false;
-    if (!surface().get()) {
-      return didDrawSomething;
-    }
     m_redrawRequested=false;
-    auto cairo=surface()->cairo();
-    const CairoSave cs(cairo);
-    cairo_rectangle(cairo,updateRegion.x0,updateRegion.y0,updateRegion.x1-updateRegion.x0,updateRegion.y1-updateRegion.y0);
-    cairo_clip(cairo);
-    cairo_set_line_width(cairo, 1);
+    
+    mans.rectangle(updateRegion.x0,updateRegion.y0,updateRegion.x1-updateRegion.x0,updateRegion.y1-updateRegion.y0);
+    mans.clip();
+    mans.setLineWidth(1);
     // items
     model->recursiveDo
       (&GroupItems::items, [&](const Items&, Items::const_iterator i)
        {
          auto& it=**i;
          if (it.visible() && updateRegion.intersects(it))
-           {
-             didDrawSomething = true;
-             const CairoSave cs(cairo);
-             cairo_identity_matrix(cairo);
-             cairo_translate(cairo,it.x(), it.y());
-             try
-               {
-                 CairoShimCairo shim(cairo);
-                 it.draw(shim);
-               }
-             catch (const std::exception& ex)
-               {
-                 cerr << ex.what() << endl;
-               }
-           }
+           try
+             {
+               didDrawSomething = true;
+               const PreserveContext cs(mans);
+               mans.identityMatrix();
+               mans.translate(it.x(), it.y());
+               it.draw(mans);
+             }
+           catch (const std::exception& ex)
+             {
+               cout<<it.classType();
+               if (auto v=it.variableCast())
+                 cout<<" "<<v->name();
+               cout<<endl;
+               cerr << ex.what() << endl;
+             }
          return false;
        });
 
@@ -872,12 +864,11 @@ namespace minsky
          if (it.visible() && updateRegion.intersects(it))
            {
              didDrawSomething = true;
-             const CairoSave cs(cairo);
-             cairo_identity_matrix(cairo);
-             cairo_translate(cairo,it.x(), it.y());
+             const PreserveContext cs(mans);
+             mans.identityMatrix();
+             mans.translate(it.x(), it.y());
              {
-               CairoShimCairo shim(cairo);
-               it.draw(shim);
+               it.draw(mans);
              }
            }
          return false;
@@ -890,8 +881,7 @@ namespace minsky
        {
          const Wire& w=**i;
          if (w.visible()) {
-           CairoShimCairo shim(cairo);
-           w.draw(shim);
+           w.draw(mans);
          }
          return false;
        });
@@ -899,47 +889,43 @@ namespace minsky
     if (fromPort.get()) // we're in process of creating a wire
       {
         didDrawSomething = true;
-        cairo_move_to(cairo,fromPort->x(),fromPort->y());
-        cairo_line_to(cairo,termX,termY);
-        cairo_stroke(cairo);
+        mans.moveTo(fromPort->x(),fromPort->y());
+        mans.lineTo(termX,termY);
+        mans.stroke();
         // draw arrow
-        const CairoSave cs(cairo);
-        cairo_translate(cairo, termX,termY);
-        cairo_rotate(cairo,atan2(termY-fromPort->y(), termX-fromPort->x()));
-        cairo_move_to(cairo,0,0);
-        cairo_line_to(cairo,-5,-3); 
-        cairo_line_to(cairo,-3,0); 
-        cairo_line_to(cairo,-5,3);
-        cairo_close_path(cairo);
-        cairo_fill(cairo);
+        const PreserveContext cs(mans);
+        mans.translate(termX,termY);
+        mans.rotate(atan2(termY-fromPort->y(), termX-fromPort->x()));
+        mans.moveTo(0,0);
+        mans.lineTo(-5,-3); 
+        mans.lineTo(-3,0); 
+        mans.lineTo(-5,3);
+        mans.closePath();
+        mans.fill();
       }
 
     if (lassoMode!=LassoMode::none)
       {
         didDrawSomething = true;
-        cairo_rectangle(cairo,lasso.x0,lasso.y0,lasso.x1-lasso.x0,lasso.y1-lasso.y0);
-        cairo_stroke(cairo);
+        mans.rectangle(lasso.x0,lasso.y0,lasso.x1-lasso.x0,lasso.y1-lasso.y0);
+        mans.stroke();
       }
 
     if (itemIndicator) // draw a red circle to indicate an error or other marker
       {
-        const CairoSave cs(surface()->cairo());
-        cairo_set_source_rgb(surface()->cairo(),1,0,0);
-        cairo_arc(surface()->cairo(),itemIndicator->x(),itemIndicator->y(),15,0,2*M_PI);
-        cairo_stroke(surface()->cairo());
+        const PreserveContext cs(mans);
+        mans.setSourceRGB(1,0,0);
+        mans.arc(itemIndicator->x(),itemIndicator->y(),15,0,2*M_PI);
+        mans.stroke();
       }
 
-    surface()->blit();
     return didDrawSomething;
   }
 
   void Canvas::recentre()
   {
-    const SurfacePtr tmp(surface());
-    surface().reset(new Surface(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr)));
-    redraw();
-    model->moveTo(model->x()-surface()->left(), model->y()-surface()->top());
-    surface()=tmp;
+    const auto ink=mansoura::inkExtents([this](const IMansoura& shim){redraw(shim,-1e6,-1e6,2e6,2e6);});
+    model->moveTo(model->x()-ink.left, model->y()-ink.top);
     requestRedraw();
   }
 
@@ -953,11 +939,8 @@ namespace minsky
   {
     model->zoom(model->x(),model->y(),z.zoom);
     model->moveTo(model->x()-z.left,model->y()-z.top);
-    cairo::SurfacePtr tmp(new cairo::Surface(cairo_image_surface_create(CAIRO_FORMAT_ARGB32,z.width,z.height)));
-    tmp.swap(surface());
-    redraw(0,0,z.width,z.height);
-    tmp.swap(surface());
-    cairo_surface_write_to_png(tmp->surface(),filename.c_str());
+    mansoura::renderToPNG(filename,z.width,z.height,
+                          [&](const IMansoura& shim){redraw(shim,0,0,z.width,z.height);});
     model->moveTo(model->x()+z.left,model->y()+z.top);
     model->zoom(model->x(),model->y(),1/z.zoom);
   }

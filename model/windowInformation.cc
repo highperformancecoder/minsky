@@ -18,6 +18,7 @@
 */
 #define NTDDI_VERSION NTDDI_WINBLUE
 #include "windowInformation.h"
+#include "mansouraCairo.h"
 #include "minsky_epilogue.h"
 
 #include <stdexcept>
@@ -118,6 +119,25 @@ namespace minsky
   const ecolab::cairo::SurfacePtr& WindowInformation::getBufferSurface() const
   {
     return bufferSurface;
+  }
+
+  bool WindowInformation::render(const std::function<bool(const mansoura::IMansoura&,int,int)>& redraw,
+                                 const mansoura::Colour& bg)
+  {
+    if (!bufferSurface) return false;
+    bool r=false;
+    {
+      mansoura::MansouraCairo shim(bufferSurface->cairo());
+      shim.resetClip();
+      const mansoura::PreserveContext cs(shim);
+      shim.setSourceRGBA(bg.r,bg.g,bg.b,bg.a);
+      shim.rectangle(0,0,childWidth,childHeight);
+      shim.fill();
+      shim.setSourceRGB(0,0,0);
+      r=redraw(shim,childWidth,childHeight);
+    }
+    copyBufferToMain();
+    return r;
   }
 
   void WindowInformation::copyBufferToMain()

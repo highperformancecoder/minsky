@@ -55,7 +55,7 @@ namespace minsky
     void copyVars(const std::vector<VariablePtr>&);
     void reportDrawTime(double) override;
     void mouseDownCommon(float x, float y);
-    bool redraw(int x0, int y0, int width, int height) override;
+    bool redraw(const mansoura::IMansoura& cairoShim, int x0, int y0, int width, int height) override;
     void mouseMoveOnItem(float x, float y);
 
     /// flag indicating that a redraw is requested, but not yet redrawn
@@ -145,8 +145,6 @@ namespace minsky
     Canvas() {}
     Canvas(const GroupPtr& m): model(m) {}
 
-    ecolab::cairo::SurfacePtr& surface() {return ecolab::CairoSurface::surface;}
-    
     /// event handling for the canvas
     void mouseDown(float x, float y) override;
     void controlMouseDown(float x, float y) override;
@@ -276,12 +274,10 @@ namespace minsky
     /// draw a red circle around item
     //    void indicateItem() {itemIndicator=true;}
 
-    /// redraw whole model
-    bool redraw();
     /// region to be updated
     LassoBox updateRegion{0,0,0,0};
     /// update region given by updateRegion
-    bool redrawUpdateRegion();
+    bool redrawUpdateRegion(const mansoura::IMansoura& cairoShim);
 
     struct ZoomCrop
     {
@@ -298,7 +294,7 @@ namespace minsky
     /// flag indicating that a redraw is requested, but not yet redrawn
     bool redrawRequested() const {return m_redrawRequested;}
     /// request a redraw on the screen
-    void requestRedraw() {m_redrawRequested=true; if (surface().get()) surface()->requestRedraw();}
+    void requestRedraw() {m_redrawRequested=true; RenderNativeWindow::requestRedraw();}
     bool hasScrollBars() const override {return true;}
 
     void setDefaultPlotOptions() {

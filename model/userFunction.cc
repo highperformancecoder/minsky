@@ -64,11 +64,13 @@
 #endif
 #endif
 
+using namespace mansoura;
+
 namespace minsky
 {
   int UserFunction::nextId=0;
 
-  template <> void Operation<OperationType::userFunction>::iconDraw(const ICairoShim&) const
+  template <> void Operation<OperationType::userFunction>::iconDraw(const IMansoura&) const
   {assert(false);}
 
 #ifdef NO_EXPRTK

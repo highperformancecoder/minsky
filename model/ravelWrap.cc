@@ -23,8 +23,7 @@
 #include "selection.h"
 #include "dimension.h"
 #include "minskyTensorOps.h"
-#include "pango.h"
-#include "../engine/cairoShimCairo.h"
+#include "mansouraCairo.h"
 
 #include "capiRenderer.xcd"
 #include "CSVTools.xcd"
@@ -46,14 +45,15 @@
 #include "tensorInterface.rcd"
 #include "tensorInterface.xcd"
 #include "xvector.rcd"
-#include "minskyCairoRenderer.h"
+#include "ravelRenderer.h"
+#include "SVGItem.h"
 #include "minsky_epilogue.h"
 
 
 #include <string>
 #include <cmath>
 using namespace std;
-
+using namespace mansoura;
 
 namespace minsky
 {
@@ -83,7 +83,7 @@ namespace minsky
     wrappedRavel.setOutputHandleIds({0,2});
   }
 
-  void Ravel::draw(const ICairoShim& cairoShim) const
+  void Ravel::draw(const IMansoura& cairoShim) const
   {
     const double  z=zoomFactor(), r=m_editorMode? 1.1*z*wrappedRavel.radius(): 30*z;
     if (flipped)
@@ -111,9 +111,9 @@ namespace minsky
     if (onBorder || lockGroup)
       { // shadow the border when mouse is over it
         cairoShim.save();
-        cairo::Colour c{1,1,1,0};
+        Colour c{1,1,1,0};
         if (lockGroup)
-          c=palette[ lockGroup->colour() % paletteSz ];
+          c=mansoura::palette[ lockGroup->colour() % mansoura::paletteSz ];
         c.r*=0.5; c.g*=0.5; c.b*=0.5;
         c.a=onBorder? 0.5:0.3;
         cairoShim.setSourceRGBA(c.r,c.g,c.b,c.a);
@@ -131,15 +131,13 @@ namespace minsky
       if (m_editorMode)
         {
           cairoShim.scale(z,z);
-          // TODO: CairoRenderer needs ICairoShim support
-          auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-          CairoRenderer cr(shimImpl._internalGetCairoContext());
+          RavelRenderer cr(cairoShim);
           wrappedRavel.render(cr);
         }
       else
         {
           cairoShim.translate(-r,-r);
-          // Render SVG using ICairoShim abstraction
+          // Render SVG using IMansoura abstraction
           cairoShim.renderSVG(svgRenderer, 2*r, 2*r);
         }
       cairoShim.restore();
@@ -890,16 +888,15 @@ namespace minsky
         r->lockGroup.reset(); // this may delete this, so should be last
   }
 
-  bool RavelPopup::redraw(int x0, int y0, int width, int height)
+  bool RavelPopup::redraw(const IMansoura& shim, int x0, int y0, int width, int height)
   {
-    if (!surface.get()) return false;
     this->width=width; this->height=height;
-    const ecolab::cairo::CairoSave cs(surface->cairo());
-    cairo_translate(surface->cairo(),0.5*width,0.5*height);
+    const PreserveContext cs(shim);
+    shim.translate(0.5*width,0.5*height);
     auto z=0.4*min(width,height)/ravel.wrappedRavel.radius();
     scale=1/z;
-    cairo_scale(surface->cairo(), z,z);
-    CairoRenderer cr(surface->cairo());
+    shim.scale(z,z);
+    RavelRenderer cr(shim);
     ravel.wrappedRavel.render(cr);
     return true;
   }

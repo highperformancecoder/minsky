@@ -18,7 +18,7 @@ import {
   ZOOM_OUT_FACTOR,
   events,
   GodleyIcon,
-  GodleyTableWindow
+  GodleyTableEditor
 } from '@minsky/shared';
 import { fromEvent, Observable } from 'rxjs';
 import { sampleTime } from 'rxjs/operators';
@@ -47,7 +47,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
   systemWindowId: string;
   windowId: number;
   godleyIcon: GodleyIcon;
-  namedItemSubCommand: GodleyTableWindow;
+  namedItemSubCommand: GodleyTableEditor;
 
   destroy$ = new Subject<{}>();
 
@@ -99,7 +99,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
 
   async ngOnInit() {
     this.godleyIcon = new GodleyIcon(this.electronService.minsky.namedItems.elem(this.itemId));
-    this.namedItemSubCommand = this.godleyIcon.popup;
+    this.namedItemSubCommand = this.godleyIcon.editor;
 
     this.windowId = (await this.electronService.getCurrentWindow()).id;
 
@@ -126,9 +126,6 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
 
   async windowResize() {
     await this.getWindowRectInfo();
-
-    clearTimeout(this.renderTimeout);
-    this.renderTimeout = setTimeout(() => this.renderFrame(), 300);
   }
 
   private async getWindowRectInfo() {
@@ -141,25 +138,6 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
 
     this.height = Math.round(this.godleyCanvasContainer.clientHeight);
     this.width = Math.round(this.godleyCanvasContainer.clientWidth);
-  }
-
-  renderFrame() {
-    if (
-      this.canvasMode &&
-      this.systemWindowId &&
-      this.itemId &&
-      this.height &&
-      this.width
-    ) {
-      this.namedItemSubCommand.renderFrame({
-        parentWindowId: this.systemWindowId.toString(),
-        offsetLeft: this.leftOffset,
-        offsetTop: this.topOffset,
-        childWidth: this.width,
-        childHeight: this.height,
-        scalingFactor: -1
-      });
-    }
   }
 
   initEvents() {
@@ -201,22 +179,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
     });
 
     this.godleyCanvasContainer.onwheel = this.onMouseWheelZoom;
-    document.onkeydown = this.onKeyDown;
-
   }
-
-  async redraw() {
-    this.namedItemSubCommand.requestRedraw();
-  }
-
-  onKeyDown = async (event: KeyboardEvent) => {
-    await this.communicationService.handleKeyDown({
-      event,
-      command: `minsky.namedItems.@elem."${this.itemId}".popup`,
-    });
-
-    await this.redraw();
-  };
 
   onMouseWheelZoom = async (event: WheelEvent) => {
     event.preventDefault();
@@ -225,7 +188,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
     const area = this.windowUtilityService.getDrawableArea();
 
     //TODO: throttle here if required
-    this.namedItemSubCommand.zoom(area.width/2, area.height/2, zoomFactor);
+    //this.namedItemSubCommand.zoom(area.width/2, area.height/2, zoomFactor);
   };
 
   async handleScroll(scrollTop: number, scrollLeft: number) {
@@ -242,7 +205,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
 
     this.namedItemSubCommand.scrollColStart(currentStepX);
     this.namedItemSubCommand.scrollRowStart(currentStepY);
-    this.redraw();
+//    this.redraw();
   }
 
   async contextMenu(i: number, j: number, clickType: string) {
