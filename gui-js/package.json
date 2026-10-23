@@ -224,6 +224,9 @@
   },
   "comment: this override allows this package to be bumped without also bumping nx to 23": "",
   "overrides": {
+    "nx": {
+      "follow-redirects": "1.16.1"
+    },
     "smol-toml": "^1.9.0"
   }
 }

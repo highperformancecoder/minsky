@@ -57,6 +57,7 @@ namespace minsky
     }
 
     double titleOffs() const {return !table.title.empty()? 15*zoomFactor(): 0;}
+    void setCellImpl(int row, int col, const string& val, bool recordHistory);
     
   public:
     static SVGRenderer svgRenderer; ///< SVG icon to display when not in editor mode
@@ -121,7 +122,9 @@ namespace minsky
     std::vector<Summary> summarise() const;
     
     /// updates the variable lists with the Godley table
-    void update();
+    /// @param preserveTable - do no populate table's initial conditions from variable init conditions
+    void update() {update(false);}
+    void update(bool preserveTable);
     
     GodleyIcon* clone() const override {
       auto r=new GodleyIcon(*this);  
