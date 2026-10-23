@@ -5,7 +5,7 @@ import { EditVariableDialog, EditVariableDialogData } from './dialogs/editvariab
 import { MatDialog } from '@angular/material/dialog';
 import flatMap from 'lodash/flatMap';
 import { CommonModule, formatNumber } from '@angular/common';
-import { MatFormField } from '@angular/material/input';
+import { MatFormField } from '@angular/material/form-field';
 import { LatexDirective } from '../directives/latex.directive';
 import { DragdropDirective } from './directives/dragdrop.directive';
 import { D3LineComponent } from './components/d3line.component';
