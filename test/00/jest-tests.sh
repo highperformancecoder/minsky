@@ -12,7 +12,9 @@ if test $? -ne 0; then fail; fi
 xvfb-run -a npm test shared
 if test $? -ne 0; then fail; fi
 npm test core
+if test $? -ne 0; then fail; fi
 npm test menu
+if test $? -ne 0; then fail; fi
 npm test ui-components
 if test $? -ne 0; then fail; fi
 
