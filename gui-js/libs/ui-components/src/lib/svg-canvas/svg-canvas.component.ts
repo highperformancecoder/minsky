@@ -503,6 +503,7 @@ export class SvgCanvasComponent implements AfterViewInit {
       dialogRef.afterClosed().subscribe((result: EditVariableDialogData) => {
         if(result) {
           d.symbol = result.symbol;
+          SvgCanvasHelper.updateGeometry(d);
           d.name = result.name;
           d.description = result.description;
           if(['constant', 'stock'].includes(d.type.name)) {

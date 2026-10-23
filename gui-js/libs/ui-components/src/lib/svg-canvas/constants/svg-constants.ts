@@ -196,8 +196,13 @@ export class SvgCanvasHelper {
     static createData(template: any) {
       const d = Object.assign({}, template);
       d.connectors = d.type.connectors.map(c => Object.assign({},c,{data: d}));
-      d.actualLength = Math.max(100, SvgCanvasHelper.estimateVisibleLatex(template.symbol) * 15) + 120;
-      d.dimensions = d.type.getDimensions(d.actualLength);
+      SvgCanvasHelper.updateGeometry(d);
       return d;
+    }
+
+    // recalculate size-dependent geometry from the element's current symbol
+    static updateGeometry(d: any) {
+      d.actualLength = Math.max(100, SvgCanvasHelper.estimateVisibleLatex(d.symbol) * 15) + 120;
+      d.dimensions = d.type.getDimensions(d.actualLength);
     }
 }
