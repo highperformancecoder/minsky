@@ -20,14 +20,14 @@
       }
     },
     "test": {
-      "executor": "@nx/jest:jest",
-      "options": {
-        "jestConfig": "libs/core/jest.config.ts",
-        "passWithNoTests": true
-      },
+      "executor": "nx:run-commands",
       "outputs": [
-        "{workspaceRoot}/coverage/libs/core"
-      ]
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
+      "options": {
+        "command": "jest --passWithNoTests --forceExit",
+        "cwd": "{projectRoot}"
+      }
     }
   }
 }

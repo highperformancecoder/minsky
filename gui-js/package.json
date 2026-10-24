@@ -1,6 +1,6 @@
 {
   "name": "ravel",
-  "version":"3.31.1",
+  "version": "3.31.1",
   "author": "High Performance Coders",
   "description": "Graphical dynamical systems simulator oriented towards economics",
   "repository": {
@@ -137,9 +137,9 @@
     "electron": "wait-on http-get://localhost:4200/ && nx serve minsky-electron",
     "build:web": "nx build minsky-web --prod",
     "build:electron": "nx build minsky-electron --prod",
-    "export:package:windows": "npm run build:web && npm run build:electron && nx run minsky-electron:make --platform windows",
-    "export:package:linux": "npm run build:web && npm run build:electron && nx run minsky-electron:make --platform linux --arch x64 --publishPolicy never",
-    "export:package:mac": "npm run build:web && npm run build:electron && nx run minsky-electron:make --platform mac",
+    "export:package:windows": "npm run build:web && npm run build:electron && electron-builder --win --publish never --config.directories.output=dist/executables",
+    "export:package:linux": "npm run build:web && npm run build:electron && electron-builder --linux --x64 --publish never --config.directories.output=dist/executables",
+    "export:package:mac": "npm run build:web && npm run build:electron && electron-builder --mac --publish never --config.directories.output=dist/executables",
     "doc": "npx compodoc -p tsconfig.compodoc.json -n \"Minsky\"",
     "test": "nx test",
     "lint": "nx workspace-lint && ng lint",
@@ -174,9 +174,9 @@
     "@angular/material": "^20.0.0",
     "@ngx-translate/core": "^16.0.4",
     "@ngx-translate/http-loader": "^16.0.1",
-    "@nx/jest": "^22.7.5",
-    "@nx/js": "^22.7.5",
-    "@nx/workspace": "^22.7.5",
+    "@nx/jest": "^24.0.1",
+    "@nx/js": "^24.0.1",
+    "@nx/workspace": "^24.0.1",
     "@types/d3": "^7.4.0",
     "@types/jest": "^29.0.0",
     "electron": "^43.3.0",
@@ -189,9 +189,10 @@
     "material-design-icons": "^3.0.1",
     "ngx-color-picker": "^20.0.0",
     "npm-run-all": "^4.1.5",
-    "nx": "^22.7.5",
-    "nx-electron": "^22.0.0",
-    "wait-on": "^8.0.3"
+    "nx": "^24.0.1",
+    "wait-on": "^8.0.3",
+    "@nx/esbuild": "^24.0.1",
+    "esbuild": "^0.25.0"
   },
   "dependencies": {
     "@angular/animations": "^21.2.24",
@@ -222,7 +223,7 @@
     "webpack-node-externals": "^3.0.0",
     "zone.js": "^0.15.1"
   },
-  "comment: this override allows this package to be bumped without also bumping nx to 23": "",
+  "comment: this override allows this package to be bumped without also bumping nx": "",
   "overrides": {
     "nx": {
       "follow-redirects": "1.16.1"

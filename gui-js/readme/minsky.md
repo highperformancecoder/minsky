@@ -2,7 +2,7 @@
 
 This repo is created using [Nx](https://nx.dev). Nx helps us creating a monorepo for all things javascript.
 
-We are also using [nx-electron](https://github.com/bennymeg/nx-electron) to generate/build/serve the electron app.
+The Electron main process is bundled with [esbuild](https://esbuild.github.io) via `@nx/esbuild`, and packaged with electron-builder.
 
 The project uses Electron with Angular to create the Minsky desktop app for all platforms. There are separate scripts to build and generate the Minsky executable/installer for each platform. The scripts can be found in the package.json file under scripts.
 
@@ -111,7 +111,6 @@ ipcMain.on(events.ADD_RECENT_FILE, (event, filePath: string) => {
 # Other important packages that we are using
 
 - Nx - for monorepo - https://nx.dev/
-- nx-electron - generate/build/serve electron app - https://github.com/bennymeg/nx-electron
 - electron-store - local storage for electron - https://www.npmjs.com/package/electron-store
 - electron-log - to show/store logs - https://www.npmjs.com/package/electron-log
 - compodoc - for documentation generation using code - https://compodoc.app/
