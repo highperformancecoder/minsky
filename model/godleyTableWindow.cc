@@ -483,6 +483,7 @@ namespace minsky
 
   void GodleyTableEditor::mouseDown(double x, double y)
   {
+    pushHistory();
     // catch exception, as the intention here is to allow the user to fix a problem
     try {update();}
     catch (...) {}
@@ -545,6 +546,7 @@ namespace minsky
 
   void GodleyTableEditor::mouseUp(double x, double y)
   {
+    pushHistory();
     button1=false;
     x/=zoomFactor;
     y/=zoomFactor;
@@ -633,6 +635,7 @@ namespace minsky
   
   void GodleyTableEditor::keyPress(int keySym, const std::string& utf8)
   {
+    pushHistory();
     
     auto& table=m_godleyIcon.table;
     if (selectedCellInTable() && (selectedCol!=0 || selectedRow!=1)) // Cell (1,0) is off-limits. For ticket 1064
@@ -777,6 +780,7 @@ namespace minsky
   void GodleyTableEditor::cut()
   {
     if (!selectedCellInTable()) return;
+    pushHistory();
     copy();
     if (selectIdx==insertIdx)
       // delete entire cell
@@ -800,6 +804,7 @@ namespace minsky
   void GodleyTableEditor::paste()
   {
     if (!selectedCellInTable()) return;
+    pushHistory();
     delSelection();
     auto& str=m_godleyIcon.table.cell(selectedRow,selectedCol); 
     auto stringToInsert=cminsky().clipboard.getClipboard();
@@ -857,7 +862,11 @@ namespace minsky
 
   void GodleyTableEditor::addStockVarByCol(int c)
   {
-    if (c>0) m_godleyIcon.table.insertCol(c+1);
+    if (c>0)
+      {
+        pushHistory();
+        m_godleyIcon.table.insertCol(c+1);
+      }
   }
 
   void GodleyTableEditor::importStockVar(const string& name, double x)
@@ -870,6 +879,7 @@ namespace minsky
   {
     if (c>0 && size_t(c)<m_godleyIcon.table.cols())
       {
+        pushHistory();
         m_godleyIcon.table.cell(0,c)=name;
         minsky().importDuplicateColumn(m_godleyIcon.table, c);
         adjustWidgets();
@@ -886,7 +896,10 @@ namespace minsky
   void GodleyTableEditor::deleteStockVarByCol(int c)
   {
     if (c>=0)
-      m_godleyIcon.table.deleteCol(c+1);
+      {
+        pushHistory();
+        m_godleyIcon.table.deleteCol(c+1);
+      }
   }
 
   void GodleyTableEditor::addFlow(double y)  
@@ -897,8 +910,11 @@ namespace minsky
 
   void GodleyTableEditor::addFlowByRow(int r)  
   {
-    if (r>0)                                 
-      m_godleyIcon.table.insertRow(r+1);
+    if (r>0)
+      {
+        pushHistory();
+        m_godleyIcon.table.insertRow(r+1);
+      }
   }
 
   void GodleyTableEditor::deleteFlow(double y)
@@ -910,7 +926,10 @@ namespace minsky
   void GodleyTableEditor::deleteFlowByRow(int r)
   {
     if (r>1)                                       // Cannot delete flow in Initial Conditions row. For ticket 1064
-      m_godleyIcon.deleteRow(r+1);
+      {
+        pushHistory();
+        m_godleyIcon.deleteRow(r+1);
+      }
   }
   
 namespace {
@@ -1013,25 +1032,53 @@ namespace {
 
   void GodleyTableEditor::pushHistory()
   {
-    while (history.size()>maxHistory) history.pop_front();
+    if (historyPtr<history.size())
+      {
+        if (historyPtr>0 && history[historyPtr-1]==m_godleyIcon.table)
+          return;
+        history.erase(history.begin()+historyPtr, history.end());
+      }
     // Perform deep comparison of Godley tables in history to avoid spurious noAssetClass columns from arising during undo. For ticket 1118.
     if (history.empty() || !(history.back()==m_godleyIcon.table)) {
       history.push_back(m_godleyIcon.table);
     }
+    while (history.size()>maxHistory)
+      {
+        history.pop_front();
+        if (historyPtr>0) --historyPtr;
+      }
     historyPtr=history.size();
   }
       
   void GodleyTableEditor::undo(int changes)
   { 
-    if (historyPtr==history.size())
-      pushHistory();
-    historyPtr-=changes;
+    const bool pendingChange=historyPtr==0 ||
+      !(history[historyPtr-1]==m_godleyIcon.table);
+    if (pendingChange)
+      {
+        pushHistory();
+        if (changes<0) return;
+      }
+    if (changes>0 && static_cast<std::size_t>(changes)>=historyPtr)
+      return;
+    if (changes<0 &&
+        static_cast<std::size_t>(-static_cast<long long>(changes))>
+        history.size()-historyPtr)
+      return;
+    if (changes>0)
+      historyPtr-=changes;
+    else if (changes<0)
+      historyPtr+=-static_cast<long long>(changes);
     if (historyPtr > 0 && historyPtr <= history.size())
       {
         auto& d=history[historyPtr-1];
         // Perform deep comparison of Godley tables in history to avoid spurious noAssetClass columns from arising during undo. For ticket 1118.
         if (d.getData().empty()) return; // should not happen
-		m_godleyIcon.table=d; 
+        const GodleyTable restoredTable=d;
+        m_godleyIcon.table=restoredTable;
+        m_godleyIcon.update(true);
+        adjustWidgets();
+        requestRedrawCanvas();
       }
   }
 

@@ -23,7 +23,7 @@
   * We use jsign, and a recent version of the Java runtime.
   * With SafeNet hardware code signing token, you need the SafeNet library installed, and a recent version of jsign (6.0) that supports the ETOKEN store type.
   * Prior to the SafeNet token, we used a code signing certificate (.pfx file), and specify its name in `WINDOWS_SIGN_CERTIFICATE_NAME` environment   variable and password in WINDOWS_SIGN_TOKEN_PASSWORD environment variable.
-  * Intricate details of code signing can be found in the `mkWindowsDist.sh` script.
+  * Intricate details of code signing can be found in the `sign.sh` script.
 - Install lld on your system (the LLVM linker), then link it to the MXE linker `ln -sf /usr/bin/ld.lld $(MXEHOME)/usr/bin/x86_64-w64-mingw32.shared-ld`. This make a dramatic improvement to build times, with the link portion of the build shrinking from over 13 minutes to less than 2 seconds.
 - Then compile Minsky with
 

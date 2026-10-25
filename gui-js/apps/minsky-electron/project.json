@@ -7,50 +7,59 @@
   "generators": {},
   "targets": {
     "build": {
-      "executor": "nx-electron:build",
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "defaultConfiguration": "development",
       "options": {
+        "platform": "node",
+        "format": [
+          "cjs"
+        ],
+        "bundle": true,
+        "thirdParty": false,
         "outputPath": "dist/apps/minsky-electron",
         "main": "apps/minsky-electron/src/main.ts",
         "tsConfig": "apps/minsky-electron/tsconfig.app.json",
         "assets": [
-          "apps/minsky-electron/src/assets"
-        ]
+          {
+            "input": "apps/minsky-electron/src/assets",
+            "glob": "**/*",
+            "output": "assets"
+          }
+        ],
+        "external": [
+          "electron"
+        ],
+        "sourcemap": true,
+        "generatePackageJson": true,
+        "esbuildOptions": {
+          "outExtension": {
+            ".js": ".js"
+          }
+        },
+        "outputFileName": "main.js",
+        "deleteOutputPath": false
       },
       "configurations": {
+        "development": {},
         "production": {
-          "optimization": true,
-          "extractLicenses": true,
-          "inspect": false,
-          "fileReplacements": [
-            {
-              "replace": "apps/minsky-electron/src/environments/environment.ts",
-              "with": "apps/minsky-electron/src/environments/environment.prod.ts"
-            }
-          ]
+          "minify": false,
+          "sourcemap": false
         }
-      }
+      },
+      "dependsOn": [
+        "build-preload"
+      ]
     },
     "serve": {
-      "executor": "nx-electron:execute",
+      "executor": "nx:run-commands",
+      "dependsOn": [
+        "build"
+      ],
       "options": {
-        "buildTarget": "minsky-electron:build"
-      }
-    },
-    "package": {
-      "executor": "nx-electron:package",
-      "options": {
-        "name": "minsky-electron",
-        "frontendProject": "minsky-web",
-        "outputPath": "dist/packages",
-        "prepackageOnly": true
-      }
-    },
-    "make": {
-      "executor": "nx-electron:make",
-      "options": {
-        "name": "minsky-electron",
-        "frontendProject": "minsky-web",
-        "outputPath": "dist/executables"
+        "command": "electron dist/apps/minsky-electron/main.js"
       }
     },
     "lint": {
@@ -62,14 +71,14 @@
       }
     },
     "test": {
-      "executor": "@nx/jest:jest",
-      "options": {
-        "jestConfig": "apps/minsky-electron/jest.config.ts",
-        "passWithNoTests": true
-      },
+      "executor": "nx:run-commands",
       "outputs": [
-        "{workspaceRoot}/coverage/apps/minsky-electron"
-      ]
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
+      "options": {
+        "command": "jest --passWithNoTests --forceExit",
+        "cwd": "{projectRoot}"
+      }
     },
     "compodoc": {
       "executor": "@twittwer/compodoc:compodoc",
@@ -83,6 +92,43 @@
           "exportFormat": "json"
         }
       }
+    },
+    "build-preload": {
+      "executor": "@nx/esbuild:esbuild",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "platform": "node",
+        "format": [
+          "cjs"
+        ],
+        "bundle": true,
+        "thirdParty": false,
+        "outputPath": "dist/apps/minsky-electron",
+        "main": "apps/minsky-electron/src/app/api/preload.ts",
+        "tsConfig": "apps/minsky-electron/tsconfig.app.json",
+        "external": [
+          "electron"
+        ],
+        "sourcemap": true,
+        "generatePackageJson": true,
+        "esbuildOptions": {
+          "outExtension": {
+            ".js": ".js"
+          }
+        },
+        "outputFileName": "preload.js",
+        "deleteOutputPath": false
+      },
+      "configurations": {
+        "development": {},
+        "production": {
+          "minify": false,
+          "sourcemap": false
+        }
+      },
+      "dependsOn": []
     }
   }
 }

@@ -45,7 +45,7 @@ function semVerLess(x: string, y: string): boolean {
     );
 }
 
-const backendAPI='https://minskybe-x7dj1.sevalla.app/api';
+const backendAPI='https://minsky-be.ravelation.net/api';
 // perform a call on the backend API, returning the JSON encoded result
 // options is passed to the constructor of a ClienRequest object https://www.electronjs.org/docs/latest/api/client-request#requestendchunk-encoding-callback
 async function callBackendAPI(options: string|Object, token: string) {
@@ -1247,7 +1247,7 @@ export class CommandsManager {
   }
 
   // handler for downloading Ravel and installing it
-  static downloadRavel(event,item,webContents,asset: DownloadDetails=null) {
+  static downloadRavel(event,item,webContents,frame,asset: DownloadDetails=null) {
     
     switch (process.platform) {
     case 'win32':
@@ -1315,7 +1315,7 @@ export class CommandsManager {
   }
 
   // handler for downloading Minsky
-  static downloadMinsky(event,item,webContents,asset: DownloadDetails=null) {
+  static downloadMinsky(event,item,webContents,webFrame,asset: DownloadDetails=null) {
     item.setSavePath(join(tmpdir(),item.getFilename()));
 
     let progress=new ProgressBar({text:"Downloading Ravel application",value: 0, indeterminate:false, closeOnComplete: true,});
@@ -1455,13 +1455,13 @@ export class CommandsManager {
     let state;
     switch (process.platform) {
     case 'win32':
-      state={system: 'windows', distro: '', version: '', arch:'', previous: ''};
+      state={system: 'windows', distro: '', version: '', arch:`${process.arch}`, previous: ''};
       break;
     case 'darwin':
       state={system: 'macos', distro: '', version: '', arch: `${process.arch}`, previous: ''};
       break;
     case 'linux': {
-      state={system: 'linux', distro: '', version: '',arch:'', previous: ''};
+      state={system: 'linux', distro: '', version: '',arch:`${process.arch}`, previous: ''};
       // figure out distro and version from /etc/os-release
       let aexec=promisify(exec);
       let osRelease='/etc/os-release';
@@ -1501,6 +1501,7 @@ export class CommandsManager {
       const installables=await window.webContents.executeJavaScript('document.getElementById("installables")?.innerText');
       if (installables) {
         let params=new URLSearchParams(installables);
+
         let minskyFile=params.get('minsky-asset');
         let ravelFile=params.get('ravel-asset');
         if (minskyFile && installCase===InstallCase.theLot) {

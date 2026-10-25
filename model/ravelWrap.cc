@@ -174,6 +174,8 @@ namespace minsky
   {
     const double invZ=1/zoomFactor();
     wrappedRavel.onMouseUp((xx-x())*invZ,(yy-y())*invZ);
+    if (db && m_ports[1]->wires().empty())
+      db.fullHypercube(wrappedRavel); // reduce slice labels according to slicer and caliper settings
     resortHandleIfDynamic();
     broadcastStateToLockGroup();
     return m_ports[1]->numWires(); // only reset if input port connected. Don't if sourced from database

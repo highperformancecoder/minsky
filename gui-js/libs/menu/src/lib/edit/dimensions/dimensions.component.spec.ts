@@ -8,7 +8,7 @@ describe('DimensionsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [DimensionsComponent],
+      imports: [DimensionsComponent],
     }).compileComponents();
   });
 

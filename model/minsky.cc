@@ -140,7 +140,6 @@ namespace minsky
     equations.clear();
     integrals.clear();
     variableValues.clear();
-    variablePane.update();
     maxValue.clear();
     PhillipsFlow::maxFlow.clear();
     PhillipsStock::maxStock.clear();
@@ -266,7 +265,10 @@ namespace minsky
                                  auto alreadyDefined = canvas.model->findAny
                                    (&GroupItems::items,
                                     [&v](const ItemPtr& j)
-                                    {return j.get()!=v && j->variableCast() &&  j->variableCast()->defined();});
+                                    {
+                                      auto jv=j->variableCast();
+                                      return jv && jv!=v && jv->valueId()==v->valueId() &&  jv->defined();
+                                    });
                                  if (v->isStock())
                                    {
                                      if (v->defined() && alreadyDefined && !alreadyDefinedMessageDisplayed)

@@ -28,7 +28,7 @@ export default class App {
   static application: Electron.App;
   static BrowserWindow;
   static directlyClose = false;
-  static cliArguments=[]; // first argument passed on command line
+  static cliArguments=[]; // positional arguments passed on command line
   
   private static onWindowAllClosed() {
       App.application.quit();
@@ -66,12 +66,12 @@ export default class App {
     await App.initMenu();
     App.loadMainWindow();
     backend('minsky.popFlags');
-    if (App.cliArguments.length>1) {
-      if (!isAbsolute(App.cliArguments[1]))
-        App.cliArguments[1]=join(initialWorkingDirectory,App.cliArguments[1]);
+    if (App.cliArguments.length>0) {
+      if (!isAbsolute(App.cliArguments[0]))
+        App.cliArguments[0]=join(initialWorkingDirectory,App.cliArguments[0]);
 	try
 	{
-          await CommandsManager.openNamedFile(App.cliArguments[1]);
+          await CommandsManager.openNamedFile(App.cliArguments[0]);
           BookmarkManager.updateBookmarkList();
 	}
 	catch (err) {
@@ -204,12 +204,21 @@ export default class App {
   }
 
   static main(app: Electron.App, browserWindow: typeof BrowserWindow) {
-
+    let setDefaultDisplayScale=true;
+    
     // when run from npm start, argv[0] is 'electron'
     if (process.argv[0].slice(-8)!=='electron')
+    {
+      const cliArgs=process.argv.slice(1);
+      let parsePositionalOnly=false;
       // process CLI options prior to running up any GUI
-      for (var arg in process.argv) {
-        switch(process.argv[arg]) {
+      for (const arg of cliArgs) {
+        if (parsePositionalOnly)
+        {
+          App.cliArguments.push(arg);
+          continue;
+        }
+        switch(arg) {
         case '--version': {
             let minskyVersion=backendSync("minsky.minskyVersion");
             if (minskyVersion===version)
@@ -224,13 +233,37 @@ export default class App {
             }
           }
           break;
+        case '--':
+          parsePositionalOnly=true;
+          break;
         default:
-          // pass argument on for an initial model load
-          if (process.argv[arg][0]!=='-')
-            App.cliArguments.push(process.argv[arg]);
+          if (arg.startsWith('--force-device-scale-factor')) {
+            setDefaultDisplayScale=false;
+            // TODO - how to scale and set the canvas for non-Windows platforms
+            // const splitAt=arg.indexOf('=');
+            // if (splitAt>0)
+            //   backendSync('minsky.fontScale', +arg.slice(splitAt+1));
+          }
+          if (arg.startsWith('--'))
+          {
+            // pass unknown command line flags through to Electron/Chromium
+            const flag=arg.replace(/^-+/, '');
+            if (flag.length>0)
+            {
+              const splitAt=flag.indexOf('=');
+              if (splitAt>=0)
+                app.commandLine.appendSwitch(flag.slice(0, splitAt), flag.slice(splitAt+1));
+              else
+                app.commandLine.appendSwitch(flag);
+            }
+          }
+          else if (arg[0]!=='-')
+            // pass argument on for an initial model load
+            App.cliArguments.push(arg);
           break;
         }
       }
+    }
 
     // we pass the Electron.App object and the
     // Electron.BrowserWindow into this function
@@ -239,18 +272,23 @@ export default class App {
     App.BrowserWindow = browserWindow;
     App.application = app;
 
-    App.application.commandLine.appendSwitch('disable-gpu');
     // Rendering was not working on some window's machines without disabling gpu
+    if (process.platform === 'win32') {
+      app.commandLine.appendSwitch('disable-gpu');
+      app.commandLine.appendSwitch('disable-direct-composition');
+    }
     App.application.commandLine.appendSwitch('high-dpi-support', '1');
     // This probably supports high-res fonts, but we don't know exactly what implications it has!
 
-    //This effects how display scaling is handled -  if set to 1, then it will ignore the scale factor (always set it to 1).
-    // Typically, effects are visible on display resolutions > 2MP. Electron seems to scale down its window
-    // when native display resolution is > 2MP by default. If we force to 1, it will not scale down
-    let displayScale=backendSync('minsky.canvas.scaleFactor');
-    App.application.commandLine.appendSwitch('force-device-scale-factor', displayScale.toString());
-    // invert the effect of display scaling on canvas fonts.
-    backendSync('minsky.fontScale', (1/displayScale));
+    if (setDefaultDisplayScale) {
+      //This effects how display scaling is handled -  if set to 1, then it will ignore the scale factor (always set it to 1).
+      // Typically, effects are visible on display resolutions > 2MP. Electron seems to scale down its window
+      // when native display resolution is > 2MP by default. If we force to 1, it will not scale down
+      let displayScale=backendSync('minsky.canvas.scaleFactor');
+      App.application.commandLine.appendSwitch('force-device-scale-factor', displayScale.toString());
+      // invert the effect of display scaling on canvas fonts.
+      backendSync('minsky.fontScale', (1/displayScale));
+    }
     loadResources();
     sanityCheck();
     
