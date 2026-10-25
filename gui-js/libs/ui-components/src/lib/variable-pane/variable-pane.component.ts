@@ -22,7 +22,6 @@ import { SvgCanvasComponent } from '../svg-canvas/svg-canvas.component';
 import { SvgCanvasHelper, SvgVariableTypes } from '../svg-canvas/constants/svg-constants';
 import { DataPoint } from '../svg-canvas/interfaces/datapoint';
 import { DragStartEvent } from '../svg-canvas/interfaces/dragstart-event';
-import { DragEndEvent } from '../svg-canvas/interfaces/dragend-event';
 
 @Component({
   selector: 'minsky-variable-pane',
