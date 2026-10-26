@@ -104,6 +104,10 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
     this.windowId = (await this.electronService.getCurrentWindow()).id;
 
     if(!this.canvasMode) {
+      this.electronService.on(events.GODLEY_POPUP_UNDO_REQUEST, async (e, payload) => {
+        await this.finishEditing();
+        await this.electronService.invoke(events.GODLEY_POPUP_UNDO, payload);
+      });
       this.electronService.on(events.GODLEY_POPUP_REFRESH, async e => {
         await this.hardRefresh();
       });
@@ -219,6 +223,7 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
 
   async onRowAdd(i) {
     await this.finishEditing();
+    await this.namedItemSubCommand.pushHistory();
     this.godleyIcon.table.insertRow(i+3);
     await this.hardRefresh();
   }
@@ -231,24 +236,28 @@ export class GodleyWidgetViewComponent implements OnDestroy, OnInit, AfterViewIn
 
   async onRowMove(i, n) {
     await this.finishEditing();
+    await this.namedItemSubCommand.pushHistory();
     this.godleyIcon.table.moveRow(i+2,n);
     await this.hardRefresh();
   }
 
   async onColumnAdd(i) {
     await this.finishEditing();
+    await this.namedItemSubCommand.pushHistory();
     this.godleyIcon.table.insertCol(i+2);
     await this.hardRefresh();
   }
 
   async onColumnDelete(i) {
     await this.finishEditing();
+    await this.namedItemSubCommand.pushHistory();
     this.godleyIcon.table.deleteCol(i+2);
     await this.hardRefresh();
   }
 
   async onColumnMove(i, n) {
     await this.finishEditing();
+    await this.namedItemSubCommand.pushHistory();
     this.godleyIcon.table.moveCol(i+1,n);
     await this.hardRefresh();
   }

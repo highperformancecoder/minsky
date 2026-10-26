@@ -5,24 +5,22 @@ import { EditVariableDialog, EditVariableDialogData } from './dialogs/editvariab
 import { MatDialog } from '@angular/material/dialog';
 import flatMap from 'lodash/flatMap';
 import { CommonModule, formatNumber } from '@angular/common';
-import { MatFormField } from '@angular/material/input';
 import { LatexDirective } from '../directives/latex.directive';
 import { DragdropDirective } from './directives/dragdrop.directive';
 import { D3LineComponent } from './components/d3line.component';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { FormsModule, } from '@angular/forms';
 import { ElementLabelComponent } from './components/elementlabel.component';
-import { NgxGraphModule } from '@swimlane/ngx-graph';
 import { SvgCanvasHelper } from './constants/svg-constants';
 import { DragStartEvent } from './interfaces/dragstart-event';
 import { DragEndEvent } from './interfaces/dragend-event';
-import { Connector } from './interfaces/connector';
+import { ConnectorDirective } from './directives/connector.directive';
 
 @Component({
   selector: 'svg-canvas',
   templateUrl: './svg-canvas.component.html',
   styleUrls: ['./svg-canvas.component.css'],
   standalone: true,
-  imports: [CommonModule, MatFormField, LatexDirective, DragdropDirective, D3LineComponent, FormsModule, ReactiveFormsModule, ElementLabelComponent, NgxGraphModule]
+  imports: [CommonModule, LatexDirective, DragdropDirective, ConnectorDirective, D3LineComponent, FormsModule, ElementLabelComponent]
 })
 export class SvgCanvasComponent implements AfterViewInit {
   @HostListener('window:resize', ['$event'])
@@ -60,6 +58,9 @@ export class SvgCanvasComponent implements AfterViewInit {
   @Output()
   dragEnded = new EventEmitter<DragEndEvent>();
 
+  @Output()
+  geometryChanged = new EventEmitter<void>();
+  
   rectCollideForce;
 
   xScale;
@@ -172,7 +173,20 @@ export class SvgCanvasComponent implements AfterViewInit {
     .force('anchory', d3.forceY().y((d: DataPoint) => d.anchory || d.y).strength((d: DataPoint) => d.anchory ? 15 : 0))
   }
 
+  private dragHandlers = new WeakMap<object, any>();
+
+  // return a stable handler object per datum, so that change detection doesn't
+  // rebind DragdropDirective.dragfunctions (and reattach d3.drag) every cycle
   dragfunctions(d) {
+    let handlers = this.dragHandlers.get(d);
+    if(!handlers) {
+      handlers = this.createDragFunctions(d);
+      this.dragHandlers.set(d, handlers);
+    }
+    return handlers;
+  }
+
+  private createDragFunctions(d) {
     return {
       dragstarted: (e: any) => {
         this.dragStarted.emit({event: e, data: d});
@@ -188,7 +202,7 @@ export class SvgCanvasComponent implements AfterViewInit {
         this.draggedElement = d;
         if(this.rotationMouseX) this.rotationMouseX = this.mouseX;
 
-        if (!d3.event.active) this.simulation?.alphaTarget(.03).restart();
+        if (!e.active) this.simulation?.alphaTarget(.03).restart();
         if(this.parkedData.includes(d)) {
           const clone = SvgCanvasHelper.createData(d);
           this.parkedData.push(clone);
@@ -197,36 +211,36 @@ export class SvgCanvasComponent implements AfterViewInit {
 
         // this.rectCollideForce.sizeModifier(1.1);
       },
-      dragged: () => {
+      dragged: (e: any) => {
         if(this.clickedConnector || this.layoutType !== 'spread') return;
 
         const parked = this.parkedData.includes(d);
         
         if(parked) {
-          d.fx = d3.event.x;
-          d.fy = d3.event.y;
+          d.fx = e.x;
+          d.fy = e.y;
 
           d.x = d.fx;
           d.y = d.fy;
         } else {
           if(this.rotationMouseX) {
             if(d.startRotation === undefined) d.startRotation = d.rotation;
-            d.rotation = this.posMod(d.startRotation + (d3.event.x - this.rotationMouseX) / 100, Math.PI * 2);
+            d.rotation = this.posMod(d.startRotation + (e.x - this.rotationMouseX) / 100, Math.PI * 2);
             const divider = Math.PI / 4;
             const treshold = Math.PI / 32;
             const diff = this.posMod(d.rotation, divider);
             if(diff < treshold) d.rotation -= diff;
             else if(diff > (divider - treshold)) d.rotation += divider - diff;
           } else {
-            d.fx = this.xScale.invert(d3.event.x);
-            d.fy = this.yScale.invert(d3.event.y);
+            d.fx = this.xScale.invert(e.x);
+            d.fy = this.yScale.invert(e.y);
           }
         }
         
         if(parked && d.y > 80 + d.dimensions.boundingbox[1] + d.dimensions.boundingbox[3]) {
           this.unparkedData.push(d);
-          d.fx = this.xScale.invert(d3.event.x);
-          d.fy = this.yScale.invert(d3.event.y);
+          d.fx = this.xScale.invert(e.x);
+          d.fy = this.yScale.invert(e.y);
           this.parkedData = this.parkedData.filter(pd => pd !== d);
           this.simulation?.nodes(this.unparkedData);
         }
@@ -239,7 +253,7 @@ export class SvgCanvasComponent implements AfterViewInit {
 
         this.draggedElement = null;
 
-        if (!d3.event.active) this.simulation?.alphaTarget(.03);
+        if (!e.active) this.simulation?.alphaTarget(.03);
 
         // remove if dragged onto the toolbar
         this.parkedData = this.parkedData.filter(pd => pd !== d);
@@ -491,6 +505,8 @@ export class SvgCanvasComponent implements AfterViewInit {
       dialogRef.afterClosed().subscribe((result: EditVariableDialogData) => {
         if(result) {
           d.symbol = result.symbol;
+          SvgCanvasHelper.updateGeometry(d);
+          this.geometryChanged.emit();
           d.name = result.name;
           d.description = result.description;
           if(['constant', 'stock'].includes(d.type.name)) {

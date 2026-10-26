@@ -765,7 +765,7 @@ export class GodleyIcon extends Item {
   async toggleDisplayValues(): Promise<void> {return this.$callMethod('toggleDisplayValues');}
   async toggleEditorMode(): Promise<void> {return this.$callMethod('toggleEditorMode');}
   async toggleVariableDisplay(): Promise<void> {return this.$callMethod('toggleVariableDisplay');}
-  async update(): Promise<void> {return this.$callMethod('update');}
+  async update(...args: any[]): Promise<void> {return this.$callMethod('update',...args);}
   async valueId(a1: string): Promise<string> {return this.$callMethod('valueId',a1);}
   async variableDisplay(): Promise<boolean> {return this.$callMethod('variableDisplay');}
   async wiresAttached(): Promise<boolean> {return this.$callMethod('wiresAttached');}

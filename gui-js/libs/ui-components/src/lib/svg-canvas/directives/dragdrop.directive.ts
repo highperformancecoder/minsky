@@ -10,9 +10,9 @@ export class DragdropDirective {
       let obj = d3.select(this.el.nativeElement);
 
         obj.call(<any>d3.drag()
-            .on('start', (d, e) => df.dragstarted(d))
-            .on('drag', (d, e) => df.dragged(d))
-            .on('end', (d, e) => df.dragended(d)));
+            .on('start', (event) => df.dragstarted(event))
+            .on('drag', (event) => df.dragged(event))
+            .on('end', (event) => df.dragended(event)));
     }
 
     constructor(private el: ElementRef<HTMLElement>) { 

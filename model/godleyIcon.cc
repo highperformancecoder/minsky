@@ -220,7 +220,14 @@ namespace minsky
 
   void GodleyIcon::setCell(int row, int col, const string& newVal) 
   {
+    setCellImpl(row, col, newVal, true);
+  }
+
+  void GodleyIcon::setCellImpl(int row, int col, const string& newVal,
+                               bool recordHistory)
+  {
     if (!table.cellInTable(row,col)) return;
+    if (recordHistory) popup.pushHistory();
     // if this operation is clearing an initial condition cell, set it to 0
     string& c=table.cell(row,col);
     if (newVal.empty() && !c.empty() && table.initialConditionRow(row))
@@ -238,6 +245,7 @@ namespace minsky
   {
     if (row>0 && row<=table.rows())
       {
+        popup.pushHistory();
         table.deleteRow(row-1);
         // if shared column data is deleted, remove it from the other tables too
         for (size_t col=1; col<table.cols(); ++col)
@@ -250,6 +258,7 @@ namespace minsky
   void GodleyIcon::moveCell(const MoveCellArgs& args)
   {
     if (!table.cellInTable(args.srcRow, args.srcCol) || !table.cellInTable(args.destRow, args.destCol)) return;
+    popup.pushHistory();
     if (args.srcCol!=args.destCol) // if moving between columns, we can delete and
       // add, which ensures any linked columns are
       // correctly updated
@@ -257,8 +266,8 @@ namespace minsky
         // create a copy here, as setCell may resize the array, changing 
         // what the reference referred to.
         const string oldVal=table.cell(args.srcRow, args.srcCol);
-        setCell(args.destRow, args.destCol, oldVal);
-        setCell(args.srcRow, args.srcCol, "");
+        setCellImpl(args.destRow, args.destCol, oldVal, false);
+        setCellImpl(args.srcRow, args.srcCol, "", false);
       }
     else // within a column, just move the data without affecting any linked column
       {
@@ -298,7 +307,7 @@ namespace minsky
     return r;
   }
   
-  void GodleyIcon::update()
+  void GodleyIcon::update(bool preserveTable)
   {
     updateVars(m_stockVars, table.getColumnVariables(), VariableType::stock);
     updateVars(m_flowVars, table.getVariables(), VariableType::flow);
@@ -326,16 +335,16 @@ namespace minsky
                       fc1.coef*=fc.coef;
                       v.init(fc1.str());	
                     }       
-                v.godleyOverridden=true;
               }
+            else if (preserveTable)
+              v.init("");
             else
               { 
                 // populate cell with current variable's initial value
                 const FlowCoef fc(v.init());   
                 table.cell(r,c)=fc.str();
-                v.godleyOverridden=true;
               }
-
+            v.godleyOverridden=true;
           }
 
     if (m_variableDisplay)

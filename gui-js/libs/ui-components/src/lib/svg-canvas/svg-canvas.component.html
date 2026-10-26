@@ -1,5 +1,6 @@
 <svg class="mainsvg" [attr.height]="height" [attr.width]="width">
-    <g d3line *ngIf="lineend" class="connection" [start]="scaleAdjust(getConnectorPos(clickedConnector))" [end]="lineend"></g>
+    <g d3line *ngIf="lineend" class="connection"
+    [start]="scaleAdjust(getConnectorPos(clickedConnector))" [end]="lineend"></g>
 
     <g *ngFor="let l of links">
         <g d3line *ngIf="!l.in.data.hidden && !l.out.data.hidden" class="connection" [start]="scaleAdjust(getConnectorPos(l.in))" [end]="scaleAdjust(getConnectorPos(l.out))">

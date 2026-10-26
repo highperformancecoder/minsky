@@ -471,7 +471,7 @@ $(DYNAMIC_LIB_DIR)/%: $(BINDIR)/%
 # serialise this rule to rate limit connections to Sectigo timestamper
 	flock sign-lock sign.sh $@
 
-gui-js/build/minskyRESTService.node: $(DLLS:%=$(DYNAMIC_LIB_DIR)/%)
+gui-js/build/minskyRESTService.node:| $(DLLS:%=$(DYNAMIC_LIB_DIR)/%)
 endif
 
 # N-API node embedded RESTService
