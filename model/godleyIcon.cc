@@ -227,7 +227,7 @@ namespace minsky
                                bool recordHistory)
   {
     if (!table.cellInTable(row,col)) return;
-    if (recordHistory) popup.pushHistory();
+    if (recordHistory) editor.pushHistory();
     // if this operation is clearing an initial condition cell, set it to 0
     string& c=table.cell(row,col);
     if (newVal.empty() && !c.empty() && table.initialConditionRow(row))
@@ -245,7 +245,7 @@ namespace minsky
   {
     if (row>0 && row<=table.rows())
       {
-        popup.pushHistory();
+        editor.pushHistory();
         table.deleteRow(row-1);
         // if shared column data is deleted, remove it from the other tables too
         for (size_t col=1; col<table.cols(); ++col)
@@ -258,7 +258,7 @@ namespace minsky
   void GodleyIcon::moveCell(const MoveCellArgs& args)
   {
     if (!table.cellInTable(args.srcRow, args.srcCol) || !table.cellInTable(args.destRow, args.destCol)) return;
-    popup.pushHistory();
+    editor.pushHistory();
     if (args.srcCol!=args.destCol) // if moving between columns, we can delete and
       // add, which ensures any linked columns are
       // correctly updated

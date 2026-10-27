@@ -525,7 +525,7 @@ $(EXES):
 tests: $(EXES)
 	cd test; $(MAKE) $(MAKEOVERRIDES) CPLUSPLUS="$(CPLUSPLUS)"
 
-BASIC_CLEAN=rm -rf *.o *~ "\#*\#" core *.d *.cd *.rcd *.tcd *.xcd *.gcda *.gcno *.so *.dll *.dylib
+BASIC_CLEAN=rm -rf *.o *~ "\#*\#" core *.d *.cd *.rcd *.tcd *.xcd *.gcda *.gcno *.so *.dll *.dylib *.a
 
 clean:
 	-$(BASIC_CLEAN) minsky.xsd

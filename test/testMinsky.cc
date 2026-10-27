@@ -969,13 +969,13 @@ TEST(TensorOps, evalOpEvaluate)
       g->table.cell(2,1)="flow";
       model->addItem(VariablePtr(VariableBase::flow,"flow"));
       g->update();
-      g->popup.pushHistory();
+      g->editor.pushHistory();
 
       g->moveCell({2,1,2,2});
       EXPECT_EQ("",g->table.cell(2,1));
       EXPECT_EQ("flow",g->table.cell(2,2));
 
-      g->popup.undo(1);
+      g->editor.undo(1);
       EXPECT_EQ("flow",g->table.cell(2,1));
       EXPECT_EQ("",g->table.cell(2,2));
     }
