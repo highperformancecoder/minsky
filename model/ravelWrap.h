@@ -21,12 +21,13 @@
 #define RAVELWRAP_H
 
 #include "operation.h"
-#include "cairoRenderer.h"
+#include "capiRenderer.h"
 #include "dynamicRavelCAPI.h"
 #include "hypercube.h"
 #include "handleLockInfo.h"
 #include "renderNativeWindow.h"
 #include "SVGItem.h"
+#include "SVGItem.cd"
 
 namespace minsky 
 {
@@ -40,7 +41,7 @@ namespace minsky
     float width, height, scale=1;
     float localX(float x) const;
     float localY(float y) const;
-    bool redraw(int x0, int y0, int width, int height) override;
+    bool redraw(const mansoura::IMansoura& cairoShim, int x0, int y0, int width, int height) override;
     CLASSDESC_ACCESS(RavelPopup);
   public:
     RavelPopup(Ravel& ravel): ravel(ravel) {}
@@ -84,7 +85,7 @@ namespace minsky
     ravel::Op::ReductionOp m_nextReduction=ravel::Op::sum;
 
   public:
-    static SVGRenderer svgRenderer; ///< SVG icon to display when not in editor mode
+    static mansoura::SVGRenderer svgRenderer; ///< SVG icon to display when not in editor mode
     RavelPopup popup; ///< popup Ravel control window
     bool flipped=false;
     ravelCAPI::Database db; ///< backing database
@@ -110,7 +111,7 @@ namespace minsky
     void leaveLockGroup();
     void broadcastStateToLockGroup() const;
     
-    void draw(const ICairoShim& cairoShim) const override;
+    void draw(const mansoura::IMansoura& cairoShim) const override;
     void resize(const LassoBox&) override;
     bool inItem(float x, float y) const override;
     void onMouseDown(float x, float y) override;

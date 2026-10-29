@@ -24,6 +24,7 @@
 #include "itemT.rcd"
 #include "operation.rcd"
 #include "operationType.rcd"
+#include "IMansoura.cd"
 #include "minsky_epilogue.h"
 
 template <minsky::OperationType::Type T>

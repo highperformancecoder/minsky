@@ -24,15 +24,13 @@
 #include "operation.h"
 #include "autoLayout.h"
 #include "equations.h"
-#include <cairo_base.h>
-#include "../engine/cairoShimCairo.h"
 #include "group.rcd"
 #include "itemT.rcd"
 #include "bookmark.rcd"
 #include "progress.h"
 #include "minsky_epilogue.h"
 using namespace std;
-using namespace ecolab::cairo;
+using namespace mansoura;
 
 // size of the top and bottom margins of the group icon
 static const int topMargin=10;
@@ -927,7 +925,7 @@ namespace minsky
     return ClickType::outside;
   }
 
-  void Group::draw(const ICairoShim& cairoShim) const
+  void Group::draw(const mansoura::IMansoura& cairoShim) const
   {
     auto [angle,flipped]=rotationAsRadians();
 
@@ -951,10 +949,7 @@ namespace minsky
     // draw default group icon
 
     // display I/O region in grey
-    // drawIORegion needs cairo_t* for now
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    cairo_t* cairo = shimImpl._internalGetCairoContext();
-    drawIORegion(cairo);
+    drawIORegion(cairoShim);
 
     {
       cairoShim.save();
@@ -985,30 +980,29 @@ namespace minsky
                   cairoShim.rotate(M_PI);  // rotate plot to keep it right way up.
                 }
               // propagate plot type to underling ecolab::Plot
-              auto& pt=const_cast<Plot*>(static_cast<const Plot*>(displayPlot.get()))->plotType;
+              auto& pt=const_cast<mansoura::Plot*>(static_cast<const mansoura::Plot*>(displayPlot.get()))->plotType;
               switch (displayPlot->plotType)
                 {
-                case PlotWidget::line: pt=Plot::line; break;
-                case PlotWidget::bar:  pt=Plot::bar;  break;
+                case PlotWidget::line: 
+                case PlotWidget::bar:
+                  pt=displayPlot->plotType;  break;
                 default: break;
                 }
-              // Plot::draw needs cairo_t*
-              displayPlot->Plot::draw(cairo, width, height);
+              displayPlot->Plot::draw(cairoShim, width, height);
               cairoShim.restore();
             }
           else
             {
               cairoShim.rectangle(0, 0,width, height);
               cairoShim.clip();
-              // Render SVG using ICairoShim abstraction
+              // Render SVG using mansoura::IMansoura abstraction
               cairoShim.renderSVG(svgRenderer, width, height);
             }
         }
       cairoShim.restore();
     }
 
-    // drawEdgeVariables needs cairo_t* for now
-    drawEdgeVariables(cairo);
+    drawEdgeVariables(cairoShim);
 
 
     // display text label
@@ -1082,7 +1076,7 @@ namespace minsky
       }
   }
 
-  void Group::draw1edge(const vector<VariablePtr>& vars, cairo_t* cairo, 
+  void Group::draw1edge(const vector<VariablePtr>& vars, const IMansoura& cairoShim, 
                         float xEdge) const
   {
     layoutEdgeVariables(vars, xEdge, this, rotation());
@@ -1099,14 +1093,11 @@ namespace minsky
         auto t = v->bb.top() * z, b = v->bb.bottom() * z;
         if (i > 0) yOff = i % 2 ? top - b : bottom - t;
         
-        const cairo::CairoSave cs(cairo);
-        cairo_translate(cairo,xEdge,yOff);
+        const PreserveContext cs(cairoShim);
+        cairoShim.translate(xEdge,yOff);
         // cairo context is already rotated, so antirotate
-        cairo_rotate(cairo,-angle);
-        {
-          CairoShimCairo shim(cairo);
-          v->draw(shim);
-        }
+        cairoShim.rotate(-angle);
+        v->draw(cairoShim);
 
         if (i == 0)
           {
@@ -1120,13 +1111,13 @@ namespace minsky
       }
   }
 
-  void Group::drawEdgeVariables(cairo_t* cairo) const
+  void Group::drawEdgeVariables(const IMansoura& cairoShim) const
   {
     float left, right; margins(left,right);    
-    const cairo::CairoSave cs(cairo);
+    const PreserveContext cs(cairoShim);
     const float z=zoomFactor();
-    draw1edge(inVariables, cairo, -0.5*(iWidth()*z-left));
-    draw1edge(outVariables, cairo, 0.5*(iWidth()*z-right));
+    draw1edge(inVariables, cairoShim, -0.5*(iWidth()*z-left));
+    draw1edge(outVariables, cairoShim, 0.5*(iWidth()*z-right));
   }
 
   namespace
@@ -1149,50 +1140,50 @@ namespace minsky
   }
     
   // draw notches in the I/O region to indicate docking capability
-  void Group::drawIORegion(cairo_t* cairo) const
+  void Group::drawIORegion(const IMansoura& cairoShim) const
   {
-    const cairo::CairoSave cs(cairo);
+    const PreserveContext cs(cairoShim);
     float left, right; 
     margins(left,right);
     const float z=zoomFactor();
     float y=notchY(inVariables), dy=topMargin*edgeScale();
-    cairo_set_source_rgba(cairo,0,1,1,0.5);
+    cairoShim.setSourceRGBA(0,1,1,0.5);
     const float w=0.5*z*iWidth(), h=0.5*z*iHeight();
     
-    cairo_move_to(cairo,-w,-h);
+    cairoShim.moveTo(-w,-h);
     // create notch in input region
-    cairo_line_to(cairo,-w,y-dy);
-    cairo_line_to(cairo,left-w-4*z,y-dy);
-    cairo_line_to(cairo,left-w,y);
-    cairo_line_to(cairo,left-w-4*z,y+dy);
-    cairo_line_to(cairo,-w,y+dy);
-    cairo_line_to(cairo,-w,h);
-    cairo_line_to(cairo,left-w,h);
-    cairo_line_to(cairo,left-w,-h);
-    cairo_close_path(cairo);
-    cairo_fill(cairo);
+    cairoShim.lineTo(-w,y-dy);
+    cairoShim.lineTo(left-w-4*z,y-dy);
+    cairoShim.lineTo(left-w,y);
+    cairoShim.lineTo(left-w-4*z,y+dy);
+    cairoShim.lineTo(-w,y+dy);
+    cairoShim.lineTo(-w,h);
+    cairoShim.lineTo(left-w,h);
+    cairoShim.lineTo(left-w,-h);
+    cairoShim.closePath();
+    cairoShim.fill();
 
     y=notchY(outVariables);
-    cairo_move_to(cairo,w,-h);
+    cairoShim.moveTo(w,-h);
     // create notch in output region
-    cairo_line_to(cairo,w,y-dy);
-    cairo_line_to(cairo,w-right-2*z,y-dy);
-    cairo_line_to(cairo,w-right+2*z,y);
-    cairo_line_to(cairo,w-right-2*z,y+dy);
-    cairo_line_to(cairo,w,y+dy);
-    cairo_line_to(cairo,w,h);
-    cairo_line_to(cairo,w-right,h);
-    cairo_line_to(cairo,w-right,-h);
-    cairo_close_path(cairo);
-    cairo_fill(cairo);
+    cairoShim.lineTo(w,y-dy);
+    cairoShim.lineTo(w-right-2*z,y-dy);
+    cairoShim.lineTo(w-right+2*z,y);
+    cairoShim.lineTo(w-right-2*z,y+dy);
+    cairoShim.lineTo(w,y+dy);
+    cairoShim.lineTo(w,h);
+    cairoShim.lineTo(w-right,h);
+    cairoShim.lineTo(w-right,-h);
+    cairoShim.closePath();
+    cairoShim.fill();
     
     // draw top margin. for feature 88
-    cairo_rectangle(cairo,-w,-h,2*w,-topMargin*z);
-    cairo_fill(cairo);    
+    cairoShim.rectangle(-w,-h,2*w,-topMargin*z);
+    cairoShim.fill();
     
     // draw bottom margin. for feature 88
-    cairo_rectangle(cairo,-w,h,2*w,topMargin*z);
-    cairo_fill(cairo);    
+    cairoShim.rectangle(-w,h,2*w,topMargin*z);
+    cairoShim.fill();
   }
 
 

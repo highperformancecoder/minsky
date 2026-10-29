@@ -22,7 +22,9 @@
 #include "renderNativeWindow.h"
 #include "classdesc_access.h"
 #include "latexMarkup.h"
-#include "plot.h"
+#include "mansouraPlot.h"
+#include "mansouraPlot.cd"
+#include "mansouraPlot.xcd"
 #include "variable.h"
 #include "variableValue.h"
 #include "zoom.h"
@@ -39,7 +41,7 @@ namespace minsky
   using namespace ecolab;
 
   struct PlotWidgetSuper: public ItemT<PlotWidget>,
-                          public ecolab::Plot, public RenderNativeWindow {};
+                          public mansoura::Plot, public RenderNativeWindow {};
 
   /// a container item for a plot widget
   class PlotWidget: public PlotWidgetSuper
@@ -61,8 +63,9 @@ namespace minsky
     friend struct PlotItem;
 
     bool xIsSecsSinceEpoch=false;
-    bool redraw(int, int, int, int) override;
+    bool redraw(const mansoura::IMansoura&, int, int, int, int) override;
     using Plot::redraw;
+    void redrawWithBounds(const mansoura::IMansoura& shim) override {redraw(shim,0,0,500,500);}
 
     // shadow labels, so we can interpret as LaTeX code rather than Pango markup
     std::string m_xlabel, m_ylabel, m_y1label;
@@ -78,11 +81,9 @@ namespace minsky
 
     bool clearPensOnLabelling=false;
     
-    void draw(cairo_t* cairoShim) const;
   public:
     using Item::x;
     using Item::y;
-    using RenderNativeWindow::surface;
     using RenderNativeWindow::requestRedraw;
     using RenderNativeWindow::renderToSVG;
 
@@ -139,17 +140,17 @@ namespace minsky
     /// shadowed label commands to allow latex intepretation
     std::string const& xlabel() const {return m_xlabel;}
     std::string const& xlabel(const std::string& x) {
-      ecolab::Plot::xlabel=latexToPangoNonItalicised(x);
+      mansoura::Plot::xlabel=latexToPangoNonItalicised(x);
       return m_xlabel=x;
     }
     std::string const& ylabel() const {return m_ylabel;}
     std::string const& ylabel(const std::string& x) {
-      ecolab::Plot::ylabel=latexToPangoNonItalicised(x);
+      mansoura::Plot::ylabel=latexToPangoNonItalicised(x);
       return m_ylabel=x;
     }
     std::string const& y1label() const {return m_y1label;}
     std::string const& y1label(const std::string& x) {
-      ecolab::Plot::y1label=latexToPangoNonItalicised(x);
+      mansoura::Plot::y1label=latexToPangoNonItalicised(x);
       return m_y1label=x;
     }
 
@@ -166,10 +167,9 @@ namespace minsky
     /// connect variable \a var to port \a port. 
     void connectVar(const std::shared_ptr<VariableValue>& var, unsigned port);
     void disconnectAllVars();
-    using ecolab::Plot::draw;
-    void draw(const ICairoShim& cairoShim) const override;
+    using mansoura::Plot::draw;
+    void draw(const mansoura::IMansoura& cairoShim) const override;
     void requestRedraw(); ///< redraw plot using current data to all open windows
-    void redrawWithBounds() override {redraw(0,0,500,500);}    
     
     /// add this as a display plot to its group
     void makeDisplayPlot();
@@ -203,7 +203,7 @@ namespace minsky
 
     /// export the plotted data as a CSV file
     // implemented as a single argument function here for exposure to TCL
-    void exportAsCSV(const string& filename) {ecolab::Plot::exportAsCSV(filename);}
+    void exportAsCSV(const string& filename) {mansoura::Plot::exportAsCSV(filename);}
 
     void destroyFrame() override {RenderNativeWindow::destroyFrame();}
 
@@ -219,8 +219,8 @@ namespace minsky
 #pragma omit unpack PlotItem
 #endif
 
-inline void xml_pack(classdesc::xml_pack_t&,const ecolab::string&,ecolab::Plot&) {}
-inline void xml_unpack(classdesc::xml_unpack_t&,const ecolab::string&,ecolab::Plot&) {}
+//inline void xml_pack(classdesc::xml_pack_t&,const ecolab::string&,ecolab::Plot&) {}
+//inline void xml_unpack(classdesc::xml_unpack_t&,const ecolab::string&,ecolab::Plot&) {}
 
 #include "plotWidget.cd"
 #include "plotWidget.xcd"

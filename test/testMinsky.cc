@@ -17,7 +17,7 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "minsky.h"
-#include "godleyTableWindow.h"
+#include "godleyTableEditor.h"
 #include "matrix.h"
 #include "minsky_epilogue.h"
 #undef True
@@ -969,13 +969,13 @@ TEST(TensorOps, evalOpEvaluate)
       g->table.cell(2,1)="flow";
       model->addItem(VariablePtr(VariableBase::flow,"flow"));
       g->update();
-      g->popup.pushHistory();
+      g->editor.pushHistory();
 
       g->moveCell({2,1,2,2});
       EXPECT_EQ("",g->table.cell(2,1));
       EXPECT_EQ("flow",g->table.cell(2,2));
 
-      g->popup.undo(1);
+      g->editor.undo(1);
       EXPECT_EQ("flow",g->table.cell(2,1));
       EXPECT_EQ("",g->table.cell(2,2));
     }

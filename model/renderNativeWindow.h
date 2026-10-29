@@ -22,8 +22,8 @@
 
 #include "eventInterface.h"
 
-#include <cairoSurfaceImage.h>
-#include <plot.h>
+#include <IMansoura.h>
+#include <mansouraPlot.h>
 
 #include <mutex>
 
@@ -41,10 +41,10 @@ namespace classdesc
 namespace minsky
 {  
   class WindowInformation;
-  class RenderNativeWindow : public ecolab::CairoSurface, public EventInterface
+  class RenderNativeWindow : public EventInterface
   {
   public:
-    static ecolab::cairo::Colour backgroundColour;
+    static mansoura::Colour backgroundColour;
 
     struct RenderFrameArgs
     {
@@ -59,25 +59,49 @@ namespace minsky
     
     const RenderFrameArgs& frameArgs() const {return m_frameArgs;}
     
-    ~RenderNativeWindow() override;
+    virtual ~RenderNativeWindow();
     /// perform any initialisation of any subclasses of this 
     virtual void init() {};
     void renderFrame(const RenderFrameArgs& args);
     void destroyFrame();
     void draw();
     void requestRedraw();
+
+    /// @{ export the window's contents to a file
+    void renderToPS(const std::string& filename) {renderTo(mansoura::ExportFormat::PS,filename);}
+    void renderToPDF(const std::string& filename) {renderTo(mansoura::ExportFormat::PDF,filename);}
+    void renderToSVG(const std::string& filename) {renderTo(mansoura::ExportFormat::SVG,filename);}
+    void renderToPNG(const std::string& filename) {renderTo(mansoura::ExportFormat::PNG,filename);}
+    /// render to an EMF file. Windows only.
+    void renderToEMF(const std::string& filename) {renderTo(mansoura::ExportFormat::EMF,filename);}
+    /// @}
+    /// increase output resolution of pixmap surfaces by this factor
+    double resolutionScaleFactor() const {return m_resolutionScaleFactor;}
+    double resolutionScaleFactor(double rsf) {return m_resolutionScaleFactor=rsf;}
+    /// arrange a callback with the drawing time in seconds
+    virtual void reportDrawTime(double) {}
+
+
     // implemented as a free function to avoid Classdesc exposing this to Typescript
     friend void macOSXRedraw(RenderNativeWindow&,std::recursive_mutex&);
     // do not clobber winInfoPtr on load of model
-    RenderNativeWindow& operator=(const RenderNativeWindow& x) {ecolab::CairoSurface::operator=(x); return *this;}
+    RenderNativeWindow& operator=(const RenderNativeWindow& x) {m_resolutionScaleFactor=x.m_resolutionScaleFactor; return *this;}
     RenderNativeWindow()=default;
     RenderNativeWindow(const RenderNativeWindow&)=default;
     static double scaleFactor();
     /// return whether this window has scrollbars (needed for MacOSX).
     virtual bool hasScrollBars() const {return false;}
     
+  protected:
+    /// draw the window's contents into \a cairoShim. x0,y0,width,height give the region to redraw
+    /// @return true if something drawn
+    virtual bool redraw(const mansoura::IMansoura& cairoShim, int x0, int y0, int width, int height)=0;
+    /// draw the entire contents of the window, unclipped
+    virtual void redrawWithBounds(const mansoura::IMansoura& cairoShim) {redraw(cairoShim,-1e6,-1e6,2e6,2e6);}
+    void renderTo(mansoura::ExportFormat format, const std::string& filename);
   private:
     CLASSDESC_ACCESS(RenderNativeWindow); 
+    double m_resolutionScaleFactor=1.0;
     classdesc::Exclude<std::shared_ptr<WindowInformation>> winInfoPtr;
     RenderFrameArgs m_frameArgs;
 

@@ -25,17 +25,15 @@
 #include "selection.h"
 #include "lasso.h"
 #include "operation.h"
-#include "pango.h"
 #include "plotWidget.h"
 #include "SVGItem.h"
-#include "../engine/cairoShimCairo.h"
 #include "wire.rcd"
 #include "minsky_epilogue.h"
 #include  <random>
 #include  <iterator>
 
 using namespace std;
-using ecolab::cairo::CairoSave;
+using namespace mansoura;
 
 namespace minsky
 {
@@ -344,31 +342,7 @@ namespace
 
 }
 
-  void Wire::storeCairoCoords(cairo_t* cairo) const
-  {
-    cairoCoords.clear(); 
-    cairo_path_t *path;
-    cairo_path_data_t *data;
-         
-    path = cairo_copy_path_flat(cairo);
-         
-    for (int j=0; j < path->num_data; j += path->data[j].header.length) {
-      data = &path->data[j];
-      switch (data->header.type) {
-      case CAIRO_PATH_MOVE_TO:
-        break;
-      case CAIRO_PATH_LINE_TO:
-        cairoCoords.push_back(make_pair(data[1].point.x,data[1].point.y));
-        break;
-      case CAIRO_PATH_CURVE_TO:
-      case CAIRO_PATH_CLOSE_PATH:
-        break;
-      }
-    }
-    cairo_path_destroy (path);              
-  }
-  
-  void Wire::draw(cairo_t* cairo, bool reverseArrow) const
+  void Wire::draw(const IMansoura& cairo, bool reverseArrow) const
   {
     auto coords=this->coords();
     if (coords.size()<4 || !visible()) return;
@@ -376,8 +350,8 @@ namespace
     float angle, lastx, lasty;
     if (coords.size()==4)
       {
-        cairo_move_to(cairo,coords[0],coords[1]);
-        cairo_line_to(cairo, coords[2], coords[3]);
+        cairo.moveTo(coords[0],coords[1]);
+        cairo.lineTo(coords[2], coords[3]);
         if (reverseArrow)
           {
             angle=atan2(coords[3]-coords[1], coords[2]-coords[0])+M_PI;
@@ -391,7 +365,7 @@ namespace
       }
     else
       {
-        cairo_move_to(cairo, coords[0], coords[1]);
+        cairo.moveTo(coords[0], coords[1]);
         
         /** 
          *  
@@ -423,47 +397,52 @@ namespace
         vector<pair<float,float>> controlPoints = computeControlPoints(A, points, target);
 
         // Decrease tolerance a bit, since it's going to be magnified
-        cairo_set_tolerance (cairo, 0.01);
+        cairo.setTolerance(0.01);
         
         for (int i = 0; i < n; i++) {      
-          cairo_curve_to(cairo, controlPoints[i].first,controlPoints[i].second,controlPoints[n+i].first,controlPoints[n+i].second,points[i+1].first,points[i+1].second);
+          cairo.curveTo(controlPoints[i].first,controlPoints[i].second,controlPoints[n+i].first,controlPoints[n+i].second,points[i+1].first,points[i+1].second);
         }		    
         
         // Stash the internal cairo coordinates used to draw curved wires. for ticket 1079.
-        if (coords.size()>4) storeCairoCoords(cairo);    
+        if (coords.size()>4)
+          {
+            cairoCoords.clear();
+            for (auto& p: cairo.flattenedPathPoints())
+              cairoCoords.emplace_back(p.first,p.second);
+          }    
                                          
-        cairo_stroke(cairo);     
+        cairo.stroke();     
         angle=atan2(coords[coords.size()-1]-coords[coords.size()-3], 
                     coords[coords.size()-2]-coords[coords.size()-4]);                         
         lastx=coords[coords.size()-2]; lasty=coords[coords.size()-1];
       } 
-    cairo_stroke(cairo);
+    cairo.stroke();
 
     // draw arrow
     {
-      const CairoSave cs(cairo);
-      auto lw=cairo_get_line_width(cairo);
-      cairo_translate(cairo, lastx, lasty);
-      cairo_rotate(cairo,angle);
-      cairo_move_to(cairo,0,0);
-      cairo_line_to(cairo,-5*lw,-3*lw); 
-      cairo_line_to(cairo,-3*lw,0); 
-      cairo_line_to(cairo,-5*lw,3*lw);
-      cairo_close_path(cairo);
-      cairo_fill(cairo);
+      const PreserveContext cs(cairo);
+      auto lw=cairo.getLineWidth();
+      cairo.translate(lastx, lasty);
+      cairo.rotate(angle);
+      cairo.moveTo(0,0);
+      cairo.lineTo(-5*lw,-3*lw); 
+      cairo.lineTo(-3*lw,0); 
+      cairo.lineTo(-5*lw,3*lw);
+      cairo.closePath();
+      cairo.fill();
     }
 
     // draw handles
     if (mouseFocus)
       {
-          const cairo::CairoSave cs(cairo);
-          cairo_set_source_rgb(cairo,0,0,1);
+          const PreserveContext cs(cairo);
+          cairo.setSourceRGB(0,0,1);
           if (cairoCoords.empty() || coords.size()==4)
             {
               const double midx=0.5*(coords[0]+coords[2]);
               const double midy=0.5*(coords[1]+coords[3]);
-              cairo_arc(cairo,midx,midy,1.5*handleRadius, 0, 2*M_PI);
-              cairo_fill(cairo);
+              cairo.arc(midx,midy,1.5*handleRadius, 0, 2*M_PI);
+              cairo.fill();
             } 
           else 
             {
@@ -472,19 +451,18 @@ namespace
                 {
                   const double midx=cairoCoords[(i+1)*numCairoCoords/(2*numSmallHandles)].first;
                   const double midy=cairoCoords[(i+1)*numCairoCoords/(2*numSmallHandles)].second;
-                  cairo_arc(cairo,midx,midy,handleRadius, 0, 2*M_PI);
+                  cairo.arc(midx,midy,handleRadius, 0, 2*M_PI);
                   if (i>0) // draw existing interior gripping handle            
-                    cairo_arc(cairo,coords[i],coords[i+1],1.5*handleRadius, 0, 2*M_PI); 
-                  cairo_fill(cairo);
+                    cairo.arc(coords[i],coords[i+1],1.5*handleRadius, 0, 2*M_PI); 
+                  cairo.fill();
                 } 
             }
       }
     if (mouseFocus && !tooltip().empty())
       {
-        const cairo::CairoSave cs(cairo);
+        const PreserveContext cs(cairo);
         const string toolTipText=latexToPango(tooltip());
-        ecolab::Pango pango(cairo);
-        pango.setMarkup(toolTipText);
+        auto pango=cairo.cachedRender(TextProperties(toolTipText));
         // place tooltip on centre dot if an odd number of control points, or halfway between otherwise
         auto dd=div(coords.size(),4);
         assert(dd.rem%2==0);
@@ -495,24 +473,16 @@ namespace
             midx=0.5*(coords[dd.quot]+coords[dd.quot+2]);
             midy=0.5*(coords[dd.quot+1]+coords[dd.quot+3]);
           }
-        cairo_translate(cairo,midx,midy);
-        cairo_rectangle(cairo,0,0,pango.width(),pango.height());
-        cairo_set_source_rgb(cairo,1,1,1);
-        cairo_fill_preserve(cairo);
-        cairo_set_source_rgb(cairo,0,0,0);
-        cairo_set_line_width(cairo,1);
-        cairo_set_dash(cairo,nullptr,0,0);
-        pango.show();
-        cairo_stroke(cairo);
+        cairo.translate(midx,midy);
+        cairo.rectangle(0,0,pango->extents().width,pango->extents().height);
+        cairo.setSourceRGB(1,1,1);
+        cairo.fillPreserve();
+        cairo.setSourceRGB(0,0,0);
+        cairo.setLineWidth(1);
+        cairo.setDash(nullptr,0,0);
+        pango->show();
+        cairo.stroke();
       }
-  }
-
-  void Wire::draw(const ICairoShim& cairoShim, bool reverseArrow) const
-  {
-    // Wire drawing is complex and uses storeCairoCoords which requires cairo_t*
-    // TODO: This will be properly refactored in a separate PR (per owner comment)
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    draw(shimImpl._internalGetCairoContext(), reverseArrow);
   }
 
   void Wire::split()

@@ -61,6 +61,8 @@ ifneq ($(build_ecolab),ecolab built)
 $(warning $(shell cat ecolab/build.log))
 $(error Making ecolab failed: check ecolab/build.log)
 endif
+# mansoura/src needs to be before EcoLab's include directory, as it overrides them
+FLAGS+=-Imansoura/src
 include $(ECOLAB_HOME)/include/Makefile
 
 ifndef MXE
@@ -98,6 +100,14 @@ $(warning $(build_ravelcapi))
 ifneq ($(strip $(build_ravelcapi)),ravelcapi built)
 $(error Making RavelCAPI failed: check RavelCAPI/build.log)
 endif
+
+# Mansoura
+build_mansoura:=$(shell cd mansoura; if  $(MAKE) $(JOBS) $(MAKEOVERRIDES) libmansoura.a >build.log 2>&1; then echo "mansoura built"; fi) 
+$(warning $(build_mansoura))
+ifneq ($(strip $(build_mansoura)),mansoura built)
+$(error Making Mansoura failed: check mansoura/build.log)
+endif
+
 
 ifndef MXE
 # libclipboard
@@ -182,8 +192,8 @@ PREFIX=/usr/local
 # custom one that picks up its scripts from a relative library
 # directory
 MODLINK=$(LIBMODS:%=$(ECOLAB_HOME)/lib/%)
-MODEL_OBJS=autoLayout.o cairoItems.o canvas.o CSVDialog.o dataOp.o equationDisplay.o godleyIcon.o godleyTable.o godleyTableWindow.o group.o item.o intOp.o lasso.o lock.o minsky.o operation.o operationRS.o operationRS1.o  operationRS2.o phillipsDiagram.o plotWidget.o port.o pubTab.o ravelWrap.o renderNativeWindow.o selection.o sheet.o SVGItem.o switchIcon.o userFunction.o userFunction_units.o variableInstanceList.o variable.o windowInformation.o wire.o 
-ENGINE_OBJS=clipboard.o cairoShimCairo.o databaseIngestor.o derivative.o equationDisplayRender.o equations.o evalGodley.o evalOp.o flowCoef.o \
+MODEL_OBJS=autoLayout.o cairoItems.o canvas.o CSVDialog.o dataOp.o equationDisplay.o godleyIcon.o godleyTable.o godleyTableEditor.o group.o item.o intOp.o lasso.o lock.o minsky.o operation.o operationRS.o operationRS1.o  operationRS2.o phillipsDiagram.o plotWidget.o port.o pubTab.o ravelWrap.o renderNativeWindow.o selection.o sheet.o switchIcon.o userFunction.o userFunction_units.o variableInstanceList.o variable.o windowInformation.o wire.o 
+ENGINE_OBJS=clipboard.o databaseIngestor.o derivative.o equationDisplayRender.o equations.o evalGodley.o evalOp.o flowCoef.o \
 	godleyExport.o latexMarkup.o valueId.o variableValue.o node_latex.o node_matlab.o CSVParser.o \
 	minskyTensorOps.o mdlReader.o saver.o rungeKutta.o
 SCHEMA_OBJS=schema3.o schema2.o schema1.o schema0.o schemaHelper.o variableType.o \
@@ -201,7 +211,7 @@ LIBS+=-Wl,-framework -Wl,Security -Wl,-headerpad_max_install_names
 MODEL_OBJS+=getContext.o
 endif
 
-ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(RESTSERVICE_OBJS) RESTService.o addon.o typescriptAPI.o pyminsky.o createLinkGroupIcons.o
+ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(RESTSERVICE_OBJS) RESTService.o addon.o typescriptAPI.o pyminsky.o createLinkGroupIcons.o 
 
 
 EXES=RESTService/minsky-RESTService$(EXE)
@@ -229,7 +239,7 @@ ifdef CLASSDESC_ARITIES
 FLAGS+=-DUSE_UNROLLED -DCLASSDESC_ARITIES=$(CLASSDESC_ARITIES)
 endif
 
-FLAGS+=-UTR1 -Ischema -Iengine -Imodel -Icertify/include -IRESTService -IRavelCAPI/civita -IRavelCAPI -Ilibclipboard/include -DCLASSDESC $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-attributes -DCIVITA_ALLOCATOR=civita::LibCAllocator
+FLAGS+=-UTR1 -Ischema -Iengine -Imodel -Icertify/include -Imansoura/src -IRESTService -IRavelCAPI/civita -IRavelCAPI -Ilibclipboard/include -DCLASSDESC $(OPT) -UECOLAB_LIB -DECOLAB_LIB=\"library\" -DJSON_PACK_NO_FALL_THROUGH_TO_STREAMING -Wno-unused-local-typedefs -Wno-pragmas -Wno-unused-command-line-argument -Wno-unknown-warning-option -Wno-attributes -DCIVITA_ALLOCATOR=civita::LibCAllocator
 
 ifdef OBS
 # Fedora environments make duplicated macros a fatal error, and then
@@ -260,7 +270,7 @@ ifeq ($(DEBUG), 1)
 FLAGS+=-Wp,-D_GLIBCXX_ASSERTIONS
 endif
 
-VPATH= schema model engine RESTService RavelCAPI/civita RavelCAPI $(ECOLAB_HOME)/include $(ECOLAB_HOME)/graphcode $(ECOLAB_HOME)/classdesc
+VPATH= schema model engine RESTService RavelCAPI/civita RavelCAPI mansoura/src $(ECOLAB_HOME)/include $(ECOLAB_HOME)/graphcode $(ECOLAB_HOME)/classdesc
 
 # Classdesc rules
 CDINC=-I $(CDINCLUDE) -I $(ECOLAB_HOME)/include -I RESTService
@@ -345,7 +355,7 @@ ifeq ($(OS),CYGWIN)
 FLAGS+=-Wa,-mbig-obj -Wl,-x -Wl,--oformat,pe-bigobj-x86-64
 endif
 
-LIBS:=-LRavelCAPI -lravelCAPI -LRavelCAPI/civita -lcivita  -lboost_date_time$(BOOST_EXT) -lgsl -lgslcblas -lssl -lcrypto $(LIBS)
+LIBS:=-Lmansoura -lmansoura -LRavelCAPI -lravelCAPI -LRavelCAPI/civita -lcivita  -lboost_date_time$(BOOST_EXT) -lgsl -lgslcblas -lssl -lcrypto $(LIBS)
 
 ifdef MXE
 LIBS+=-lgdi32 -lcrypt32 -lbcrypt -lshcore
@@ -465,7 +475,7 @@ gui-js/build/minskyRESTService.node:| $(DLLS:%=$(DYNAMIC_LIB_DIR)/%)
 endif
 
 # N-API node embedded RESTService
-gui-js/build/minskyRESTService.node: addon.o  $(NODE_API) $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) RavelCAPI/libravelCAPI.a RavelCAPI/civita/libcivita.a 
+gui-js/build/minskyRESTService.node: addon.o  $(NODE_API) $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) mansoura/libmansoura.a RavelCAPI/libravelCAPI.a RavelCAPI/civita/libcivita.a 
 	mkdir -p gui-js/build
 ifdef MXE
 	$(LINK) -shared -o $@ $^ $(LIBS)
@@ -515,7 +525,7 @@ $(EXES):
 tests: $(EXES)
 	cd test; $(MAKE) $(MAKEOVERRIDES) CPLUSPLUS="$(CPLUSPLUS)"
 
-BASIC_CLEAN=rm -rf *.o *~ "\#*\#" core *.d *.cd *.rcd *.tcd *.xcd *.gcda *.gcno *.so *.dll *.dylib
+BASIC_CLEAN=rm -rf *.o *~ "\#*\#" core *.d *.cd *.rcd *.tcd *.xcd *.gcda *.gcno *.so *.dll *.dylib *.a
 
 clean:
 	-$(BASIC_CLEAN) minsky.xsd
@@ -525,8 +535,9 @@ clean:
 	-cd engine && $(BASIC_CLEAN)
 	-cd schema && $(BASIC_CLEAN)
 	-cd ecolab && $(MAKE) clean
+	-cd mansoura && $(MAKE) clean
 	-cd RavelCAPI && $(MAKE) clean
-	-cd libclipboard && $(MAKE) clean && rm -f CMakeCache.txt
+	-cd libclipboard && $(MAKE) clean ; rm -f CMakeCache.txt
 
 mac-dist:
 # force rebuild of the node file to force rewriting of dependent dylibs

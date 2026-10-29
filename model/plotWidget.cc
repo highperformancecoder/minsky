@@ -21,18 +21,14 @@
 #include "variable.h"
 #include "cairoItems.h"
 #include "latexMarkup.h"
-#include "pango.h"
 #include <timer.h>
-#include <cairo/cairo-ps.h>
-#include <cairo/cairo-pdf.h>
-#include <cairo/cairo-svg.h>
-#include "../engine/cairoShimCairo.h"
+#include "mansouraCairo.h"
 
 #include "CSVTools.xcd"
 #include "itemT.rcd"
 #include "plotOptions.rcd"
-#include "plot.rcd"
-#include "plot.xcd"
+#include "mansouraPlot.rcd"
+#include "mansouraPlot.xcd"
 #include "tensorInterface.rcd"
 #include "tensorInterface.xcd"
 #include "tensorVal.rcd"
@@ -42,8 +38,7 @@
 
 #include <algorithm>
 #include <numeric>
-using namespace ecolab::cairo;
-using namespace ecolab;
+using namespace mansoura;
 using namespace std;
 using namespace boost;
 using namespace boost::posix_time;
@@ -89,39 +84,38 @@ namespace minsky
       m_ports.emplace_back(make_shared<InputPort>(*this));
   }
   
-  void PlotWidget::draw(cairo_t* cairo) const
+  void PlotWidget::draw(const mansoura::IMansoura& cairoShim) const
   {
-    CairoSave cs(cairo);
     const double z=Item::zoomFactor();
-    cairo_scale(cairo,z,z);
     const double w=iWidth();
     double h=iHeight();
+    {
+    const PreserveContext cs(cairoShim);
+    cairoShim.scale(z,z);
 
     // if any titling, draw an extra bounding box (ticket #285)
     if (!title.empty()||!xlabel().empty()||!ylabel().empty()||!y1label().empty())
       {
-        cairo_rectangle(cairo,-0.5*w+10,-0.5*h,w-20,h-10);
-        cairo_set_line_width(cairo,1);
-        cairo_stroke(cairo);
+        cairoShim.rectangle(-0.5*w+10,-0.5*h,w-20,h-10);
+        cairoShim.setLineWidth(1);
+        cairoShim.stroke();
       }
 
-    cairo_translate(cairo,-0.5*w,-0.5*h);
+    cairoShim.translate(-0.5*w,-0.5*h);
 
     yoffs=0;
     if (!title.empty())
       {
-        const CairoSave cs(cairo);
+        const PreserveContext cs(cairoShim);
         const double fy=titleHeight*iHeight();
         
-        Pango pango(cairo);
-        pango.setFontSize(fabs(fy));
-        pango.setMarkup(latexToPango(title));   
-        cairo_set_source_rgb(cairo,0,0,0);
-        cairo_move_to(cairo,0.5*(w-pango.width()), 0);
-        pango.show();
+        auto pango=cairoShim.cachedRender(TextProperties(latexToPango(title),fabs(fy)));
+        cairoShim.setSourceRGB(0,0,0);
+        cairoShim.moveTo(0.5*(w-pango->extents().width), 0);
+        pango->show();
 
         // allow some room for the title
-        yoffs=pango.height();
+        yoffs=pango->extents().height;
         h-=yoffs;
       }
 
@@ -134,7 +128,7 @@ namespace minsky
         const float x=boundX[i]*w, y=boundY[i]*h;
         if (!justDataChanged)
           m_ports[i]->moveTo(x*z + this->x(), y*z + this->y()+0.5*yoffs);
-        drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i/2)%palette.size()].colour, orient[i]);
+        drawTriangle(cairoShim, x+0.5*w, y+0.5*h+yoffs, palette[(i/2)%palette.size()].colour, orient[i]);
         
       }
 
@@ -146,7 +140,7 @@ namespace minsky
         const float y=0.5*(dy-h) + (i-nBoundsPorts)*dy;
         if (!justDataChanged)
           m_ports[i]->moveTo(xLeft*z + this->x(), y*z + this->y()+0.5*yoffs);
-        drawTriangle(cairo, xLeft+0.5*w, y+0.5*h+yoffs, palette[(i-nBoundsPorts)%palette.size()].colour, 0);
+        drawTriangle(cairoShim, xLeft+0.5*w, y+0.5*h+yoffs, palette[(i-nBoundsPorts)%palette.size()].colour, 0);
       }
     
     // draw RHS y data ports
@@ -155,7 +149,7 @@ namespace minsky
         const float y=0.5*(dy-h) + (i-m_numLines-nBoundsPorts)*dy, x=0.5*w;
         if (!justDataChanged)
           m_ports[i]->moveTo(x*z + this->x(), y*z + this->y()+0.5*yoffs);
-        drawTriangle(cairo, x+0.5*w, y+0.5*h+yoffs, palette[(i-nBoundsPorts)%palette.size()].colour, M_PI);
+        drawTriangle(cairoShim, x+0.5*w, y+0.5*h+yoffs, palette[(i-nBoundsPorts)%palette.size()].colour, M_PI);
       }
 
     // draw x data ports
@@ -165,41 +159,40 @@ namespace minsky
         const float x=dx-0.5*w + (i-2*m_numLines-nBoundsPorts)*dx;
         if (!justDataChanged)
           m_ports[i]->moveTo(x*z + this->x(), yBottom*z + this->y()+0.5*yoffs);
-        drawTriangle(cairo, x+0.5*w, yBottom+0.5*h+yoffs, palette[(i-2*m_numLines-nBoundsPorts)%palette.size()].colour, -0.5*M_PI);
+        drawTriangle(cairoShim, x+0.5*w, yBottom+0.5*h+yoffs, palette[(i-2*m_numLines-nBoundsPorts)%palette.size()].colour, -0.5*M_PI);
       }
 
-    cairo_translate(cairo, portSpace, yoffs);
-    cairo_set_line_width(cairo,1);
+    cairoShim.translate(portSpace, yoffs);
+    cairoShim.setLineWidth(1);
     const double gw=w-2*portSpace, gh=h-portSpace;
 
-    Plot::draw(cairo,gw,gh);
+    Plot::draw(cairoShim,gw,gh);
     if (mouseFocus && legend)
       {
         double width,height,x,y;
-        legendSize(x,y,width,height,gw,gh);
+        legendSize(cairoShim,x,y,width,height,gw,gh);
         // following code puts x,y at centre point of legend
         x+=0.5*width;
         const double arrowLength=6;
         y=(h-portSpace)-y+0.5*height;
-        cairo_move_to(cairo,x-arrowLength,y);
-        cairo_rel_line_to(cairo,2*arrowLength,0);
-        cairo_move_to(cairo,x,y-arrowLength);
-        cairo_rel_line_to(cairo,0,2*arrowLength);
+        cairoShim.moveTo(x-arrowLength,y);
+        cairoShim.relLineTo(2*arrowLength,0);
+        cairoShim.moveTo(x,y-arrowLength);
+        cairoShim.relLineTo(0,2*arrowLength);
 
-        cairo_move_to(cairo,x,y+0.5*height);
-        cairo_rel_line_to(cairo,0,arrowLength);
-        cairo_stroke(cairo);
-        drawTriangle(cairo,x-arrowLength,y,{0,0,0,1},M_PI);
-        drawTriangle(cairo,x+arrowLength,y,{0,0,0,1},0);
-        drawTriangle(cairo,x,y-arrowLength,{0,0,0,1},3*M_PI/2);
-        drawTriangle(cairo,x,y+arrowLength,{0,0,0,1},M_PI/2);
-        drawTriangle(cairo,x,y+0.5*height+arrowLength,{0,0,0,1},M_PI/2);
+        cairoShim.moveTo(x,y+0.5*height);
+        cairoShim.relLineTo(0,arrowLength);
+        cairoShim.stroke();
+        drawTriangle(cairoShim,x-arrowLength,y,{0,0,0,1},M_PI);
+        drawTriangle(cairoShim,x+arrowLength,y,{0,0,0,1},0);
+        drawTriangle(cairoShim,x,y-arrowLength,{0,0,0,1},3*M_PI/2);
+        drawTriangle(cairoShim,x,y+arrowLength,{0,0,0,1},M_PI/2);
+        drawTriangle(cairoShim,x,y+0.5*height+arrowLength,{0,0,0,1},M_PI/2);
 
-        cairo_rectangle(cairo,x-0.5*width,y-0.5*height,width,height);
+        cairoShim.rectangle(x-0.5*width,y-0.5*height,width,height);
       }
-    cs.restore();
+    }// cs restored
 
-    CairoShimCairo cairoShim(cairo);
     if (mouseFocus)
       {
         drawPorts(cairoShim);
@@ -209,20 +202,13 @@ namespace minsky
       }
     justDataChanged=false;
     
-    cairo_new_path(cairo);  
-    cairo_rectangle(cairo,-0.5*w,-0.5*h,w,h);
-    cairo_clip(cairo);
+    cairoShim.newPath();  
+    cairoShim.rectangle(-0.5*w,-0.5*h,w,h);
+    cairoShim.clip();
     if (selected) drawSelected(cairoShim);
 
   }
 
-  void PlotWidget::draw(const ICairoShim& cairoShim) const
-  {
-    // TODO: Implement properly without cairo_t* delegation
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    draw(shimImpl._internalGetCairoContext());
-  }
-  
   void PlotWidget::scalePlot()
   {
     // set any scale overrides
@@ -373,19 +359,14 @@ namespace minsky
     justDataChanged=true; // assume plot same size, don't do unnecessary stuff
     // store previous min/max values to determine if plot scale changes
     scalePlot();
-    if (surface.get())
-      surface->requestRedraw();
+    RenderNativeWindow::requestRedraw();
   }
 
-  bool PlotWidget::redraw(int x0, int y0, int width, int height) 
+  bool PlotWidget::redraw(const IMansoura& mans, int x0, int y0, int width, int height) 
   {
-    if (surface.get())
-      {
-        auto sf=RenderNativeWindow::scaleFactor();
-        Plot::draw(surface->cairo(),width/sf,height/sf);
-        surface->blit();
-      }
-    return surface.get();
+    auto sf=RenderNativeWindow::scaleFactor();
+    Plot::draw(mans,width/sf,height/sf);
+    return true;
   }
 
   
@@ -415,7 +396,8 @@ namespace minsky
       }
 
     double legendWidth, legendHeight, lx, ly;
-    legendSize(lx, ly, legendWidth, legendHeight, z*(iWidth()-2*portSpace), z*(iHeight()-portSpace-yoffs));
+    // uses legend extents cached when last drawn
+    legendSizeFromCache(lx, ly, legendWidth, legendHeight, z*(iWidth()-2*portSpace), z*(iHeight()-portSpace-yoffs));
     // xx & yy are in plot user coordinates
     const double xx= x-this->x() + z*(0.5*iWidth()-portSpace) - lx;
     const double yy= z*(0.5*iHeight()-portSpace)-y+this->y()  - ly+legendHeight;
@@ -861,3 +843,4 @@ namespace minsky
   }
 }
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::PlotWidget);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(mansoura::Plot);

@@ -19,28 +19,23 @@
 
 #include "cairoItems.h"
 #include "minsky.h"
-#include "godleyTableWindow.h"
-#include "../engine/cairoShimCairo.h"
+#include "godleyTableEditor.h"
 #include "selection.h"
 #include "latexMarkup.h"
-#include <pango.h>
 
 #include "assetClass.rcd"
-#include "godleyTableWindow.rcd"
-#include "godleyTableWindow.xcd"
+#include "godleyTableEditor.rcd"
+#include "godleyTableEditor.xcd"
+#include "IMansoura.cd"
 #include "minsky_epilogue.h"
 
 #include <boost/locale.hpp>
 
 using namespace std;
 using namespace minsky;
-using ecolab::Pango;
-using namespace ecolab::cairo;
+using namespace mansoura;
 using namespace boost::locale::conv;
 
-#include <cairo/cairo-ps.h>
-#include <cairo/cairo-pdf.h>
-#include <cairo/cairo-svg.h>
 
 namespace
 {
@@ -60,11 +55,11 @@ namespace
     {.6,.5,0}
   };
 
-  void showAsset(Pango& pango, cairo_t* cairo, GodleyAssetClass::AssetClass assetClass)
+  void showAsset(ICacheRender& pango, const IMansoura& mans, GodleyAssetClass::AssetClass assetClass)
   {
-    const CairoSave cs(cairo);
+    const PreserveContext cs(mans);
     auto& colour=assetColour[assetClass];
-    cairo_set_source_rgb(cairo,colour.r,colour.g,colour.b);
+    mans.setSourceRGB(colour.r,colour.g,colour.b);
     pango.show();
   }
 
@@ -154,11 +149,12 @@ namespace minsky
     return m_godleyIcon.table.cellInTable(selectedRow, selectedCol);
   }
 
-  void GodleyTableEditor::draw(cairo_t *cairo)
+  void GodleyTableEditor::draw(const IMansoura& cairo)
   {
-    const CairoSave cs(cairo);
-    cairo_scale(cairo,zoomFactor,zoomFactor);
-    Pango pango(cairo);
+    const PreserveContext cs(cairo);
+    cairo.scale(zoomFactor,zoomFactor);
+    auto pangoPtr=cairo.cachedRender(TextProperties());
+    ICacheRender& pango=*pangoPtr;
     pango.setMarkup("Flows ↓ / Stock Vars →");
     rowHeight=pango.height()+2;
     const double tableHeight=(m_godleyIcon.table.rows()-scrollRowStart+1)*rowHeight;
@@ -166,7 +162,8 @@ namespace minsky
     double lastAssetBoundary=x;
     auto assetClass=GodleyAssetClass::noAssetClass;
     // only recalculate colmn widths when no cell is selected.
-    const bool resizeGrid=selectedCol<0 || selectedRow<0 || motionRow>=0 || motionCol>=0;
+    const bool resizeGrid=selectedCol<0 || selectedRow<0 || motionRow>=0 || motionCol>=0 ||
+      colLeftMargin.size()<m_godleyIcon.table.cols();
     if (resizeGrid)
       colLeftMargin.clear();
   
@@ -183,30 +180,30 @@ namespace minsky
                 // increase column by enough to fit asset class label
                 if (x < pango.width()+lastAssetBoundary+3)
                   x=pango.width()+lastAssetBoundary+3;
-                cairo_move_to(cairo,0.5*(x+lastAssetBoundary-pango.width()),0);
+                cairo.moveTo(0.5*(x+lastAssetBoundary-pango.width()),0);
                 showAsset(pango, cairo, assetClass);
               }
             lastAssetBoundary=x;
           
             assetClass=m_godleyIcon.table.assetClass(col);
-            cairo_move_to(cairo,x+3,topTableOffset);
-            cairo_rel_line_to(cairo,0,tableHeight);
+            cairo.moveTo(x+3,topTableOffset);
+            cairo.relLineTo(0,tableHeight);
           }
-        cairo_move_to(cairo,x,topTableOffset);
-        cairo_rel_line_to(cairo,0,tableHeight);
-        cairo_set_line_width(cairo,0.5);
-        cairo_stroke(cairo);
+        cairo.moveTo(x,topTableOffset);
+        cairo.relLineTo(0,tableHeight);
+        cairo.setLineWidth(0.5);
+        cairo.stroke();
       
         if (drawButtons && col>0 && col<colWidgets.size())
           {
-            const CairoSave cs(cairo);
-            cairo_move_to(cairo, x, columnButtonsOffset);
+            const PreserveContext cs(cairo);
+            cairo.moveTo(x, columnButtonsOffset);
             colWidgets[col].draw(cairo);   
           }
 
         if (col>1)
           {
-            cairo_move_to(cairo,x-pulldownHot,topTableOffset);
+            cairo.moveTo(x-pulldownHot,topTableOffset);
             pango.setMarkup("▼");
             pango.show();
           }
@@ -219,12 +216,12 @@ namespace minsky
 
             if (drawButtons && col==0 && row>0 && row<rowWidgets.size())
               {
-                const CairoSave cs(cairo);
-                cairo_move_to(cairo, 0, y);
+                const PreserveContext cs(cairo);
+                cairo.moveTo(0, y);
                 rowWidgets[row].draw(cairo);
               }
             
-            const CairoSave cs(cairo);
+            const PreserveContext cs(cairo);
             if (row!=0 || col!=0)               
               {
                 // Make sure non-utf8 chars converted to utf8 as far as possible. for ticket 1166.  
@@ -250,7 +247,7 @@ namespace minsky
                         {
                           value=string("= Err: ")+ex.what();
                           // highlight error in red
-                          cairo_set_source_rgb(cairo,1,0,0);
+                          cairo.setSourceRGB(1,0,0);
                         }
                             
                     // the active cell renders as bare LaTeX code for
@@ -260,7 +257,7 @@ namespace minsky
                         if (row>0 && col>0)    
                           { // handle DR/CR mode and colouring of text
                             if (fc.coef<0)
-                              cairo_set_source_rgb(cairo,1,0,0);
+                              cairo.setSourceRGB(1,0,0);
                             if (cminsky().displayStyle==GodleyTable::DRCR)
                               {
                                 if (assetClass==GodleyAssetClass::asset ||
@@ -286,7 +283,7 @@ namespace minsky
                 pango.setMarkup(text);
               }
             colWidth=max(colWidth,pango.width() + (row==0? pulldownHot:0));
-            cairo_move_to(cairo,x+3,y);
+            cairo.moveTo(x+3,y);
             pango.show();
             y+=rowHeight;
           }
@@ -302,7 +299,7 @@ namespace minsky
       }
 
     // display pulldown for last column
-    cairo_move_to(cairo,x-pulldownHot,topTableOffset);
+    cairo.moveTo(x-pulldownHot,topTableOffset);
     pango.setMarkup("▼");
     pango.show();
 
@@ -311,23 +308,23 @@ namespace minsky
     // increase column by enough to fit asset class label
     if (x < pango.width()+lastAssetBoundary+3)
       x=pango.width()+lastAssetBoundary+3;
-    cairo_move_to(cairo,0.5*(x+lastAssetBoundary-pango.width()),0);
+    cairo.moveTo(0.5*(x+lastAssetBoundary-pango.width()),0);
     showAsset(pango, cairo, assetClass);
     // final column vertical line
     colLeftMargin.push_back(x);
-    cairo_move_to(cairo,x,topTableOffset);
-    cairo_rel_line_to(cairo,0,tableHeight);
-    cairo_move_to(cairo,x+3,topTableOffset);
-    cairo_rel_line_to(cairo,0,tableHeight);
-    cairo_set_line_width(cairo,0.5);
-    cairo_stroke(cairo);
+    cairo.moveTo(x,topTableOffset);
+    cairo.relLineTo(0,tableHeight);
+    cairo.moveTo(x+3,topTableOffset);
+    cairo.relLineTo(0,tableHeight);
+    cairo.setLineWidth(0.5);
+    cairo.stroke();
 
-    cairo_move_to(cairo,x-pulldownHot,topTableOffset);
+    cairo.moveTo(x-pulldownHot,topTableOffset);
 
     // now row sum column
     x+=3;
     double y=topTableOffset;
-    cairo_move_to(cairo,x,0);     // display A-L-E above the final column. for ticket 1285
+    cairo.moveTo(x,0);     // display A-L-E above the final column. for ticket 1285
     pango.setMarkup("A-L-E");
     pango.show();
     double colWidth=pango.width();
@@ -337,7 +334,7 @@ namespace minsky
         if (row >0 && row<scrollRowStart) continue;                    
         pango.setMarkup(latexToPango(m_godleyIcon.rowSum(row)));
         colWidth=max(colWidth,pango.width());
-        cairo_move_to(cairo,x,y);
+        cairo.moveTo(x,y);
         pango.show();
         y+=rowHeight;
       }
@@ -348,36 +345,35 @@ namespace minsky
       {
         // horizontal lines
         if (row>0 && row<scrollRowStart) continue;
-        cairo_move_to(cairo,leftTableOffset,y);
-        cairo_line_to(cairo,x,y);
-        cairo_set_line_width(cairo,0.5);
-        cairo_stroke(cairo);
+        cairo.moveTo(leftTableOffset,y);
+        cairo.lineTo(x,y);
+        cairo.setLineWidth(0.5);
+        cairo.stroke();
         y+=rowHeight;
       }
 
     // final vertical line
     colLeftMargin.push_back(x);
-    cairo_move_to(cairo,x,topTableOffset);
-    cairo_rel_line_to(cairo,0,tableHeight);
-    cairo_set_line_width(cairo,0.5);
-    cairo_stroke(cairo);
+    cairo.moveTo(x,topTableOffset);
+    cairo.relLineTo(0,tableHeight);
+    cairo.setLineWidth(0.5);
+    cairo.stroke();
 
     // indicate cell mouse is hovering over
     if ((hoverRow>0 || hoverCol>0) &&                                
         size_t(hoverRow)<m_godleyIcon.table.rows() &&
         size_t(hoverCol)<m_godleyIcon.table.cols())
       {
-        const CairoSave cs(cairo);
-        cairo_rectangle(cairo,
-                        colLeftMargin[hoverCol],hoverRow*rowHeight+topTableOffset,
+        const PreserveContext cs(cairo);
+        cairo.rectangle(colLeftMargin[hoverCol],hoverRow*rowHeight+topTableOffset,
                         colLeftMargin[hoverCol+1]-colLeftMargin[hoverCol],rowHeight);
-        cairo_set_line_width(cairo,1);
-        cairo_stroke(cairo);
+        cairo.setLineWidth(1);
+        cairo.stroke();
       }
           
     // indicate selected cells
     {
-      const CairoSave cs(cairo);
+      const PreserveContext cs(cairo);
       if (selectedRow==0 || (selectedRow>=int(scrollRowStart) && selectedRow<int(m_godleyIcon.table.rows())))
         {
           size_t i=0, j=0;
@@ -401,32 +397,32 @@ namespace minsky
                   if (selectedCol>=int(scrollColStart)) i=selectedCol-scrollColStart+1;
                   const double xx=colLeftMargin[i], yy=j*rowHeight+topTableOffset;
                   {
-                    const cairo::CairoSave cs(cairo);
-                    cairo_set_source_rgba(cairo,1,1,1,1);
-                    cairo_rectangle(cairo,xx,yy,colLeftMargin[i+1]-xx,rowHeight);
-                    cairo_fill_preserve(cairo);
-                    cairo_set_source_rgba(cairo,1,.55,0,1);
-                    cairo_set_line_width(cairo,2);
-                    cairo_stroke(cairo);
+                    const PreserveContext cs(cairo);
+                    cairo.setSourceRGBA(1,1,1,1);
+                    cairo.rectangle(xx,yy,colLeftMargin[i+1]-xx,rowHeight);
+                    cairo.fillPreserve();
+                    cairo.setSourceRGBA(1,.55,0,1);
+                    cairo.setLineWidth(2);
+                    cairo.stroke();
                   }
                   pango.setMarkup(defang(m_godleyIcon.table.cell(selectedRow,selectedCol)));
-                  cairo_move_to(cairo,xx,yy);
+                  cairo.moveTo(xx,yy);
                   pango.show();
 				  
                   // show insertion cursor
-                  cairo_move_to(cairo,xx+pango.idxToPos(insertIdx),yy);
-                  cairo_rel_line_to(cairo,0,rowHeight);
-                  cairo_set_line_width(cairo,1);
-                  cairo_stroke(cairo);
+                  cairo.moveTo(xx+pango.idxToPos(insertIdx),yy);
+                  cairo.relLineTo(0,rowHeight);
+                  cairo.setLineWidth(1);
+                  cairo.stroke();
                   if (motionRow>0 && motionCol>0)
                     highlightCell(cairo,motionRow,motionCol);
                   if (selectIdx!=insertIdx)
                     {
                       // indicate some text has been selected
-                      cairo_rectangle(cairo,xx+pango.idxToPos(insertIdx),yy,
+                      cairo.rectangle(xx+pango.idxToPos(insertIdx),yy,
                                       pango.idxToPos(selectIdx)-pango.idxToPos(insertIdx),rowHeight);
-                      cairo_set_source_rgba(cairo,0.5,0.5,0.5,0.5);
-                      cairo_fill(cairo);
+                      cairo.setSourceRGBA(0.5,0.5,0.5,0.5);
+                      cairo.fill();
                    }
                 }
             }
@@ -459,8 +455,8 @@ namespace minsky
 
   int GodleyTableEditor::textIdx(double x) const
   {
-    const cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,NULL));
-    Pango pango(surf.cairo());
+    auto pangoPtr=mansoura::measuringContext().cachedRender(TextProperties());
+    ICacheRender& pango=*pangoPtr;
     if (selectedCellInTable() && (selectedRow!=1 || selectedCol!=0)) // No text index needed for a cell that is immutable. For ticket 1064
       {
 		// Make sure non-utf8 chars converted to utf8 as far as possible. for ticket 1166.  
@@ -828,7 +824,7 @@ namespace minsky
 
     if (r==0)
       {
-        if (colLeftMargin[c+1]-x < pulldownHot)
+        if (c+1<colLeftMargin.size() && colLeftMargin[c+1]-x < pulldownHot)
           return importStock;
         return row0;
       }
@@ -999,35 +995,35 @@ namespace {
     return tmpStr;  	  
   }    
 
-  void GodleyTableEditor::highlightColumn(cairo_t* cairo, unsigned col)
+  void GodleyTableEditor::highlightColumn(const IMansoura& cairo, unsigned col)
   {
     if (col<scrollColStart) return;
     const double x=colLeftMargin[col-scrollColStart+1];
     const double width=colLeftMargin[col-scrollColStart+2]-x;
     const double tableHeight=(m_godleyIcon.table.rows()-scrollRowStart+1)*rowHeight;
-    cairo_rectangle(cairo,x,topTableOffset,width,tableHeight);
-    cairo_set_source_rgba(cairo,1,1,1,0.5);
-    cairo_fill(cairo);
+    cairo.rectangle(x,topTableOffset,width,tableHeight);
+    cairo.setSourceRGBA(1,1,1,0.5);
+    cairo.fill();
   }
 
-  void GodleyTableEditor::highlightRow(cairo_t* cairo, unsigned row)
+  void GodleyTableEditor::highlightRow(const IMansoura& cairo, unsigned row)
   {
     if (row<scrollRowStart) return;
     const double y=(row-scrollRowStart+1)*rowHeight+topTableOffset;
-    cairo_rectangle(cairo,leftTableOffset,y,colLeftMargin.back()-leftTableOffset,rowHeight);
-    cairo_set_source_rgba(cairo,1,1,1,0.5);
-    cairo_fill(cairo);
+    cairo.rectangle(leftTableOffset,y,colLeftMargin.back()-leftTableOffset,rowHeight);
+    cairo.setSourceRGBA(1,1,1,0.5);
+    cairo.fill();
   }
 
-  void GodleyTableEditor::highlightCell(cairo_t* cairo, unsigned row, unsigned col)
+  void GodleyTableEditor::highlightCell(const IMansoura& cairo, unsigned row, unsigned col)
   {
     if (row<scrollRowStart || col<scrollColStart) return;
     const double x=colLeftMargin[col-scrollColStart+1];
     const double width=colLeftMargin[col-scrollColStart+2]-x;
     const double y=(row-scrollRowStart+1)*rowHeight+topTableOffset;
-    cairo_rectangle(cairo,x,y,width,rowHeight);
-    cairo_set_source_rgba(cairo,1,1,1,0.5);
-    cairo_fill(cairo);
+    cairo.rectangle(x,y,width,rowHeight);
+    cairo.setSourceRGBA(1,1,1,0.5);
+    cairo.fill();
   }
 
   void GodleyTableEditor::pushHistory()
@@ -1152,7 +1148,6 @@ namespace {
             g->update();
       }
     minsky().canvas.requestRedraw();
-    minsky().redrawAllGodleyTables();
   }
 
   void GodleyTableEditor::checkCell00()
@@ -1216,35 +1211,36 @@ namespace {
     }
 
   template <ButtonWidgetEnums::RowCol rowCol>
-  void ButtonWidget<rowCol>::drawButton(cairo_t* cairo, const std::string& label, double r, double g, double b, int idx)
+  void ButtonWidget<rowCol>::drawButton(const IMansoura& cairo, const std::string& label, double r, double g, double b, int idx)
   {
     // stash current point for drawing a box
     double x0, y0;
-    cairo_get_current_point(cairo,&x0, &y0);
+    cairo.getCurrentPoint(x0,y0);
     
-    const CairoSave cs(cairo);
-    Pango pango(cairo);
+    const PreserveContext cs(cairo);
+    auto pangoPtr=cairo.cachedRender(TextProperties());
+    ICacheRender& pango=*pangoPtr;
     // increase text size a bit for the buttons
     pango.setFontSize(0.8*buttonSpacing);
     pango.setMarkup(label);
-    cairo_set_source_rgb(cairo,r,g,b);
+    cairo.setSourceRGB(r,g,b);
     pango.show();
     
     // draw box around button
-    cairo_rectangle(cairo, x0, y0+0.2*pango.height(), buttonSpacing, buttonSpacing);
+    cairo.rectangle(x0, y0+0.2*pango.height(), buttonSpacing, buttonSpacing);
     if (idx==m_mouseOver)
-      cairo_set_source_rgb(cairo,0,0,0); // draw in black if mouse over button
+      cairo.setSourceRGB(0,0,0); // draw in black if mouse over button
     else
-      cairo_set_source_rgb(cairo,0.5,0.5,0.5); // draw in grey
-    cairo_set_line_width(cairo,1);
-    cairo_stroke(cairo);
-    cairo_move_to(cairo,x0+buttonSpacing,y0);
+      cairo.setSourceRGB(0.5,0.5,0.5); // draw in grey
+    cairo.setLineWidth(1);
+    cairo.stroke();
+    cairo.moveTo(x0+buttonSpacing,y0);
   }
   
   template <ButtonWidgetEnums::RowCol rowCol>
-  void ButtonWidget<rowCol>::draw(cairo_t* cairo)
+  void ButtonWidget<rowCol>::draw(const IMansoura& cairo)
   {	    
-    const CairoSave cs(cairo);
+    const PreserveContext cs(cairo);
     int idx=0;
     if (rowCol==row || (!cminsky().multipleEquities() && godleyIcon.table.singleEquity())) {  // no column widgets on equity column in single equity column mode
       if (rowCol == row || (rowCol == col && pos!=last)) 
@@ -1267,21 +1263,7 @@ namespace {
     
   }  
  
-  template <ButtonWidgetEnums::RowCol rowCol>
-  void ButtonWidget<rowCol>::draw(const ICairoShim& cairoShim)
-  {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    draw(shimImpl._internalGetCairoContext());
-  }
-
-  void GodleyTableEditor::draw(const ICairoShim& cairoShim)
-  {
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    draw(shimImpl._internalGetCairoContext());
-  }
-
   template class ButtonWidget<ButtonWidgetEnums::row>;
   template class ButtonWidget<ButtonWidgetEnums::col>;
 }
-CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::GodleyTableWindow);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::GodleyTableEditor);

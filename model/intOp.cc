@@ -19,11 +19,12 @@
 
 #include "minsky.h"
 #include "cairoItems.h"
-#include "cairoShimCairo.h"
 #include "intOp.h"
 #include "intOp.rcd"
 #include "itemT.rcd"
 #include "minsky_epilogue.h"
+
+using namespace mansoura;
 
 namespace minsky
 {
@@ -35,7 +36,7 @@ namespace minsky
     return r;
   }
   
-  void IntOp::draw(const ICairoShim& cairoShim) const
+  void IntOp::draw(const mansoura::IMansoura& cairoShim) const
   {
       // if rotation is in 1st or 3rd quadrant, rotate as
       // normal, otherwise flip the text so it reads L->R
@@ -125,8 +126,7 @@ namespace minsky
           cairoShim.closePath();        
         }
     
-      auto cairo=dynamic_cast<const CairoShimCairo&>(cairoShim)._internalGetCairoContext();
-      cairo::Path clipPath(cairo);
+      auto clipPath=cairoShim.copyPath();
 
       double x0=r, y0=0, x1=l, y1=numPorts() > 2? -h+3: 0,
         x2=l, y2=numPorts() > 2? h-3: 0;
@@ -162,7 +162,7 @@ namespace minsky
       if (onResizeHandles) drawResizeHandles(cairoShim);
 
       cairoShim.newPath();
-      clipPath.appendToCurrent(cairo);
+      clipPath->appendToCurrent(cairoShim);
       cairoShim.clip();          
       if (selected) drawSelected(cairoShim);       
   }

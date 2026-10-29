@@ -21,24 +21,20 @@
 #define FONTDISPLAY_H
 #include "renderNativeWindow.h"
 #include "classdesc_access.h"
-#include <pango.h>
 
 namespace minsky
 {
   // display a sample of the current selected font
   class FontDisplay: public RenderNativeWindow
   {
-    bool redraw(int, int, int width, int height) override {
-      cairo_move_to(surface->cairo(),0,0);
-      ecolab::Pango pango(surface->cairo());
-      pango.setFontSize(10);
-      pango.setText("←→↑↓—▼αΣ∫√⊗≤");
-      pango.show();
+    bool redraw(const mansoura::IMansoura& mans, int, int, int width, int height) override {
+      mans.moveTo(0,0);
+      mans.showPlainText("←→↑↓—▼αΣ∫√⊗≤",10);
       return true;
     }
     CLASSDESC_ACCESS(FontDisplay);
   public:
-    void requestRedraw() {if (surface.get()) surface->requestRedraw();}
+    void requestRedraw() {RenderNativeWindow::requestRedraw();}
     FontDisplay()=default;
     FontDisplay(const FontDisplay&)=default;
     FontDisplay& operator=(const FontDisplay&) {return *this;}

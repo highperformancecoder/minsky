@@ -18,7 +18,6 @@
 */
 
 #include "minsky.h"
-#include "cairoShimCairo.h"
 #include "geometry.h"
 #include "valueId.h"
 #include "variable.h"
@@ -48,10 +47,9 @@
 using namespace boost::locale::conv;
 
 using namespace classdesc;
-using namespace ecolab;
+using namespace mansoura;
 
 using namespace minsky;
-using namespace ecolab::cairo;
 
 void VariableBase::addPorts()
 {
@@ -86,16 +84,17 @@ ClickType::Type VariableBase::clickType(float xx, float yy) const
   const Rotate r(rotation()+(flipped(rotation())? 180: 0),0,0); // rotate into variable's frame of reference
   const RenderVariable rv(*this);
   const double z=zoomFactor();
-  try
-    {
-      const double hpx=z*rv.handlePos();
-      double hpy=-z*rv.height();
-      if (rv.height()<0.5*iHeight()) hpy=-z*0.5*iHeight(); 
-      const double dx=xx-x(), dy=yy-y();         
-      if (type()!=constant && hypot(dx - r.x(hpx,hpy), dy-r.y(hpx,hpy)) < 5)
-        return ClickType::inItem;
-    }
-  catch (...) {}
+  if (sliderVisible())
+    try
+      {
+        const double hpx=z*rv.handlePos();
+        double hpy=-z*rv.height();
+        if (rv.height()<0.5*iHeight()) hpy=-z*0.5*iHeight(); 
+        const double dx=xx-x(), dy=yy-y();         
+        if (type()!=constant && hypot(dx - r.x(hpx,hpy), dy-r.y(hpx,hpy)) < 5)
+          return ClickType::inItem;
+      }
+    catch (...) {}
   return Item::clickType(xx,yy);
 }
 
@@ -602,8 +601,8 @@ bool VariableBase::miniPlotEnabled(bool enabled)
 {
   if (enabled)
     {
-      miniPlot=make_shared<ecolab::Plot>();
-      miniPlot->plotType=ecolab::Plot::PlotType::bar;
+      miniPlot=make_shared<mansoura::Plot>();
+      miniPlot->plotType=mansoura::Plot::PlotType::bar;
     }
   else
     miniPlot=nullptr;
@@ -706,7 +705,7 @@ bool VariableBase::enableSlider(bool x) const
   return false;
 }
 
-void VariableBase::draw(const ICairoShim& cairoShim) const
+void VariableBase::draw(const IMansoura& cairoShim) const
 {
   auto [angle,flipped]=rotationAsRadians();
   const float z=zoomFactor();
@@ -727,9 +726,7 @@ void VariableBase::draw(const ICairoShim& cairoShim) const
   const double h=std::max(l_cachedNameRender->height(), 0.5f*iHeight());
   const double hoffs=l_cachedNameRender->top();
   
-  auto cairo=dynamic_cast<const CairoShimCairo&>(cairoShim)._internalGetCairoContext();
- 
-  unique_ptr<cairo::Path> clipPath;
+  unique_ptr<IPath> clipPath;
   {
     cairoShim.save();
     cairoShim.scale(z,z);
@@ -755,7 +752,7 @@ void VariableBase::draw(const ICairoShim& cairoShim) const
             }
           cairoShim.save();
           cairoShim.translate(-w,-h);
-          miniPlot->draw(cairo,2*w,2*h);
+          miniPlot->draw(cairoShim,2*w,2*h);
           cairoShim.restore();
         }
       catch (...) {} // ignore errors in obtaining values
@@ -803,7 +800,7 @@ void VariableBase::draw(const ICairoShim& cairoShim) const
             cairoShim.moveTo(r.x(w-mantissaBB.width-2,-h-hoffs+2),
                              r.y(w-mantissaBB.width-2,-h-hoffs+2));
             {
-              CairoShimSave cs(cairoShim);
+              PreserveContext cs(cairoShim);
               cairoShim.rotate(angle+(flipped? M_PI:0));
               l_cachedMantissa->show();
             }
@@ -812,7 +809,7 @@ void VariableBase::draw(const ICairoShim& cairoShim) const
               {
                 auto exponentBB=l_cachedExponent->extents();
                 cairoShim.moveTo(r.x(w-exponentBB.width-2,0),r.y(w-exponentBB.width-2,0));
-                CairoShimSave cs(cairoShim);
+                PreserveContext cs(cairoShim);
                 cairoShim.rotate(angle+(flipped? M_PI:0));
                 l_cachedExponent->show();
               }
@@ -841,7 +838,7 @@ void VariableBase::draw(const ICairoShim& cairoShim) const
       cairoShim.lineTo(w+2,0);
       cairoShim.lineTo(w,-h);
       cairoShim.closePath();
-      clipPath.reset(new cairo::Path(cairo));
+      clipPath=cairoShim.copyPath();
       cairoShim.stroke();
       if (sliderVisible())
         {
@@ -881,7 +878,7 @@ void VariableBase::draw(const ICairoShim& cairoShim) const
     }  
 
   cairoShim.newPath();
-  clipPath->appendToCurrent(cairo);
+  clipPath->appendToCurrent(cairoShim);
   // Rescale size of variable attached to intop. For ticket 94
   cairoShim.clip();
   if (selected) drawSelected(cairoShim);

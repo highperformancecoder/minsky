@@ -36,12 +36,7 @@
 #include <polyPackBase.h>
 #include "variableType.h"
 #include "itemT.h"
-#include <cairo/cairo.h>
-
-namespace ecolab {
-  class Pango;
-  class Plot;
-}
+#include "mansouraPlot.h"
 
 namespace minsky
 {
@@ -65,9 +60,9 @@ namespace minsky
   protected:
     /// cached font rendering objects
     mutable std::shared_ptr<RenderVariable> cachedNameRender;
-    mutable std::shared_ptr<ICacheRender> cachedMantissa;
-    mutable std::shared_ptr<ICacheRender> cachedExponent;
-    mutable double cachedValue, cachedTime, cachedMaxSliderSteps;
+    mutable std::shared_ptr<mansoura::ICacheRender> cachedMantissa;
+    mutable std::shared_ptr<mansoura::ICacheRender> cachedExponent;
+    mutable double cachedMaxSliderSteps, cachedValue, cachedTime;
   public:
     VariableCaches()=default;
     VariableCaches(const VariableCaches&) {}
@@ -94,7 +89,7 @@ namespace minsky
     void insertControlled(Selection& selection) override;
 
     /// miniature plot feature
-    classdesc::Exclude<std::shared_ptr<ecolab::Plot>> miniPlot;
+    classdesc::Exclude<std::shared_ptr<mansoura::Plot>> miniPlot;
     
   protected:
     void addPorts();
@@ -198,7 +193,7 @@ namespace minsky
     /** draws the icon onto the given cairo context 
         @return cairo path of icon outline
     */
-    void draw(const ICairoShim&) const override;
+    void draw(const mansoura::IMansoura&) const override;
     void resize(const LassoBox& b) override;
     ClickType::Type clickType(float x, float y) const override;
 

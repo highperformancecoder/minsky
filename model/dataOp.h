@@ -31,7 +31,7 @@ namespace minsky
     CLASSDESC_ACCESS(DataOp);
     friend struct SchemaHelper;
     void updateBB() override {bb.update(*this);}
-    void draw(const ICairoShim& cairoShim) const override {
+    void draw(const mansoura::IMansoura& cairoShim) const override {
       if (description().empty())
         OperationBase::draw(cairoShim);
       else

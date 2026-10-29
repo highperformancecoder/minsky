@@ -54,7 +54,7 @@ namespace minsky
       return r;
     }
     //void draw(cairo_t*);
-    void draw(const ICairoShim&, bool) const override;
+    void draw(const mansoura::IMansoura&, bool) const override;
   };
 
   
@@ -70,23 +70,23 @@ namespace minsky
     }
     static std::map<Units, double> maxStock;
     std::size_t numPorts() const override {return 2;}
-    void draw(const ICairoShim& cairoShim) const override;
+    void draw(const mansoura::IMansoura& cairoShim) const override;
   };
   
   class PhillipsDiagram: public RenderNativeWindow
   {
-    bool redraw(int, int, int width, int height) override;
+    bool redraw(const mansoura::IMansoura&, int, int, int width, int height) override;
     CLASSDESC_ACCESS(PhillipsDiagram);
     PhillipsStock* stockBeingMoved=nullptr;   // weak reference
     PhillipsStock* stockBeingRotated=nullptr; // weak reference
-    Exclude<Point> rotateOrigin;
+    classdesc::Exclude<Point> rotateOrigin;
     PhillipsFlow* flowBeingEdited=nullptr;    // weak reference
     int handleSelected=0;
     float x=0,y=0; ///< position for panning
   public:
     std::map<std::string, PhillipsStock> stocks;
     std::map<std::pair<std::string,std::string>, PhillipsFlow> flows;
-    void requestRedraw() {if (surface.get()) surface->requestRedraw();}
+    void requestRedraw() {RenderNativeWindow::requestRedraw();}
     /// populate phillips diagram from Godley tables in model
     void init() override;
     void clear() {

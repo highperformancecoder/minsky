@@ -20,6 +20,7 @@
 #ifndef MINSKY_H
 #define MINSKY_H
 
+#include <pango/pangocairo.h>
 #include "stringKeyMap.h"
 #include "intrusiveMap.h"
 #include "bookmark.h"
@@ -218,7 +219,7 @@ namespace minsky
     }
     void setRavelIconResource(const string& s)
     {Ravel::svgRenderer.setResource(s);}
-    SVGRenderer histogramResource;
+    mansoura::SVGRenderer histogramResource;
     
     /// @return available matching columns from other Godley tables
     /// @param currTable - this table, not included in the matching process
@@ -427,9 +428,6 @@ namespace minsky
     /// import a Vensim file
     void importVensim(const std::string&);
     
-    /// request all Godley table windows to redraw
-    void redrawAllGodleyTables();
-
     /// returns list of ids of all Godley tables in the current top level canvas
     std::vector<std::string> allGodleyTables() const;
     

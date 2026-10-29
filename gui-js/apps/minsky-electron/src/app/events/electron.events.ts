@@ -138,14 +138,14 @@ ipcMain.on(
 
 ipcMain.handle(
   events.GODLEY_VIEW_MOUSEDOWN,async (event, payload: MinskyProcessPayload) => {
-    let window=new GodleyIcon(minsky.namedItems.elem(payload.command)).popup;
+    let window=new GodleyIcon(minsky.namedItems.elem(payload.command)).editor;
     GodleyMenuManager.mouseDown(window,payload.mouseX,payload.mouseY);
   }
 );
 
 ipcMain.handle(
   events.GODLEY_VIEW_IMPORT_STOCK,async (event, payload: ImportStockPayload) => {
-    let window=new GodleyIcon(minsky.namedItems.elem(payload.command)).popup;
+    let window=new GodleyIcon(minsky.namedItems.elem(payload.command)).editor;
     GodleyMenuManager.importStock(window, payload.columnIndex, event);
   }
 );
@@ -154,7 +154,7 @@ ipcMain.handle(
   events.GODLEY_POPUP_UNDO,
   async (event, payload: { itemId: string; changes: number }) => {
     const godley = new GodleyIcon(minsky.namedItems.elem(payload.itemId));
-    await godley.popup.undo(payload.changes);
+    await godley.editor.undo(payload.changes);
     event.sender.send(events.GODLEY_POPUP_REFRESH);
   }
 );
