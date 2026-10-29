@@ -1783,10 +1783,13 @@ namespace minsky
   }
 
   double Minsky::fontScale()
-  {return ecolab::Pango::scaleFactor;}
+  {return mansoura::Pango::scaleFactor;}
   
   double Minsky::fontScale(double s)
-  {return ecolab::Pango::scaleFactor=s;}
+  {
+    ecolab::Pango::scaleFactor=s;
+    return mansoura::Pango::scaleFactor=s;
+  }
   
   void Minsky::latex(const string& filename, bool wrapLaTeXLines) 
   {

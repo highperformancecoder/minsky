@@ -935,15 +935,18 @@ namespace minsky
     minsky().maxWaitMS=(t>0.03)? 3000*t: 100.0;
   }
 
-    void Canvas::renderToPNGCropped(const std::string& filename, const ZoomCrop& z)
+  void Canvas::renderToPNGCropped(const std::string& filename, const ZoomCrop& z)
   {
     model->zoom(model->x(),model->y(),z.zoom);
     model->moveTo(model->x()-z.left,model->y()-z.top);
+    // RAII zoom and move operations to make things exception safe
+    auto zoomUndo=onStackExit([&](){
+      model->moveTo(model->x()+z.left,model->y()+z.top);
+      model->zoom(model->x(),model->y(),1/z.zoom);
+    });
     mansoura::renderToPNG(filename,z.width,z.height,
-                          [&](const IMansoura& shim){redraw(shim,0,0,z.width,z.height);});
-    model->moveTo(model->x()+z.left,model->y()+z.top);
-    model->zoom(model->x(),model->y(),1/z.zoom);
-  }
+                            [&](const IMansoura& shim){redraw(shim,0,0,z.width,z.height);});
+    }
 
 
 

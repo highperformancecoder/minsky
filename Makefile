@@ -211,7 +211,7 @@ LIBS+=-Wl,-framework -Wl,Security -Wl,-headerpad_max_install_names
 MODEL_OBJS+=getContext.o
 endif
 
-ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(RESTSERVICE_OBJS) RESTService.o addon.o typescriptAPI.o pyminsky.o createLinkGroupIcons.o
+ALL_OBJS=$(MODEL_OBJS) $(ENGINE_OBJS) $(SCHEMA_OBJS) $(RESTSERVICE_OBJS) RESTService.o addon.o typescriptAPI.o pyminsky.o createLinkGroupIcons.o 
 
 
 EXES=RESTService/minsky-RESTService$(EXE)
@@ -475,7 +475,7 @@ gui-js/build/minskyRESTService.node:| $(DLLS:%=$(DYNAMIC_LIB_DIR)/%)
 endif
 
 # N-API node embedded RESTService
-gui-js/build/minskyRESTService.node: addon.o  $(NODE_API) $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) RavelCAPI/libravelCAPI.a RavelCAPI/civita/libcivita.a 
+gui-js/build/minskyRESTService.node: addon.o  $(NODE_API) $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) mansoura/libmansoura.a RavelCAPI/libravelCAPI.a RavelCAPI/civita/libcivita.a 
 	mkdir -p gui-js/build
 ifdef MXE
 	$(LINK) -shared -o $@ $^ $(LIBS)
