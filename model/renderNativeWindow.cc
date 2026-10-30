@@ -32,6 +32,8 @@ Please especially review the lifecycle (constructors, desctructors and copy cons
 #include "windowInformation.h"
 #include "renderNativeWindow.rcd"
 #include "renderNativeWindow.xcd"
+#include "mansouraPlot.xcd"
+#include "mansouraPlot.rcd"
 
 #include "minsky_epilogue.h"
 
@@ -150,3 +152,4 @@ void macOSXRedraw(RenderNativeWindow& window,std::recursive_mutex& cmdMutex)
 } // namespace minsky
 
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::RenderNativeWindow);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(mansoura::Colour);
