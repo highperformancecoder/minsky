@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { RouterTestingModule } from '@angular/router/testing';
 import { ElectronService } from '@minsky/core';
 import { minsky } from '@minsky/shared';
-import { BehaviorSubject, of } from 'rxjs';
+import { of } from 'rxjs';
 import { VariablePaneComponent } from './variable-pane.component';
 
 // the real canvas pulls in d3 (ESM only), and its rendering is not under test
