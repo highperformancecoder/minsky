@@ -1,4 +1,4 @@
-import { Component, OnDestroy } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy } from '@angular/core';
 import { Subject } from 'rxjs';
 import { FormArray, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ElectronService } from '@minsky/core';
@@ -32,7 +32,7 @@ export class LogSimulationComponent implements OnDestroy {
     return this.form.get('all') as FormControl;
   }
 
-  constructor(private electronService: ElectronService) {
+  constructor(private electronService: ElectronService, private cdr: ChangeDetectorRef) {
     (async () => {
       if (this.electronService.isElectron) {
         const variableValues = await this.electronService.minsky.variableValues.keys();
@@ -48,6 +48,7 @@ export class LogSimulationComponent implements OnDestroy {
               })
             );
           });
+        this.cdr.markForCheck();
       }
     })();
 

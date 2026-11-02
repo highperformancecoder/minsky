@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { ElectronService } from '@minsky/core';
@@ -103,7 +103,8 @@ export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
  
   constructor(
     private electronService: ElectronService,
-    private route: ActivatedRoute
+    private route: ActivatedRoute,
+    private cdr: ChangeDetectorRef
   ) {
     this.route.queryParams.pipe(takeUntil(this.destroy$)).subscribe((params) => {
       this.itemId = params.itemId;
@@ -173,6 +174,7 @@ export class PlotWidgetOptionsComponent implements OnInit, OnDestroy {
       this.availableMarkers=await plot.availableMarkers();
       this.horizontalMarkers=await plot.horizontalMarkers.$properties();
       this.verticalMarkers=await plot.verticalMarkers.$properties();
+      this.cdr.markForCheck();
     }
   }
 
