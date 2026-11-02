@@ -78,7 +78,7 @@ namespace minsky
       cairoShim.closePath();		  	 
     
       cairoShim.setSourceRGB(0,0,1);    
-      cairoShim.strokePreserve();    
+      cairoShim.stroke(true);    
     
       if (coupled() && intVar)
         {

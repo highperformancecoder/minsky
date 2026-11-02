@@ -470,13 +470,12 @@ namespace minsky
         PreserveContext stash(cairoShim);
         cairoShim.rectangle(left, top, w, h);
         cairoShim.rectangle(left-border*z, top-border*z, w+2*border*z, h+2*border*z);
-        cairoShim.strokePreserve();
+        cairoShim.stroke(true);
         if (onBorder)
           { // shadow the border when mouse is over it
             PreserveContext stash(cairoShim);
             cairoShim.setSourceRGBA(0.5,0.5,0.5,0.5);
-            cairoShim.setFillRule(CAIRO_FILL_RULE_EVEN_ODD);
-            cairoShim.fill();
+            cairoShim.fillEvenOdd();
           }
         cairoShim.newPath();
         cairoShim.rectangle(left, top, w, h);

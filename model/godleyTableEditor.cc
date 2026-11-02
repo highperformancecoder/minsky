@@ -400,7 +400,7 @@ namespace minsky
                     const PreserveContext cs(cairo);
                     cairo.setSourceRGBA(1,1,1,1);
                     cairo.rectangle(xx,yy,colLeftMargin[i+1]-xx,rowHeight);
-                    cairo.fillPreserve();
+                    cairo.fill(true);
                     cairo.setSourceRGBA(1,.55,0,1);
                     cairo.setLineWidth(2);
                     cairo.stroke();

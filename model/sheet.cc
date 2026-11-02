@@ -309,16 +309,15 @@ void Sheet::draw(const IMansoura& cairo) const
   cairo.scale(z,z);
 
   cairo.rectangle(-0.5*m_width+border,-0.5*m_height+border,m_width-2*border,m_height-2*border);
-  cairo.strokePreserve();
+  cairo.stroke(true);
   cairo.rectangle(-0.5*m_width,-0.5*m_height,m_width,m_height);
-  cairo.strokePreserve();
+  cairo.stroke(true);
   // draw border
   if (onBorder)
     { // shadow the border when mouse is over it
       const PreserveContext cs(cairo);
       cairo.setSourceRGBA(0.5,0.5,0.5,0.5);
-      cairo.setFillRule(CAIRO_FILL_RULE_EVEN_ODD);
-      cairo.fill();
+      cairo.fillEvenOdd();
     }
   cairo.newPath();
   cairo.rectangle(-0.5*m_width+border,-0.5*m_height+border,m_width-2*border,m_height-2*border);

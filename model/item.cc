@@ -410,7 +410,7 @@ namespace minsky
         auto bbox=cairoShim.textExtents(tp);
         cairoShim.rectangle(0,0,bbox.width,bbox.height);
         cairoShim.setSourceRGB(1,1,1);
-        cairoShim.fillPreserve();
+        cairoShim.fill(true);
         cairoShim.setSourceRGB(0,0,0);
         cairoShim.showText(tp);
         cairoShim.stroke();

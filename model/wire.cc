@@ -476,7 +476,7 @@ namespace
         cairo.translate(midx,midy);
         cairo.rectangle(0,0,pango->extents().width,pango->extents().height);
         cairo.setSourceRGB(1,1,1);
-        cairo.fillPreserve();
+        cairo.fill(true);
         cairo.setSourceRGB(0,0,0);
         cairo.setLineWidth(1);
         cairo.setDash(nullptr,0,0);

@@ -72,7 +72,7 @@ namespace minsky
       fill=[](CAPIRenderer* c){s(c).fill();};
       clip=[](CAPIRenderer* c){s(c).clip();};
       stroke=[](CAPIRenderer* c){s(c).stroke();};
-      strokePreserve=[](CAPIRenderer* c){s(c).strokePreserve();};
+      strokePreserve=[](CAPIRenderer* c){s(c).stroke(true);};
       setSourceRGB=[](CAPIRenderer* c, double r, double g, double b){s(c).setSourceRGB(r,g,b);};
       setSourceRGBA=[](CAPIRenderer* c, double r, double g, double b, double a){s(c).setSourceRGBA(r,g,b,a);};
       showText=s_showText;

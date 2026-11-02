@@ -107,7 +107,7 @@ namespace minsky
       }
     cairoShim.rectangle(-r,-r,2*r,2*r);
     cairoShim.rectangle(-1.1*r,-1.1*r,2.2*r,2.2*r);
-    cairoShim.strokePreserve();
+    cairoShim.stroke(true);
     if (onBorder || lockGroup)
       { // shadow the border when mouse is over it
         cairoShim.save();
@@ -117,8 +117,7 @@ namespace minsky
         c.r*=0.5; c.g*=0.5; c.b*=0.5;
         c.a=onBorder? 0.5:0.3;
         cairoShim.setSourceRGBA(c.r,c.g,c.b,c.a);
-        cairoShim.setFillRule(CAIRO_FILL_RULE_EVEN_ODD);
-        cairoShim.fillPreserve();
+        cairoShim.fillEvenOdd(true);
         cairoShim.restore();
       }
     
