@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { ChangeDetectorRef, Component } from '@angular/core';
 import { ElectronService } from '@minsky/core';
 import { MatButtonModule } from '@angular/material/button';
 
@@ -13,10 +13,11 @@ import { MatButtonModule } from '@angular/material/button';
 export class FindAllInstancesComponent {
   instances: string[];
 
-  constructor(private electronService: ElectronService) {
+  constructor(private electronService: ElectronService, private cdr: ChangeDetectorRef) {
     (async () => {
       await this.electronService.minsky.listAllInstances();
       this.instances = await this.electronService.minsky.variableInstanceList.names();
+      this.cdr.markForCheck();
     })();
   }
 

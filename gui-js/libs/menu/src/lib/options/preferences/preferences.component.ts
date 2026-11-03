@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { ElectronService } from '@minsky/core';
 import { events } from '@minsky/shared';
@@ -20,7 +20,7 @@ export class PreferencesComponent implements OnInit {
   form: FormGroup;
   availableFonts: string[] = [];
 
-  constructor(private electronService: ElectronService) {
+  constructor(private electronService: ElectronService, private cdr: ChangeDetectorRef) {
     this.form = new FormGroup({
       godleyTableOutputStyle: new FormControl(null),
       enableMultipleEquityColumns: new FormControl(null),
@@ -38,6 +38,7 @@ export class PreferencesComponent implements OnInit {
       );
       this.form.patchValue(preferences);
       this.availableFonts = await this.electronService.minsky.listFonts();
+      this.cdr.markForCheck();
     }
   }
 
