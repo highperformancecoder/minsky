@@ -18,6 +18,7 @@
      minsky.variableValues().$keys()
      // methods beginning with @ are written with $, eg $keys
      minsky.variableValues()()                     // the whole value as an object
+     minsky.variableValues().dispose()              // release the wrapped object
 
   Elements of maps are addressed by path, which can be called directly:
 
@@ -32,6 +33,14 @@
 // bind the members of the C++ object \a impl whose names start with
 // \a prefix as methods of \a object
 function attachMethods(impl, object, prefix, methods) {
+  try {
+    attachMethodsFromList(impl, object, prefix, methods);
+  } finally {
+    methods.delete();
+  }
+}
+
+function attachMethodsFromList(impl, object, prefix, methods) {
   for (let i=0; i<methods.size(); ++i) {
     const fullMethod=methods.get(i);
     if (fullMethod.length>prefix.length && fullMethod.startsWith(prefix)) {
@@ -41,18 +50,38 @@ function attachMethods(impl, object, prefix, methods) {
         // functions already have (eg 'arguments', 'caller', 'name', 'length')
         const method=(...args)=>{
           const resultObj=impl.call(fullMethod,stringify(args));
-          const children=resultObj.list();
-          if (children.size()>0) {
-            // an object: return a function giving its value (converted
-            // on demand, as it can be large), with its methods attached
-            const r=()=>parseJSON(resultObj.json());
-            attachMethods(resultObj,r,"",children);
-            return r;
+          let children;
+          let retained=false;
+          try {
+            children=resultObj.list();
+            if (children.size()>0) {
+              // an object: return a function giving its value (converted
+              // on demand, as it can be large), with its methods attached
+              let disposed=false;
+              const r=()=>{
+                if (disposed) throw new Error("Object wrapper has been disposed");
+                return parseJSON(resultObj.json());
+              };
+              Object.defineProperty(r,'dispose',{value:()=>{
+                if (!disposed) {
+                  disposed=true;
+                  resultObj.delete();
+                }
+              }});
+              const childMethods=children;
+              children=undefined;
+              attachMethods(resultObj,r,"",childMethods);
+              retained=true;
+              return r;
+            }
+            return parseJSON(resultObj.json());
+          } finally {
+            if (children) children.delete();
+            if (!retained) resultObj.delete();
           }
-          return parseJSON(resultObj.json());
         };
         Object.defineProperty(object,m,{value: method, writable: true, configurable: true, enumerable: true});
-        attachMethods(impl,method,fullMethod+'.',methods);
+        attachMethodsFromList(impl,method,fullMethod+'.',methods);
       }
     }
   }
@@ -77,7 +106,11 @@ function newMinsky(Module, canvasId, options={}) {
   minsky.impl=impl;
   attachMethods(impl,minsky,"",impl.list());
   // call the method at \a path, with the remaining arguments
-  minsky.call=(path,...args)=>parseJSON(impl.call(path,stringify(args)).json());
+  minsky.call=(path,...args)=>{
+    const result=impl.call(path,stringify(args));
+    try {return parseJSON(result.json());}
+    finally {result.delete();}
+  };
   minsky.onRedraw=()=>{}; // hook function called after each redraw
 
   // redraws are coalesced into one per animation frame

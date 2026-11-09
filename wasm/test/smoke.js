@@ -8,7 +8,51 @@ global.JSON5=require('../../gui-js/node_modules/json5');
 const createMinsky=require('../jsminsky.js');
 const {makeMockContext}=require('./mockCanvas.js');
 
-const names=w=>{const l=w.list(); const r=[]; for (let i=0; i<l.size(); ++i) r.push(l.get(i)); return r;};
+const names=w=>{
+  const l=w.list();
+  try {const r=[]; for (let i=0; i<l.size(); ++i) r.push(l.get(i)); return r;}
+  finally {l.delete();}
+};
+
+// Embind vectors and returned objects own Wasm allocations.
+const {newMinsky,attachMethods}=require('../minsky.js');
+let vectorsDeleted=0, resultsDeleted=0;
+const vector=values=>({
+  size:()=>values.length, get:i=>values[i], delete:()=>{++vectorsDeleted;}
+});
+const result=(value,children=[])=>({
+  json:()=>JSON.stringify(value), list:()=>vector(children),
+  call:()=>result(9),
+  delete:()=>{++resultsDeleted;}
+});
+const fakeImpl={
+  list:()=>vector(['scalar','object','object.child']),
+  call:path=>path==='object'? result({value:7},['child']): result(path==='scalar'?7:9)
+};
+const wrapped=()=>{};
+attachMethods(fakeImpl,wrapped,'',fakeImpl.list());
+assert.strictEqual(vectorsDeleted,1,'method list was not released');
+assert.strictEqual(wrapped.scalar(),7);
+assert.strictEqual(resultsDeleted,1,'scalar result was not released');
+const object=wrapped.object();
+assert.deepStrictEqual(object(),{value:7});
+assert.strictEqual(object.child(),9);
+object.dispose();
+object.dispose();
+assert.throws(()=>object(),/disposed/);
+assert.strictEqual(vectorsDeleted,4,'result method lists were not released');
+assert.strictEqual(resultsDeleted,3,'retained and scalar results were not released');
+
+const canvas={width:1,height:1,tabIndex:0,getContext:()=>({setTransform(){}}),
+  getBoundingClientRect:()=>({left:0,top:0,width:1,height:1}),addEventListener(){}};
+let directResultDeleted=0;
+class FakeMinsky {
+  list(){return vector([]);}
+  render(){}
+  call(){return {json:()=>'7',delete:()=>{++directResultDeleted;}};}
+}
+newMinsky({Minsky:FakeMinsky},canvas).call('scalar');
+assert.strictEqual(directResultDeleted,1,'direct-call result was not released');
 
 createMinsky().then(M=>{
   const {ctx,log}=makeMockContext(800,600);
@@ -50,7 +94,6 @@ createMinsky().then(M=>{
   assert.strictEqual(count('save'),count('restore'),'unbalanced save/restore');
 
   // the Javascript wrapper mirrors the C++ object structure
-  const {attachMethods}=require('../minsky.js');
   const minsky=()=>{};
   attachMethods(m,minsky,'',m.list());
   assert.strictEqual(minsky.t(),0.34600000000000025);
