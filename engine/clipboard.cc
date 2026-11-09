@@ -21,7 +21,7 @@
 
 #ifdef _WIN32
 #include <windows.h>
-#else
+#elif !defined(__EMSCRIPTEN__)
 #include "libclipboard.h"
 #endif
 
@@ -34,7 +34,7 @@ namespace minsky
 {
   struct Clipboard::Impl
   {
-#ifndef _WIN32
+#if !defined(_WIN32) && !defined(__EMSCRIPTEN__)
     clipboard_c* clipboard;
     Impl(): clipboard(clipboard_new(nullptr)) {}
     ~Impl() {clipboard_free(clipboard);}
@@ -55,6 +55,9 @@ namespace minsky
         }
       CloseClipboard();
       return r;
+#elif defined(__EMSCRIPTEN__)
+    // TODO: the browser's clipboard API is asynchronous, so cannot be used here
+    return {};
 #else
      if (pimpl->clipboard)
       {
@@ -86,6 +89,8 @@ namespace minsky
             GlobalFree(h);
         }
       CloseClipboard();
+#elif defined(__EMSCRIPTEN__)
+    (void)text; // TODO: see getClipboard()
 #else
     if (pimpl->clipboard)
       {

@@ -18,7 +18,7 @@
 */
 #include "minsky.h"
 #include "cairoItems.h"
-#include <pango.h>
+#include <fontSettings.h>
 #include "classdesc_access.h"
 #include "flowCoef.h"
 #include "userFunction.h"
@@ -26,7 +26,9 @@
 #include "variableInstanceList.h"
 
 #include <cairo_base.h>
+#ifndef __EMSCRIPTEN__
 #include "ecolab/include/pango.h"
+#endif
 
 #include "schema3.h"
 
@@ -1776,19 +1778,23 @@ namespace minsky
   {
     _defaultFont.reset(new char[x.length()+1]);
     strncpy(_defaultFont.get(),x.c_str(),x.length()+1);
-    mansoura::Pango::defaultFamily=_defaultFont.get();
+    mansoura::GlobalFontSettings::defaultFamily=_defaultFont.get();
+#ifndef __EMSCRIPTEN__
     // TODO: remove once ecolab::Pango has been eradicated
     ecolab::Pango::defaultFamily=_defaultFont.get();
+#endif
     return x;
   }
 
   double Minsky::fontScale()
-  {return mansoura::Pango::scaleFactor;}
+  {return mansoura::GlobalFontSettings::scaleFactor;}
   
   double Minsky::fontScale(double s)
   {
+#ifndef __EMSCRIPTEN__
     ecolab::Pango::scaleFactor=s;
-    return mansoura::Pango::scaleFactor=s;
+#endif
+    return mansoura::GlobalFontSettings::scaleFactor=s;
   }
   
   void Minsky::latex(const string& filename, bool wrapLaTeXLines) 

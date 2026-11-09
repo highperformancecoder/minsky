@@ -22,7 +22,6 @@
 #include "group.h"
 #include "selection.h"
 #include "lasso.h"
-#include <pango.h>
 
 #include "CSVDialog.rcd"
 #include "CSVTools.xcd"

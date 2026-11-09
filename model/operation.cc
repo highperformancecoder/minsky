@@ -25,7 +25,6 @@
 #include "str.h"
 #include "cairoItems.h"
 
-#include <pango.h>
 #include "minsky_epilogue.h"
 
 #include <math.h>
