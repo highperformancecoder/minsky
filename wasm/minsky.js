@@ -23,6 +23,9 @@
 
      minsky.call('variableValues.@elem.:Y.value')
 
+  NaN and Infinity values are preserved in both directions, using JSON5
+  (which must be loaded: see test.html).
+
   Errors thrown in C++ appear as Javascript Errors.
 */
 
@@ -37,7 +40,7 @@ function attachMethods(impl, object, prefix, methods) {
         // defineProperty, as plain assignment fails for names that
         // functions already have (eg 'arguments', 'caller', 'name', 'length')
         const method=(...args)=>{
-          const resultObj=impl.call(fullMethod,JSON.stringify(args));
+          const resultObj=impl.call(fullMethod,stringify(args));
           const children=resultObj.list();
           if (children.size()>0) {
             // an object: return a function giving its value (converted
@@ -55,14 +58,14 @@ function attachMethods(impl, object, prefix, methods) {
   }
 }
 
-// Minsky emits NaN and Infinity, which are not strict JSON
-function parseJSON(s) {
-  try {
-    return JSON.parse(s);
-  } catch (e) {
-    return JSON.parse(s.replace(/\bNaN\b/g,'null').replace(/-?\bInfinity\b/g,'null'));
-  }
-}
+// Minsky uses NaN and Infinity as values, and reads and writes them as
+// JSON5, which strict JSON cannot represent (JSON.stringify turns them
+// into null). Needs the JSON5 library, loaded in the page with a
+// <script> tag, or require()able from node.
+const JSON5lib=typeof JSON5!=="undefined"? JSON5: require('json5');
+// arguments are sent as double quoted JSON5, ie JSON with NaN and Infinity allowed
+const stringify=x=>JSON5lib.stringify(x,{quote: '"'});
+const parseJSON=s=>JSON5lib.parse(s);
 
 const ZOOM_IN_FACTOR=1.1, ZOOM_OUT_FACTOR=0.91;
 
@@ -74,7 +77,7 @@ function newMinsky(Module, canvasId, options={}) {
   minsky.impl=impl;
   attachMethods(impl,minsky,"",impl.list());
   // call the method at \a path, with the remaining arguments
-  minsky.call=(path,...args)=>parseJSON(impl.call(path,JSON.stringify(args)).json());
+  minsky.call=(path,...args)=>parseJSON(impl.call(path,stringify(args)).json());
   minsky.onRedraw=()=>{}; // hook function called after each redraw
 
   // redraws are coalesced into one per animation frame
@@ -157,4 +160,4 @@ const specialKeys={
 };
 const modifiers=e=>(e.shiftKey? 1: 0)|(e.ctrlKey? 4: 0)|(e.altKey? 8: 0);
 
-if (typeof module!=="undefined") module.exports={newMinsky, attachMethods, parseJSON};
+if (typeof module!=="undefined") module.exports={newMinsky, attachMethods, parseJSON, stringify};

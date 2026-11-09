@@ -3,6 +3,8 @@
 const assert=require('assert');
 const fs=require('fs');
 const path=require('path');
+// minsky.js expects JSON5 to be loaded, as it is by test.html
+global.JSON5=require('../../gui-js/node_modules/json5');
 const createMinsky=require('../jsminsky.js');
 const {makeMockContext}=require('./mockCanvas.js');
 
@@ -64,6 +66,16 @@ createMinsky().then(M=>{
   log.length=0;
   m.render(800,600);
   assert(log.length>0);
+  // NaN and Infinity survive the round trip, in both directions
+  const {parseJSON,stringify}=require('../minsky.js');
+  assert.strictEqual(stringify([NaN,-Infinity,"a\"b"]),'[NaN,-Infinity,"a\\"b"]');
+  const call=(path,...args)=>parseJSON(m.call(path,stringify(args)).json());
+  const spec=call('variableValues.@elem.:Y.spec.missingValue');
+  assert(Number.isNaN(spec),'NaN should be preserved, got '+spec);
+  // and sending them: set a value to Infinity, and read it back
+  call('variableValues.@elem.:Y.sliderMax',Infinity);
+  assert.strictEqual(call('variableValues.@elem.:Y.sliderMax'),Infinity);
+
   // adding an operation changes what is drawn
   m.call('clearAllMaps','[]');
   m.call('load','["/g.mky"]');
