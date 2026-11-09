@@ -78,15 +78,19 @@ template <class F> auto jsGuard(F f) -> decltype(f())
 struct CppWrapper
 {
   RPPtr wrappedObject=make_shared<classdesc::RESTProcessVoid>();
+  std::string path;
   CppWrapper()=default;
-  CppWrapper(const RPPtr& x): wrappedObject(x) {}
+  CppWrapper(const RPPtr& x, const std::string& path): wrappedObject(x), path(path) {}
   /// call method of this object. \a args is a JSON array of arguments
   CppWrapper call(const std::string& method, const string& args)
   {
     return jsGuard([&]{
       json_pack_t jin;
       read(args,jin);
-      return CppWrapper(wrappedObject->process("."+method, jin));
+      const auto command=path+"."+method;
+      auto result=wrappedObject->process("."+method, jin);
+      rminsky.commandHook(command,jin);
+      return CppWrapper(result,command);
     });
   }
   /// JSON representation of the wrapped value
@@ -111,7 +115,7 @@ struct JSMinsky: public CppWrapper
   MansouraHTMLCanvas man;
   /// @param canvas a CanvasRenderingContext2D
   JSMinsky(const val& canvas):
-    CppWrapper(rminsky.registry.at("minsky")), man(canvas)
+    CppWrapper(rminsky.registry.at("minsky"),"minsky"), man(canvas)
   {
     // text metrics for contexts without a canvas (item bounding boxes)
     // (preferably with an offscreen canvas, so as not to disturb the visible one's state)
