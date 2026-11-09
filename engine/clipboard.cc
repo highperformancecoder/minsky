@@ -34,7 +34,9 @@ namespace minsky
 {
   struct Clipboard::Impl
   {
-#if !defined(_WIN32) && !defined(__EMSCRIPTEN__)
+#ifdef __EMSCRIPTEN__
+    std::string stash;
+#elif !defined(_WIN32)
     clipboard_c* clipboard;
     Impl(): clipboard(clipboard_new(nullptr)) {}
     ~Impl() {clipboard_free(clipboard);}
@@ -57,7 +59,7 @@ namespace minsky
       return r;
 #elif defined(__EMSCRIPTEN__)
     // TODO: the browser's clipboard API is asynchronous, so cannot be used here
-    return {};
+    return pimpl->stash;
 #else
      if (pimpl->clipboard)
       {
@@ -90,7 +92,7 @@ namespace minsky
         }
       CloseClipboard();
 #elif defined(__EMSCRIPTEN__)
-    (void)text; // TODO: see getClipboard()
+    pimpl->stash=text;
 #else
     if (pimpl->clipboard)
       {

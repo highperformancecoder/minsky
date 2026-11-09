@@ -10,10 +10,11 @@
 # usage: make -C wasm [-j8] [DEBUG=1]
 #        make -C wasm test        run the node smoke test
 #        make -C wasm clean
+.SUFFIXES: .xcd .rcd .tcd .gch .gcd $(SUFFIXES)
 
 TOP:=$(abspath ..)
 BUILD:=$(abspath build)
-EMLIBS?=/usr/emscripten
+EMLIBS?=$(HOME)/usr/emscripten
 ECOLAB_HOME=$(TOP)/ecolab
 CLASSDESC=$(ECOLAB_HOME)/classdesc/classdesc
 

@@ -2277,7 +2277,9 @@ export class mansoura__SVGRenderer extends CppClass {
     super(prefix);
   }
   async render(a1: minsky__dummy,a2: number,a3: number): Promise<void> {return this.$callMethod('render',a1,a2,a3);}
+  async resource(...args: string[]): Promise<string> {return this.$callMethod('resource',...args);}
   async setResource(a1: string): Promise<void> {return this.$callMethod('setResource',a1);}
+  async source(...args: string[]): Promise<string> {return this.$callMethod('source',...args);}
 }
 
 export class minsky__Canvas__ZoomCrop extends CppClass {
