@@ -142,9 +142,9 @@ function newMinsky(Module, canvasId, options={}) {
   canvasElem.onkeydown=guarded(event=>{
     if (event.key.length!==1 && !specialKeys[event.key]) return;
     const [x,y]=lastPos;
-    minsky.canvas.keyPress({keySym: specialKeys[event.key] ?? event.key.codePointAt(0),
-      utf8: event.key.length===1? event.key: "", state: modifiers(event), x, y});
-    event.preventDefault();
+    if (minsky.canvas.keyPress({keySym: specialKeys[event.key] ?? event.key.codePointAt(0),
+      utf8: event.key.length===1? event.key: "", state: modifiers(event), x, y}))
+      event.preventDefault();
   });
   let lastPos=[0,0];
   canvasElem.addEventListener('mousemove',event=>{lastPos=pos(event);});
