@@ -23,7 +23,7 @@ fi
 for i in debian fedora opensuse/leap ubuntu; do
     case $i in
         debian) versions="12 13";;
-        ubuntu) versions="24.04 25.04 25.10 26.04";;
+        ubuntu) versions="24.04 25.04 25.10 26.04 26.10";;
         fedora) versions="41 42 43 44 rawhide";;
         opensuse/leap) versions="15.6 16.0";;
         *) versions=default;;
@@ -58,6 +58,7 @@ for i in Dockerfile-*[^~]; do
     for version in $versions; do
         if [ -z "$GITHUB_ACTIONS" ]; then
             smokeIt $project $version $i $CACHE_FLAG &
+            sleep 20
         else # do it sequentially on Github to avoit OOM killers
             smokeIt $project $version $i $CACHE_FLAG
         fi
