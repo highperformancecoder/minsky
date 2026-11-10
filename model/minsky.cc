@@ -1776,19 +1776,19 @@ namespace minsky
   {
     _defaultFont.reset(new char[x.length()+1]);
     strncpy(_defaultFont.get(),x.c_str(),x.length()+1);
-    mansoura::Pango::defaultFamily=_defaultFont.get();
+    mansoura::GlobalFontSettings::defaultFamily=_defaultFont.get();
     // TODO: remove once ecolab::Pango has been eradicated
     ecolab::Pango::defaultFamily=_defaultFont.get();
     return x;
   }
 
   double Minsky::fontScale()
-  {return mansoura::Pango::scaleFactor;}
+  {return mansoura::GlobalFontSettings::scaleFactor;}
   
   double Minsky::fontScale(double s)
   {
     ecolab::Pango::scaleFactor=s;
-    return mansoura::Pango::scaleFactor=s;
+    return mansoura::GlobalFontSettings::scaleFactor=s;
   }
   
   void Minsky::latex(const string& filename, bool wrapLaTeXLines) 

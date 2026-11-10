@@ -36,7 +36,7 @@ namespace minsky
     const mansoura::IMansoura& cairoShim;
     // caching of text rendering
     std::shared_ptr<mansoura::ICacheRender> cachedRenderer;
-    void* m_context;
+    const void* m_context;
     float w, h, hoffs;
   public:
     RenderVariable(const VariableBase& var);
@@ -55,7 +55,7 @@ namespace minsky
     /// x coordinate of the slider handle in the unrotated/unscaled
     /// frame of reference
     double handlePos() const;
-    void* context() const {return m_context;}
+    const void* context() const {return m_context;}
   };
 
   void drawTriangle(const mansoura::IMansoura& cairoShim, double x, double y, const mansoura::Colour& col, double angle=0);
