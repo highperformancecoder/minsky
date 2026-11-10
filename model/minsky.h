@@ -20,7 +20,9 @@
 #ifndef MINSKY_H
 #define MINSKY_H
 
+#ifndef __EMSCRIPTEN__
 #include <pango/pangocairo.h>
+#endif
 #include "stringKeyMap.h"
 #include "intrusiveMap.h"
 #include "bookmark.h"

@@ -58,6 +58,8 @@ NOBBLE(NOBBLE_TARG(__gnu_cxx::__normal_iterator<const long unsigned int*, std::v
 NOBBLE(NOBBLE_TARG(__gnu_cxx::__normal_iterator<const long long unsigned int*, std::vector<T,A>>),NOBBLE_TARG(class T,class A))
 #elif defined(MAC_OSX_TK)
 NOBBLE(std::__1::__wrap_iter<const unsigned long *>,)
+#elif defined(__EMSCRIPTEN__) // libc++, with 32 bit size_t
+NOBBLE(NOBBLE_TARG(std::__wrap_iter<const T*>),NOBBLE_TARG(class T))
 #elif defined(__clang__)
 NOBBLE(NOBBLE_TARG(__gnu_cxx::__normal_iterator<const unsigned long*, std::vector<T,A>>),NOBBLE_TARG(class T,class A))
 #endif

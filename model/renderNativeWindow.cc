@@ -86,6 +86,20 @@ void macOSXRedraw(RenderNativeWindow& window,std::recursive_mutex& cmdMutex)
   }
 
   
+  bool drawToContext(RenderNativeWindow& w, const mansoura::IMansoura& shim, int width, int height)
+  {
+    const lock_guard lock(w.drawMutex);
+    // record the size of the surface, as renderFrame() would, so that
+    // operations needing the window size (eg zoomToFit) work. The
+    // parent window id is only used as a flag that a window exists.
+    auto& fa=w.m_frameArgs;
+    if (fa.parentWindowId.empty()) fa.parentWindowId="context";
+    fa.offsetLeft=fa.offsetTop=0;
+    fa.childWidth=width;
+    fa.childHeight=height;
+    return w.redraw(shim,0,0,width,height);
+  }
+
   void RenderNativeWindow::requestRedraw()
   {
     if (!winInfoPtr.get()) return;

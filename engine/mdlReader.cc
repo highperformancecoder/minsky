@@ -69,9 +69,9 @@ namespace minsky
     string collapseWS(const string& x)
     {
       // work in UTF-32 to simplify string analysis
-      auto xx=utf_to_utf<uint32_t>(x);
-      basic_string<uint32_t> result;
-      uint32_t lastNonWS=0;
+      auto xx=utf_to_utf<char32_t>(x);
+      u32string result;
+      char32_t lastNonWS=0;
       bool quoted=false, lastWS=false, inIdentifier=false;
       for (auto& i: xx)
         {
@@ -99,9 +99,9 @@ namespace minsky
             {
               // convert verboten characters into ones more friendly to exprtk
               // we use . as an escape into a numerical unicode code uXXXX, terminated by another .
-              basic_string<uint32_t> exprTkGoodChar;
+              u32string exprTkGoodChar;
               if (inIdentifier)
-                exprTkGoodChar=utf_to_utf<uint32_t>(".u"+to_string(i)+".");
+                exprTkGoodChar=utf_to_utf<char32_t>(".u"+to_string(i)+".");
               else
                 exprTkGoodChar+=i;
               // camelcase if collapsing whitespace in an identifier, ' ' otherwise

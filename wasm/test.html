@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>Minsky wasm</title>
+<style>
+  body {font-family: sans-serif; margin: 1em;}
+  canvas {border: 1px solid #888; background: #ccc;}
+  #bar {margin-bottom: .5em;}
+  #msg {color: #a00; margin-left: 1em;}
+</style>
+</head>
+<body>
+<div id="bar">
+  <select id="example">
+    <option>GoodwinLinear.mky</option>
+    <option>LoanableFunds.mky</option>
+    <option>BasicGrowthModel.mky</option>
+    <option>EndogenousMoney.mky</option>
+  </select>
+  <button id="load">Load</button>
+  <button id="fit">Zoom to fit</button>
+  <button id="run">Run</button>
+  <button id="step">Step</button>
+  <button id="reset">Reset</button>
+  <span id="t"></span><span id="msg"></span>
+</div>
+<canvas id="c" width="1000" height="650"></canvas>
+
+<!-- json5 is needed by minsky.js; use any copy of it, eg from a CDN. This one is the
+     copy the GUI uses, which is why the page must be served from the repository root. -->
+<script src="json5.js"></script>
+<script src="jsminsky.js"></script>
+<script src="minsky.js"></script>
+<script>
+// Serve the parent directory, eg: cd .. && python3 -m http.server, then open /wasm/test.html
+const msg=text=>{document.getElementById('msg').textContent=text||'';};
+createMinsky().then(Module=>{
+  const minsky=newMinsky(Module,'c',{onError: e=>msg(e.message||e)});
+  window.minsky=minsky;   // for experimenting in the console
+  let running=false, frame=0;
+  const showT=()=>{document.getElementById('t').textContent='t='+minsky.t().toPrecision(5);};
+  const tick=()=>{
+    if (!running) return;
+    try {minsky.step();} catch (e) {msg(e.message); running=false; return;}
+    showT(); minsky.redraw();
+    frame=requestAnimationFrame(tick);
+  };
+  const $=id=>document.getElementById(id);
+  $('load').onclick=async ()=>{
+    msg();
+    try {await minsky.loadURL('../examples/'+$('example').value); minsky.reset(); showT();}
+    catch (e) {msg(e.message);}
+  };
+  $('fit').onclick=()=>{minsky.canvas.zoomToFit(); minsky.redraw();};
+  $('step').onclick=()=>{try {minsky.step();} catch (e) {msg(e.message);} showT(); minsky.redraw();};
+  $('reset').onclick=()=>{minsky.reset(); showT(); minsky.redraw();};
+  $('run').onclick=()=>{
+    running=!running;
+    $('run').textContent=running? 'Stop': 'Run';
+    if (running) tick(); else cancelAnimationFrame(frame);
+  };
+  $('load').click();
+});
+</script>
+</body>
+</html>

@@ -84,6 +84,10 @@ namespace minsky
 
     // implemented as a free function to avoid Classdesc exposing this to Typescript
     friend void macOSXRedraw(RenderNativeWindow&,std::recursive_mutex&);
+    /// Draw the window's contents into \a shim, for backends that
+    /// manage their own surface (eg an HTML canvas), rather than
+    /// using renderFrame(). Also a free function to avoid Classdesc exposing it.
+    friend bool drawToContext(RenderNativeWindow&, const mansoura::IMansoura& shim, int width, int height);
     // do not clobber winInfoPtr on load of model
     RenderNativeWindow& operator=(const RenderNativeWindow& x) {m_resolutionScaleFactor=x.m_resolutionScaleFactor; return *this;}
     RenderNativeWindow()=default;
