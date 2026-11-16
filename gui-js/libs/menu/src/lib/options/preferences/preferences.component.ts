@@ -29,6 +29,7 @@ export class PreferencesComponent implements OnInit {
       // focusFollowsMouse: new FormControl(null),
       font: new FormControl(null),
       numBackups: new FormControl(null),
+      silenceRavelErrors: new FormControl(false),
     });
   }
   async ngOnInit() {

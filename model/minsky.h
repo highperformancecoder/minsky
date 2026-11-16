@@ -339,6 +339,8 @@ namespace minsky
       else return "unavailable";
     }
     static bool ravelAvailable() {return  ravelCAPI::available();}
+    static bool ravelLibraryMissing();
+    bool silenceRavelErrors=false;
     static bool ravelExpired() {return  ravelCAPI::available() && ravelCAPI::daysUntilExpired()<0;}
     static int daysUntilRavelExpires() {return  ravelCAPI::daysUntilExpired();}
     

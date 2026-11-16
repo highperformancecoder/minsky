@@ -19,6 +19,7 @@
 #include "minsky.h"
 #include "godleyTableWindow.h"
 #include "matrix.h"
+#include "ravelWrap.h"
 #include "minsky_epilogue.h"
 #undef True
 #include <gtest/gtest.h>
@@ -43,6 +44,45 @@ namespace
     }
     void message(const string& x) override {savedMessage=x;}
   };
+}
+
+#if !defined(WIN32) && !defined(__APPLE__)
+TEST(RavelLibrary, MissingAndBrokenLibraries)
+{
+  const string missing=": cannot open shared object file: No such file or directory";
+  const string systemError="libravel.so"+missing;
+  const string homeError="/home/test/.ravel/libravel.so"+missing;
+  EXPECT_TRUE(missingRavelLibraryError(systemError,nullptr));
+  EXPECT_TRUE(missingRavelLibraryError(homeError+" & "+systemError,"/home/test"));
+  EXPECT_FALSE(missingRavelLibraryError("/home/test/.ravel/libravel.so: file too short & "+systemError,"/home/test"));
+  EXPECT_FALSE(missingRavelLibraryError(homeError+" & libdependency.so"+missing,"/home/test"));
+  EXPECT_FALSE(missingRavelLibraryError("Incompatible libravel dynamic library found","/home/test"));
+}
+#elif defined(__APPLE__)
+TEST(RavelLibrary, MissingAndBrokenLibraries)
+{
+  const string missing="dlopen(libravel.so, 0x0002): tried: '/usr/lib/libravel.so' (no such file)";
+  EXPECT_TRUE(missingRavelLibraryError(missing,nullptr));
+  EXPECT_FALSE(missingRavelLibraryError("dlopen(libravel.so, 0x0002): tried: '/usr/lib/libravel.so' (not a mach-o file)",nullptr));
+  EXPECT_FALSE(missingRavelLibraryError("dlopen(libravel.so, 0x0002): Library not loaded: libdependency.dylib",nullptr));
+}
+#endif
+
+TEST_F(MinskySuite, RavelCreationErrors)
+{
+  if (ravelCAPI::available()) return;
+  if (Minsky::ravelLibraryMissing())
+    {
+      Ravel ravel;
+      EXPECT_EQ("https://ravelation.net",ravel.tooltip());
+    }
+  else
+    {
+      EXPECT_THROW(Ravel ravel, std::runtime_error);
+      silenceRavelErrors=true;
+      Ravel ravel;
+      EXPECT_EQ(ravelCAPI::lastError(),ravel.detailedText());
+    }
 }
 
   /*
@@ -2026,4 +2066,3 @@ TEST(TensorOps, evalOpEvaluate)
       // Return value should be false
       EXPECT_FALSE(result);
     }
-

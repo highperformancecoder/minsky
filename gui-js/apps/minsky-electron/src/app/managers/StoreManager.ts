@@ -9,6 +9,7 @@ interface MinskyPreferences {
   wrapLongEquationsInLatexExport: boolean;
   font: string;
   numBackups: number;
+  silenceRavelErrors: boolean;
 }
 
 interface MinskyStore {
@@ -37,6 +38,7 @@ class StoreManager {
         wrapLongEquationsInLatexExport: false,
         font: "",
         numBackups: 1,
+        silenceRavelErrors: false,
       },
       ravelPlugin: null,
     },

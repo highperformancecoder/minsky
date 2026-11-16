@@ -19,7 +19,7 @@ import {
   DownloadCSVPayload,
   VariableBase,
 } from '@minsky/shared';
-import { BrowserWindow, dialog, ipcMain, safeStorage } from 'electron';
+import { BrowserWindow, dialog, ipcMain, safeStorage, shell } from 'electron';
 import { BookmarkManager } from '../managers/BookmarkManager';
 import { CommandsManager } from '../managers/CommandsManager';
 import { ContextMenuManager } from '../managers/ContextMenuManager';
@@ -266,6 +266,10 @@ ipcMain.on(
     CommandsManager.loadHelpFile(classType);
   }
 );
+
+ipcMain.on(events.OPEN_RAVEL_WEBSITE, () => {
+  shell.openExternal('https://ravelation.net');
+});
 
 ipcMain.on(events.DOUBLE_CLICK, async (event, payload) => {
   await CommandsManager.handleDoubleClick(payload);

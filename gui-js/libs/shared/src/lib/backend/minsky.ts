@@ -1424,8 +1424,10 @@ export class Minsky extends CppClass {
   async pushHistory(): Promise<boolean> {return this.$callMethod('pushHistory');}
   async randomLayout(): Promise<void> {return this.$callMethod('randomLayout');}
   async ravelAvailable(): Promise<boolean> {return this.$callMethod('ravelAvailable');}
+  async ravelLibraryMissing(): Promise<boolean> {return this.$callMethod('ravelLibraryMissing');}
   async ravelExpired(): Promise<boolean> {return this.$callMethod('ravelExpired');}
   async ravelVersion(): Promise<string> {return this.$callMethod('ravelVersion');}
+  async silenceRavelErrors(...args: boolean[]): Promise<boolean> {return this.$callMethod('silenceRavelErrors',...args);}
   async redrawAllGodleyTables(): Promise<void> {return this.$callMethod('redrawAllGodleyTables');}
   async reloadAllCSVParameters(): Promise<void> {return this.$callMethod('reloadAllCSVParameters');}
   async renameDimension(a1: string,a2: string): Promise<void> {return this.$callMethod('renameDimension',a1,a2);}
