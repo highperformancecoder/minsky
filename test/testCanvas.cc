@@ -42,7 +42,7 @@ TEST_F(CanvasTest, defaultPlotOptions)
     auto originalPlot=dynamic_cast<PlotWidget*>(itemFocus.get());
     ASSERT_TRUE(originalPlot);
     originalPlot->subgrid=true;
-    originalPlot->title="hello";
+    originalPlot->title("hello");
     originalPlot->xlabel("x");
     originalPlot->ylabel("y");
     originalPlot->y1label("y1");
@@ -54,7 +54,7 @@ TEST_F(CanvasTest, defaultPlotOptions)
     auto firstItem=itemFocus;
     auto plotBeforeDefaultsApplied=dynamic_cast<PlotWidget*>(itemFocus.get());
     ASSERT_TRUE(plotBeforeDefaultsApplied);
-    EXPECT_EQ("",plotBeforeDefaultsApplied->title);
+    EXPECT_EQ("",plotBeforeDefaultsApplied->title());
     EXPECT_EQ("",plotBeforeDefaultsApplied->xlabel());
     EXPECT_EQ("",plotBeforeDefaultsApplied->ylabel());
     EXPECT_EQ("",plotBeforeDefaultsApplied->y1label());
@@ -66,7 +66,7 @@ TEST_F(CanvasTest, defaultPlotOptions)
     // check we can apply the default options
     item=firstItem;
     applyDefaultPlotOptions();
-    EXPECT_EQ("",plotBeforeDefaultsApplied->title);
+    EXPECT_EQ("",plotBeforeDefaultsApplied->title());
     EXPECT_EQ("",plotBeforeDefaultsApplied->xlabel());
     EXPECT_EQ("",plotBeforeDefaultsApplied->ylabel());
     EXPECT_EQ("",plotBeforeDefaultsApplied->y1label());
@@ -78,7 +78,7 @@ TEST_F(CanvasTest, defaultPlotOptions)
     addPlot();
     auto plotAfterDefaultsApplied=dynamic_cast<PlotWidget*>(itemFocus.get());
     ASSERT_TRUE(plotAfterDefaultsApplied);
-    EXPECT_EQ(originalPlot->title,plotAfterDefaultsApplied->title);
+    EXPECT_EQ(originalPlot->title(),plotAfterDefaultsApplied->title());
     EXPECT_EQ(originalPlot->xlabel(),plotAfterDefaultsApplied->xlabel());
     EXPECT_EQ(originalPlot->ylabel(),plotAfterDefaultsApplied->ylabel());
     EXPECT_EQ(originalPlot->y1label(),plotAfterDefaultsApplied->y1label());

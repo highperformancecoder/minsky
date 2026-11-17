@@ -42,7 +42,7 @@ namespace minsky
 
     TEST_F(PlotWidgetTest, drawWithTitleAndLegend)
     {
-      title="A title";
+      title("A title");
       xlabel("x");
       legend=true;
       addPt(0,0.0,1.0);

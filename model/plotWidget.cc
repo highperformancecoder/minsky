@@ -94,7 +94,7 @@ namespace minsky
     cairoShim.scale(z,z);
 
     // if any titling, draw an extra bounding box (ticket #285)
-    if (!title.empty()||!xlabel().empty()||!ylabel().empty()||!y1label().empty())
+    if (!title().empty()||!xlabel().empty()||!ylabel().empty()||!y1label().empty())
       {
         cairoShim.rectangle(-0.5*w+10,-0.5*h,w-20,h-10);
         cairoShim.setLineWidth(1);
@@ -104,20 +104,6 @@ namespace minsky
     cairoShim.translate(-0.5*w,-0.5*h);
 
     yoffs=0;
-    if (!title.empty())
-      {
-        const PreserveContext cs(cairoShim);
-        const double fy=titleHeight*iHeight();
-        
-        auto pango=cairoShim.cachedRender(TextProperties(latexToPango(title),fabs(fy)));
-        cairoShim.setSourceRGB(0,0,0);
-        cairoShim.moveTo(0.5*(w-pango->extents().width), 0);
-        pango->show();
-
-        // allow some room for the title
-        yoffs=pango->extents().height;
-        h-=yoffs;
-      }
 
     // draw bounding box ports
     
@@ -304,7 +290,7 @@ namespace minsky
     const double z=Item::zoomFactor();
     const double gw=iWidth()*z-2*portSpace;
     double gh=iHeight()*z-portSpace;
-    if (!title.empty()) gh=iHeight()*z-portSpace-titleHeight;
+    if (!title().empty()) gh=iHeight()*z-portSpace-titleHeight;
     oldLegendLeft=legendLeft*gw+portSpace;
     oldLegendTop=legendTop*gh;
     oldLegendFontSz=legendFontSz;
@@ -317,18 +303,18 @@ namespace minsky
     //const double dx=x-this->x(), dy=y-this->y();
     const double gw=iWidth()*z-2*portSpace;
     double gh=iHeight()*z-portSpace;
-    if (!title.empty()) gh=iHeight()*z-portSpace-titleHeight;
+    if (!title().empty()) gh=iHeight()*z-portSpace-titleHeight;
     const double yoffs=this->y()-(legendTop-0.5)*iHeight()*z;
     switch (ct)
       {
       case ClickType::legendMove:
         legendLeft = (oldLegendLeft + x - clickX-portSpace)/gw;
         legendTop = (oldLegendTop + clickY - y)/gh;
-        if (!title.empty()) legendTop = (oldLegendTop + clickY - y + titleHeight)/gh;
+        if (!title().empty()) legendTop = (oldLegendTop + clickY - y + titleHeight)/gh;
         break;
       case ClickType::legendResize:
         legendFontSz = oldLegendFontSz * (y-yoffs)/(clickY-yoffs);
-        if (!title.empty()) legendFontSz = oldLegendFontSz * (y-yoffs+titleHeight)/(clickY-yoffs);
+        if (!title().empty()) legendFontSz = oldLegendFontSz * (y-yoffs+titleHeight)/(clickY-yoffs);
         break;
       default:
         {
