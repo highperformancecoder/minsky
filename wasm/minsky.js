@@ -150,18 +150,33 @@ function newMinsky(Module, canvasId, options={}) {
     minsky.requestRedraw();
   };
 
-  canvasElem.onmousedown=guarded(event=>{
-    if (event.button!==0) return;
-    const [x,y]=pos(event);
+  let activePointer=null, dragPos=[0,0];
+  canvasElem.onpointerdown=guarded(event=>{
+    if (event.button!==0 || activePointer!==null) return;
+    canvasElem.setPointerCapture(event.pointerId);
+    activePointer=event.pointerId;
+    dragPos=pos(event);
+    lastPos=dragPos;
+    const [x,y]=dragPos;
     if (event.ctrlKey || event.metaKey) minsky.canvas.controlMouseDown(x,y);
     else minsky.canvas.mouseDown(x,y);
   });
-  canvasElem.onmouseup=guarded(event=>{
-    if (event.button!==0) return;
-    minsky.canvas.mouseUp(...pos(event));
+  const finishDrag=guarded(event=>{
+    if (event.pointerId!==activePointer) return;
+    const pointerId=activePointer;
+    activePointer=null;
+    if (canvasElem.hasPointerCapture(pointerId)) canvasElem.releasePointerCapture(pointerId);
+    if (event.type==='pointerup') dragPos=pos(event);
+    minsky.canvas.mouseUp(...dragPos);
   });
-  canvasElem.onmousemove=guarded(event=>{
-    minsky.canvas.mouseMove(...pos(event));
+  canvasElem.onpointerup=finishDrag;
+  canvasElem.onpointercancel=finishDrag;
+  canvasElem.onlostpointercapture=finishDrag;
+  canvasElem.onpointermove=guarded(event=>{
+    if (activePointer!==null && event.pointerId!==activePointer) return;
+    dragPos=pos(event);
+    lastPos=dragPos;
+    minsky.canvas.mouseMove(...dragPos);
   });
   canvasElem.onwheel=guarded(event=>{
     if (event.deltaY) {
