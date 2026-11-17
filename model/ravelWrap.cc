@@ -52,66 +52,11 @@
 
 #include <string>
 #include <cmath>
-#include <cstdlib>
-#include <stdexcept>
-#ifdef WIN32
-#include <windows.h>
-#elif defined(__APPLE__)
-#include <regex>
-#endif
 using namespace std;
 
 
 namespace minsky
 {
-  bool missingRavelLibraryError(const string& error, const char* home)
-  {
-#ifdef WIN32
-    if (error.find("Incompatible libravel")!=string::npos ||
-        error.find("Looking for ")!=string::npos)
-      return false;
-    return SearchPathA(nullptr,"libravel.dll",nullptr,0,nullptr,nullptr)==0;
-#elif defined(__APPLE__)
-    const regex status("\\(([^()]*)\\)");
-    bool missing=false;
-    size_t start=0;
-    do
-      {
-        const auto end=error.find(" & ",start);
-        const auto tried=error.find("tried: ",start);
-        if (tried==string::npos || (end!=string::npos && tried>end))
-          return false;
-        const string paths=error.substr(tried,end==string::npos? end: end-tried);
-        bool pathMissing=false;
-        for (sregex_iterator i(paths.begin(),paths.end(),status), last; i!=last; ++i)
-          {
-            const string reason=(*i)[1];
-            if (reason.find("no such file")!=string::npos)
-              pathMissing=true;
-            else if (reason!="not in dyld cache")
-              return false;
-          }
-        if (!pathMissing) return false;
-        missing=true;
-        if (end==string::npos) break;
-        start=end+3;
-      }
-    while (start<error.size());
-    return missing;
-#else
-    const string missing=": cannot open shared object file: No such file or directory";
-    const string systemError="libravel.so"+missing;
-    return error==systemError ||
-      (home && error==string(home)+"/.ravel/libravel.so"+missing+" & "+systemError);
-#endif
-  }
-
-  bool Minsky::ravelLibraryMissing()
-  {
-    return !ravelCAPI::available() &&
-      missingRavelLibraryError(ravelCAPI::lastError(),getenv("HOME"));
-  }
-
   unsigned RavelLockGroup::nextColour=1;
   SVGRenderer Ravel::svgRenderer;
 
@@ -125,7 +70,7 @@ namespace minsky
   {
     if (!wrappedRavel)
       {
-        if (!minsky().silenceRavelErrors && !Minsky::ravelLibraryMissing())
+        if (!cminsky().silenceRavelErrors && !ravelCAPI::notInstalled())
           throw runtime_error(wrappedRavel.lastError().empty()?
                               "Could not create Ravel": wrappedRavel.lastError());
         tooltip("https://ravelation.net");

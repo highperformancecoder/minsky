@@ -30,7 +30,6 @@
 
 namespace minsky 
 {
-  bool missingRavelLibraryError(const std::string& error, const char* home);
   using namespace civita;
   class RavelLockGroup;
 
