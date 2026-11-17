@@ -1,15 +1,42 @@
 import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { WiringComponent } from './wiring.component';
-import { events } from '@minsky/shared';
+import { CppClass, events } from '@minsky/shared';
+import { ElectronService, WindowUtilityService } from '@minsky/core';
 
 describe('WiringComponent', () => {
   let component: WiringComponent;
   let fixture: ComponentFixture<WiringComponent>;
 
+  beforeAll(() => {
+    CppClass.backend = jest.fn().mockResolvedValue(undefined);
+  });
+
   beforeEach(
     waitForAsync(() => {
       TestBed.configureTestingModule({
         imports: [WiringComponent],
+        providers: [
+          {
+            provide: ElectronService,
+            useValue: {
+              isElectron: false,
+              send: jest.fn(),
+              on: jest.fn(),
+              minsky: {
+                availableOperationsMapping: jest.fn().mockResolvedValue({}),
+                ravelLibraryMissing: jest.fn().mockResolvedValue(false),
+                canvas: {
+                  addRavel: jest.fn().mockResolvedValue(undefined),
+                  requestRedraw: jest.fn(),
+                },
+              },
+            },
+          },
+          {
+            provide: WindowUtilityService,
+            useValue: { isMainWindow: jest.fn().mockResolvedValue(false) },
+          },
+        ],
       }).compileComponents();
     })
   );
@@ -24,7 +51,6 @@ describe('WiringComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  /* test failing
   it('opens the website instead of adding a Ravel when the library is missing', async () => {
     jest.spyOn(component.electronService.minsky, 'ravelLibraryMissing').mockResolvedValue(true);
     const send = jest.spyOn(component.electronService, 'send').mockImplementation(() => {});
@@ -40,5 +66,4 @@ describe('WiringComponent', () => {
     await expect(component.addRavel()).rejects.toThrow('Ravel error');
     expect(add).toHaveBeenCalled();
   });
-  */
 });
