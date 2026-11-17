@@ -175,8 +175,11 @@ function newMinsky(Module, canvasId, options={}) {
   canvasElem.onkeydown=guarded(event=>{
     if (event.key.length!==1 && !specialKeys[event.key]) return;
     const [x,y]=lastPos;
+    let utf8=event.key.length===1? event.key: "";
+    if ((event.ctrlKey || event.metaKey) && !event.altKey && /^[cxv]$/i.test(utf8))
+      utf8=String.fromCharCode(utf8.toUpperCase().charCodeAt(0)-64);
     if (minsky.canvas.keyPress({keySym: specialKeys[event.key] ?? event.key.codePointAt(0),
-      utf8: event.key.length===1? event.key: "", state: modifiers(event), x, y}))
+      utf8, state: modifiers(event), x, y}))
       event.preventDefault();
   });
   let lastPos=[0,0];
