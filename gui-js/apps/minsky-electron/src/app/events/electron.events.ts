@@ -268,7 +268,8 @@ ipcMain.on(
 );
 
 ipcMain.on(events.OPEN_RAVEL_WEBSITE, () => {
-  shell.openExternal('https://ravelation.net');
+  let window=WindowManager.createWindow({width: 1200, height: 800, modal: false, title: 'Ravelation'});
+  window.loadURL('https://ravelation.net/what-is-ravel');
 });
 
 ipcMain.on(events.DOUBLE_CLICK, async (event, payload) => {
