@@ -32,15 +32,15 @@
    <Item>
     <id>3</id>
     <type>Sheet</type>
-    <x>352</x>
+    <x>452</x>
     <y>192</y>
     <zoomFactor>1</zoomFactor>
     <rotation>0</rotation>
     <ports>
      <int>2</int>
     </ports>
-    <width>100</width>
-    <height>100</height>
+    <width>300</width>
+    <height>300</height>
    </Item>
   </items>
   <groups>

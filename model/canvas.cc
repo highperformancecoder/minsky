@@ -953,10 +953,10 @@ namespace minsky
   void Canvas::applyDefaultPlotOptions() {
       if (auto p=item->plotWidgetCast()) {
         // stash titles to restore later
-        const string title(p->title), xlabel(p->xlabel()),
+        const string title(p->title()), xlabel(p->xlabel()),
           ylabel(p->ylabel()), y1label(p->y1label());
         defaultPlotOptions.applyPlotOptions(*p);
-        p->title=title, p->xlabel(xlabel),
+        p->title(title), p->xlabel(xlabel),
           p->ylabel(ylabel), p->y1label(y1label);
       }
     }

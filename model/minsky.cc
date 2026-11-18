@@ -1572,8 +1572,8 @@ namespace minsky
                        [&](Items&, Items::iterator i) {
                          if (auto p=(*i)->plotWidgetCast())
                            {
-                             if (!p->title.empty())
-                               p->RenderNativeWindow::renderToSVG(prefix+"-"+p->title+".svg");
+                             if (!p->title().empty())
+                               p->RenderNativeWindow::renderToSVG(prefix+"-"+p->title()+".svg");
                              else
                                p->RenderNativeWindow::renderToSVG(prefix+"-"+str(plotNum++)+".svg");
                            }
@@ -1587,8 +1587,8 @@ namespace minsky
                        [&](Items&, Items::iterator i) {
                          if (auto p=(*i)->plotWidgetCast())
                            {
-                             if (!p->title.empty())
-                               p->exportAsCSV((prefix+"-"+p->title+".csv"));
+                             if (!p->title().empty())
+                               p->exportAsCSV((prefix+"-"+p->title()+".csv"));
                              else
                                p->exportAsCSV((prefix+"-"+str(plotNum++)+".csv"));
                            }
