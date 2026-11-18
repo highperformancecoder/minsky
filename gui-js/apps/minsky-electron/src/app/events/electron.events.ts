@@ -268,7 +268,17 @@ ipcMain.on(
 );
 
 ipcMain.on(events.OPEN_RAVEL_WEBSITE, () => {
-  let window=WindowManager.createWindow({width: 1200, height: 800, modal: false, title: 'Ravelation'});
+  const window = new BrowserWindow({
+    width: 1200,
+    height: 800,
+    title: 'Ravelation',
+    webPreferences: {
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: true,
+    },
+  });
+  window.setMenu(null);
   window.loadURL('https://ravelation.net/what-is-ravel');
 });
 
