@@ -103,8 +103,6 @@ namespace minsky
 
     cairoShim.translate(-0.5*w,-0.5*h);
 
-    yoffs=0;
-
     // draw bounding box ports
     
     size_t i=0;
@@ -113,8 +111,8 @@ namespace minsky
       {
         const float x=boundX[i]*w, y=boundY[i]*h;
         if (!justDataChanged)
-          m_ports[i]->moveTo(x*z + this->x(), y*z + this->y()+0.5*yoffs);
-        drawTriangle(cairoShim, x+0.5*w, y+0.5*h+yoffs, palette[(i/2)%palette.size()].colour, orient[i]);
+          m_ports[i]->moveTo(x*z + this->x(), y*z + this->y());
+        drawTriangle(cairoShim, x+0.5*w, y+0.5*h, palette[(i/2)%palette.size()].colour, orient[i]);
         
       }
 
@@ -125,8 +123,8 @@ namespace minsky
       {
         const float y=0.5*(dy-h) + (i-nBoundsPorts)*dy;
         if (!justDataChanged)
-          m_ports[i]->moveTo(xLeft*z + this->x(), y*z + this->y()+0.5*yoffs);
-        drawTriangle(cairoShim, xLeft+0.5*w, y+0.5*h+yoffs, palette[(i-nBoundsPorts)%palette.size()].colour, 0);
+          m_ports[i]->moveTo(xLeft*z + this->x(), y*z + this->y());
+        drawTriangle(cairoShim, xLeft+0.5*w, y+0.5*h, palette[(i-nBoundsPorts)%palette.size()].colour, 0);
       }
     
     // draw RHS y data ports
@@ -134,8 +132,8 @@ namespace minsky
       {
         const float y=0.5*(dy-h) + (i-m_numLines-nBoundsPorts)*dy, x=0.5*w;
         if (!justDataChanged)
-          m_ports[i]->moveTo(x*z + this->x(), y*z + this->y()+0.5*yoffs);
-        drawTriangle(cairoShim, x+0.5*w, y+0.5*h+yoffs, palette[(i-nBoundsPorts)%palette.size()].colour, M_PI);
+          m_ports[i]->moveTo(x*z + this->x(), y*z + this->y());
+        drawTriangle(cairoShim, x+0.5*w, y+0.5*h, palette[(i-nBoundsPorts)%palette.size()].colour, M_PI);
       }
 
     // draw x data ports
@@ -144,11 +142,11 @@ namespace minsky
       {
         const float x=dx-0.5*w + (i-2*m_numLines-nBoundsPorts)*dx;
         if (!justDataChanged)
-          m_ports[i]->moveTo(x*z + this->x(), yBottom*z + this->y()+0.5*yoffs);
-        drawTriangle(cairoShim, x+0.5*w, yBottom+0.5*h+yoffs, palette[(i-2*m_numLines-nBoundsPorts)%palette.size()].colour, -0.5*M_PI);
+          m_ports[i]->moveTo(x*z + this->x(), yBottom*z + this->y());
+        drawTriangle(cairoShim, x+0.5*w, yBottom+0.5*h, palette[(i-2*m_numLines-nBoundsPorts)%palette.size()].colour, -0.5*M_PI);
       }
 
-    cairoShim.translate(portSpace, yoffs);
+    cairoShim.translate(portSpace, 0);
     cairoShim.setLineWidth(1);
     const double gw=w-2*portSpace, gh=h-portSpace;
 
@@ -334,7 +332,7 @@ namespace minsky
     const double dx=x-this->x()+0.5*iWidth()*z-portSpace;
     const double dy=this->y()-y+0.5*iHeight()*z-portSpace;
     const double gw=iWidth()*z-2*portSpace;
-    const double gh=iHeight()*z-portSpace-yoffs*z;
+    const double gh=iHeight()*z-portSpace-titleUsedHeight()*z;
     const double loffx=lh(gw,gh)*!Plot::ylabel.empty(), loffy=lh(gw,gh)*!Plot::xlabel.empty();
     return Plot::mouseMove((dx-loffx)/gw, (dy-loffy)/gh, 10.0/std::max(gw,gh),formatter);
   }
@@ -383,7 +381,7 @@ namespace minsky
 
     double legendWidth, legendHeight, lx, ly;
     // uses legend extents cached when last drawn
-    legendSizeFromCache(lx, ly, legendWidth, legendHeight, z*(iWidth()-2*portSpace), z*(iHeight()-portSpace-yoffs));
+    legendSizeFromCache(lx, ly, legendWidth, legendHeight, z*(iWidth()-2*portSpace), z*(iHeight()-portSpace-titleUsedHeight()));
     // xx & yy are in plot user coordinates
     const double xx= x-this->x() + z*(0.5*iWidth()-portSpace) - lx;
     const double yy= z*(0.5*iHeight()-portSpace)-y+this->y()  - ly+legendHeight;

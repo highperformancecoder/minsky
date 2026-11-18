@@ -70,9 +70,6 @@ namespace minsky
     // shadow labels, so we can interpret as LaTeX code rather than Pango markup
     std::string m_xlabel, m_ylabel, m_y1label, m_title;
 
-    /// extra offset for titles
-    mutable double yoffs=0;
-
     Formatter formatter=defaultFormatter;
     size_t m_numLines=1; ///< number of ports on the side
 

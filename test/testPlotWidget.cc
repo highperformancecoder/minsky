@@ -50,6 +50,19 @@ namespace minsky
       mouseFocus=true;
       selected=true;
       EXPECT_NO_THROW(draw(mans));
+      // title was rendered, and its height is reflected in yoffs
+      EXPECT_GT(titleUsedHeight(), 0);
+    }
+
+    TEST_F(PlotWidgetTest, titleDrawnWithNoData)
+    {
+      title("A title");
+      // no data, so Plot::draw takes the error ("no data") path
+      EXPECT_NO_THROW(draw(mans));
+      EXPECT_GT(titleUsedHeight(), 0);
+      title("");
+      draw(mans);
+      EXPECT_EQ(0, titleUsedHeight());
     }
 
     TEST_F(PlotWidgetTest, legendSizeFromCache)
