@@ -19,7 +19,7 @@ import {
   DownloadCSVPayload,
   VariableBase,
 } from '@minsky/shared';
-import { BrowserWindow, dialog, ipcMain, safeStorage, shell } from 'electron';
+import { BrowserWindow, dialog, ipcMain, safeStorage, } from 'electron';
 import { BookmarkManager } from '../managers/BookmarkManager';
 import { CommandsManager } from '../managers/CommandsManager';
 import { ContextMenuManager } from '../managers/ContextMenuManager';
