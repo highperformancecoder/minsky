@@ -435,7 +435,7 @@ RavelLogo.o: RavelLogo.rc icons/RavelLogo.ico
 getContext.o: getContext.cc
 	g++ -ObjC++ $(FLAGS) -I/opt/local/include -Iinclude -c $< -o $@
 
-RESTService/minsky-RESTService$(EXE): RESTService.o  $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS)
+RESTService/minsky-RESTService$(EXE): RESTService.o  $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS)  RavelCAPI/libravelCAPI.a RavelCAPI/civita/libcivita.a mansoura/libmansoura.a
 	$(LINK) $(FLAGS) $^ -L/opt/local/lib/db48 $(LIBS) -o $@
 
 RESTService/minsky-httpd$(EXE): httpd.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS)
@@ -465,7 +465,7 @@ gui-js/build/minskyRESTService.node:| $(DLLS:%=$(DYNAMIC_LIB_DIR)/%)
 endif
 
 # N-API node embedded RESTService
-gui-js/build/minskyRESTService.node: addon.o  $(NODE_API) $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) RavelCAPI/libravelCAPI.a RavelCAPI/civita/libcivita.a 
+gui-js/build/minskyRESTService.node: addon.o  $(NODE_API) $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) RavelCAPI/libravelCAPI.a RavelCAPI/civita/libcivita.a mansoura/libmansoura.a
 	mkdir -p gui-js/build
 ifdef MXE
 	$(LINK) -shared -o $@ $^ $(LIBS)
@@ -518,7 +518,7 @@ tests: $(EXES)
 BASIC_CLEAN=rm -rf *.o *~ "\#*\#" core *.d *.cd *.rcd *.tcd *.xcd *.gcda *.gcno *.so *.dll *.dylib
 
 clean:
-	-$(BASIC_CLEAN) minsky.xsd
+	-$(BASIC_CLEAN) minsky.xsd libminsky.a
 	-rm -f $(EXES)
 	-cd test && $(MAKE)  clean
 	-cd model && $(BASIC_CLEAN)
