@@ -259,11 +259,15 @@ namespace schema3
         {
           return classdesc::Factory<minsky::Item,string>::create("::minsky::"+t);
         }
-      catch (...)
+      catch (const classdesc::Factory<minsky::Item,string>::InvalidType&)
         {
+          // unknown item type: retain existing handling
           assert(!"item type not registered");
           return nullptr;
         }
+      // any other exception (eg Ravel construction failure from
+      // Ravel::checkRavel) propagates to the loader, preserving the
+      // actual error message rather than silently omitting the item.
     }
   };
   

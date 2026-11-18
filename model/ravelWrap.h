@@ -82,6 +82,7 @@ namespace minsky
     classdesc::pack_t lastState;
     civita::TensorPtr cachedDbResult; ///< cache of database query result
     ravel::Op::ReductionOp m_nextReduction=ravel::Op::sum;
+    void checkRavel();
 
   public:
     static SVGRenderer svgRenderer; ///< SVG icon to display when not in editor mode
@@ -94,6 +95,7 @@ namespace minsky
     // define them as empty operations to prevent double frees if accidentally used
     void operator=(const Ravel&) {}
     Ravel(const Ravel& x): ItemT<Ravel, Operation<OperationType::ravel>>(x), popup(*this)  {
+      checkRavel();
       applyState(x.getState());
     }
 
@@ -277,4 +279,3 @@ namespace minsky
 #include "ravelWrap.cd"
 
 #endif
-

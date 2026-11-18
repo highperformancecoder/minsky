@@ -33,6 +33,16 @@
       </div>
 
       <div class="form-control">
+        <label for="silenceRavelErrors">Silence Ravel creation errors</label>
+        <input
+          formControlName="silenceRavelErrors"
+          type="checkbox"
+          id="silenceRavelErrors"
+          (change)="updatePreferences()"
+          />
+      </div>
+
+      <div class="form-control">
         <label for="enableMultipleEquityColumns"
           >Enable multiple equity columns</label
           >

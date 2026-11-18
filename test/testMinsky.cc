@@ -19,6 +19,7 @@
 #include "minsky.h"
 #include "godleyTableWindow.h"
 #include "matrix.h"
+#include "ravelWrap.h"
 #include "minsky_epilogue.h"
 #undef True
 #include <gtest/gtest.h>
@@ -43,6 +44,23 @@ namespace
     }
     void message(const string& x) override {savedMessage=x;}
   };
+}
+
+TEST_F(MinskySuite, RavelCreationErrors)
+{
+  if (ravelCAPI::available()) return;
+  if (Minsky::ravelLibraryMissing())
+    {
+      Ravel ravel;
+      EXPECT_EQ("https://ravelation.net",ravel.tooltip());
+    }
+  else
+    {
+      EXPECT_THROW(Ravel ravel, std::runtime_error);
+      silenceRavelErrors=true;
+      Ravel ravel;
+      EXPECT_EQ(ravelCAPI::lastError(),ravel.detailedText());
+    }
 }
 
   /*
@@ -2026,4 +2044,3 @@ TEST(TensorOps, evalOpEvaluate)
       // Return value should be false
       EXPECT_FALSE(result);
     }
-

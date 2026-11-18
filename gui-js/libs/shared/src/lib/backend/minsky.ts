@@ -1425,6 +1425,7 @@ export class Minsky extends CppClass {
   async randomLayout(): Promise<void> {return this.$callMethod('randomLayout');}
   async ravelAvailable(): Promise<boolean> {return this.$callMethod('ravelAvailable');}
   async ravelExpired(): Promise<boolean> {return this.$callMethod('ravelExpired');}
+  async ravelLibraryMissing(): Promise<boolean> {return this.$callMethod('ravelLibraryMissing');}
   async ravelVersion(): Promise<string> {return this.$callMethod('ravelVersion');}
   async redrawAllGodleyTables(): Promise<void> {return this.$callMethod('redrawAllGodleyTables');}
   async reloadAllCSVParameters(): Promise<void> {return this.$callMethod('reloadAllCSVParameters');}
@@ -1458,6 +1459,7 @@ export class Minsky extends CppClass {
   async setGroupIconResource(a1: string): Promise<void> {return this.$callMethod('setGroupIconResource',a1);}
   async setLockIconResource(a1: string,a2: string): Promise<void> {return this.$callMethod('setLockIconResource',a1,a2);}
   async setRavelIconResource(a1: string): Promise<void> {return this.$callMethod('setRavelIconResource',a1);}
+  async silenceRavelErrors(...args: boolean[]): Promise<boolean> {return this.$callMethod('silenceRavelErrors',...args);}
   async simulationDelay(...args: number[]): Promise<number> {return this.$callMethod('simulationDelay',...args);}
   async srand(a1: number): Promise<void> {return this.$callMethod('srand',a1);}
   async step(): Promise<number[]> {return this.$callMethod('step');}

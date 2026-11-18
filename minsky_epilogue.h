@@ -160,6 +160,7 @@ namespace classdesc_access
 }
 
 #ifdef CIVITA_XVECTOR_H
+#include "random_init_base.h"
 #include "xvector.xcd"
 #endif
 

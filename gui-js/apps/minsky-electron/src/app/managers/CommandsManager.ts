@@ -1238,11 +1238,13 @@ export class CommandsManager {
       godleyTableOutputStyle,
       font,
       numBackups,
+      silenceRavelErrors,
     } = StoreManager.store.get('preferences');
     minsky.displayStyle(godleyTableOutputStyle);
     minsky.multipleEquities(enableMultipleEquityColumns);
     minsky.defaultFont(font);
     minsky.numBackups(numBackups);
+    minsky.$callMethodSync('silenceRavelErrors', silenceRavelErrors ?? false);
     RecentFilesManager.updateNumberOfRecentFilesToDisplay();
   }
 

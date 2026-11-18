@@ -338,9 +338,12 @@ namespace minsky
         }
       else return "unavailable";
     }
+    static bool ravelLibraryMissing() {return  ravelCAPI::  notInstalled();}
     static bool ravelAvailable() {return  ravelCAPI::available();}
+    bool silenceRavelErrors=false;
     static bool ravelExpired() {return  ravelCAPI::available() && ravelCAPI::daysUntilExpired()<0;}
     static int daysUntilRavelExpires() {return  ravelCAPI::daysUntilExpired();}
+    
     
     std::string fileVersion; ///< Minsky version file was saved under
     
