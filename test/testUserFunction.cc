@@ -92,3 +92,24 @@ TEST_F(UserFunctionSuite, units)
     f.expression="exp(foo)";
     EXPECT_THROW(f.units(true),std::exception);
   }
+
+TEST_F(UserFunctionSuite, nestedFunctionUnits)
+  {
+    auto inner=make_shared<UserFunction>("inner(a,b)","a*b");
+    auto middle=make_shared<UserFunction>("middle(a,b)","inner(a,b)");
+    UserFunction outer("outer(x,y)","middle(x,y)");
+    userFunctions[":inner"]=inner;
+    userFunctions[":middle"]=middle;
+
+    EXPECT_EQ("m s",outer.units({Units("m"),Units("s")},true).str());
+    EXPECT_EQ("m^2",outer.units({Units("m"),Units("m")},true).str());
+
+    auto add=make_shared<UserFunction>("add(a,b)","a+b");
+    UserFunction incompatible("incompatible(x,y)","add(x,y)");
+    userFunctions[":add"]=add;
+    EXPECT_THROW(incompatible.units({Units("m"),Units("s")},true),std::exception);
+
+    auto recursive=make_shared<UserFunction>("recursive(a)","recursive(a)");
+    userFunctions[":recursive"]=recursive;
+    EXPECT_THROW(recursive->units({Units("m")},true),std::exception);
+  }

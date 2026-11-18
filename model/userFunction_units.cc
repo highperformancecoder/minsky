@@ -32,8 +32,18 @@ namespace minsky
     {
       std::weak_ptr<CallableFunction> f;
       ExprTkCallableFunction(const std::weak_ptr<CallableFunction>& f): f(f) {}
-      UnitsExpressionWalker operator()(const std::vector<UnitsExpressionWalker>&) {
-        // TODO (#1290) Actually call units checking on callable function
+      UnitsExpressionWalker operator()(const std::vector<UnitsExpressionWalker>& args) {
+        if (auto function=f.lock())
+          if (auto userFunction=dynamic_cast<UserFunction*>(function.get()))
+            {
+              vector<Units> argUnits;
+              argUnits.reserve(args.size());
+              for (const auto& arg: args)
+                argUnits.push_back(arg.units);
+              UnitsExpressionWalker result;
+              result.units=userFunction->units(argUnits, UnitsExpressionWalker::check);
+              return result;
+            }
         return {};
       }
     };
@@ -44,9 +54,28 @@ namespace minsky
   Units UserFunction::units(bool check) const
   {
     UnitsExpressionWalker::check=check;
+    vector<Units> argUnits(argNames.size());
+    if (!argUnits.empty()) argUnits[0]=m_ports[1]->units(check);
+    if (argUnits.size()>1) argUnits[1]=m_ports[2]->units(check);
+    return units(argUnits, check);
+  }
+
+  Units UserFunction::units(const vector<Units>& argUnits, bool check) const
+  {
+    static thread_local vector<const UserFunction*> activeFunctions;
+    if (find(activeFunctions.begin(), activeFunctions.end(), this)!=activeFunctions.end())
+      throw runtime_error("Recursive user function during dimensional analysis");
+    activeFunctions.push_back(this);
+    struct PopActiveFunction
+    {
+      vector<const UserFunction*>& activeFunctions;
+      ~PopActiveFunction() {activeFunctions.pop_back();}
+    } pop{activeFunctions};
+
+    UnitsExpressionWalker::check=check;
     vector<UnitsExpressionWalker> args(argNames.size());
-    if (!args.empty()) args[0].units=m_ports[1]->units(check);
-    if (args.size()>1) args[1].units=m_ports[2]->units(check);
+    for (size_t i=0; i<args.size() && i<argUnits.size(); ++i)
+      args[i].units=argUnits[i];
     
     timeUnit.units=Units(cminsky().timeUnit);
     

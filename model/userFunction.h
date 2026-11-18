@@ -45,6 +45,7 @@ namespace  minsky
     double operator()(const std::vector<double>& p) override;
 
     Units units(bool check=false) const override;
+    Units units(const std::vector<Units>& argUnits, bool check) const;
     void displayTooltip(const ICairoShim& cr, const std::string& tt) const override
     {Item::displayTooltip(cr,tt.empty()? expression: tt+" "+expression);}
 

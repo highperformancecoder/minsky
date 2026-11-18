@@ -79,6 +79,7 @@ namespace minsky
   double UserFunction::evaluate(double, double) {return {};}
   double UserFunction::operator()(const vector<double>& p) {}
   Units UserFunction::units(bool check) const {return {};}
+  Units UserFunction::units(const vector<Units>&, bool) const {return {};}
   string UserFunction::description(const string&) {return {};}
   string UserFunction::name() const {return {};}
 #else
