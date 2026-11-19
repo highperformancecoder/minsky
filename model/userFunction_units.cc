@@ -37,11 +37,16 @@ namespace minsky
           if (auto userFunction=dynamic_cast<UserFunction*>(function.get()))
             {
               vector<Units> argUnits;
+              vector<double> argValues;
               argUnits.reserve(args.size());
+              argValues.reserve(args.size());
               for (const auto& arg: args)
-                argUnits.push_back(arg.units);
+                {
+                  argUnits.push_back(arg.units);
+                  argValues.push_back(arg.value);
+                }
               UnitsExpressionWalker result;
-              result.units=userFunction->units(argUnits, UnitsExpressionWalker::check);
+              result.units=userFunction->units(argUnits, UnitsExpressionWalker::check, argValues);
               return result;
             }
         return {};
@@ -60,7 +65,7 @@ namespace minsky
     return units(argUnits, check);
   }
 
-  Units UserFunction::units(const vector<Units>& argUnits, bool check) const
+  Units UserFunction::units(const vector<Units>& argUnits, bool check, const vector<double>& argValues) const
   {
     static thread_local vector<const UserFunction*> activeFunctions;
     if (find(activeFunctions.begin(), activeFunctions.end(), this)!=activeFunctions.end())
@@ -75,7 +80,10 @@ namespace minsky
     UnitsExpressionWalker::check=check;
     vector<UnitsExpressionWalker> args(argNames.size());
     for (size_t i=0; i<args.size() && i<argUnits.size(); ++i)
-      args[i].units=argUnits[i];
+      {
+        args[i].units=argUnits[i];
+        if (i<argValues.size()) args[i].value=argValues[i];
+      }
     
     timeUnit.units=Units(cminsky().timeUnit);
     
