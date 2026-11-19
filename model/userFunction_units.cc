@@ -88,6 +88,7 @@ namespace minsky
     timeUnit.units=Units(cminsky().timeUnit);
     
     vector<UnitsExpressionWalker> externalUnits;
+    vector<ExprTkCallableFunction> externalFunctions; // declared before symbol tables so it outlives them
     exprtk::symbol_table<UnitsExpressionWalker> symbolTable, unknownVariables;
     exprtk::expression<UnitsExpressionWalker> compiled;
     compiled.register_symbol_table(unknownVariables);
@@ -99,9 +100,9 @@ namespace minsky
       }
 
     const std::vector<std::string> externalIds=symbolNames();
-    vector<ExprTkCallableFunction> externalFunctions;
-    
+
     externalUnits.reserve(externalIds.size());
+    externalFunctions.reserve(externalIds.size());
     for (auto& i: externalIds)
       {
         if (find(argNames.begin(), argNames.end(), i)!=argNames.end()) continue; // skip arguments

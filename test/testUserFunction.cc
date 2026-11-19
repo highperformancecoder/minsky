@@ -111,5 +111,24 @@ TEST_F(UserFunctionSuite, nestedFunctionUnits)
 
     auto recursive=make_shared<UserFunction>("recursive(a)","recursive(a)");
     userFunctions[string(":recursive")]=recursive;
-    EXPECT_THROW(recursive->units({Units("m")},true),std::exception);
+    try
+      {
+        recursive->units({Units("m")},true);
+        FAIL() << "expected recursion exception";
+      }
+    catch (const std::exception& ex)
+      {
+        EXPECT_NE(string::npos, string(ex.what()).find("Recursive user function during dimensional analysis"));
+      }
+    // failed analysis must clear active-function state
+    recursive->expression="a";
+    EXPECT_EQ("m",recursive->units({Units("m")},true).str());
+
+    // one function calling two different user functions with distinct argument units
+    auto sq=make_shared<UserFunction>("sq(a)","a*a");
+    auto dbl=make_shared<UserFunction>("dbl(a)","a+a");
+    userFunctions[string(":sq")]=sq;
+    userFunctions[string(":dbl")]=dbl;
+    UserFunction two("two(x,y)","sq(x)*dbl(y)");
+    EXPECT_EQ("m^2 s",two.units({Units("m"),Units("s")},true).str());
   }
