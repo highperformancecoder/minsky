@@ -526,7 +526,7 @@ clean:
 	-cd schema && $(BASIC_CLEAN)
 	-cd ecolab && $(MAKE) clean
 	-cd RavelCAPI && $(MAKE) clean
-	-cd libclipboard && $(MAKE) clean && rm -f CMakeCache.txt
+	-cd libclipboard && rm -f CMakeCache.txt && $(MAKE) clean 
 
 mac-dist:
 # force rebuild of the node file to force rewriting of dependent dylibs
