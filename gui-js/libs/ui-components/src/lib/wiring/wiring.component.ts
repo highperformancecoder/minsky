@@ -114,7 +114,15 @@ export class WiringComponent implements OnInit, OnDestroy {
           if (!moveOnScroll) {
             ++scrollGeneration;
             clearTimeout(rescaleTimer);
-            rescaleTimer=setTimeout(()=>this.cmService.resetScroll(),500);
+            const rescale=()=>{
+              // resizing mid-drag would shift the scroll baseline the drag is relative to,
+              // so wait until the drag ends
+              if (this.cmService.drag)
+                rescaleTimer=setTimeout(rescale,500);
+              else
+                this.cmService.resetScroll();
+            };
+            rescaleTimer=setTimeout(rescale,500);
           }
           await handleScroll(
             minskyCanvasContainer.scrollTop,
