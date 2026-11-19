@@ -982,8 +982,8 @@ TEST(TensorOps, evalOpEvaluate)
       // ticket #797
       auto g1=new GodleyIcon; model->addItem(g1);
       auto g2=new GodleyIcon; model->addItem(g2);
-      g1->table.resize(3,2);
-      g2->table.resize(3,2);
+      g1->table.resize(3,3);
+      g2->table.resize(3,3);
       g1->table.assetClass(1,GodleyAssetClass::asset);
       g2->table.assetClass(1,GodleyAssetClass::liability);
       g1->table.cell(0,1)="a1";
