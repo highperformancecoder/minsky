@@ -113,18 +113,21 @@ namespace MathDAG
     // render list of arguments separated by \a op, or \a empty if arglist is empty
     void naryRender(Surface& dest, const vector<WeakNodePtr>& arglist, int BODMASlevel, const char* op, const char *empty)
     {
-      if (arglist.empty())
+      // skip null entries, preserving operators between the valid ones
+      bool first=true;
+      for (size_t j=0; j<arglist.size(); j++)
+        {
+          if (!arglist[j]) continue;
+          if (!first)
+            print(dest.cairo(),op,Anchor::nw);
+          first=false;
+          if (arglist[j]->BODMASlevel()>BODMASlevel)
+            parenthesise(dest, [&](Surface& dest) {arglist[j]->render(dest);});
+          else
+            arglist[j]->render(dest);
+        }
+      if (first) // no valid arguments
         print(dest.cairo(),empty,Anchor::nw);
-      else
-        for (size_t j=0; j<arglist.size(); j++)
-          {
-            if (arglist[j]->BODMASlevel()>BODMASlevel)
-              parenthesise(dest, [&](Surface& dest) {arglist[j]->render(dest);});
-            else
-              arglist[j]->render(dest);
-            if (j!=arglist.size()-1) 
-              print(dest.cairo(),op,Anchor::nw);
-          }
     }
 
     void variableRender(Surface& surf, const VariableDAG& v)
@@ -955,7 +958,7 @@ namespace MathDAG
     if (!arguments.empty())
       {
         naryRender(surf,arguments[0],BODMASlevel(),"∧","1");
-        if (!arguments[1].empty())
+        if (arguments.size()>1 && !arguments[1].empty())
           {
             print(surf.cairo(),"∧",Anchor::nw);
             naryRender(surf,arguments[1],BODMASlevel(),"∧","1");
@@ -972,7 +975,7 @@ namespace MathDAG
     if (!arguments.empty())
       {
         naryRender(surf,arguments[0],BODMASlevel(),"∨","0");
-        if (!arguments[1].empty())
+        if (arguments.size()>1 && !arguments[1].empty())
           {
             print(surf.cairo(),"∨",Anchor::nw);
             naryRender(surf,arguments[1],BODMASlevel(),"∨","0");
