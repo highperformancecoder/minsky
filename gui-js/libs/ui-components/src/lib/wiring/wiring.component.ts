@@ -10,7 +10,7 @@ import {
   ElectronService,
   WindowUtilityService,
 } from '@minsky/core';
-import { events, MainRenderingTabs, minsky } from '@minsky/shared';
+import { events, MainRenderingTabs, minsky, RenderNativeWindow } from '@minsky/shared';
 import { fromEvent, Observable, Subject, takeUntil } from 'rxjs';
 import { sampleTime } from 'rxjs/operators';
 import { AvailableOperationsComponent } from './available-operations/available-operations.component';
@@ -62,7 +62,7 @@ export class WiringComponent implements OnInit, OnDestroy {
 
   private setupEventListenersForCanvas(minskyCanvasContainer: HTMLElement) {
     const minskyCanvasElement = document.getElementById('main-minsky-canvas') as HTMLElement;
-    var moveOnScroll=0; // avoid moving when programmatically setting scroll bars
+    var suppressScroll=false; // ignore scroll events caused by programmatically setting scroll bars or resizing
     var scrollGeneration=0; // incremented on each user scroll, to detect stale resets
 
     const tabElements = document.getElementsByClassName('tab');
@@ -80,20 +80,22 @@ export class WiringComponent implements OnInit, OnDestroy {
       var pos= await this.electronService.currentTabPosition();
       let bounds: number[];
       try {
-        bounds=await this.electronService.minsky.canvas.contentBounds();
+        // bounds of the currently displayed tab (empty if the tab cannot report them)
+        bounds=await new RenderNativeWindow(this.cmService.currentTab).contentBounds();
       } catch (e) {console.error(e);}
       // user scrolled while awaiting: discard this stale reset (including the
       // resize), the debounce from the latest scroll will perform a fresh one
       if (generation!==scrollGeneration) return;
-      if (bounds) this.windowUtilityService.updateScrollableArea(bounds,pos);
+      // resizing or setting the scroll position generates scroll events,
+      // which must not be interpreted as the user panning
+      suppressScroll=true;
+      this.windowUtilityService.updateScrollableArea(bounds,pos);
       const scrollableArea = this.windowUtilityService.getScrollableArea();
-      // only count scroll events that will actually be generated
-      const left=Math.round(scrollableArea.width/2 - pos[0]);
-      const top=Math.round(scrollableArea.height/2 - pos[1]);
-      if (Math.abs(minskyCanvasContainer.scrollLeft-left)>=1 || Math.abs(minskyCanvasContainer.scrollTop-top)>=1)
-        ++moveOnScroll;
-      minskyCanvasContainer.scrollLeft=left;
-      minskyCanvasContainer.scrollTop=top;
+      minskyCanvasContainer.scrollLeft=Math.round(scrollableArea.width/2 - pos[0]);
+      minskyCanvasContainer.scrollTop=Math.round(scrollableArea.height/2 - pos[1]);
+      // scroll events are delivered before the next animation frame callbacks
+      await new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve())));
+      suppressScroll=false;
     };
     this.cmService.resetScroll();
   
@@ -103,16 +105,14 @@ export class WiringComponent implements OnInit, OnDestroy {
           const scrollableArea = this.windowUtilityService.getScrollableArea();
           const posX = scrollableArea.width / 2 - scrollLeft;
           const posY = scrollableArea.height / 2 - scrollTop;
-          if (!moveOnScroll)
-            await this.electronService.currentTabMoveTo(posX,posY);
-          else
-            --moveOnScroll;
+          await this.electronService.currentTabMoveTo(posX,posY);
         };
 
         let rescaleTimer: any;
         minskyCanvasContainer.addEventListener('scroll', async () => {
+          if (suppressScroll) return;
           // once scrolling stops, resize the scrollable area to fit the contents
-          if (!moveOnScroll) {
+          {
             ++scrollGeneration;
             clearTimeout(rescaleTimer);
             const rescale=()=>{

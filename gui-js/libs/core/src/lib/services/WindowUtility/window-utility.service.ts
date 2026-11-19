@@ -17,6 +17,8 @@ export class WindowUtilityService {
   private mainWindowId = 1;
   // scrollable area is this multiple of the extent of the canvas contents
   SCROLLABLE_AREA_FACTOR = 1.5;
+  // scrollable area as a multiple of the drawable area, for tabs that cannot report their content extents
+  UNKNOWN_EXTENT_FACTOR = 100;
 
   constructor(private electronService: ElectronService) { }
 
@@ -64,7 +66,10 @@ export class WindowUtilityService {
    * @returns true if the scrollable area changed
    */
   public updateScrollableArea(bounds: number[], pos: number[]): boolean {
-    if (!this.minskyCanvasElement || !bounds || bounds.length < 4) return false;
+    if (!this.minskyCanvasElement) return false;
+    if (!bounds || bounds.length < 4)
+      // content extent unknown for this tab: use a generously sized area
+      bounds = [0, 0, this.drawableWidth * this.UNKNOWN_EXTENT_FACTOR / 2, this.drawableHeight * this.UNKNOWN_EXTENT_FACTOR / 2];
     const size = (b0: number, b1: number, p: number, drawable: number) => {
       // contents' extent relative to the unpanned origin
       const extent = Math.max(Math.abs(b0 - p), Math.abs(b1 - p), 0);

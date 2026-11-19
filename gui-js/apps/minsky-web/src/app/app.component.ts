@@ -180,11 +180,9 @@ export class AppComponent implements OnInit, DoCheck {
           await this.windowUtilityService.reInitialize();
           const payload = { newTab: tab };
           await this.electronService.invoke(events.CHANGE_MAIN_TAB, payload);
-          var container=this.windowUtilityService.getMinskyContainerElement();
-          const scrollableArea=this.windowUtilityService.getScrollableArea();
-          container.scrollTop=scrollableArea.height / 2;
-          container.scrollLeft=scrollableArea.width / 2;
-          this.cmService.resetScroll();
+          // restore the new tab's own pan position (without moving it), and
+          // size the scrollbars now that the tab has rendered
+          await this.cmService.resetScroll();
         }, 1);
       }
     }

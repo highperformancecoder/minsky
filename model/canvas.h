@@ -133,7 +133,7 @@ namespace minsky
 
     /// bounds {x0,y0,x1,y1} of the items on the canvas, in window
     /// coordinates (ie including the current pan position)
-    std::vector<double> contentBounds() const {
+    std::vector<double> contentBounds() const override {
       double x0,y0,x1,y1;
       model->contentBounds(x0,y0,x1,y1);
       return {x0,y0,x1,y1};

@@ -168,6 +168,7 @@ export class RenderNativeWindow extends EventInterface {
       super(prefix.$prefix())
     this.backgroundColour=new ecolab__cairo__Colour(this.$prefix()+'.backgroundColour');
   }
+  async contentBounds(): Promise<number[]> {return this.$callMethod('contentBounds');}
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
   async draw(): Promise<void> {return this.$callMethod('draw');}
   async frameArgs(): Promise<minsky__RenderNativeWindow__RenderFrameArgs> {return this.$callMethod('frameArgs');}
