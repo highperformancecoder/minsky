@@ -23,6 +23,7 @@
 #include "selection.h"
 #include "itemT.rcd"
 #include "userFunction.rcd"
+#include "userFunction.xcd"
 #include "minsky_epilogue.h"
 
 #ifndef NO_EXPRTK
@@ -77,10 +78,13 @@ namespace minsky
   vector<string> UserFunction::symbolNames() const {return {};}
   void UserFunction::compile() {}
   double UserFunction::evaluate(double, double) {return {};}
-  double UserFunction::operator()(const vector<double>& p) {}
+  double UserFunction::operator()(const vector<double>& p) {return 0;}
   Units UserFunction::units(bool check) const {return {};}
+  Units UserFunction::units(const vector<Units>&, bool, const std::vector<double>&)
+    const {return {};}
   string UserFunction::description(const string&) {return {};}
   string UserFunction::name() const {return {};}
+}
 #else
 }
 

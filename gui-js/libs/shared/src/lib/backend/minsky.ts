@@ -2162,7 +2162,7 @@ export class UserFunction extends Item {
   async name(): Promise<string> {return this.$callMethod('name');}
   async nextId(...args: number[]): Promise<number> {return this.$callMethod('nextId',...args);}
   async symbolNames(): Promise<string[]> {return this.$callMethod('symbolNames');}
-  async units(a1: boolean): Promise<object> {return this.$callMethod('units',a1);}
+  async units(...args: any[]): Promise<object> {return this.$callMethod('units',...args);}
 }
 
 export class VariableInstanceList extends CppClass {

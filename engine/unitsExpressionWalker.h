@@ -42,19 +42,20 @@ namespace minsky
     void checkDimensionless() const
     {if (check && !units.empty()) throw std::runtime_error("Should be dimensionless");}
     UnitsExpressionWalker operator+=(const UnitsExpressionWalker& x)
-    {checkSameDims(x); return *this;}
+    {checkSameDims(x); value+=x.value; return *this;}
     UnitsExpressionWalker operator+(const UnitsExpressionWalker& x) const
-    {checkSameDims(x); return *this;}
+    {auto tmp=*this; return tmp+=x;}
     UnitsExpressionWalker operator-=(const UnitsExpressionWalker& x)
-    {checkSameDims(x); return *this;}
+    {checkSameDims(x); value-=x.value; return *this;}
     UnitsExpressionWalker operator-(const UnitsExpressionWalker& x) const
-    {checkSameDims(x); return *this;}
+    {auto tmp=*this; return tmp-=x;}
 
     UnitsExpressionWalker operator*=(const UnitsExpressionWalker& x)
     {
       for (auto& i: x.units)
         units[i.first]+=i.second;
       units.normalise();
+      value*=x.value;
       return *this;
     }
     UnitsExpressionWalker operator*(const UnitsExpressionWalker& x) const
@@ -64,6 +65,7 @@ namespace minsky
       for (auto& i: x.units)
         units[i.first]-=i.second;
       units.normalise();
+      value/=x.value;
       return *this;
     }
     UnitsExpressionWalker operator/(const UnitsExpressionWalker& x) const

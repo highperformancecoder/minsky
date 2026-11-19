@@ -92,3 +92,43 @@ TEST_F(UserFunctionSuite, units)
     f.expression="exp(foo)";
     EXPECT_THROW(f.units(true),std::exception);
   }
+
+TEST_F(UserFunctionSuite, nestedFunctionUnits)
+  {
+    auto inner=make_shared<UserFunction>("inner(a,b)","a*b");
+    auto middle=make_shared<UserFunction>("middle(a,b)","inner(a,b)");
+    UserFunction outer("outer(x,y)","middle(x,y)");
+    userFunctions[string(":inner")]=inner;
+    userFunctions[string(":middle")]=middle;
+
+    EXPECT_EQ("m s",outer.units({Units("m"),Units("s")},true).str());
+    EXPECT_EQ("m^2",outer.units({Units("m"),Units("m")},true).str());
+
+    auto add=make_shared<UserFunction>("add(a,b)","a+b");
+    UserFunction incompatible("incompatible(x,y)","add(x,y)");
+    userFunctions[string(":add")]=add;
+    EXPECT_THROW(incompatible.units({Units("m"),Units("s")},true),std::exception);
+
+    auto recursive=make_shared<UserFunction>("recursive(a)","recursive(a)");
+    userFunctions[string(":recursive")]=recursive;
+    try
+      {
+        recursive->units({Units("m")},true);
+        FAIL() << "expected recursion exception";
+      }
+    catch (const std::exception& ex)
+      {
+        EXPECT_NE(string::npos, string(ex.what()).find("Recursive user function during dimensional analysis"));
+      }
+    // failed analysis must clear active-function state
+    recursive->expression="a";
+    EXPECT_EQ("m",recursive->units({Units("m")},true).str());
+
+    // one function calling two different user functions with distinct argument units
+    auto sq=make_shared<UserFunction>("sq(a)","a*a");
+    auto dbl=make_shared<UserFunction>("dbl(a)","a+a");
+    userFunctions[string(":sq")]=sq;
+    userFunctions[string(":dbl")]=dbl;
+    UserFunction two("two(x,y)","sq(x)*dbl(y)");
+    EXPECT_EQ("m^2 s",two.units({Units("m"),Units("s")},true).str());
+  }
