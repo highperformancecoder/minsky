@@ -36,8 +36,8 @@ namespace minsky
   {
     if (x.units.empty()) return {};
     int index=y.value;
-    if (index!=y.value)
-      throw std::runtime_error("index must be an integer for roots of dimensioned quanitites");
+    if (index==0 || index!=y.value)
+      throw std::runtime_error("index must be a non-zero integer for roots of dimensioned quanitites");
     UnitsExpressionWalker r;
     for (auto& i: x.units)
       {
