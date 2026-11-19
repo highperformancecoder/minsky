@@ -958,7 +958,7 @@ namespace MathDAG
         if (!arguments[1].empty())
           {
             print(surf.cairo(),"∧",Anchor::nw);
-            naryRender(surf,arguments[0],BODMASlevel(),"∧","1");
+            naryRender(surf,arguments[1],BODMASlevel(),"∧","1");
           }
       }
     else
@@ -975,7 +975,7 @@ namespace MathDAG
         if (!arguments[1].empty())
           {
             print(surf.cairo(),"∨",Anchor::nw);
-            naryRender(surf,arguments[0],BODMASlevel(),"∨","0");
+            naryRender(surf,arguments[1],BODMASlevel(),"∨","0");
           }
       }
     else
