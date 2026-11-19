@@ -62,7 +62,6 @@ export class WiringComponent implements OnInit, OnDestroy {
 
   private setupEventListenersForCanvas(minskyCanvasContainer: HTMLElement) {
     const minskyCanvasElement = document.getElementById('main-minsky-canvas') as HTMLElement;
-    const scrollableArea = this.windowUtilityService.getScrollableArea();
     var moveOnScroll=0; // avoid moving when programmatically setting scroll bars
 
     const tabElements = document.getElementsByClassName('tab');
@@ -76,16 +75,26 @@ export class WiringComponent implements OnInit, OnDestroy {
     }
 
     this.cmService.resetScroll=async ()=>{
-      ++moveOnScroll;
       var pos= await this.electronService.currentTabPosition();
-      minskyCanvasContainer.scrollLeft=scrollableArea.width/2 - pos[0];
-      minskyCanvasContainer.scrollTop=scrollableArea.height/2 - pos[1];
+      try {
+        const bounds=await this.electronService.minsky.canvas.contentBounds();
+        this.windowUtilityService.updateScrollableArea(bounds,pos);
+      } catch (e) {console.error(e);}
+      const scrollableArea = this.windowUtilityService.getScrollableArea();
+      // only count scroll events that will actually be generated
+      const left=Math.round(scrollableArea.width/2 - pos[0]);
+      const top=Math.round(scrollableArea.height/2 - pos[1]);
+      if (Math.abs(minskyCanvasContainer.scrollLeft-left)>=1 || Math.abs(minskyCanvasContainer.scrollTop-top)>=1)
+        ++moveOnScroll;
+      minskyCanvasContainer.scrollLeft=left;
+      minskyCanvasContainer.scrollTop=top;
     };
     this.cmService.resetScroll();
   
    this.zone.runOutsideAngular(() => {
       if (this.electronService.isElectron) {
         const handleScroll = async (scrollTop: number, scrollLeft: number) => {
+          const scrollableArea = this.windowUtilityService.getScrollableArea();
           const posX = scrollableArea.width / 2 - scrollLeft;
           const posY = scrollableArea.height / 2 - scrollTop;
           if (!moveOnScroll)
@@ -94,15 +103,22 @@ export class WiringComponent implements OnInit, OnDestroy {
             --moveOnScroll;
         };
 
+        let rescaleTimer: any;
         minskyCanvasContainer.addEventListener('scroll', async () => {
+          // once scrolling stops, resize the scrollable area to fit the contents
+          if (!moveOnScroll) {
+            clearTimeout(rescaleTimer);
+            rescaleTimer=setTimeout(()=>this.cmService.resetScroll(),500);
+          }
           await handleScroll(
             minskyCanvasContainer.scrollTop,
             minskyCanvasContainer.scrollLeft
           );
         });
         minskyCanvasContainer.addEventListener('RESET_ZOOM', async () => {
-          minskyCanvasContainer.scrollTop=scrollableArea.width / 2;
-          minskyCanvasContainer.scrollLeft=scrollableArea.height / 2;
+          const scrollableArea = this.windowUtilityService.getScrollableArea();
+          minskyCanvasContainer.scrollTop=scrollableArea.height / 2;
+          minskyCanvasContainer.scrollLeft=scrollableArea.width / 2;
         });
         minskyCanvasContainer.addEventListener('RESET_SCROLL', async () => {
           this.cmService.resetScroll();
