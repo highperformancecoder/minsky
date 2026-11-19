@@ -63,6 +63,7 @@ export class WiringComponent implements OnInit, OnDestroy {
   private setupEventListenersForCanvas(minskyCanvasContainer: HTMLElement) {
     const minskyCanvasElement = document.getElementById('main-minsky-canvas') as HTMLElement;
     var moveOnScroll=0; // avoid moving when programmatically setting scroll bars
+    var scrollGeneration=0; // incremented on each user scroll, to detect stale resets
 
     const tabElements = document.getElementsByClassName('tab');
     for(let i = 0; i < tabElements.length; i++) {
@@ -75,11 +76,15 @@ export class WiringComponent implements OnInit, OnDestroy {
     }
 
     this.cmService.resetScroll=async ()=>{
+      const generation=scrollGeneration;
       var pos= await this.electronService.currentTabPosition();
       try {
         const bounds=await this.electronService.minsky.canvas.contentBounds();
         this.windowUtilityService.updateScrollableArea(bounds,pos);
       } catch (e) {console.error(e);}
+      // user scrolled while awaiting: discard this stale reset, the
+      // debounce from the latest scroll will perform a fresh one
+      if (generation!==scrollGeneration) return;
       const scrollableArea = this.windowUtilityService.getScrollableArea();
       // only count scroll events that will actually be generated
       const left=Math.round(scrollableArea.width/2 - pos[0]);
@@ -107,6 +112,7 @@ export class WiringComponent implements OnInit, OnDestroy {
         minskyCanvasContainer.addEventListener('scroll', async () => {
           // once scrolling stops, resize the scrollable area to fit the contents
           if (!moveOnScroll) {
+            ++scrollGeneration;
             clearTimeout(rescaleTimer);
             rescaleTimer=setTimeout(()=>this.cmService.resetScroll(),500);
           }
