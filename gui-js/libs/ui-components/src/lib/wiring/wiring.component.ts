@@ -78,13 +78,14 @@ export class WiringComponent implements OnInit, OnDestroy {
     this.cmService.resetScroll=async ()=>{
       const generation=scrollGeneration;
       var pos= await this.electronService.currentTabPosition();
+      let bounds: number[];
       try {
-        const bounds=await this.electronService.minsky.canvas.contentBounds();
-        this.windowUtilityService.updateScrollableArea(bounds,pos);
+        bounds=await this.electronService.minsky.canvas.contentBounds();
       } catch (e) {console.error(e);}
-      // user scrolled while awaiting: discard this stale reset, the
-      // debounce from the latest scroll will perform a fresh one
+      // user scrolled while awaiting: discard this stale reset (including the
+      // resize), the debounce from the latest scroll will perform a fresh one
       if (generation!==scrollGeneration) return;
+      if (bounds) this.windowUtilityService.updateScrollableArea(bounds,pos);
       const scrollableArea = this.windowUtilityService.getScrollableArea();
       // only count scroll events that will actually be generated
       const left=Math.round(scrollableArea.width/2 - pos[0]);
