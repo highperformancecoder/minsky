@@ -69,7 +69,9 @@ export class WindowUtilityService {
       // contents' extent relative to the unpanned origin
       const extent = Math.max(Math.abs(b0 - p), Math.abs(b1 - p), 0);
       const half = this.SCROLLABLE_AREA_FACTOR * extent;
-      return Math.ceil(Math.max(drawable + 2 * half, 2 * drawable));
+      // also keep the current pan within the scroll range:
+      // 0 <= W/2 - p <= W - drawable
+      return Math.ceil(Math.max(drawable + 2 * half, 2 * drawable, 2 * p, 2 * (drawable - p)));
     };
     const w = size(bounds[0], bounds[2], pos[0], this.drawableWidth);
     const h = size(bounds[1], bounds[3], pos[1], this.drawableHeight);

@@ -436,6 +436,7 @@ export class Canvas extends RenderNativeWindow {
   async applyDefaultPlotOptions(): Promise<void> {return this.$callMethod('applyDefaultPlotOptions');}
   async clickType(...args: string[]): Promise<string> {return this.$callMethod('clickType',...args);}
   async closestInPort(a1: number,a2: number): Promise<object> {return this.$callMethod('closestInPort',a1,a2);}
+  async contentBounds(): Promise<number[]> {return this.$callMethod('contentBounds');}
   async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
   async copyAllFlowVars(): Promise<void> {return this.$callMethod('copyAllFlowVars');}
   async copyAllStockVars(): Promise<void> {return this.$callMethod('copyAllStockVars');}
