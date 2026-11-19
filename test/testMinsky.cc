@@ -977,6 +977,27 @@ TEST(TensorOps, evalOpEvaluate)
       EXPECT_EQ("",godley1.cell(2,2));
     }
 
+  TEST_F(MinskySuite, importStockVarUpdatesIcon)
+    {
+      // ticket #797
+      auto g1=new GodleyIcon; model->addItem(g1);
+      auto g2=new GodleyIcon; model->addItem(g2);
+      g1->table.resize(3,2);
+      g2->table.resize(3,2);
+      g1->table.assetClass(1,GodleyAssetClass::asset);
+      g2->table.assetClass(1,GodleyAssetClass::liability);
+      g1->table.cell(0,1)="a1";
+      g1->update();
+      g2->update();
+      g2->toggleVariableDisplay();
+      EXPECT_TRUE(g2->variableDisplay());
+      EXPECT_TRUE(g2->stockVars().empty());
+      g2->popup.importStockVarByCol("a1",1);
+      EXPECT_EQ("a1",g2->table.cell(0,1));
+      ASSERT_EQ(1,g2->stockVars().size());
+      EXPECT_EQ("a1",g2->stockVars()[0]->name());
+    }
+
   TEST_F(MinskySuite, godleyCrossColumnMoveUndo)
     {
       auto g=new GodleyIcon;
