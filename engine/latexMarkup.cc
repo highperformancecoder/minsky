@@ -726,6 +726,20 @@ namespace
 
     Result(const string& x=""): string(x) {}
 
+    // Pango's <sub>/<sup> markup is rendered with the wrong font size
+    // when the layout is created under a scaled cairo context (ticket 787),
+    // so use an explicit size and rise instead.
+    static string openTag(const string& x)
+    {
+      if (x=="sup") return "<span size=\"smaller\" rise=\"5000\">";
+      if (x=="sub") return "<span size=\"smaller\" rise=\"-2000\">";
+      return "<"+x+">";
+    }
+    static string closeTag(const string& x)
+    {
+      return (x=="sup"||x=="sub")? "</span>": "</"+x+">";
+    }
+
     void push_back(const string& x,bool popAgain=false)
     {
       stack.push_back(x);
@@ -749,7 +763,7 @@ namespace
         else
           {
             if (!x.empty()) 
-              *this+="<"+x+">";
+              *this+=openTag(x);
             push_back(x);
             input++;
           }
@@ -757,14 +771,14 @@ namespace
         {
           push_back(x,x!="{");
           if (!x.empty()) 
-            *this+="<"+x+">";
+            *this+=openTag(x);
           processLaTeX(input);
           return;
         }
       else if (x=="rm") 
         *this+=utf8char(input);
       else if (!x.empty())
-        *this+=string("<")+x+">"+utf8char(input)+"</"+x+">";
+        *this+=openTag(x)+utf8char(input)+closeTag(x);
     }
     
     void pop()
@@ -773,7 +787,7 @@ namespace
       do
         {
           if (!stack.back().empty() && stack.back()!="{")
-            *this+="</"+stack.back()+">";
+            *this+=closeTag(stack.back());
           stack.pop_back();
           popMore.pop_back();
         } while (!stack.empty() && !popMore.empty() && popMore.back());
@@ -817,7 +831,7 @@ namespace
           if (*input=='[')
             {
               const string index=parseOpt(input);
-              *this+="<small><sup>"+index+"</sup></small>";
+              *this+=openTag("sup")+index+closeTag("sup");
             }
           *this+=latexSymbols["surd"];
           process1arg("", input);

@@ -520,21 +520,21 @@ namespace MathDAG
   template <>
   void OperationDAG<OperationType::asin>::render(Surface& surf) const
   {
-    print(surf.cairo(),"sin<sup>-1</sup>",Anchor::nw);
+    print(surf.cairo(),"sin<span size=\"smaller\" rise=\"5000\">-1</span>",Anchor::nw);
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});}
   }
   template <>
   void OperationDAG<OperationType::acos>::render(Surface& surf) const
   {
-    print(surf.cairo(),"cos<small><sup>-1</sup></small>",Anchor::nw);
+    print(surf.cairo(),"cos<span size=\"smaller\" rise=\"5000\">-1</span>",Anchor::nw);
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});}
   }
   template <>
   void OperationDAG<OperationType::atan>::render(Surface& surf) const
   {
-    print(surf.cairo(),"tan<small><sup>-1</sup></small>",Anchor::nw);
+    print(surf.cairo(),"tan<span size=\"smaller\" rise=\"5000\">-1</span>",Anchor::nw);
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});}
   }
@@ -674,12 +674,12 @@ namespace MathDAG
   template <>
   void OperationDAG<OperationType::sum>::render(Surface& surf) const
   {
-    print(surf.cairo(),"∑<sub>i</sub>",Anchor::nw);
+    print(surf.cairo(),"∑<span size=\"smaller\" rise=\"-2000\">i</span>",Anchor::nw);
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {
         const double h=parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
         cairo_rel_move_to(surf.cairo(), 0, 0.5*h);
-        print(surf.cairo(),"<sub>i</sub>",Anchor::nw);
+        print(surf.cairo(),"<span size=\"smaller\" rise=\"-2000\">i</span>",Anchor::nw);
         cairo_rel_move_to(surf.cairo(), 0, -0.5*h);
       }
   }
@@ -687,33 +687,33 @@ namespace MathDAG
   template <>
   void OperationDAG<OperationType::product>::render(Surface& surf) const
   {
-    print(surf.cairo(),"∏<sub>i</sub>",Anchor::nw);
+    print(surf.cairo(),"∏<span size=\"smaller\" rise=\"-2000\">i</span>",Anchor::nw);
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {
         parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
-        print(surf.cairo(),"<sub>i</sub>",Anchor::nw);
+        print(surf.cairo(),"<span size=\"smaller\" rise=\"-2000\">i</span>",Anchor::nw);
       }
   }
 
   template <>
   void OperationDAG<OperationType::infimum>::render(Surface& surf) const
   {
-    print(surf.cairo(),"min<sub>i</sub>",Anchor::nw);
+    print(surf.cairo(),"min<span size=\"smaller\" rise=\"-2000\">i</span>",Anchor::nw);
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {
         parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
-        print(surf.cairo(),"<sub>i</sub>",Anchor::nw);
+        print(surf.cairo(),"<span size=\"smaller\" rise=\"-2000\">i</span>",Anchor::nw);
       }
   }
 
   template <>
   void OperationDAG<OperationType::supremum>::render(Surface& surf) const
   {
-    print(surf.cairo(),"min<sub>i</sub>",Anchor::nw);
+    print(surf.cairo(),"min<span size=\"smaller\" rise=\"-2000\">i</span>",Anchor::nw);
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {
         parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
-        print(surf.cairo(),"<sub>i</sub>",Anchor::nw);
+        print(surf.cairo(),"<span size=\"smaller\" rise=\"-2000\">i</span>",Anchor::nw);
       }
   }
 
@@ -734,55 +734,55 @@ namespace MathDAG
   template <>
   void OperationDAG<OperationType::any>::render(Surface& surf) const
   {
-    print(surf.cairo(),"Θ(max<sub>i</sub>",Anchor::nw);
+    print(surf.cairo(),"Θ(max<span size=\"smaller\" rise=\"-2000\">i</span>",Anchor::nw);
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {
         parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
-        print(surf.cairo(),"<sub>i</sub>&gt;0.5)",Anchor::nw);
+        print(surf.cairo(),"<span size=\"smaller\" rise=\"-2000\">i</span>&gt;0.5)",Anchor::nw);
       }
   }
 
   template <>
   void OperationDAG<OperationType::all>::render(Surface& surf) const
   {
-    print(surf.cairo(),"∏<sub>i</sub>Θ(",Anchor::nw);
+    print(surf.cairo(),"∏<span size=\"smaller\" rise=\"-2000\">i</span>Θ(",Anchor::nw);
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {
         parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
-        print(surf.cairo(),"<sub>i</sub>&gt;0.5)",Anchor::nw);
+        print(surf.cairo(),"<span size=\"smaller\" rise=\"-2000\">i</span>&gt;0.5)",Anchor::nw);
       }
   }
 
   template <>
   void OperationDAG<OperationType::runningSum>::render(Surface& surf) const
   {
-    print(surf.cairo(),"∑<sub>j=0</sub><sup>i</sup>",Anchor::nw);
+    print(surf.cairo(),"∑<span size=\"smaller\" rise=\"-2000\">j=0</span><span size=\"smaller\" rise=\"5000\">i</span>",Anchor::nw);
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {
         parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
-        print(surf.cairo(),"<sub>j</sub>",Anchor::nw);
+        print(surf.cairo(),"<span size=\"smaller\" rise=\"-2000\">j</span>",Anchor::nw);
       }
   }
 
   template <>
   void OperationDAG<OperationType::runningAv>::render(Surface& surf) const
   {
-    print(surf.cairo(),"(1/i)∑<sub>j=0</sub><sup>i</sup>",Anchor::nw);
+    print(surf.cairo(),"(1/i)∑<span size=\"smaller\" rise=\"-2000\">j=0</span><span size=\"smaller\" rise=\"5000\">i</span>",Anchor::nw);
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {
         parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
-        print(surf.cairo(),"<sub>j</sub>",Anchor::nw);
+        print(surf.cairo(),"<span size=\"smaller\" rise=\"-2000\">j</span>",Anchor::nw);
       }
   }
 
   template <>
   void OperationDAG<OperationType::runningProduct>::render(Surface& surf) const
   {
-    print(surf.cairo(),"∏<sub>j=0</sub><sup>i</sup>",Anchor::nw);
+    print(surf.cairo(),"∏<span size=\"smaller\" rise=\"-2000\">j=0</span><span size=\"smaller\" rise=\"5000\">i</span>",Anchor::nw);
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {
         parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
-        print(surf.cairo(),"<sub>j</sub>",Anchor::nw);
+        print(surf.cairo(),"<span size=\"smaller\" rise=\"-2000\">j</span>",Anchor::nw);
       }
   }
 
@@ -793,7 +793,7 @@ namespace MathDAG
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {
         parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
-        print(surf.cairo(),"<sub>i</sub>",Anchor::nw);
+        print(surf.cairo(),"<span size=\"smaller\" rise=\"-2000\">i</span>",Anchor::nw);
       }
   }
   
@@ -804,7 +804,7 @@ namespace MathDAG
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {
         parenthesise(surf, [&](Surface& surf){arguments[0][0]->render(surf);});
-        print(surf.cairo(),"<sub>i</sub>",Anchor::nw);
+        print(surf.cairo(),"<span size=\"smaller\" rise=\"-2000\">i</span>",Anchor::nw);
       }
   }
 

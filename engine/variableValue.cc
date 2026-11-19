@@ -422,7 +422,12 @@ namespace minsky
   }
   
   string expMultiplier(int exp)
-  {return exp!=0? "×10<sup>"+std::to_string(exp)+"</sup>": "";}
+  {
+    // Note: <sup> markup is rendered with an oversized exponent by Pango when the
+    // layout is created under a scaled cairo context (ticket 787), so use an
+    // explicit size/rise instead.
+    return exp!=0? "×10<span size=\"smaller\" rise=\"5000\">"+std::to_string(exp)+"</span>": "";
+  }
 
 
   void VariableValue::exportAsCSV(const string& filename, const string& comment, bool tabular) const
