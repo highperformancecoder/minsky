@@ -20,6 +20,7 @@
 #ifndef GROUP_H
 #define GROUP_H
 #include "SVGItem.h"
+#include "SVGItem.cd"
 #include "callableFunction.h"
 
 #include <assert.h>         // for assert
@@ -30,7 +31,6 @@
 #include <vector>           // for vector
 #include "arrays.h"         // for array
 #include "bookmark.h"       // for Bookmark
-#include "cairo.h"          // for cairo_t
 #include "classdesc.h"      // for Exclude, NullDescriptor
 #include "error.h"          // for error
 #include "item.h"           // for ItemPtr, Item, ItemPortVector, ItemT, Items
@@ -254,7 +254,7 @@ namespace minsky
     /// make a copy of this, that is not owned by any group
     GroupPtr copyUnowned() const;
     Group* clone() const override {throw error("Groups cannot be cloned");}
-    static SVGRenderer svgRenderer;
+    static mansoura::SVGRenderer svgRenderer;
 
     using GroupItems::addItem;
     ItemPtr addItem(const std::shared_ptr<Item>& it, bool inSchema=false) override
@@ -268,16 +268,16 @@ namespace minsky
     /// Make all variables not present in outerscope local to this group
     void makeSubroutine();
     
-    void draw(const ICairoShim&) const override;
+    void draw(const mansoura::IMansoura&) const override;
 
     /// draw representations of edge variables around group icon
-    void drawEdgeVariables(cairo_t*) const;
+    void drawEdgeVariables(const mansoura::IMansoura&) const;
     /// draw the variables of one of the edges
-    void draw1edge(const std::vector<VariablePtr>& vars, cairo_t* cairo, 
+    void draw1edge(const std::vector<VariablePtr>& vars, const mansoura::IMansoura& cairoShim, 
                    float x) const;
     /// draw notches in the I/O region to indicate dockability of
     /// variables there
-    void drawIORegion(cairo_t*) const;
+    void drawIORegion(const mansoura::IMansoura&) const;
     /// position edge I/O variables at their correct rendered locations
     /// without requiring a Cairo context (used by select() for hit-testing)
     void positionEdgeVariables() const;

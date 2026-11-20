@@ -63,7 +63,7 @@ namespace minsky
     std::string valueId() const 
     {return intVar->valueId();}
     
-    void draw(const ICairoShim&) const override;
+    void draw(const mansoura::IMansoura&) const override;
     void resize(const LassoBox& b) override;  
 
     /// return reference to integration variable

@@ -50,7 +50,7 @@ namespace minsky
   
   class PubTab: public PannableTab<PubTabBase>
   {
-    bool redraw(int x0, int y0, int width, int height) override;
+    bool redraw(const mansoura::IMansoura& cairoShim, int x0, int y0, int width, int height) override;
     CLASSDESC_ACCESS(PubTab);
     PubItem* item=nullptr; // weak reference for moving items
     PubItem* m_getItemAt(float x, float y);
@@ -87,6 +87,7 @@ namespace minsky
     void mouseMove(float x, float y) override;
     bool keyPress(const EventInterface::KeyPressArgs&) override;
     bool hasScrollBars() const override {return true;}
+    std::vector<double> contentBounds() const override;
   };
 }
 

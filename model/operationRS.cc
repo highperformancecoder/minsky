@@ -23,6 +23,7 @@
 #include "item.rcd"
 #include "operationBase.rcd"
 #include "operationType.rcd"
+#include "IMansoura.cd"
 #include "minsky_epilogue.h"
 
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::OperationBase);

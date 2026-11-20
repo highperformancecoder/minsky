@@ -27,14 +27,15 @@
 #include "lock.rcd"
 #include "lock.xcd"
 #include "minsky.h"
-#include "cairoShimCairo.h"
+#include "mansouraCairo.h"
 #include "minsky_epilogue.h"
 using namespace std;
+using namespace mansoura;
 
 namespace minsky
 {
-  SVGRenderer Lock::lockedIcon;
-  SVGRenderer Lock::unlockedIcon;
+  mansoura::SVGRenderer Lock::lockedIcon;
+  mansoura::SVGRenderer Lock::unlockedIcon;
 
   Lock::Lock()
   {
@@ -79,7 +80,7 @@ namespace minsky
         throw_error("Locks can only be applied to Ravels");
   }
 
-  void Lock::draw(const ICairoShim& cairoShim) const 
+  void Lock::draw(const IMansoura& cairoShim) const 
   {
     const float z=zoomFactor()*scaleFactor();
     const float w=iWidth()*z, h=iHeight()*z;

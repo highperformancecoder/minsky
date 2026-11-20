@@ -75,14 +75,19 @@ namespace minsky
         lastError.clear();
         throw std::runtime_error(lastError);
       }
-    thread=std::thread([this,m](){
+    auto task=[this](const schema3::Minsky& m){
       try
         {
           Saver::save(m);
         }
       catch (const std::exception& ex) {lastError=ex.what();}
       catch (...) {} // we don't want any error to propagate
-    });
+    };
+#ifdef __EMSCRIPTEN__
+    task(m); // no threads available, so save synchronously
+#else
+    thread=std::thread([task,m](){task(m);});
+#endif
   }
 
   

@@ -30,7 +30,7 @@
 #include "model/lock.h" // to avoid clash with python header file of same name
 
 #include "operation.h"
-#include <cairo_base.h>
+#include "IMansoura.h"
 #include <classdesc.h>
 #include <ostream>
 #include <vector>
@@ -98,7 +98,7 @@ namespace MathDAG
     /// needs to be defined), and pen is moved to the right edge of
     /// the graphic. The determine bounding box, render into a
     /// recording surface, and use width()/height()
-    virtual void render(ecolab::cairo::Surface& surf) const=0;
+    virtual void render(const mansoura::IMansoura& surf) const=0;
     
     /// adds EvalOps to an EvalOpVector representing this node.
     /// @return a variable where the result is stored.  If a
@@ -163,7 +163,7 @@ namespace MathDAG
     bool tensorEval(std::set<const Node*>&) const override {return false;}
     ostream& latex(ostream& o) const  override {return o<<value;}
     ostream& matlab(ostream& o) const  override {return o<<value;}
-    void render(ecolab::cairo::Surface& surf) const override;
+    void render(const mansoura::IMansoura& surf) const override;
     VariableValuePtr addEvalOps(EvalOpVector&, const VariableValuePtr&) override;
     NodePtr derivative(SystemOfEquations&) const override;
   };
@@ -216,7 +216,7 @@ namespace MathDAG
     ostream& latex(ostream&) const override;
     ostream& matlab(ostream&) const override;
     VariableValuePtr addEvalOps(EvalOpVector&, const VariableValuePtr& v={}) override;
-    void render(ecolab::cairo::Surface& surf) const override;
+    void render(const mansoura::IMansoura& surf) const override;
     NodePtr derivative(SystemOfEquations&) const override; 
     /// adds a TensorEvalOp, returns true if successful
     bool addTensorOp(EvalOpVector& ev);
@@ -277,7 +277,7 @@ namespace MathDAG
     }
     ostream& latex(ostream&) const override; 
     ostream& matlab(ostream& o) const override;
-    void render(ecolab::cairo::Surface& surf) const override;
+    void render(const mansoura::IMansoura& surf) const override;
     using Node::latex;
     using Node::matlab;
     NodePtr derivative(SystemOfEquations&) const override; 
@@ -298,7 +298,7 @@ namespace MathDAG
     int BODMASlevel() const override {return 0;} 
     ostream& latex(ostream& o) const override  {return o<<"locked";} 
     ostream& matlab(ostream& o) const override  {return o<<"";} 
-    void render(ecolab::cairo::Surface& surf) const override;
+    void render(const mansoura::IMansoura& surf) const override;
     VariableValuePtr addEvalOps(EvalOpVector&, const VariableValuePtr& result={}) override;
     int order(unsigned maxOrder) const override {return rhs? rhs->order(maxOrder-1)+1:0;}
     bool tensorEval(std::set<const Node*>&) const override {return true;}
@@ -442,7 +442,7 @@ namespace MathDAG
     ostringstream getDefFromIntVar(const VariableBase& v);
 
     /// render equations into a cairo context
-    void renderEquations(ecolab::cairo::Surface&, double height) const;
+    void renderEquations(const mansoura::IMansoura&, double height) const;
   };
 
   /// creates a new name to represent the derivative of a variable

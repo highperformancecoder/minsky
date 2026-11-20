@@ -59,7 +59,7 @@ namespace  minsky
     static UserFunction* create(OperationType::Type t) 
     {return (t==OperationType::userFunction)? new UserFunction: nullptr;}
 
-    void draw(const ICairoShim& cairoShim) const override {drawUserFunction(cairoShim);}
+    void draw(const mansoura::IMansoura& cairoShim) const override {drawUserFunction(cairoShim);}
     
   };
 

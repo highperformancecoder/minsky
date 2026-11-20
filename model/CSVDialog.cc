@@ -22,7 +22,6 @@
 #include "group.h"
 #include "selection.h"
 #include "lasso.h"
-#include <pango.h>
 
 #include "CSVDialog.rcd"
 #include "CSVTools.xcd"
@@ -44,8 +43,6 @@
 using namespace std;
 using namespace minsky;
 using namespace civita;
-using ecolab::Pango;
-using ecolab::cairo::CairoSave;
 
 #include <filesystem>
 using std::filesystem::file_size;

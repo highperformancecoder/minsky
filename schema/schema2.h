@@ -114,7 +114,7 @@ namespace schema2
     // group specific fields
     Optional<std::vector<minsky::Bookmark>> bookmarks;
     Optional<classdesc::CDATA> tensorData; // used for saving tensor data attached to parameters
-    Optional<std::vector<ecolab::Plot::LineStyle>> palette;
+    Optional<std::vector<mansoura::Plot::LineStyle>> palette;
 
     Item() {}
     // minsky object importers
@@ -221,5 +221,6 @@ namespace schema2
 
 #include "schema2.cd"
 #include "schema2.xcd"
+#include "plot.xcd"
 
 #endif

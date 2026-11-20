@@ -34,7 +34,8 @@
 #include "variableType.h"
 #include "assetClass.h"
 #include <arrays.h>
-#include <plot.h>
+#include "mansouraPlot.h"
+#include "mansouraPlot.xcd"
 
 namespace schema0
 {
@@ -181,7 +182,7 @@ namespace schema0
     bool grid; ///< draw grid
     bool leadingMarker; ///< draw a leading marker on the curve (full draw only)
     bool autoscale; ///< autoscale plot to data
-    ecolab::Plot::PlotType plotType;
+    mansoura::Plot::PlotType plotType;
     double minx, maxx, miny, maxy;
     ecolab::array<int> ports;
     std::vector<VariableValue> yvars;

@@ -46,7 +46,6 @@ namespace minsky
     size_t scrollOffset=0, scrollMax=1;
     size_t scrollDelta=0;
     std::string sliceIndicator;
-    void draw(cairo_t* cairoShim) const;
   public:
     Sheet();
 
@@ -70,8 +69,8 @@ namespace minsky
     /// @return sliceIndicator
     const std::string& setSliceIndicator();
     
-    void draw(const ICairoShim& cairoShim) const override;
-    void drawResizeHandles(const ICairoShim& cairo) const override;
+    void draw(const mansoura::IMansoura& cairoShim) const override;
+    void drawResizeHandles(const mansoura::IMansoura& cairo) const override;
     
     /// calculates the input value
     void computeValue();

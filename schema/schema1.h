@@ -31,7 +31,7 @@ but any renamed attributes require bumping the schema number.
 #include "classdesc.h"
 #include "polyXMLBase.h"
 #include "polyJsonBase.h"
-#include "plot.xcd"
+//#include "plot.xcd"
 #include "simulation.h"
 
 #include <xsd_generate_base.h>
@@ -149,7 +149,7 @@ namespace schema1
   // why is the schema1 qualifier needed here?
   struct Plot: public SPoly<schema1::Plot,Item>
   {
-    typedef ecolab::Plot::Side Side;
+    typedef mansoura::Plot::Side Side;
     vector<int> ports;
     shared_ptr<Side> legend;
     bool logx{0}, logy{0};

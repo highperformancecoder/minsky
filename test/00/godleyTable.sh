@@ -78,35 +78,35 @@ assert minsky.canvas.item.table.getVariables()()==['a', 'b']
 # popup undo/redo tracks cell edits and discards stale redo states
 originalCell = item.table.getCell(2, 1)
 item.setCell(2, 1, 'changed')
-item.popup.undo(1)
+item.editor.undo(1)
 assert item.table.getCell(2, 1)==originalCell
-item.popup.undo(-1)
+item.editor.undo(-1)
 assert item.table.getCell(2, 1)=='changed'
-item.popup.undo(1)
+item.editor.undo(1)
 item.setCell(2, 1, 'branched')
-item.popup.undo(-1)
+item.editor.undo(-1)
 assert item.table.getCell(2, 1)=='branched'
-item.popup.undo(1)
+item.editor.undo(1)
 assert item.table.getCell(2, 1)==originalCell
-item.popup.undo(-1)
+item.editor.undo(-1)
 assert item.table.getCell(2, 1)=='branched'
 
 # updating after undo must not change a restored blank initial condition
-item.popup.pushHistory()
+item.editor.pushHistory()
 item.table.setCell(1, 1, '')
 item.setCell(2, 1, 'changed')
-item.popup.undo(1)
+item.editor.undo(1)
 assert item.table.getCell(1, 1)==''
-item.popup.undo(-1)
+item.editor.undo(-1)
 assert item.table.getCell(2, 1)=='changed'
 
-# row edits made through the popup are also undoable
+# row edits made through the editor are also undoable
 rows = item.table.rows()
-item.popup.addFlowByRow(rows-1)
+item.editor.addFlowByRow(rows-1)
 assert item.table.rows()==rows+1
-item.popup.undo(1)
+item.editor.undo(1)
 assert item.table.rows()==rows
-item.popup.undo(-1)
+item.editor.undo(-1)
 assert item.table.rows()==rows+1
 
 minsky.canvas.deleteItem()

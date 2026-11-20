@@ -17,7 +17,7 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 #include "minsky.h"
-#include "godleyTableWindow.h"
+#include "godleyTableEditor.h"
 #include "matrix.h"
 #include "ravelWrap.h"
 #include "minsky_epilogue.h"
@@ -992,7 +992,7 @@ TEST(TensorOps, evalOpEvaluate)
       g2->toggleVariableDisplay();
       EXPECT_TRUE(g2->variableDisplay());
       EXPECT_TRUE(g2->stockVars().empty());
-      g2->popup.importStockVarByCol("a1",1);
+      g2->editor.importStockVarByCol("a1",1);
       EXPECT_EQ("a1",g2->table.cell(0,1));
       ASSERT_EQ(1,g2->stockVars().size());
       EXPECT_EQ("a1",g2->stockVars()[0]->name());
@@ -1008,13 +1008,13 @@ TEST(TensorOps, evalOpEvaluate)
       g->table.cell(2,1)="flow";
       model->addItem(VariablePtr(VariableBase::flow,"flow"));
       g->update();
-      g->popup.pushHistory();
+      g->editor.pushHistory();
 
       g->moveCell({2,1,2,2});
       EXPECT_EQ("",g->table.cell(2,1));
       EXPECT_EQ("flow",g->table.cell(2,2));
 
-      g->popup.undo(1);
+      g->editor.undo(1);
       EXPECT_EQ("flow",g->table.cell(2,1));
       EXPECT_EQ("",g->table.cell(2,2));
     }

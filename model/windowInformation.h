@@ -21,6 +21,8 @@
 #define WINDOW_INFORMATION_H
 
 #include <cairoSurfaceImage.h>
+#include <IMansoura.h>
+#include <mansouraPlot.h>
 #if defined(CAIRO_HAS_WIN32_SURFACE) && !defined(__CYGWIN__)
 #define USE_WIN32_SURFACE
 #include <windows.h>
@@ -96,6 +98,12 @@ namespace minsky
     
     const ecolab::cairo::SurfacePtr& getBufferSurface() const;
     void requestRedraw();
+    /// paint \a background over the whole buffer, call \a redraw on a
+    /// drawing context for the buffer (arguments being the context,
+    /// and the buffer's width and height), then copy the buffer to the screen
+    /// @return the return value of \a redraw
+    bool render(const std::function<bool(const mansoura::IMansoura&,int,int)>& redraw,
+                const mansoura::Colour& background);
     
     WindowInformation(const WindowInformation&)=delete;
     void operator=(const WindowInformation&)=delete;

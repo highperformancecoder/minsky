@@ -21,6 +21,7 @@
 #define PLOTOPTIONS_H
 #include "optional.h"
 #include "plotWidget.h"
+#include "schemaHelper.h"
 
 namespace minsky
 {
@@ -28,9 +29,9 @@ namespace minsky
   {
     double legendLeft=0.9, legendTop=0.95, legendFontSz=0.03;
     LegendGeometry()=default;
-    LegendGeometry(const ecolab::Plot& plot):
+    LegendGeometry(const mansoura::Plot& plot):
       legendLeft(plot.legendLeft), legendTop(plot.legendTop), legendFontSz(plot.legendFontSz) {}
-    void setLegendGeometry(ecolab::Plot& plot) const {
+    void setLegendGeometry(mansoura::Plot& plot) const {
       plot.legendLeft=legendLeft;
       plot.legendTop=legendTop;
       plot.legendFontSz=legendFontSz;
@@ -54,12 +55,12 @@ namespace minsky
     Optional<double> xtickAngle, exp_threshold;
     double xmin=nan(""), xmax=nan(""), ymin=nan(""), ymax=nan(""), y1min=nan(""), y1max=nan("");
     unsigned symbolEvery=1;
-    Optional<ecolab::Plot::Side> legend;
+    Optional<mansoura::Plot::Side> legend;
     Optional<LegendGeometry> legendGeometry;
-    Optional<std::vector<ecolab::Plot::LineStyle>> palette;
+    Optional<std::vector<mansoura::Plot::LineStyle>> palette;
     Optional<std::vector<std::string>> horizontalMarkers, verticalMarkers;
     PlotOptions& operator=(const PlotWidget& plot) {
-      name=plot.title;
+      name=plot.title();
       logx=plot.logx;
       logy=plot.logy;
       ypercent=plot.percent;
@@ -89,7 +90,7 @@ namespace minsky
     }
     void applyPlotOptions(PlotWidget& plot) const
     {
-      if (name) plot.title=*name;
+      if (name) plot.title(*name);
       if (logx) plot.logx=*logx;
       if (logy) plot.logy=*logy;
       if (ypercent) plot.percent=*ypercent;

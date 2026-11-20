@@ -17,28 +17,48 @@
   along with Minsky.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include "mansouraCairo.h"
 #include "cairoItems.h"
-#include "cairoShimCairo.h"
 #include "operation.h"
 #include "group.h"
 #include "minsky.h"
-#include "godleyTableWindow.h"
+#include "godleyTableEditor.h"
 #include "minsky_epilogue.h"
 
 #include <gtest/gtest.h>
 
 using namespace minsky;
+using namespace mansoura;
 using namespace std;
 
 namespace
 {
 
+  // gtest requires all fixtures to be derived from Test, alas!
+  class CanvasFixture: public Canvas, public ::testing::Test
+  {
+    Minsky lminsky;
+    LocalMinsky lm;
+  public:
+    CanvasFixture(): lm(lminsky) {}
+  };
+  class GodleyIconFixture: public GodleyIcon, public ::testing::Test {};
+  class GroupFixture: public Group, public ::testing::Test {};
+
+  struct RecordingCairoShim: public cairo::Surface, public MansouraCairo
+  {
+    RecordingCairoShim():
+      cairo::Surface(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr)),
+      MansouraCairo(cairo::Surface::cairo()) {}
+  };
+  
   struct ModelSuite: public Minsky, public ::testing::Test
   {
     GroupPtr group0;
     ItemPtr a,b,c;
     WirePtr ab,bc; 
     LocalMinsky lm;
+    RecordingCairoShim mans;
 
     ModelSuite(): lm(*this)
     {
@@ -103,24 +123,7 @@ namespace
     }
   };
 
-  // gtest requires all fixtures to be derived from Test, alas!
-  class CanvasFixture: public Canvas, public ::testing::Test
-  {
-    Minsky lminsky;
-    LocalMinsky lm;
-  public:
-    CanvasFixture(): lm(lminsky) {}
-  };
-  class GodleyIconFixture: public GodleyIcon, public ::testing::Test {};
-  class GroupFixture: public Group, public ::testing::Test {};
 
-  struct RecordingCairoShim: public cairo::Surface, public CairoShimCairo
-  {
-    RecordingCairoShim():
-      cairo::Surface(cairo_recording_surface_create(CAIRO_CONTENT_COLOR,nullptr)),
-      CairoShimCairo(cairo::Surface::cairo()) {}
-  };
-  
 }
 
 
@@ -1310,17 +1313,16 @@ struct EmbedGodleyIcon
   GodleyIcon embeddedGodleyIcon;
 };
   
-struct GodleyTableWindowFixture: private EmbedGodleyIcon, public GodleyTableWindow, public ::testing::Test
+struct GodleyTableWindowFixture: private EmbedGodleyIcon, public GodleyTableEditor, public ::testing::Test
 {
-  GodleyTableWindowFixture(): GodleyTableWindow(embeddedGodleyIcon) {}
+  RecordingCairoShim mans;
+  GodleyTableWindowFixture(): GodleyTableEditor(embeddedGodleyIcon) {}
 };
   
 TEST_F(GodleyTableWindowFixture, mouseMove)
 {
   godleyIcon().table.cell(1,1)="hello";
-  surface.reset(new ecolab::cairo::Surface
-                (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL)));
-  redraw(0,0,0,0);
+  draw(mans);
   double x=colLeftMargin[1]+10, y=topTableOffset+rowHeight+5;
   EXPECT_EQ(1, colX(x));
   EXPECT_EQ(1, rowY(y));
@@ -1328,7 +1330,7 @@ TEST_F(GodleyTableWindowFixture, mouseMove)
   EXPECT_EQ(1, hoverRow);
   EXPECT_EQ(1, hoverCol);
   x=2*ButtonWidget<row>::buttonSpacing+1;
-  EXPECT_EQ(rowWidget, GodleyTableWindow::clickType(x,y));
+  EXPECT_EQ(rowWidget, GodleyTableEditor::clickType(x,y));
   mouseMove(x,y);
   EXPECT_EQ(2,rowWidgets[1].mouseOver());
   x=colLeftMargin[1]+ButtonWidget<row>::buttonSpacing+1;
@@ -1343,9 +1345,7 @@ TEST_F(GodleyTableWindowFixture, mouseMove)
 TEST_F(GodleyTableWindowFixture, mouseSelect)
 {
   godleyIcon().table.cell(1,1)="hello";
-  surface.reset(new ecolab::cairo::Surface
-                (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL)));
-  redraw(0,0,0,0);
+  draw(mans);
   double x=colLeftMargin[1], y=topTableOffset+rowHeight+5;
   EXPECT_EQ(1, colX(x));
   EXPECT_EQ(1, rowY(y));
@@ -1373,9 +1373,7 @@ TEST_F(GodleyTableWindowFixture, mouseButtons)
   godleyIcon().table.cell(3,1)="r3c1";
   godleyIcon().table.cell(3,2)="r3c2";      
       
-  surface.reset(new ecolab::cairo::Surface
-                (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL)));
-  redraw(0,0,0,0);
+  draw(mans);
   double x=colLeftMargin[1]+2*ButtonWidget<row>::buttonSpacing+1, y=5+columnButtonsOffset;
   EXPECT_EQ(colWidget, clickType(x,y));
   mouseDown(x,y);
@@ -1412,9 +1410,7 @@ TEST_F(GodleyTableWindowFixture, moveRowColCell)
   godleyIcon().table.cell(1,2)="r1c2";
   godleyIcon().table.cell(2,1)="r2c1";
   godleyIcon().table.cell(2,2)="r2c2";
-  surface.reset(new ecolab::cairo::Surface
-                (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL)));
-  redraw(0,0,0,0);
+  draw(mans);
   double x=colLeftMargin[1]+10, y=topTableOffset+5;
   EXPECT_EQ(1,colX(x));
   EXPECT_EQ(0,rowY(y));
@@ -1461,13 +1457,13 @@ TEST_F(GodleyTableWindowFixture, keyPress)
   selectedCol=1;
   selectedRow=1;
   selectIdx=insertIdx=0;
-  keyPress({'a',"a"}); keyPress({'b',"b"}); keyPress({'b',"b"}); insertIdx=2; keyPress({XK_Delete,""});
-  keyPress({'c',"c"}); keyPress({'c',"c"}); keyPress({XK_BackSpace,""});
+  keyPress('a',"a"); keyPress('b',"b"); keyPress('b',"b"); insertIdx=2; keyPress(XK_Delete,"");
+  keyPress('c',"c"); keyPress('c',"c"); keyPress(XK_BackSpace,"");
   EXPECT_EQ("abc",godleyIcon().table.cell(1,1));
 
   godleyIcon().table.cell(0,1)="stock1";
   EXPECT_EQ(0,godleyIcon().stockVars().size());
-  keyPress({XK_Return,""}); // should cause update to be called
+  keyPress(XK_Return,""); // should cause update to be called
   // unfortunately, this is a freestanding GodleyIcon, so update has no effect
   //      EXPECT_EQ(1,godleyIcon().stockVars().size());
   //      EXPECT_EQ("stock1",godleyIcon().stockVars()[0]->name());
@@ -1478,7 +1474,7 @@ TEST_F(GodleyTableWindowFixture, keyPress)
   selectedCol=1;
   selectedRow=1;
   godleyIcon().table.savedText="abc";
-  keyPress({'d',"d"}); keyPress({XK_Escape,""}); // should revert to previous
+  keyPress('d',"d"); keyPress(XK_Escape,""); // should revert to previous
   EXPECT_EQ("abc",godleyIcon().table.cell(1,1));
   EXPECT_EQ(-1,selectedCol);
   EXPECT_EQ(-1,selectedRow);
@@ -1487,39 +1483,39 @@ TEST_F(GodleyTableWindowFixture, keyPress)
   selectedCol=1;
   selectedRow=1;
   selectIdx=insertIdx=0;
-  keyPress({XK_Right,""});
+  keyPress(XK_Right,"");
   EXPECT_EQ(1,insertIdx);
-  keyPress({XK_Left,""});
+  keyPress(XK_Left,"");
   EXPECT_EQ(0,insertIdx);
   // (1,0) cell no longer selectable, selectedRow and selectedCol become -1
-  keyPress({XK_Left,""});
+  keyPress(XK_Left,"");
   EXPECT_EQ(-1,selectedCol);   
   EXPECT_EQ(-1,selectedRow);      
-  keyPress({XK_Tab,""});          //  No cell selected, selectedRow = 0 and selectedCol = 1 when tab button is pressed, see godleyTableWindow line 633
+  keyPress(XK_Tab,"");          //  No cell selected, selectedRow = 0 and selectedCol = 1 when tab button is pressed
   EXPECT_EQ(1,selectedCol);  
-  keyPress({XK_Tab,""});
+  keyPress(XK_Tab,"");
   EXPECT_EQ(2,selectedCol);
-  keyPress({XK_Right,""});     
+  keyPress(XK_Right,"");     
   EXPECT_EQ(3,selectedCol);  
-  keyPress({XK_Down,""});
+  keyPress(XK_Down,"");
   EXPECT_EQ(1,selectedRow);  // selectedRow = 0 from initial tab press 
-  keyPress({XK_Tab,""});
+  keyPress(XK_Tab,"");
   EXPECT_EQ(0,selectedCol);  
-  keyPress({XK_Left,""});
+  keyPress(XK_Left,"");
   EXPECT_EQ(3,selectedCol);   
   EXPECT_EQ(1,selectedRow);   
-  keyPress({XK_Right,""});
+  keyPress(XK_Right,"");
   EXPECT_EQ(0,selectedCol);   // Moved down one row  
   EXPECT_EQ(2,selectedRow);
-  keyPress({XK_ISO_Left_Tab,""});
+  keyPress(XK_ISO_Left_Tab,"");
   EXPECT_EQ(3,selectedCol);
-  keyPress({XK_ISO_Left_Tab,""});
+  keyPress(XK_ISO_Left_Tab,"");
   EXPECT_EQ(2,selectedCol);
   EXPECT_EQ(1,selectedRow);    
-  keyPress({XK_Right,""});
+  keyPress(XK_Right,"");
   EXPECT_EQ(3,selectedCol);
   EXPECT_EQ(1,selectedRow);       
-  keyPress({XK_Tab,""}); // check wrap around
+  keyPress(XK_Tab,""); // check wrap around
   EXPECT_EQ(0,selectedCol);
   EXPECT_EQ(2,selectedRow);
 
@@ -1529,43 +1525,43 @@ TEST_F(GodleyTableWindowFixture, keyPress)
   selectIdx=0;
   insertIdx=1;
   cminsky().clipboard.putClipboard("");
-  keyPress({XK_Control_L,""}); keyPress({'c',"\x3"}); //copy
+  keyPress(XK_Control_L,""); keyPress('c',"\x3"); //copy
   EXPECT_EQ("a",cminsky().clipboard.getClipboard());
   cminsky().clipboard.putClipboard("");
-  keyPress({XK_Control_L,""}); keyPress({'x',"\x18"});  //cut
+  keyPress(XK_Control_L,""); keyPress('x',"\x18");  //cut
   EXPECT_EQ("a",cminsky().clipboard.getClipboard());
   EXPECT_EQ("bc",godleyIcon().table.cell(1,1));
-  keyPress({XK_Control_L,""}); keyPress({'v',"\x16"});  //paste
+  keyPress(XK_Control_L,""); keyPress('v',"\x16");  //paste
   EXPECT_EQ("abc",godleyIcon().table.cell(1,1));
 
   // initial cell movement when nothing selected
   selectedCol=-1; selectedRow=-1;
-  keyPress({XK_Tab,""});
+  keyPress(XK_Tab,"");
   EXPECT_EQ(1,selectedCol);
   EXPECT_EQ(0,selectedRow);
 
   selectedCol=-1; selectedRow=-1;
-  keyPress({XK_ISO_Left_Tab,""});
+  keyPress(XK_ISO_Left_Tab,"");
   EXPECT_EQ(3,selectedCol);
   EXPECT_EQ(2,selectedRow);
       
   selectedCol=-1; selectedRow=-1;
-  keyPress({XK_Left,""});
+  keyPress(XK_Left,"");
   EXPECT_EQ(3,selectedCol);
   EXPECT_EQ(0,selectedRow);
       
   selectedCol=-1; selectedRow=-1;
-  keyPress({XK_Right,""});
+  keyPress(XK_Right,"");
   EXPECT_EQ(1,selectedCol);
   EXPECT_EQ(0,selectedRow);
       
   selectedCol=-1; selectedRow=-1;
-  keyPress({XK_Down,""});
+  keyPress(XK_Down,"");
   EXPECT_EQ(0,selectedCol);
   EXPECT_EQ(2,selectedRow);    // Initial Conditions cell cannot be selected. For ticket 1064
       
   selectedCol=-1; selectedRow=-1;
-  keyPress({XK_Up,""});
+  keyPress(XK_Up,"");
   EXPECT_EQ(0,selectedCol);
   EXPECT_EQ(2,selectedRow);
       
@@ -1573,9 +1569,7 @@ TEST_F(GodleyTableWindowFixture, keyPress)
   
 TEST_F(GodleyTableWindowFixture, addDelVars)
 {
-  surface.reset(new ecolab::cairo::Surface
-                (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL)));
-  redraw(0,0,0,0);
+  draw(mans);
   double x=colLeftMargin[1]+10, y=topTableOffset+5+rowHeight;
   EXPECT_EQ(1,colX(x));
   EXPECT_EQ(1,rowY(y));
@@ -1640,10 +1634,9 @@ TEST_F(ModelSuite, copyBetweenCols)
   godley1->update();
   godley2->update();
 
-  GodleyTableWindow gw(*godley1);
+  GodleyTableEditor gw(*godley1);
   // render GodleyTableWindow to compute column/row boundaries
-  ecolab::cairo::Surface surf(cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,nullptr));
-  gw.draw(surf.cairo());
+  gw.draw(mans);
   // positions of the 2,1 and 2,2 cells
   double x1=gw.colLeftMargin[1]+5, x2=gw.colLeftMargin[2]+5, y=2*gw.rowHeight+gw.topTableOffset;
   EXPECT_EQ(1,gw.colXZoomed(x1));

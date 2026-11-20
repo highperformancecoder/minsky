@@ -114,7 +114,8 @@ namespace minsky
   /// encode binary data to ascii-encoded 
   classdesc::CDATA encode(const classdesc::pack_t&);
 
-  
+  /// utility for converting between compatible enums
+  template <class T, class U> inline T toEnum(U x) {return T(int(x));}
 }
 
 #endif

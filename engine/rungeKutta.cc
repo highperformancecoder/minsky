@@ -133,7 +133,7 @@ namespace minsky
     RKThreadRunning=true;
     int err=GSL_SUCCESS;
     // run RK algorithm on a separate worker thread so as to not block UI. See ticket #6
-    thread rkThread([&]() {
+    auto rkWork=[&]() {
       try
         { 
           double tp=reverse? -t: t;
@@ -167,8 +167,12 @@ namespace minsky
           threadErrMsg="Unknown exception thrown on ODE solver thread";
         }
       RKThreadRunning=false;
-    });
+    };
 
+#ifdef __EMSCRIPTEN__
+    rkWork(); // no threads available, so run synchronously
+#else
+    thread rkThread(rkWork);
     while (RKThreadRunning)
       {
         // while waiting for thread to finish, check and process any UI events
@@ -176,6 +180,7 @@ namespace minsky
         doOneEvent(false);
       }
     rkThread.join();
+#endif
 
     if (!threadErrMsg.empty())
       {

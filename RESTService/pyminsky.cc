@@ -21,6 +21,10 @@
 //#define REST_PROCESS_BUFFER classdesc::PythonBuffer
 #include "minsky.h"
 #include "CSVTools.xcd"
+#include "plot.xcd"
+#include "plot.rcd"
+#include "SVGItem.xcd"
+#include "SVGItem.rcd"
 #include "minsky_epilogue.h"
 #include "pythonBuffer.h"
 

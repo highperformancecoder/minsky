@@ -29,32 +29,33 @@
 #include "item.rcd"
 #include "noteBase.rcd"
 #include "port.rcd"
+#include "IMansoura.h"
+#include "IMansoura.cd"
 #include "minsky_epilogue.h"
 
 namespace minsky
 {
-  bool EquationDisplay::redraw(int x0, int y0, int width, int height)
+  bool EquationDisplay::redraw(const mansoura::IMansoura& shim, int x0, int y0, int width, int height)
   {
-    if (surface.get()) {
-      const BusyCursor busy(m);
-      const MathDAG::SystemOfEquations system(m);
-      cairo_rectangle(surface->cairo(),0,0,width,height);
-      cairo_clip(surface->cairo());
-      cairo_move_to(surface->cairo(),offsx,offsy);
-      cairo_scale(surface->cairo(),m_zoomFactor,m_zoomFactor);
-      system.renderEquations(*surface,height);
-      if (m.flags & Minsky::fullEqnDisplay_needed)
+    const BusyCursor busy(m);
+    const MathDAG::SystemOfEquations system(m);
+    shim.rectangle(0,0,width,height);
+    shim.clip();
+    shim.moveTo(offsx,offsy);
+    shim.scale(m_zoomFactor,m_zoomFactor);
+    system.renderEquations(shim,height);
+    if (m.flags & Minsky::fullEqnDisplay_needed)
+      {
+        const auto ink=mansoura::inkExtents([&](const mansoura::IMansoura& rec)
         {
-          ecolab::cairo::Surface surf
-            (cairo_recording_surface_create(CAIRO_CONTENT_COLOR_ALPHA,NULL));
-          system.renderEquations(surf,std::numeric_limits<double>::max());
-          m_width=surf.width();
-          m_height=surf.height();
-          m.flags &= ~Minsky::fullEqnDisplay_needed;
-        }
-      return true;
-    }
-    return surface.get();
+          rec.moveTo(0,0);
+          system.renderEquations(rec,std::numeric_limits<double>::max());
+        });
+        m_width=ink.width;
+        m_height=ink.height;
+        m.flags &= ~Minsky::fullEqnDisplay_needed;
+      }
+    return true;
   }
 }
 

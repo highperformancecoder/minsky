@@ -30,7 +30,7 @@ namespace minsky
   {
     Minsky& m;
     double m_width=0, m_height=0;
-    bool redraw(int x0, int y0, int width, int height) override;
+    bool redraw(const mansoura::IMansoura& cairoShim, int x0, int y0, int width, int height) override;
     CLASSDESC_ACCESS(EquationDisplay);
   public:
     float offsx=0, offsy=0, m_zoomFactor=1 ; // pan & zooming controls
@@ -39,8 +39,12 @@ namespace minsky
     EquationDisplay(Minsky& m): m(m) {}
     EquationDisplay& operator=(const EquationDisplay& x) {RenderNativeWindow::operator=(x); return *this;}
     EquationDisplay(const EquationDisplay&)=default;
-    void requestRedraw() {if (surface.get()) surface->requestRedraw();}
+    void requestRedraw() {RenderNativeWindow::requestRedraw();}
     bool hasScrollBars() const override {return true;}
+    std::vector<double> contentBounds() const override {
+      // equations are rendered at the pan offset, scaled by the zoom factor
+      return {offsx, offsy, offsx+m_width*m_zoomFactor, offsy+m_height*m_zoomFactor};
+    }
   };
 
 }

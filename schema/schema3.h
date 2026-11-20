@@ -133,7 +133,7 @@ namespace schema3
     // group specific fields
     Optional<std::vector<minsky::Bookmark>> bookmarks;
     Optional<classdesc::CDATA> tensorData; // used for saving tensor data attached to parameters
-    Optional<std::vector<ecolab::Plot::LineStyle>> palette;
+    Optional<std::vector<mansoura::Plot::LineStyle>> palette;
 
     void packTensorInit(const minsky::VariableBase&);
 

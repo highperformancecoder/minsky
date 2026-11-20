@@ -25,7 +25,8 @@
 #define GODLEYTABLEWINDOW_H
 #include "assetClass.h"
 #include "godleyTable.h"
-#include "ICairoShim.h"
+#include "IMansoura.h"
+#include "IMansoura.cd"
 #include "renderNativeWindow.h"
 #include <memory>
 #include <vector>
@@ -54,10 +55,9 @@ namespace minsky
     Pos pos=middle;
     unsigned idx=0; ///< row or column this widget is located in
     
-    void draw(cairo_t*);
-    void draw(const ICairoShim&);
+    void draw(const mansoura::IMansoura&);
     /// draw button \a idx, with label \a label and colour \a r, \a b, \a g
-    void drawButton(cairo_t*, const std::string& label,
+    void drawButton(const mansoura::IMansoura&, const std::string& label,
                     double r, double g, double b, int idx);
     /// invoke action associated with button at x
     void invoke(double x);
@@ -85,6 +85,7 @@ namespace minsky
       drawButtons=true; leftTableOffset=4*ButtonWidget<col>::buttonSpacing;
       topTableOffset=30;adjustWidgets();
     }
+  protected:
    public:
     static constexpr double columnButtonsOffset=12;
     /// offset of the table within the window
@@ -124,8 +125,7 @@ namespace minsky
     GodleyTableEditor(GodleyIcon& g): m_godleyIcon(g)
     {m_enableButtons(); adjustWidgets();}
 
-    void draw(cairo_t* cairo);
-    void draw(const ICairoShim& cairoShim);
+    void draw(const mansoura::IMansoura& cairoShim);
 
     double width() const {return colLeftMargin.empty()? 0: colLeftMargin.back();}
     double height() const;
@@ -168,9 +168,9 @@ namespace minsky
     // warn user when a stock variable column is going to be swapped with a column from a different asset class on mouse click and drag. For ticket 1072.
     std::string swapAssetClass(double x, double y);
 
-    void highlightColumn(cairo_t* cairo,unsigned col);
-    void highlightRow(cairo_t* cairo,unsigned row);
-    void highlightCell(cairo_t* cairo,unsigned row, unsigned col);
+    void highlightColumn(const mansoura::IMansoura& cairo,unsigned col);
+    void highlightRow(const mansoura::IMansoura& cairo,unsigned row);
+    void highlightCell(const mansoura::IMansoura& cairo,unsigned row, unsigned col);
 
     // support cut/copy/paste operations
     void delSelection();
@@ -218,35 +218,7 @@ namespace minsky
     void handleDelete();
     virtual void requestRedrawCanvas() {} // request redraw of canvas if a canvas
   };
-
-  class GodleyTableWindow: public RenderNativeWindow, public GodleyTableEditor
-  {
-    CLASSDESC_ACCESS(GodleyTableWindow);
-  protected:
-    bool redraw(int, int, int width, int height) override {
-      if (surface.get()) {
-        draw(surface->cairo());
-        return true;
-      }
-      return false;
-    }
-  public:
-    using GodleyTableEditor::draw;
-    GodleyTableWindow(GodleyIcon& g): GodleyTableEditor(g) {}
-    void requestRedraw() {if (surface.get()) surface->requestRedraw();}
-    void requestRedrawCanvas() override {requestRedraw();}
-
-    void mouseDown(float x, float y) override {GodleyTableEditor::mouseDown(x,y);}
-    void mouseUp(float x, float y) override {GodleyTableEditor::mouseUp(x,y);}
-    void mouseMove(float x, float y) override {GodleyTableEditor::mouseMove(x,y);}
-    void zoom(double, double, double z) override {GodleyTableEditor::zoomFactor*=z; requestRedraw();}
-    double zoomFactor() const override {return GodleyTableEditor::zoomFactor;}
-    bool keyPress(const EventInterface::KeyPressArgs& args) override
-    {GodleyTableEditor::keyPress(args.keySym,args.utf8); return true;}
-    bool hasScrollBars() const override {return true;}
-  };
-
 }
 
-#include "godleyTableWindow.cd"
+#include "godleyTableEditor.cd"
 #endif

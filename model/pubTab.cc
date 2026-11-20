@@ -21,14 +21,14 @@
 #include "minsky.h"
 #include "cairoItems.h"
 #include "pubTab.h"
-#include "../engine/cairoShimCairo.h"
+#include "mansouraCairo.h"
 #include "publication.rcd"
 #include "pubTab.xcd"
 #include "pubTab.rcd"
 #include "pannableTab.rcd"
 #include "pannableTab.xcd"
 #include "minsky_epilogue.h"
-using namespace ecolab::cairo;
+using namespace mansoura;
 
 namespace minsky
 {
@@ -143,35 +143,49 @@ namespace minsky
     }
   }
  
-  bool PubTab::redraw(int x0, int y0, int width, int height)
+  bool PubTab::redraw(const IMansoura& cairo, int x0, int y0, int width, int height)
   {
-    if (!surface.get()) {
-      return false;
-    }
-    auto cairo=surface->cairo();
-    const CairoSave cs(cairo);
-    cairo_translate(cairo, offsx, offsy);
-    cairo_scale(cairo, m_zoomFactor, m_zoomFactor);
-    cairo_set_line_width(cairo, 1);
+    const PreserveContext cs(cairo);
+    cairo.translate(offsx, offsy);
+    cairo.scale(m_zoomFactor, m_zoomFactor);
+    cairo.setLineWidth(1);
     for (auto& i: items)
       {
-        const CairoSave cs(cairo);
-        cairo_translate(cairo, i.x, i.y);
+        const PreserveContext cs(cairo);
+        cairo.translate(i.x, i.y);
         try
           {
             const EnsureEditorMode ensureEditorMode(i);
-            CairoShimCairo shim(cairo);
-            i.itemRef->draw(shim);
+            i.itemRef->draw(cairo);
           }
         catch (...) {}
       }
     if (clickType==ClickType::onResize)
       {
-        cairo_rectangle(cairo,std::min(lasso.x0,lasso.x1), std::min(lasso.y0,lasso.y1),
+        cairo.rectangle(std::min(lasso.x0,lasso.x1), std::min(lasso.y0,lasso.y1),
                         abs(lasso.x0-lasso.x1), abs(lasso.y0-lasso.y1));
-        cairo_stroke(cairo);
+        cairo.stroke();
       }
     return !items.empty() || clickType!=ClickType::outside;
+  }
+
+  std::vector<double> PubTab::contentBounds() const
+  {
+    // items are drawn at (x,y) within the tab, then scaled by the zoom and translated by the pan offset
+    double x0=std::numeric_limits<double>::max(), y0=x0, x1=-x0, y1=-x0;
+    for (auto& i: items)
+      {
+        if (!i.itemRef) continue;
+        // restores item state on destruction, so safe to apply to a const PubTab
+        const EnsureEditorMode e(const_cast<PubItem&>(i));
+        const double ix=i.itemRef->x(), iy=i.itemRef->y();
+        x0=std::min<double>(x0,i.x+i.itemRef->left()-ix);
+        x1=std::max<double>(x1,i.x+i.itemRef->right()-ix);
+        y0=std::min<double>(y0,i.y+i.itemRef->top()-iy);
+        y1=std::max<double>(y1,i.y+i.itemRef->bottom()-iy);
+      }
+    if (x0>x1) return {offsx,offsy,offsx,offsy};
+    return {offsx+x0*m_zoomFactor, offsy+y0*m_zoomFactor, offsx+x1*m_zoomFactor, offsy+y1*m_zoomFactor};
   }
 
   PubItem* PubTab::m_getItemAt(float x, float y) 

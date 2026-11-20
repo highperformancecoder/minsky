@@ -18,6 +18,7 @@
 */
 #include "minsky.h"
 #include "cairoItems.h"
+#include <fontSettings.h>
 #include "classdesc_access.h"
 #include "flowCoef.h"
 #include "userFunction.h"
@@ -25,6 +26,9 @@
 #include "variableInstanceList.h"
 
 #include <cairo_base.h>
+#ifndef __EMSCRIPTEN__
+#include "ecolab/include/pango.h"
+#endif
 
 #include "schema3.h"
 
@@ -54,6 +58,8 @@
 #include "pannableTab.rcd"
 #include "pannableTab.xcd"
 #include "polyRESTProcessBase.h"
+#include "SVGItem.rcd"
+#include "SVGItem.xcd"
 #include "xvector.rcd"
 #include "minsky_epilogue.h"
 
@@ -99,7 +105,6 @@ namespace minsky
   bool Minsky::multipleEquities(const bool& m) {
     m_multipleEquities=m;
     canvas.requestRedraw();
-    redrawAllGodleyTables();
     return m_multipleEquities;
   }
 
@@ -1567,8 +1572,8 @@ namespace minsky
                        [&](Items&, Items::iterator i) {
                          if (auto p=(*i)->plotWidgetCast())
                            {
-                             if (!p->title.empty())
-                               p->RenderNativeWindow::renderToSVG(prefix+"-"+p->title+".svg");
+                             if (!p->title().empty())
+                               p->RenderNativeWindow::renderToSVG(prefix+"-"+p->title()+".svg");
                              else
                                p->RenderNativeWindow::renderToSVG(prefix+"-"+str(plotNum++)+".svg");
                            }
@@ -1582,8 +1587,8 @@ namespace minsky
                        [&](Items&, Items::iterator i) {
                          if (auto p=(*i)->plotWidgetCast())
                            {
-                             if (!p->title.empty())
-                               p->exportAsCSV((prefix+"-"+p->title+".csv"));
+                             if (!p->title().empty())
+                               p->exportAsCSV((prefix+"-"+p->title()+".csv"));
                              else
                                p->exportAsCSV((prefix+"-"+str(plotNum++)+".csv"));
                            }
@@ -1732,16 +1737,6 @@ namespace minsky
   }
 
   
-  void Minsky::redrawAllGodleyTables()
-  {
-    model->recursiveDo(&Group::items, 
-                       [&](Items&,Items::iterator i) {
-                         if (auto g=dynamic_cast<GodleyIcon*>(i->get()))
-                           g->popup.requestRedraw();
-                         return false;
-                       });
-  }
-
   vector<string> Minsky::allGodleyTables() const
   {
     vector<string> r;
@@ -1783,15 +1778,24 @@ namespace minsky
   {
     _defaultFont.reset(new char[x.length()+1]);
     strncpy(_defaultFont.get(),x.c_str(),x.length()+1);
+    mansoura::GlobalFontSettings::defaultFamily=_defaultFont.get();
+#ifndef __EMSCRIPTEN__
+    // TODO: remove once ecolab::Pango has been eradicated
     ecolab::Pango::defaultFamily=_defaultFont.get();
+#endif
     return x;
   }
 
   double Minsky::fontScale()
-  {return ecolab::Pango::scaleFactor;}
+  {return mansoura::GlobalFontSettings::scaleFactor;}
   
   double Minsky::fontScale(double s)
-  {return ecolab::Pango::scaleFactor=s;}
+  {
+#ifndef __EMSCRIPTEN__
+    ecolab::Pango::scaleFactor=s;
+#endif
+    return mansoura::GlobalFontSettings::scaleFactor=s;
+  }
   
   void Minsky::latex(const string& filename, bool wrapLaTeXLines) 
   {
@@ -1858,3 +1862,4 @@ CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(classdesc::Signature);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(classdesc::PolyRESTProcessBase);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::CallableFunction);
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(ravelCAPI::Database);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(mansoura::SVGRenderer);

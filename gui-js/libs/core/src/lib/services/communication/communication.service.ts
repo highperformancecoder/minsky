@@ -70,7 +70,8 @@ export class CommunicationService {
   private dialogRef: MatDialogRef<DialogComponent, any> = null;
   availableOperations = null;
 
-  resetScroll = () => { }; // callback to reset canvas scrollbars
+  tabSwitching = false; // true while the main tab is being changed: scroll events must not pan the tab
+  resetScroll: () => Promise<void> | void = () => { }; // callback to reset canvas scrollbars
 
   constructor(
     // private socket: Socket,

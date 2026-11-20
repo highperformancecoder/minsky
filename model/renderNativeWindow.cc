@@ -30,12 +30,10 @@ Please especially review the lifecycle (constructors, desctructors and copy cons
 #include "minsky.h"
 #include "renderNativeWindow.h"
 #include "windowInformation.h"
-#include "cairoSurfaceImage.rcd"
-#include "cairoSurfaceImage.xcd"
 #include "renderNativeWindow.rcd"
 #include "renderNativeWindow.xcd"
-#include "plot.rcd"
-#include "plot.xcd"
+#include "mansouraPlot.xcd"
+#include "mansouraPlot.rcd"
 
 #include "minsky_epilogue.h"
 
@@ -44,7 +42,6 @@ Please especially review the lifecycle (constructors, desctructors and copy cons
 #include <chrono>
 
 using namespace std;
-using namespace ecolab;
 
 //#define FPS_PROFILING_ON
 #ifdef WIN32
@@ -56,21 +53,8 @@ using namespace ecolab;
 
 namespace minsky
 {
-  ecolab::cairo::Colour RenderNativeWindow::backgroundColour{0.8,0.8,0.8,1};
+  mansoura::Colour RenderNativeWindow::backgroundColour{0.8,0.8,0.8,1};
   
-  namespace
-  {
-    // default dummy surface to arrange a callback on requestRedraw
-    class NativeSurface : public cairo::Surface
-    {
-      RenderNativeWindow &renderNativeWindow;
-
-    public:
-      NativeSurface(RenderNativeWindow &r, cairo_surface_t *s = nullptr, int width = -1, int height = -1) : cairo::Surface(s, width, height), renderNativeWindow(r) {}
-      void requestRedraw() override {renderNativeWindow.requestRedraw();}
-    };
-  } // namespace
-
   RenderNativeWindow::~RenderNativeWindow()
   {
     minsky().nativeWindowsToRedraw.erase(this);
@@ -83,7 +67,6 @@ namespace minsky
       m_frameArgs=args;
       init();
       winInfoPtr = std::make_shared<WindowInformation>(stoull(args.parentWindowId), args.offsetLeft, args.offsetTop, args.childWidth, args.childHeight, args.scalingFactor, hasScrollBars(), [this](){draw();});
-      surface.reset(new NativeSurface(*this)); // ensure callback on requestRedraw works
     }
     draw();
   }
@@ -103,6 +86,20 @@ void macOSXRedraw(RenderNativeWindow& window,std::recursive_mutex& cmdMutex)
   }
 
   
+  bool drawToContext(RenderNativeWindow& w, const mansoura::IMansoura& shim, int width, int height)
+  {
+    const lock_guard lock(w.drawMutex);
+    // record the size of the surface, as renderFrame() would, so that
+    // operations needing the window size (eg zoomToFit) work. The
+    // parent window id is only used as a flag that a window exists.
+    auto& fa=w.m_frameArgs;
+    if (fa.parentWindowId.empty()) fa.parentWindowId="context";
+    fa.offsetLeft=fa.offsetTop=0;
+    fa.childWidth=width;
+    fa.childHeight=height;
+    return w.redraw(shim,0,0,width,height);
+  }
+
   void RenderNativeWindow::requestRedraw()
   {
     if (!winInfoPtr.get()) return;
@@ -123,17 +120,9 @@ void macOSXRedraw(RenderNativeWindow& window,std::recursive_mutex& cmdMutex)
 #endif
 
 
-    auto surfaceToDraw = winInfoPtr->getBufferSurface();
-    if (!surfaceToDraw) return;
-    surfaceToDraw.swap(surface);
-
-    cairo_reset_clip(surface->cairo());
-    const ecolab::cairo::CairoSave cs(surface->cairo());
-    cairo_set_source_rgba(surface->cairo(), backgroundColour.r,backgroundColour.g,backgroundColour.b,backgroundColour.a);
-    cairo_rectangle(surface->cairo(), 0, 0, winInfoPtr->childWidth, winInfoPtr->childHeight);
-    cairo_fill(surface->cairo());
-    cairo_set_source_rgb(surface->cairo(), 0, 0, 0);
-    redraw(0, 0, winInfoPtr->childWidth, winInfoPtr->childHeight);
+    winInfoPtr->render([this](const mansoura::IMansoura& shim, int width, int height)
+                       {return redraw(shim, 0, 0, width, height);},
+                       backgroundColour);
 
 #ifdef FPS_PROFILING_ON
     unsigned long t1_png_stream_start = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
@@ -143,8 +132,6 @@ void macOSXRedraw(RenderNativeWindow& window,std::recursive_mutex& cmdMutex)
     unsigned long t2_window_copy_start = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()).count();
 #endif
 
-    surfaceToDraw.swap(surface);
-    winInfoPtr->copyBufferToMain();
 
     
 #ifdef FPS_PROFILING_ON
@@ -158,6 +145,12 @@ void macOSXRedraw(RenderNativeWindow& window,std::recursive_mutex& cmdMutex)
 #endif
   }
 
+
+  void RenderNativeWindow::renderTo(mansoura::ExportFormat format, const std::string& filename)
+  {
+    mansoura::exportTo(format, filename, m_resolutionScaleFactor,
+                       [this](const mansoura::IMansoura& shim){redrawWithBounds(shim);});
+  }
 
   double RenderNativeWindow::scaleFactor()
   {
@@ -173,3 +166,4 @@ void macOSXRedraw(RenderNativeWindow& window,std::recursive_mutex& cmdMutex)
 } // namespace minsky
 
 CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(minsky::RenderNativeWindow);
+CLASSDESC_ACCESS_EXPLICIT_INSTANTIATION(mansoura::Colour);

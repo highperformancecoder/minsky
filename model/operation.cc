@@ -25,9 +25,6 @@
 #include "str.h"
 #include "cairoItems.h"
 
-#include <cairo_base.h>
-#include <pango.h>
-#include "../engine/cairoShimCairo.h"
 #include "minsky_epilogue.h"
 
 #include <math.h>
@@ -38,7 +35,7 @@
 #endif
 
 using namespace ecolab;
-using ecolab::cairo::CairoSave;
+using namespace mansoura;
 
 namespace minsky
 {
@@ -149,7 +146,7 @@ namespace minsky
     return std::max(1.0f,std::min(0.5f*iWidth()*z/std::max(l,r),0.5f*iHeight()*z/h));  
   }  
 
-  void OperationBase::drawUserFunction(const ICairoShim& cairoShim) const
+  void OperationBase::drawUserFunction(const IMansoura& cairoShim) const
   {
     // if rotation is in 1st or 3rd quadrant, rotate as
     // normal, otherwise flip the text so it reads L->R
@@ -236,15 +233,7 @@ namespace minsky
     if (selected) drawSelected(cairoShim);
   }
   
-  void OperationBase::setCachedText(cairo_t* cairo, const std::string& text, double size) const
-  {
-    if (cachedPango && cairo==cachedPango->cairoContext()) return;
-    cachedPango=make_shared<Pango>(cairo);
-    cachedPango->setMarkup(text);
-    cachedPango->setFontSize(size);
-  }
-
-  void OperationBase::draw(const ICairoShim& cairoShim) const
+  void OperationBase::draw(const IMansoura& cairoShim) const
   {
     // if rotation is in 1st or 3rd quadrant, rotate as
     // normal, otherwise flip the text so it reads L->R
@@ -279,10 +268,9 @@ namespace minsky
     cairoShim.closePath();		  	 
     
     cairoShim.setSourceRGB(0,0,1);
-    cairoShim.strokePreserve();
+    cairoShim.stroke(true);
 
-    auto& shimImpl = dynamic_cast<const CairoShimCairo&>(cairoShim);
-    cairo::Path clipPath(shimImpl._internalGetCairoContext());
+    auto clipPath=cairoShim.copyPath();
 
     // compute port coordinates relative to the icon's
     // point of reference. Move outport 2 pixels right for ticket For ticket 362.
@@ -332,7 +320,7 @@ namespace minsky
       }
           
     cairoShim.newPath();
-    clipPath.appendToCurrent(shimImpl._internalGetCairoContext());
+    clipPath->appendToCurrent(cairoShim);
     cairoShim.clip();          
     if (selected) drawSelected(cairoShim);          
   }    
@@ -619,19 +607,19 @@ namespace minsky
   // operations.cc because it is more related to the functionality in
   // this file.
 
-  template <> void Operation<OperationType::constant>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::constant>::iconDraw(const IMansoura& cairoShim) const
   {
     assert(false); //shouldn't be here
   }
 
 
-  template <> void Operation<OperationType::ravel>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::ravel>::iconDraw(const IMansoura& cairoShim) const
   {
     assert(false); //shouldn't be here
   }
 
 
-  template <> void Operation<OperationType::data>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::data>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.translate(-1,0);
@@ -648,7 +636,7 @@ namespace minsky
   }
 
 
-  template <> void Operation<OperationType::time>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::time>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -657,7 +645,7 @@ namespace minsky
   }
 
 
-  template <> void Operation<OperationType::euler>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::euler>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -665,7 +653,7 @@ namespace minsky
     cairoShim.showText("e");
   }
 
-  template <> void Operation<OperationType::pi>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::pi>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -673,7 +661,7 @@ namespace minsky
     cairoShim.showText("π");
   }
 
-  template <> void Operation<OperationType::zero>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::zero>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -681,7 +669,7 @@ namespace minsky
     cairoShim.showText("0");
   }
 
-  template <> void Operation<OperationType::one>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::one>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -689,7 +677,7 @@ namespace minsky
     cairoShim.showText("1");
   }
 
-  template <> void Operation<OperationType::inf>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::inf>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.moveTo(-4,-8);
@@ -698,7 +686,7 @@ namespace minsky
   }
 
 
-  template <> void Operation<OperationType::percent>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::percent>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.moveTo(-4,-8);
@@ -706,7 +694,7 @@ namespace minsky
     cairoShim.showText("%",9);
   }
 
-  template <> void Operation<OperationType::copy>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::copy>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.moveTo(-4,-10);
@@ -714,10 +702,10 @@ namespace minsky
     cairoShim.showText("→",10);
   }
 
-  template <> void Operation<OperationType::integrate>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::integrate>::iconDraw(const IMansoura& cairoShim) const
   {/* moved to IntOp::draw() but needs to be here, and is actually called */}
 
-  template <> void Operation<OperationType::differentiate>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::differentiate>::iconDraw(const IMansoura& cairoShim) const
   {
     cairoShim.save();
     const double sf = scaleFactor();
@@ -731,7 +719,7 @@ namespace minsky
     cairoShim.restore();
   }
 
-  template <> void Operation<OperationType::sqrt>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::sqrt>::iconDraw(const IMansoura& cairoShim) const
   {
     cairoShim.save();
     const double sf = scaleFactor();
@@ -741,7 +729,7 @@ namespace minsky
     cairoShim.restore();
   }
 
-  template <> void Operation<OperationType::exp>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::exp>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -751,7 +739,7 @@ namespace minsky
   }
 
 
-  template <> void Operation<OperationType::pow>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::pow>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -768,7 +756,7 @@ namespace minsky
 #endif
   }
 
-  template <> void Operation<OperationType::le>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::le>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -779,7 +767,7 @@ namespace minsky
     d.drawPort([&](){d.drawSymbol("y");}, l, h, rotation());
   }
 
-  template <> void Operation<OperationType::lt>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::lt>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -790,7 +778,7 @@ namespace minsky
     d.drawPort([&](){d.drawSymbol("y");}, l, h, rotation());
   }
 
-  template <> void Operation<OperationType::eq>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::eq>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -801,7 +789,7 @@ namespace minsky
     d.drawPort([&](){d.drawSymbol("y");}, l, h, rotation());
   }
 
-  template <> void Operation<OperationType::min>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::min>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -809,7 +797,7 @@ namespace minsky
     cairoShim.showText("min",9);
   }
 
-  template <> void Operation<OperationType::max>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::max>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -817,7 +805,7 @@ namespace minsky
     cairoShim.showText("max",9);
   }
 
-  template <> void Operation<OperationType::and_>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::and_>::iconDraw(const IMansoura& cairoShim) const
   {
     cairoShim.save();
     const double sf = scaleFactor();
@@ -830,7 +818,7 @@ namespace minsky
     cairoShim.restore();
   }
 
-  template <> void Operation<OperationType::or_>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::or_>::iconDraw(const IMansoura& cairoShim) const
   {
     cairoShim.save();
     const double sf = scaleFactor();
@@ -843,14 +831,14 @@ namespace minsky
     cairoShim.restore();
   }
 
-  template <> void Operation<OperationType::not_>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::not_>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
     cairoShim.moveTo(-6,-10);
     cairoShim.showText("¬");
   }
-  template <> void Operation<OperationType::covariance>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::covariance>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf*.7,sf);
@@ -858,7 +846,7 @@ namespace minsky
     cairoShim.showPlainText("<ΔxΔy>",5);
   }
 
-  template <> void Operation<OperationType::correlation>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::correlation>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -866,7 +854,7 @@ namespace minsky
     cairoShim.showText("ρ");
   }
 
-  template <> void Operation<OperationType::linearRegression>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::linearRegression>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -881,7 +869,7 @@ namespace minsky
     cairoShim.stroke();
   }
 
-  template <> void Operation<OperationType::bulkLinearRegression>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::bulkLinearRegression>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor(); 	     
     cairoShim.scale(sf,sf);
@@ -905,7 +893,7 @@ namespace minsky
     cairoShim.lineTo(6,7.5);
     cairoShim.stroke();
   }
-  template <> void Operation<OperationType::ln>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::ln>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -913,7 +901,7 @@ namespace minsky
     cairoShim.showText(" ln");
   }
 
-  template <> void Operation<OperationType::log>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::log>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -924,7 +912,7 @@ namespace minsky
     d.drawPort([&](){d.drawSymbol("b");}, l, h, rotation());
   }
 
-  template <> void Operation<OperationType::sin>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::sin>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -932,7 +920,7 @@ namespace minsky
     cairoShim.showText("sin",9);
   }
 
-  template <> void Operation<OperationType::cos>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::cos>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -940,7 +928,7 @@ namespace minsky
     cairoShim.showText("cos",9);
   }
 
-  template <> void Operation<OperationType::tan>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::tan>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -948,7 +936,7 @@ namespace minsky
     cairoShim.showText("tan",9);
   }
 
-  template <> void Operation<OperationType::asin>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::asin>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -956,7 +944,7 @@ namespace minsky
     cairoShim.showText("sin⁻¹",7);
   }
 
-  template <> void Operation<OperationType::acos>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::acos>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -964,7 +952,7 @@ namespace minsky
     cairoShim.showText("cos⁻¹",7);
   }
 
-  template <> void Operation<OperationType::atan>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::atan>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -972,7 +960,7 @@ namespace minsky
     cairoShim.showText("tan⁻¹",7);
   }
 
-  template <> void Operation<OperationType::sinh>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::sinh>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -980,7 +968,7 @@ namespace minsky
     cairoShim.showText("sinh",8);
   }
 
-  template <> void Operation<OperationType::cosh>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::cosh>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -988,7 +976,7 @@ namespace minsky
     cairoShim.showText("cosh",8);
   }
 
-  template <> void Operation<OperationType::tanh>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::tanh>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -996,7 +984,7 @@ namespace minsky
     cairoShim.showText("tanh",8);
   }
 
-  template <> void Operation<OperationType::abs>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::abs>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -1004,7 +992,7 @@ namespace minsky
     cairoShim.showText("|x|",9);
   }
 
-  template <> void Operation<OperationType::floor>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::floor>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.moveTo(-5,-5);
@@ -1021,7 +1009,7 @@ namespace minsky
     cairoShim.stroke();
   }
 
-  template <> void Operation<OperationType::frac>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::frac>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -1029,7 +1017,7 @@ namespace minsky
     cairoShim.showText("frac",8);
   }
 
-  template <> void Operation<OperationType::Gamma>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::Gamma>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -1037,7 +1025,7 @@ namespace minsky
     cairoShim.showText("Γ");
   }
 
-  template <> void Operation<OperationType::polygamma>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::polygamma>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -1052,7 +1040,7 @@ namespace minsky
     d.drawPort([&](){d.drawSymbol("n");}, l, h, rotation());
   }
 
-  template <> void Operation<OperationType::fact>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::fact>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -1060,7 +1048,7 @@ namespace minsky
     cairoShim.showText("x!");
   }
 
-  template <> void Operation<OperationType::add>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::add>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -1071,7 +1059,7 @@ namespace minsky
   }
 
 
-  template <> void Operation<OperationType::subtract>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::subtract>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -1082,7 +1070,7 @@ namespace minsky
   }
 
 
-  template <> void Operation<OperationType::multiply>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::multiply>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -1093,7 +1081,7 @@ namespace minsky
   }
 
 
-  template <> void Operation<OperationType::divide>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::divide>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -1103,7 +1091,7 @@ namespace minsky
     d.drawPort([&](){d.drawDivide();}, l, h, rotation());
   }
 
-  template <> void Operation<OperationType::sum>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::sum>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.moveTo(-4,-7);
@@ -1111,7 +1099,7 @@ namespace minsky
     cairoShim.showText("∑",7);
   }
 
-  template <> void Operation<OperationType::product>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::product>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.moveTo(-4,-7);
@@ -1119,7 +1107,7 @@ namespace minsky
     cairoShim.showText("∏",7);
   }
 
-  template <> void Operation<OperationType::infimum>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::infimum>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -1127,7 +1115,7 @@ namespace minsky
     cairoShim.showText("inf",9);
   }
 
-  template <> void Operation<OperationType::supremum>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::supremum>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -1135,7 +1123,7 @@ namespace minsky
     cairoShim.showText("sup",9);
   }
 
-  template <> void Operation<OperationType::infIndex>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::infIndex>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -1143,7 +1131,7 @@ namespace minsky
     cairoShim.showText("infi",9);
   }
 
-  template <> void Operation<OperationType::supIndex>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::supIndex>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -1151,7 +1139,7 @@ namespace minsky
     cairoShim.showText("supi",9);
   }
 
-  template <> void Operation<OperationType::any>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::any>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -1159,7 +1147,7 @@ namespace minsky
     cairoShim.showText("any",10);
   }
 
-  template <> void Operation<OperationType::all>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::all>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -1167,7 +1155,7 @@ namespace minsky
     cairoShim.showText("all",10);
   }
 
-  template <> void Operation<OperationType::size>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::size>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -1175,7 +1163,7 @@ namespace minsky
     cairoShim.showText("nᵢ",10);
   }
 
-  template <> void Operation<OperationType::shape>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::shape>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -1183,7 +1171,7 @@ namespace minsky
     cairoShim.showText("{nᵢ}",10);
   }
 
-  template <> void Operation<OperationType::mean>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::mean>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -1191,7 +1179,7 @@ namespace minsky
     cairoShim.showPlainText("<x>",10);
   }
 
-  template <> void Operation<OperationType::median>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::median>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -1201,7 +1189,7 @@ namespace minsky
     cairoShim.showText("~",10);
   }
 
-  template <> void Operation<OperationType::stdDev>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::stdDev>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -1209,7 +1197,7 @@ namespace minsky
     cairoShim.showText("σ",10);
   }
 
-  template <> void Operation<OperationType::moment>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::moment>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf*.85,sf);
@@ -1217,13 +1205,13 @@ namespace minsky
     cairoShim.showPlainText("<Δxᵏ>",7);
   }
 
-  template <> void Operation<OperationType::histogram>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::histogram>::iconDraw(const IMansoura& cairoShim) const
   {
     cairoShim.translate(-0.5*iWidth(),-0.5*iHeight());
     cairoShim.renderSVG(cminsky().histogramResource, iWidth(), iHeight());
   }
 
-  template <> void Operation<OperationType::runningSum>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::runningSum>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.moveTo(-7,-7);
@@ -1231,7 +1219,7 @@ namespace minsky
     cairoShim.showText("∑+",7);
   }
 
-  template <> void Operation<OperationType::runningAv>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::runningAv>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.moveTo(-7,-7);
@@ -1239,7 +1227,7 @@ namespace minsky
     cairoShim.showText("av+",7);
   }
 
-  template <> void Operation<OperationType::runningProduct>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::runningProduct>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.moveTo(-6,-7);
@@ -1247,7 +1235,7 @@ namespace minsky
     cairoShim.showText("∏×",7);
   }
 
-  template <> void Operation<OperationType::difference>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::difference>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.moveTo(-4,-7);
@@ -1255,7 +1243,7 @@ namespace minsky
     cairoShim.showText("Δ⁻",7);
   }
 
-  template <> void Operation<OperationType::differencePlus>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::differencePlus>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.moveTo(-4,-7);
@@ -1263,7 +1251,7 @@ namespace minsky
     cairoShim.showText("Δ⁺",7);
   }
 
-  template <> void Operation<OperationType::innerProduct>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::innerProduct>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.moveTo(-4,-10);
@@ -1271,7 +1259,7 @@ namespace minsky
     cairoShim.showText("·",14);
   }
 
-  template <> void Operation<OperationType::outerProduct>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::outerProduct>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -1286,7 +1274,7 @@ namespace minsky
     cairoShim.stroke();
   }
 
-  template <> void Operation<OperationType::index>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::index>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -1294,7 +1282,7 @@ namespace minsky
     cairoShim.showText("idx",10);
   }
 
-  template <> void Operation<OperationType::gather>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::gather>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.scale(sf,sf);
@@ -1305,7 +1293,7 @@ namespace minsky
     drawBinOp.drawPort([&](){drawBinOp.drawSymbol("i");},l,h,rotation());
   }
 
-  template <> void Operation<OperationType::meld>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::meld>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.moveTo(-4,-5);
@@ -1319,7 +1307,7 @@ namespace minsky
     cairoShim.stroke();
   }
 
-  template <> void Operation<OperationType::merge>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::merge>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.moveTo(-4,-3);
@@ -1332,7 +1320,7 @@ namespace minsky
     cairoShim.stroke();
   }
 
-  template <> void Operation<OperationType::slice>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::slice>::iconDraw(const IMansoura& cairoShim) const
   {
     const double sf = scaleFactor();
     cairoShim.moveTo(-10,-10);
@@ -1345,7 +1333,7 @@ namespace minsky
     cairoShim.stroke();
   }
 
-  template <> void Operation<OperationType::numOps>::iconDraw(const ICairoShim& cairoShim) const
+  template <> void Operation<OperationType::numOps>::iconDraw(const IMansoura& cairoShim) const
   {/* needs to be here, and is actually called */}
 
 

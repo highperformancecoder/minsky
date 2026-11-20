@@ -916,7 +916,6 @@ export class CommandsManager {
       });
     
       Object.defineProperty(window,'dontCloseOnEscape',{value: true,writable:false});
-      godley.adjustPopupWidgets();
 
       let systemWindowId = WindowManager.getWindowByUid(id).systemWindowId;
       
