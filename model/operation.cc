@@ -221,7 +221,6 @@ namespace minsky
     if (mouseFocus)
       {
         drawPorts(cairoShim);
-        displayTooltip(cairoShim,tooltip());
         if (onResizeHandles) drawResizeHandles(cairoShim);             
       }
     // Re-create the clip path
@@ -329,7 +328,6 @@ namespace minsky
     if (mouseFocus)
       {
         drawPorts(cairoShim);
-        displayTooltip(cairoShim,tooltip());
         if (onResizeHandles) drawResizeHandles(cairoShim);
       }
           

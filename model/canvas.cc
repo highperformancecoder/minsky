@@ -896,6 +896,42 @@ namespace minsky
          return false;
        });
 
+    // draw tooltips last, so they are on top of everything else (ticket #780)
+    {
+      // only clamp to a real viewport, not the huge region used for export
+      const double viewport[]={updateRegion.x0,updateRegion.y0,updateRegion.x1,updateRegion.y1};
+      const bool finite=updateRegion.x1-updateRegion.x0<1e5 && updateRegion.y1-updateRegion.y0<1e5;
+      auto drawTooltip=[&](const Item& it) {
+        const CairoSave cs(cairo);
+        cairo_identity_matrix(cairo);
+        cairo_translate(cairo,it.x(), it.y());
+        CairoShimCairo shim(cairo);
+        it.displayTooltip(shim,finite? viewport: nullptr);
+      };
+      auto hasFocus=[](const Item& it) {
+        if (it.mouseFocus) return true;
+        // io variables show their tooltips when the owning group is focused
+        auto v=it.variableCast();
+        if (!v || !v->ioVar()) return false;
+        auto g=v->group.lock();
+        return g && g->mouseFocus;
+      };
+      model->recursiveDo
+        (&GroupItems::items, [&](const Items&, Items::const_iterator i)
+         {
+           if ((*i)->visible() && updateRegion.intersects(**i) && hasFocus(**i))
+             drawTooltip(**i);
+           return false;
+         });
+      model->recursiveDo
+        (&GroupItems::groups, [&](const Groups&, Groups::const_iterator i)
+         {
+           if ((*i)->visible() && updateRegion.intersects(**i) && hasFocus(**i))
+             drawTooltip(**i);
+           return false;
+         });
+    }
+
     if (fromPort.get()) // we're in process of creating a wire
       {
         didDrawSomething = true;

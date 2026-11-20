@@ -65,7 +65,7 @@ export class Item extends CppClass {
   async detailedText(...args: any[]): Promise<string> {return this.$callMethod('detailedText',...args);}
   async disableDelayedTooltip(): Promise<void> {return this.$callMethod('disableDelayedTooltip');}
   async displayDelayedTooltip(a1: number,a2: number): Promise<void> {return this.$callMethod('displayDelayedTooltip',a1,a2);}
-  async displayTooltip(a1: ICairoShim,a2: string): Promise<void> {return this.$callMethod('displayTooltip',a1,a2);}
+  async displayTooltip(a1: ICairoShim,a2: number): Promise<void> {return this.$callMethod('displayTooltip',a1,a2);}
   async draw(a1: ICairoShim): Promise<void> {return this.$callMethod('draw',a1);}
   async drawPorts(a1: ICairoShim): Promise<void> {return this.$callMethod('drawPorts',a1);}
   async drawResizeHandles(a1: ICairoShim): Promise<void> {return this.$callMethod('drawResizeHandles',a1);}
@@ -113,6 +113,7 @@ export class Item extends CppClass {
   async throw_error(a1: string): Promise<void> {return this.$callMethod('throw_error',a1);}
   async toggleEditorMode(): Promise<void> {return this.$callMethod('toggleEditorMode');}
   async tooltip(...args: any[]): Promise<string> {return this.$callMethod('tooltip',...args);}
+  async tooltipText(): Promise<string> {return this.$callMethod('tooltipText');}
   async top(): Promise<number> {return this.$callMethod('top');}
   async units(a1: boolean): Promise<object> {return this.$callMethod('units',a1);}
   async updateBoundingBox(): Promise<void> {return this.$callMethod('updateBoundingBox');}
@@ -222,7 +223,7 @@ export class VariableBase extends Item {
   async dims(): Promise<number[]> {return this.$callMethod('dims');}
   async disableDelayedTooltip(): Promise<void> {return this.$callMethod('disableDelayedTooltip');}
   async displayDelayedTooltip(a1: number,a2: number): Promise<void> {return this.$callMethod('displayDelayedTooltip',a1,a2);}
-  async displayTooltip(a1: ICairoShim,a2: string): Promise<void> {return this.$callMethod('displayTooltip',a1,a2);}
+  async displayTooltip(a1: ICairoShim,a2: number): Promise<void> {return this.$callMethod('displayTooltip',a1,a2);}
   async draw(a1: ICairoShim): Promise<void> {return this.$callMethod('draw',a1);}
   async drawPorts(a1: ICairoShim): Promise<void> {return this.$callMethod('drawPorts',a1);}
   async drawResizeHandles(a1: ICairoShim): Promise<void> {return this.$callMethod('drawResizeHandles',a1);}
@@ -300,6 +301,7 @@ export class VariableBase extends Item {
   async toggleEditorMode(): Promise<void> {return this.$callMethod('toggleEditorMode');}
   async toggleLocal(): Promise<void> {return this.$callMethod('toggleLocal');}
   async tooltip(...args: any[]): Promise<string> {return this.$callMethod('tooltip',...args);}
+  async tooltipText(): Promise<string> {return this.$callMethod('tooltipText');}
   async top(): Promise<number> {return this.$callMethod('top');}
   async type(): Promise<string> {return this.$callMethod('type');}
   async typeName(a1: number): Promise<string> {return this.$callMethod('typeName',a1);}
@@ -1076,7 +1078,7 @@ export class Group extends Item {
   async displayContents(): Promise<boolean> {return this.$callMethod('displayContents');}
   async displayContentsChanged(): Promise<boolean> {return this.$callMethod('displayContentsChanged');}
   async displayDelayedTooltip(a1: number,a2: number): Promise<void> {return this.$callMethod('displayDelayedTooltip',a1,a2);}
-  async displayTooltip(a1: ICairoShim,a2: string): Promise<void> {return this.$callMethod('displayTooltip',a1,a2);}
+  async displayTooltip(a1: ICairoShim,a2: number): Promise<void> {return this.$callMethod('displayTooltip',a1,a2);}
   async displayZoom(...args: number[]): Promise<number> {return this.$callMethod('displayZoom',...args);}
   async draw(a1: ICairoShim): Promise<void> {return this.$callMethod('draw',a1);}
   async draw1edge(a1: Sequence<VariableBase>,a2: minsky__dummy,a3: number): Promise<void> {return this.$callMethod('draw1edge',a1,a2,a3);}
@@ -1169,6 +1171,7 @@ export class Group extends Item {
   async title(...args: string[]): Promise<string> {return this.$callMethod('title',...args);}
   async toggleEditorMode(): Promise<void> {return this.$callMethod('toggleEditorMode');}
   async tooltip(...args: any[]): Promise<string> {return this.$callMethod('tooltip',...args);}
+  async tooltipText(): Promise<string> {return this.$callMethod('tooltipText');}
   async top(): Promise<number> {return this.$callMethod('top');}
   async uniqueItems(...args: any[]): Promise<boolean> {return this.$callMethod('uniqueItems',...args);}
   async units(a1: boolean): Promise<object> {return this.$callMethod('units',a1);}
@@ -1837,6 +1840,7 @@ export class Ravel extends Item {
   async sortOrder(): Promise<string> {return this.$callMethod('sortOrder');}
   async toggleDisplayFilterCaliper(): Promise<boolean> {return this.$callMethod('toggleDisplayFilterCaliper');}
   async toggleEditorMode(): Promise<void> {return this.$callMethod('toggleEditorMode');}
+  async tooltipText(): Promise<string> {return this.$callMethod('tooltipText');}
   async units(a1: boolean): Promise<object> {return this.$callMethod('units',a1);}
 }
 
@@ -1975,7 +1979,7 @@ export class Selection extends CppClass {
   async displayContents(): Promise<boolean> {return this.$callMethod('displayContents');}
   async displayContentsChanged(): Promise<boolean> {return this.$callMethod('displayContentsChanged');}
   async displayDelayedTooltip(a1: number,a2: number): Promise<void> {return this.$callMethod('displayDelayedTooltip',a1,a2);}
-  async displayTooltip(a1: ICairoShim,a2: string): Promise<void> {return this.$callMethod('displayTooltip',a1,a2);}
+  async displayTooltip(a1: ICairoShim,a2: number): Promise<void> {return this.$callMethod('displayTooltip',a1,a2);}
   async displayZoom(...args: number[]): Promise<number> {return this.$callMethod('displayZoom',...args);}
   async draw(a1: ICairoShim): Promise<void> {return this.$callMethod('draw',a1);}
   async draw1edge(a1: Sequence<VariableBase>,a2: minsky__dummy,a3: number): Promise<void> {return this.$callMethod('draw1edge',a1,a2,a3);}
@@ -2070,6 +2074,7 @@ export class Selection extends CppClass {
   async toggleEditorMode(): Promise<void> {return this.$callMethod('toggleEditorMode');}
   async toggleItemMembership(a1: Item): Promise<void> {return this.$callMethod('toggleItemMembership',a1);}
   async tooltip(...args: any[]): Promise<string> {return this.$callMethod('tooltip',...args);}
+  async tooltipText(): Promise<string> {return this.$callMethod('tooltipText');}
   async top(): Promise<number> {return this.$callMethod('top');}
   async uniqueItems(...args: any[]): Promise<boolean> {return this.$callMethod('uniqueItems',...args);}
   async units(a1: boolean): Promise<object> {return this.$callMethod('units',a1);}
@@ -2155,13 +2160,13 @@ export class UserFunction extends Item {
   async compile(): Promise<void> {return this.$callMethod('compile');}
   async create(a1: string): Promise<UserFunction> {return this.$callMethod('create',a1);}
   async description(...args: any[]): Promise<string> {return this.$callMethod('description',...args);}
-  async displayTooltip(a1: ICairoShim,a2: string): Promise<void> {return this.$callMethod('displayTooltip',a1,a2);}
   async draw(a1: ICairoShim): Promise<void> {return this.$callMethod('draw',a1);}
   async evaluate(a1: number,a2: number): Promise<number> {return this.$callMethod('evaluate',a1,a2);}
   async expression(...args: string[]): Promise<string> {return this.$callMethod('expression',...args);}
   async name(): Promise<string> {return this.$callMethod('name');}
   async nextId(...args: number[]): Promise<number> {return this.$callMethod('nextId',...args);}
   async symbolNames(): Promise<string[]> {return this.$callMethod('symbolNames');}
+  async tooltipText(): Promise<string> {return this.$callMethod('tooltipText');}
   async units(...args: any[]): Promise<object> {return this.$callMethod('units',...args);}
 }
 

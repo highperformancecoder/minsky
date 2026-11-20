@@ -875,7 +875,6 @@ void VariableBase::draw(const ICairoShim& cairoShim) const
     {
       cairoShim.save();
       drawPorts(cairoShim);
-      displayTooltip(cairoShim,tooltip());
       if (onResizeHandles) drawResizeHandles(cairoShim);
       cairoShim.restore();
     }  
