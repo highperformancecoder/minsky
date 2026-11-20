@@ -1,0 +1,7 @@
+reviews:
+  auto_review:
+    enabled: true
+    # List specific branches or use regex patterns (e.g., ".*" for all branches)
+    base_branches:
+      - develop
+      - master

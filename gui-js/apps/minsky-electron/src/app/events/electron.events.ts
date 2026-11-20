@@ -19,7 +19,7 @@ import {
   DownloadCSVPayload,
   VariableBase,
 } from '@minsky/shared';
-import { BrowserWindow, dialog, ipcMain, safeStorage } from 'electron';
+import { BrowserWindow, dialog, ipcMain, safeStorage, } from 'electron';
 import { BookmarkManager } from '../managers/BookmarkManager';
 import { CommandsManager } from '../managers/CommandsManager';
 import { ContextMenuManager } from '../managers/ContextMenuManager';
@@ -266,6 +266,21 @@ ipcMain.on(
     CommandsManager.loadHelpFile(classType);
   }
 );
+
+ipcMain.on(events.OPEN_RAVEL_WEBSITE, () => {
+  const window = new BrowserWindow({
+    width: 1200,
+    height: 800,
+    title: 'Ravelation',
+    webPreferences: {
+      contextIsolation: true,
+      nodeIntegration: false,
+      sandbox: true,
+    },
+  });
+  window.setMenu(null);
+  window.loadURL('https://ravelation.net/what-is-ravel');
+});
 
 ipcMain.on(events.DOUBLE_CLICK, async (event, payload) => {
   await CommandsManager.handleDoubleClick(payload);

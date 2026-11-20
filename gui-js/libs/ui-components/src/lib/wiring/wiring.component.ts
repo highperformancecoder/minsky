@@ -10,7 +10,7 @@ import {
   ElectronService,
   WindowUtilityService,
 } from '@minsky/core';
-import { events, MainRenderingTabs, minsky } from '@minsky/shared';
+import { events, EventInterface, MainRenderingTabs, minsky, RenderNativeWindow } from '@minsky/shared';
 import { fromEvent, Observable, Subject, takeUntil } from 'rxjs';
 import { sampleTime } from 'rxjs/operators';
 import { AvailableOperationsComponent } from './available-operations/available-operations.component';
@@ -35,6 +35,7 @@ export class WiringComponent implements OnInit, OnDestroy {
   wiringTab = MainRenderingTabs.canvas;
 
   destroy$ = new Subject<{}>();
+  private rescaleTimer: ReturnType<typeof setTimeout>; // pending scrollable area resize
 
   constructor(
     public cmService: CommunicationService,
@@ -62,8 +63,8 @@ export class WiringComponent implements OnInit, OnDestroy {
 
   private setupEventListenersForCanvas(minskyCanvasContainer: HTMLElement) {
     const minskyCanvasElement = document.getElementById('main-minsky-canvas') as HTMLElement;
-    const scrollableArea = this.windowUtilityService.getScrollableArea();
-    var moveOnScroll=0; // avoid moving when programmatically setting scroll bars
+    var suppressScroll=false; // ignore scroll events caused by programmatically setting scroll bars or resizing
+    var scrollGeneration=0; // incremented on each user scroll, to detect stale resets
 
     const tabElements = document.getElementsByClassName('tab');
     for(let i = 0; i < tabElements.length; i++) {
@@ -76,33 +77,67 @@ export class WiringComponent implements OnInit, OnDestroy {
     }
 
     this.cmService.resetScroll=async ()=>{
-      ++moveOnScroll;
-      var pos= await this.electronService.currentTabPosition();
-      minskyCanvasContainer.scrollLeft=scrollableArea.width/2 - pos[0];
-      minskyCanvasContainer.scrollTop=scrollableArea.height/2 - pos[1];
+      const generation=scrollGeneration;
+      const tab=this.cmService.currentTab;
+      var pos= await new EventInterface(tab).position();
+      let bounds: number[];
+      try {
+        // bounds of the currently displayed tab (empty if the tab cannot report them)
+        bounds=await new RenderNativeWindow(tab).contentBounds();
+      } catch (e) {console.error(e);}
+      // user scrolled while awaiting: discard this stale reset (including the
+      // resize), the debounce from the latest scroll will perform a fresh one
+      if (generation!==scrollGeneration || tab!==this.cmService.currentTab) return;
+      // resizing or setting the scroll position generates scroll events,
+      // which must not be interpreted as the user panning
+      suppressScroll=true;
+      this.windowUtilityService.updateScrollableArea(bounds,pos);
+      const scrollableArea = this.windowUtilityService.getScrollableArea();
+      minskyCanvasContainer.scrollLeft=Math.round(scrollableArea.width/2 - pos[0]);
+      minskyCanvasContainer.scrollTop=Math.round(scrollableArea.height/2 - pos[1]);
+      // scroll events are delivered before the next animation frame callbacks
+      await new Promise<void>(resolve=>requestAnimationFrame(()=>requestAnimationFrame(()=>resolve())));
+      suppressScroll=false;
     };
     this.cmService.resetScroll();
   
    this.zone.runOutsideAngular(() => {
       if (this.electronService.isElectron) {
         const handleScroll = async (scrollTop: number, scrollLeft: number) => {
+          // address the tab explicitly, so a move still in flight when the tab
+          // is switched cannot be applied to the newly selected tab
+          const tab=this.cmService.currentTab;
+          const scrollableArea = this.windowUtilityService.getScrollableArea();
           const posX = scrollableArea.width / 2 - scrollLeft;
           const posY = scrollableArea.height / 2 - scrollTop;
-          if (!moveOnScroll)
-            await this.electronService.currentTabMoveTo(posX,posY);
-          else
-            --moveOnScroll;
+          await new EventInterface(tab).moveTo(posX,posY);
         };
 
         minskyCanvasContainer.addEventListener('scroll', async () => {
+          if (suppressScroll || this.cmService.tabSwitching) return;
+          // once scrolling stops, resize the scrollable area to fit the contents
+          {
+            ++scrollGeneration;
+            clearTimeout(this.rescaleTimer);
+            const rescale=()=>{
+              // resizing mid-drag would shift the scroll baseline the drag is relative to,
+              // so wait until the drag ends
+              if (this.cmService.drag)
+                this.rescaleTimer=setTimeout(rescale,500);
+              else
+                this.cmService.resetScroll();
+            };
+            this.rescaleTimer=setTimeout(rescale,500);
+          }
           await handleScroll(
             minskyCanvasContainer.scrollTop,
             minskyCanvasContainer.scrollLeft
           );
         });
         minskyCanvasContainer.addEventListener('RESET_ZOOM', async () => {
-          minskyCanvasContainer.scrollTop=scrollableArea.width / 2;
-          minskyCanvasContainer.scrollLeft=scrollableArea.height / 2;
+          const scrollableArea = this.windowUtilityService.getScrollableArea();
+          minskyCanvasContainer.scrollTop=scrollableArea.height / 2;
+          minskyCanvasContainer.scrollLeft=scrollableArea.width / 2;
         });
         minskyCanvasContainer.addEventListener('RESET_SCROLL', async () => {
           this.cmService.resetScroll();
@@ -190,13 +225,15 @@ export class WiringComponent implements OnInit, OnDestroy {
   }
 
   async addRavel() {
-    if (!await this.electronService.minsky.ravelAvailable()) {
-      this.electronService.send(events.HELP_FOR, {classType:"Ravel"});
+    if (await this.electronService.minsky.ravelLibraryMissing()) {
+      this.electronService.send(events.OPEN_RAVEL_WEBSITE);
+      return;
     }
-    this.electronService.minsky.canvas.addRavel();
+    await this.electronService.minsky.canvas.addRavel();
   }
   
   ngOnDestroy() {
+    clearTimeout(this.rescaleTimer);
     this.destroy$.next(undefined);
     this.destroy$.complete();
   }

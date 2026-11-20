@@ -19,6 +19,7 @@
 #include "minsky.h"
 #include "godleyTableEditor.h"
 #include "matrix.h"
+#include "ravelWrap.h"
 #include "minsky_epilogue.h"
 #undef True
 #include <gtest/gtest.h>
@@ -43,6 +44,23 @@ namespace
     }
     void message(const string& x) override {savedMessage=x;}
   };
+}
+
+TEST_F(MinskySuite, RavelCreationErrors)
+{
+  if (ravelCAPI::available()) return;
+  if (Minsky::ravelLibraryMissing())
+    {
+      Ravel ravel;
+      EXPECT_EQ("https://ravelation.net",ravel.tooltip());
+    }
+  else
+    {
+      EXPECT_THROW(Ravel ravel, std::runtime_error);
+      silenceRavelErrors=true;
+      Ravel ravel;
+      EXPECT_EQ(ravelCAPI::lastError(),ravel.detailedText());
+    }
 }
 
   /*
@@ -957,6 +975,27 @@ TEST(TensorOps, evalOpEvaluate)
       g1->moveCell({2,2,3,2});
       EXPECT_EQ("a",godley1.cell(3,2));
       EXPECT_EQ("",godley1.cell(2,2));
+    }
+
+  TEST_F(MinskySuite, importStockVarUpdatesIcon)
+    {
+      // ticket #797
+      auto g1=new GodleyIcon; model->addItem(g1);
+      auto g2=new GodleyIcon; model->addItem(g2);
+      g1->table.resize(3,3);
+      g2->table.resize(3,3);
+      g1->table.assetClass(1,GodleyAssetClass::asset);
+      g2->table.assetClass(1,GodleyAssetClass::liability);
+      g1->table.cell(0,1)="a1";
+      g1->update();
+      g2->update();
+      g2->toggleVariableDisplay();
+      EXPECT_TRUE(g2->variableDisplay());
+      EXPECT_TRUE(g2->stockVars().empty());
+      g2->editor.importStockVarByCol("a1",1);
+      EXPECT_EQ("a1",g2->table.cell(0,1));
+      ASSERT_EQ(1,g2->stockVars().size());
+      EXPECT_EQ("a1",g2->stockVars()[0]->name());
     }
 
   TEST_F(MinskySuite, godleyCrossColumnMoveUndo)
@@ -2026,4 +2065,3 @@ TEST(TensorOps, evalOpEvaluate)
       // Return value should be false
       EXPECT_FALSE(result);
     }
-

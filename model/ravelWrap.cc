@@ -66,13 +66,21 @@ namespace minsky
     typedef ravel::HandleSort::Order HandleSort;
   }
 
-  Ravel::Ravel(): popup(*this)
+  void Ravel::checkRavel()
   {
     if (!wrappedRavel)
       {
+        if (!cminsky().silenceRavelErrors && !ravelCAPI::notInstalled())
+          throw runtime_error(wrappedRavel.lastError().empty()?
+                              "Could not create Ravel": wrappedRavel.lastError());
         tooltip("https://ravelation.net");
         detailedText(wrappedRavel.lastError());
       }
+  }
+
+  Ravel::Ravel(): popup(*this)
+  {
+    checkRavel();
     if (minsky().model->findAny(&GroupItems::items, [](const ItemPtr& i){return i->ravelCast();}))
       return; // early return if at least 1 ravel already present
     m_editorMode=true; // first ravel is in editor mode

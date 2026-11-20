@@ -213,7 +213,7 @@
     "electron-progressbar": "^2.2.1",
     "electron-store": "^8.2.0",
     "fullname": "^5.0.0",
-    "glob": "^11.1.0",
+    "glob": "^14.0.2",
     "JSONStream": "^1.3.5",
     "lodash": "^4.18.1",
     "mathjax": "^3.2.2",

@@ -15,7 +15,10 @@ export class WindowUtilityService {
   private scrollableAreaWidth = null;
   private scrollableAreaHeight = null;
   private mainWindowId = 1;
-  SCROLLABLE_AREA_FACTOR = 100;
+  // scrollable area is this multiple of the extent of the canvas contents
+  SCROLLABLE_AREA_FACTOR = 1.5;
+  // scrollable area as a multiple of the drawable area, for tabs that cannot report their content extents
+  UNKNOWN_EXTENT_FACTOR = 100;
 
   constructor(private electronService: ElectronService) { }
 
@@ -35,12 +38,9 @@ export class WindowUtilityService {
         bodyElement.clientHeight - this.minskyCanvasContainer.offsetTop + 'px';
 
       if (!this.scrollableAreaWidth || !this.scrollableAreaHeight) {
-        // Scrollable area size should not change
-
-        this.scrollableAreaWidth =
-          bodyElement.clientWidth * this.SCROLLABLE_AREA_FACTOR;
-        this.scrollableAreaHeight =
-          bodyElement.clientHeight * this.SCROLLABLE_AREA_FACTOR;
+        // initial size, until updateScrollableArea is called with the contents' bounds
+        this.scrollableAreaWidth = bodyElement.clientWidth * 3;
+        this.scrollableAreaHeight = bodyElement.clientHeight * 3;
       }
       this.minskyCanvasElement.style.width = this.scrollableAreaWidth + 'px';
       this.minskyCanvasElement.style.height = this.scrollableAreaHeight + 'px';
@@ -55,6 +55,37 @@ export class WindowUtilityService {
       this.drawableWidth = clientRect.right-clientRect.left;
       this.drawableHeight = clientRect.bottom-clientRect.top;
     }
+  }
+
+  /**
+   * Resize the scrollable area to SCROLLABLE_AREA_FACTOR times the extent of
+   * the canvas contents. The pan position (scrollable area centre minus
+   * scroll offset) lies within +/- half the excess over the drawable area.
+   * @param bounds [x0,y0,x1,y1] of canvas contents in window coordinates
+   * @param pos current pan position [x,y]
+   * @returns true if the scrollable area changed
+   */
+  public updateScrollableArea(bounds: number[], pos: number[]): boolean {
+    if (!this.minskyCanvasElement) return false;
+    if (!bounds || bounds.length < 4)
+      // content extent unknown for this tab: use a generously sized area
+      bounds = [0, 0, this.drawableWidth * this.UNKNOWN_EXTENT_FACTOR / 2, this.drawableHeight * this.UNKNOWN_EXTENT_FACTOR / 2];
+    const size = (b0: number, b1: number, p: number, drawable: number) => {
+      // contents' extent relative to the unpanned origin
+      const extent = Math.max(Math.abs(b0 - p), Math.abs(b1 - p), 0);
+      const half = this.SCROLLABLE_AREA_FACTOR * extent;
+      // also keep the current pan within the scroll range:
+      // 0 <= W/2 - p <= W - drawable
+      return Math.ceil(Math.max(drawable + 2 * half, 2 * drawable, 2 * p, 2 * (drawable - p)));
+    };
+    const w = size(bounds[0], bounds[2], pos[0], this.drawableWidth);
+    const h = size(bounds[1], bounds[3], pos[1], this.drawableHeight);
+    if (w === this.scrollableAreaWidth && h === this.scrollableAreaHeight) return false;
+    this.scrollableAreaWidth = w;
+    this.scrollableAreaHeight = h;
+    this.minskyCanvasElement.style.width = w + 'px';
+    this.minskyCanvasElement.style.height = h + 'px';
+    return true;
   }
 
   public scrollToCenter() {

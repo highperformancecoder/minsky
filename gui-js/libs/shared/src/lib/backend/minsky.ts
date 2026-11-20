@@ -168,6 +168,7 @@ export class RenderNativeWindow extends EventInterface {
       super(prefix.$prefix())
     this.backgroundColour=new mansoura__Colour(this.$prefix()+'.backgroundColour');
   }
+  async contentBounds(): Promise<number[]> {return this.$callMethod('contentBounds');}
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
   async draw(): Promise<void> {return this.$callMethod('draw');}
   async frameArgs(): Promise<minsky__RenderNativeWindow__RenderFrameArgs> {return this.$callMethod('frameArgs');}
@@ -434,6 +435,7 @@ export class Canvas extends RenderNativeWindow {
   async applyDefaultPlotOptions(): Promise<void> {return this.$callMethod('applyDefaultPlotOptions');}
   async clickType(...args: string[]): Promise<string> {return this.$callMethod('clickType',...args);}
   async closestInPort(a1: number,a2: number): Promise<object> {return this.$callMethod('closestInPort',a1,a2);}
+  async contentBounds(): Promise<number[]> {return this.$callMethod('contentBounds');}
   async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
   async copyAllFlowVars(): Promise<void> {return this.$callMethod('copyAllFlowVars');}
   async copyAllStockVars(): Promise<void> {return this.$callMethod('copyAllStockVars');}
@@ -635,6 +637,7 @@ export class EquationDisplay extends RenderNativeWindow {
     this.item=new Item(this.$prefix()+'.item');
     this.wire=new Wire(this.$prefix()+'.wire');
   }
+  async contentBounds(): Promise<number[]> {return this.$callMethod('contentBounds');}
   async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
   async draw(): Promise<void> {return this.$callMethod('draw');}
@@ -686,6 +689,7 @@ export class FontDisplay extends CppClass {
     this.item=new Item(this.$prefix()+'.item');
     this.wire=new Wire(this.$prefix()+'.wire');
   }
+  async contentBounds(): Promise<number[]> {return this.$callMethod('contentBounds');}
   async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
   async draw(): Promise<void> {return this.$callMethod('draw');}
@@ -1310,6 +1314,7 @@ export class Minsky extends CppClass {
   async randomLayout(): Promise<void> {return this.$callMethod('randomLayout');}
   async ravelAvailable(): Promise<boolean> {return this.$callMethod('ravelAvailable');}
   async ravelExpired(): Promise<boolean> {return this.$callMethod('ravelExpired');}
+  async ravelLibraryMissing(): Promise<boolean> {return this.$callMethod('ravelLibraryMissing');}
   async ravelVersion(): Promise<string> {return this.$callMethod('ravelVersion');}
   async reloadAllCSVParameters(): Promise<void> {return this.$callMethod('reloadAllCSVParameters');}
   async renameDimension(a1: string,a2: string): Promise<void> {return this.$callMethod('renameDimension',a1,a2);}
@@ -1342,6 +1347,7 @@ export class Minsky extends CppClass {
   async setGroupIconResource(a1: string): Promise<void> {return this.$callMethod('setGroupIconResource',a1);}
   async setLockIconResource(a1: string,a2: string): Promise<void> {return this.$callMethod('setLockIconResource',a1,a2);}
   async setRavelIconResource(a1: string): Promise<void> {return this.$callMethod('setRavelIconResource',a1);}
+  async silenceRavelErrors(...args: boolean[]): Promise<boolean> {return this.$callMethod('silenceRavelErrors',...args);}
   async simulationDelay(...args: number[]): Promise<number> {return this.$callMethod('simulationDelay',...args);}
   async srand(a1: number): Promise<void> {return this.$callMethod('srand',a1);}
   async step(): Promise<number[]> {return this.$callMethod('step');}
@@ -1373,6 +1379,7 @@ export class PhillipsDiagram extends RenderNativeWindow {
     this.wire=new Wire(this.$prefix()+'.wire');
   }
   async clear(): Promise<void> {return this.$callMethod('clear');}
+  async contentBounds(): Promise<number[]> {return this.$callMethod('contentBounds');}
   async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
   async draw(): Promise<void> {return this.$callMethod('draw');}
@@ -1485,6 +1492,7 @@ export class PlotWidget extends Item {
   async clickType(a1: number,a2: number): Promise<string> {return this.$callMethod('clickType',a1,a2);}
   async connectVar(a1: VariableValue,a2: number): Promise<void> {return this.$callMethod('connectVar',a1,a2);}
   async contains(a1: number,a2: number): Promise<boolean> {return this.$callMethod('contains',a1,a2);}
+  async contentBounds(): Promise<number[]> {return this.$callMethod('contentBounds');}
   async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
   async disconnectAllVars(): Promise<void> {return this.$callMethod('disconnectAllVars');}
@@ -1618,6 +1626,7 @@ export class PubTab extends RenderNativeWindow {
     this.items=new Sequence<PubItem>(this.$prefix()+'.items',PubItem);
   }
   async addNote(a1: string,a2: number,a3: number): Promise<void> {return this.$callMethod('addNote',a1,a2,a3);}
+  async contentBounds(): Promise<number[]> {return this.$callMethod('contentBounds');}
   async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
   async getItemAt(a1: number,a2: number): Promise<boolean> {return this.$callMethod('getItemAt',a1,a2);}
   async hasScrollBars(): Promise<boolean> {return this.$callMethod('hasScrollBars');}
@@ -1748,6 +1757,7 @@ export class RavelPopup extends CppClass {
     this.item=new Item(this.$prefix()+'.item');
     this.wire=new Wire(this.$prefix()+'.wire');
   }
+  async contentBounds(): Promise<number[]> {return this.$callMethod('contentBounds');}
   async controlMouseDown(a1: number,a2: number): Promise<void> {return this.$callMethod('controlMouseDown',a1,a2);}
   async destroyFrame(): Promise<void> {return this.$callMethod('destroyFrame');}
   async draw(): Promise<void> {return this.$callMethod('draw');}
@@ -2031,7 +2041,7 @@ export class UserFunction extends Item {
   async name(): Promise<string> {return this.$callMethod('name');}
   async nextId(...args: number[]): Promise<number> {return this.$callMethod('nextId',...args);}
   async symbolNames(): Promise<string[]> {return this.$callMethod('symbolNames');}
-  async units(a1: boolean): Promise<object> {return this.$callMethod('units',a1);}
+  async units(...args: any[]): Promise<object> {return this.$callMethod('units',...args);}
 }
 
 export class VariableInstanceList extends CppClass {

@@ -26,16 +26,16 @@ export class AppComponent implements OnInit, DoCheck {
 
   loading = true;
   publicationTabs = [];
-  private windowUtilityService: WindowUtilityService;
   private resizeTimeout;
+  private tabSwitchGeneration=0; // identifies the most recent main tab switch
   constructor(
     private electronService: ElectronService,
     private cmService: CommunicationService,
     private translate: TranslateService,
     private cdRef: ChangeDetectorRef,
     public router: Router,
+    private windowUtilityService: WindowUtilityService,
   ) {
-    this.windowUtilityService=new WindowUtilityService(electronService);
     this.translate.setDefaultLang('en');
   }
 
@@ -174,17 +174,24 @@ export class AppComponent implements OnInit, DoCheck {
       this.router.navigate(['wiring']);
 
       if (this.electronService.isElectron) {
+        const generation=++this.tabSwitchGeneration;
+        this.cmService.tabSwitching = true;
         this.cmService.currentTab = tab;
         
         setTimeout(async ()=> {
-          await this.windowUtilityService.reInitialize();
-          const payload = { newTab: tab };
-          await this.electronService.invoke(events.CHANGE_MAIN_TAB, payload);
-          var container=this.windowUtilityService.getMinskyContainerElement();
-          const scrollableArea=this.windowUtilityService.getScrollableArea();
-          container.scrollTop=scrollableArea.height / 2;
-          container.scrollLeft=scrollableArea.width / 2;
-          this.cmService.resetScroll();
+          try {
+            await this.windowUtilityService.reInitialize();
+            const payload = { newTab: tab };
+            await this.electronService.invoke(events.CHANGE_MAIN_TAB, payload);
+            // restore the new tab's own pan position (without moving it), and
+            // size the scrollbars now that the tab has rendered
+            await this.cmService.resetScroll();
+          } finally {
+            // re-enable scrolling, even if a step above failed, but only if no
+            // later switch has started and is still in progress
+            if (generation===this.tabSwitchGeneration)
+              this.cmService.tabSwitching = false;
+          }
         }, 1);
       }
     }

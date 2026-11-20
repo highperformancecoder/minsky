@@ -47,6 +47,8 @@ namespace  minsky
     Units units(bool check=false) const override;
     void displayTooltip(const mansoura::IMansoura& cr, const std::string& tt) const override
     {Item::displayTooltip(cr,tt.empty()? expression: tt+" "+expression);}
+    Units units(const std::vector<Units>& argUnits, bool check,
+                const std::vector<double>& argValues={}) const;
 
     using NamedOp::description;
     std::string description(const std::string&) override;

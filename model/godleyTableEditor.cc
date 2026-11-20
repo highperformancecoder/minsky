@@ -879,7 +879,15 @@ namespace minsky
         m_godleyIcon.table.cell(0,c)=name;
         minsky().importDuplicateColumn(m_godleyIcon.table, c);
         adjustWidgets();
-        update(); //TODO I don't know why this is insufficient to update icon on canvas
+        // update() depends on selectedCol, which needn't be the imported column, so
+        // explicitly refresh all Godley icons so the canvas icon reflects the import. For #797
+        m_godleyIcon.update();
+        auto godleyTables=minsky().model->findItems
+          ([](const ItemPtr& i){return dynamic_cast<GodleyIcon*>(i.get());});
+        for (auto& i: godleyTables)
+          if (auto* g=dynamic_cast<GodleyIcon*>(i.get()); g && g!=&m_godleyIcon)
+            g->update();
+        minsky().canvas.requestRedraw();
       }
   }
 

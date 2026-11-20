@@ -101,6 +101,7 @@ namespace minsky
     std::vector<float> position() const override {return {x,y};}
     void startRotatingItem(float x, float y);
     bool hasScrollBars() const override {return true;}
+    std::vector<double> contentBounds() const override;
   };
 }
 

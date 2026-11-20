@@ -132,18 +132,21 @@ namespace MathDAG
     // render list of arguments separated by \a op, or \a empty if arglist is empty
     void naryRender(const IMansoura& dest, const vector<WeakNodePtr>& arglist, int BODMASlevel, const char* op, const char *empty)
     {
-      if (arglist.empty())
+      // skip null entries, preserving operators between the valid ones
+      bool first=true;
+      for (size_t j=0; j<arglist.size(); j++)
+        {
+          if (!arglist[j]) continue;
+          if (!first)
+            print(dest,op,Anchor::nw);
+          first=false;
+          if (arglist[j]->BODMASlevel()>BODMASlevel)
+            parenthesise(dest, [&](const IMansoura& dest) {arglist[j]->render(dest);});
+          else
+            arglist[j]->render(dest);
+        }
+      if (first) // no valid arguments
         print(dest,empty,Anchor::nw);
-      else
-        for (size_t j=0; j<arglist.size(); j++)
-          {
-            if (arglist[j]->BODMASlevel()>BODMASlevel)
-              parenthesise(dest, [&](const IMansoura& dest) {arglist[j]->render(dest);});
-            else
-              arglist[j]->render(dest);
-            if (j!=arglist.size()-1) 
-              print(dest,op,Anchor::nw);
-          }
     }
 
     void variableRender(const IMansoura& surf, const VariableDAG& v)
@@ -536,21 +539,21 @@ namespace MathDAG
   template <>
   void OperationDAG<OperationType::asin>::render(const IMansoura& surf) const
   {
-    print(surf,"sin<sup>-1</sup>",Anchor::nw);
+    print(surf,"sin<span size=\"smaller\" rise=\"5000\">-1</span>",Anchor::nw);
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {parenthesise(surf, [&](const IMansoura& surf){arguments[0][0]->render(surf);});}
   }
   template <>
   void OperationDAG<OperationType::acos>::render(const IMansoura& surf) const
   {
-    print(surf,"cos<small><sup>-1</sup></small>",Anchor::nw);
+    print(surf,"cos<span size=\"smaller\" rise=\"5000\">-1</span>",Anchor::nw);
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {parenthesise(surf, [&](const IMansoura& surf){arguments[0][0]->render(surf);});}
   }
   template <>
   void OperationDAG<OperationType::atan>::render(const IMansoura& surf) const
   {
-    print(surf,"tan<small><sup>-1</sup></small>",Anchor::nw);
+    print(surf,"tan<span size=\"smaller\" rise=\"5000\">-1</span>",Anchor::nw);
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {parenthesise(surf, [&](const IMansoura& surf){arguments[0][0]->render(surf);});}
   }
@@ -690,12 +693,12 @@ namespace MathDAG
   template <>
   void OperationDAG<OperationType::sum>::render(const IMansoura& surf) const
   {
-    print(surf,"∑<sub>i</sub>",Anchor::nw);
+    print(surf,"∑<span size=\"smaller\" rise=\"-2000\">i</span>",Anchor::nw);
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {
         const double h=parenthesise(surf, [&](const IMansoura& surf){arguments[0][0]->render(surf);});
         surf.relMoveTo(0, 0.5*h);
-        print(surf,"<sub>i</sub>",Anchor::nw);
+        print(surf,"<span size=\"smaller\" rise=\"-2000\">i</span>",Anchor::nw);
         surf.relMoveTo(0, -0.5*h);
       }
   }
@@ -703,33 +706,33 @@ namespace MathDAG
   template <>
   void OperationDAG<OperationType::product>::render(const IMansoura& surf) const
   {
-    print(surf,"∏<sub>i</sub>",Anchor::nw);
+    print(surf,"∏<span size=\"smaller\" rise=\"-2000\">i</span>",Anchor::nw);
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {
         parenthesise(surf, [&](const IMansoura& surf){arguments[0][0]->render(surf);});
-        print(surf,"<sub>i</sub>",Anchor::nw);
+        print(surf,"<span size=\"smaller\" rise=\"-2000\">i</span>",Anchor::nw);
       }
   }
 
   template <>
   void OperationDAG<OperationType::infimum>::render(const IMansoura& surf) const
   {
-    print(surf,"min<sub>i</sub>",Anchor::nw);
+    print(surf,"min<span size=\"smaller\" rise=\"-2000\">i</span>",Anchor::nw);
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {
         parenthesise(surf, [&](const IMansoura& surf){arguments[0][0]->render(surf);});
-        print(surf,"<sub>i</sub>",Anchor::nw);
+        print(surf,"<span size=\"smaller\" rise=\"-2000\">i</span>",Anchor::nw);
       }
   }
 
   template <>
   void OperationDAG<OperationType::supremum>::render(const IMansoura& surf) const
   {
-    print(surf,"min<sub>i</sub>",Anchor::nw);
+    print(surf,"min<span size=\"smaller\" rise=\"-2000\">i</span>",Anchor::nw);
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {
         parenthesise(surf, [&](const IMansoura& surf){arguments[0][0]->render(surf);});
-        print(surf,"<sub>i</sub>",Anchor::nw);
+        print(surf,"<span size=\"smaller\" rise=\"-2000\">i</span>",Anchor::nw);
       }
   }
 
@@ -750,55 +753,55 @@ namespace MathDAG
   template <>
   void OperationDAG<OperationType::any>::render(const IMansoura& surf) const
   {
-    print(surf,"Θ(max<sub>i</sub>",Anchor::nw);
+    print(surf,"Θ(max<span size=\"smaller\" rise=\"-2000\">i</span>",Anchor::nw);
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {
         parenthesise(surf, [&](const IMansoura& surf){arguments[0][0]->render(surf);});
-        print(surf,"<sub>i</sub>&gt;0.5)",Anchor::nw);
+        print(surf,"<span size=\"smaller\" rise=\"-2000\">i</span>&gt;0.5)",Anchor::nw);
       }
   }
 
   template <>
   void OperationDAG<OperationType::all>::render(const IMansoura& surf) const
   {
-    print(surf,"∏<sub>i</sub>Θ(",Anchor::nw);
+    print(surf,"∏<span size=\"smaller\" rise=\"-2000\">i</span>Θ(",Anchor::nw);
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {
         parenthesise(surf, [&](const IMansoura& surf){arguments[0][0]->render(surf);});
-        print(surf,"<sub>i</sub>&gt;0.5)",Anchor::nw);
+        print(surf,"<span size=\"smaller\" rise=\"-2000\">i</span>&gt;0.5)",Anchor::nw);
       }
   }
 
   template <>
   void OperationDAG<OperationType::runningSum>::render(const IMansoura& surf) const
   {
-    print(surf,"∑<sub>j=0</sub><sup>i</sup>",Anchor::nw);
+    print(surf,"∑<span size=\"smaller\" rise=\"-2000\">j=0</span><span size=\"smaller\" rise=\"5000\">i</span>",Anchor::nw);
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {
         parenthesise(surf, [&](const IMansoura& surf){arguments[0][0]->render(surf);});
-        print(surf,"<sub>j</sub>",Anchor::nw);
+        print(surf,"<span size=\"smaller\" rise=\"-2000\">j</span>",Anchor::nw);
       }
   }
 
   template <>
   void OperationDAG<OperationType::runningAv>::render(const IMansoura& surf) const
   {
-    print(surf,"(1/i)∑<sub>j=0</sub><sup>i</sup>",Anchor::nw);
+    print(surf,"(1/i)∑<span size=\"smaller\" rise=\"-2000\">j=0</span><span size=\"smaller\" rise=\"5000\">i</span>",Anchor::nw);
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {
         parenthesise(surf, [&](const IMansoura& surf){arguments[0][0]->render(surf);});
-        print(surf,"<sub>j</sub>",Anchor::nw);
+        print(surf,"<span size=\"smaller\" rise=\"-2000\">j</span>",Anchor::nw);
       }
   }
 
   template <>
   void OperationDAG<OperationType::runningProduct>::render(const IMansoura& surf) const
   {
-    print(surf,"∏<sub>j=0</sub><sup>i</sup>",Anchor::nw);
+    print(surf,"∏<span size=\"smaller\" rise=\"-2000\">j=0</span><span size=\"smaller\" rise=\"5000\">i</span>",Anchor::nw);
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {
         parenthesise(surf, [&](const IMansoura& surf){arguments[0][0]->render(surf);});
-        print(surf,"<sub>j</sub>",Anchor::nw);
+        print(surf,"<span size=\"smaller\" rise=\"-2000\">j</span>",Anchor::nw);
       }
   }
 
@@ -809,7 +812,7 @@ namespace MathDAG
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {
         parenthesise(surf, [&](const IMansoura& surf){arguments[0][0]->render(surf);});
-        print(surf,"<sub>i</sub>",Anchor::nw);
+        print(surf,"<span size=\"smaller\" rise=\"-2000\">i</span>",Anchor::nw);
       }
   }
   
@@ -820,7 +823,7 @@ namespace MathDAG
     if (!arguments.empty() && !arguments[0].empty() && arguments[0][0])
       {
         parenthesise(surf, [&](const IMansoura& surf){arguments[0][0]->render(surf);});
-        print(surf,"<sub>i</sub>",Anchor::nw);
+        print(surf,"<span size=\"smaller\" rise=\"-2000\">i</span>",Anchor::nw);
       }
   }
 
@@ -974,10 +977,10 @@ namespace MathDAG
     if (!arguments.empty())
       {
         naryRender(surf,arguments[0],BODMASlevel(),"∧","1");
-        if (!arguments[1].empty())
+        if (arguments.size()>1 && !arguments[1].empty())
           {
             print(surf,"∧",Anchor::nw);
-            naryRender(surf,arguments[0],BODMASlevel(),"∧","1");
+            naryRender(surf,arguments[1],BODMASlevel(),"∧","1");
           }
       }
     else
@@ -991,10 +994,10 @@ namespace MathDAG
     if (!arguments.empty())
       {
         naryRender(surf,arguments[0],BODMASlevel(),"∨","0");
-        if (!arguments[1].empty())
+        if (arguments.size()>1 && !arguments[1].empty())
           {
             print(surf,"∨",Anchor::nw);
-            naryRender(surf,arguments[0],BODMASlevel(),"∨","0");
+            naryRender(surf,arguments[1],BODMASlevel(),"∨","0");
           }
       }
     else
