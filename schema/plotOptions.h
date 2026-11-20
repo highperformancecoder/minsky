@@ -60,7 +60,7 @@ namespace minsky
     Optional<std::vector<mansoura::Plot::LineStyle>> palette;
     Optional<std::vector<std::string>> horizontalMarkers, verticalMarkers;
     PlotOptions& operator=(const PlotWidget& plot) {
-      name=plot.title;
+      name=plot.title();
       logx=plot.logx;
       logy=plot.logy;
       ypercent=plot.percent;
@@ -90,7 +90,7 @@ namespace minsky
     }
     void applyPlotOptions(PlotWidget& plot) const
     {
-      if (name) plot.title=*name;
+      if (name) plot.title(*name);
       if (logx) plot.logx=*logx;
       if (logy) plot.logy=*logy;
       if (ypercent) plot.percent=*ypercent;

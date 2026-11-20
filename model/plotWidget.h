@@ -68,10 +68,7 @@ namespace minsky
     void redrawWithBounds(const mansoura::IMansoura& shim) override {redraw(shim,0,0,500,500);}
 
     // shadow labels, so we can interpret as LaTeX code rather than Pango markup
-    std::string m_xlabel, m_ylabel, m_y1label;
-
-    /// extra offset for titles
-    mutable double yoffs=0;
+    std::string m_xlabel, m_ylabel, m_y1label, m_title;
 
     Formatter formatter=defaultFormatter;
     size_t m_numLines=1; ///< number of ports on the side
@@ -115,8 +112,6 @@ namespace minsky
     std::vector<std::string> horizontalMarkers;
     std::vector<std::string> verticalMarkers;
 
-    std::string title;
-
     /// automatic means choose line or bar depending on the x-vector type.
     PlotType plotType=automatic;
     
@@ -137,6 +132,12 @@ namespace minsky
     const PlotWidget* plotWidgetCast() const override {return this;}
     PlotWidget* plotWidgetCast() override {return this;}          
 
+    /// plot title, drawn by mansoura::Plot so it appears in exported images
+    std::string const& title() const {return m_title;}
+    std::string const& title(const std::string& x) {
+      mansoura::Plot::title=latexToPango(x);
+      return m_title=x;
+    }
     /// shadowed label commands to allow latex intepretation
     std::string const& xlabel() const {return m_xlabel;}
     std::string const& xlabel(const std::string& x) {

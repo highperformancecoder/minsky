@@ -1562,7 +1562,7 @@ export class PlotWidget extends Item {
   async setMinMax(): Promise<void> {return this.$callMethod('setMinMax');}
   async subgrid(...args: boolean[]): Promise<boolean> {return this.$callMethod('subgrid',...args);}
   async symbolEvery(...args: number[]): Promise<number> {return this.$callMethod('symbolEvery',...args);}
-  async title(...args: string[]): Promise<string> {return this.$callMethod('title',...args);}
+  async title(...args: any[]): Promise<string> {return this.$callMethod('title',...args);}
   async updateIcon(a1: number): Promise<void> {return this.$callMethod('updateIcon',a1);}
   async width(): Promise<number> {return this.$callMethod('width');}
   async xlabel(...args: any[]): Promise<string> {return this.$callMethod('xlabel',...args);}

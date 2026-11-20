@@ -445,7 +445,7 @@ RavelLogo.o: RavelLogo.rc icons/RavelLogo.ico
 getContext.o: getContext.cc
 	g++ -ObjC++ $(FLAGS) -I/opt/local/include -Iinclude -c $< -o $@
 
-RESTService/minsky-RESTService$(EXE): RESTService.o  $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS)
+RESTService/minsky-RESTService$(EXE): RESTService.o  $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS) mansoura/libmansoura.a RavelCAPI/libravelCAPI.a RavelCAPI/civita/libcivita.a 
 	$(LINK) $(FLAGS) $^ -L/opt/local/lib/db48 $(LIBS) -o $@
 
 RESTService/minsky-httpd$(EXE): httpd.o $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS)
@@ -490,7 +490,7 @@ endif
 libminsky.a: $(RESTSERVICE_OBJS) $(MODEL_OBJS) $(SCHEMA_OBJS) $(ENGINE_OBJS)
 	ar r $@ $^
 
-$(PYMINSKY): pyminsky.o $(PYTHONCAPI) libminsky.a ecolab/lib/libecolab.a
+$(PYMINSKY): pyminsky.o $(PYTHONCAPI) libminsky.a mansoura/libmansoura.a RavelCAPI/libravelCAPI.a RavelCAPI/civita/libcivita.a ecolab/lib/libecolab.a
 ifeq ($(OS),Darwin)
 	c++ -bundle -undefined dynamic_lookup -Wl,-no_pie -Wl,-search_paths_first -mmacosx-version-min=$(MACOSX_MIN_VERSION) -arch $(ARCH) -stdlib=libc++  -o $@  $^ $(LIBS)
 	cp pyminsky.so gui-js/build/

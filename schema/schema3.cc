@@ -588,7 +588,7 @@ namespace schema3
     if (auto* x1=dynamic_cast<minsky::PlotWidget*>(&x))
       {
         x1->bb.update(*x1);        
-        if (y.name) x1->title=*y.name;
+        if (y.name) x1->title(*y.name);
         y.applyPlotOptions(*x1);
         if (y.palette) x1->palette=*y.palette;
         if (y.ports.size()>x1->nBoundsPorts)

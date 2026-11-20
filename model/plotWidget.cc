@@ -94,7 +94,7 @@ namespace minsky
     cairoShim.scale(z,z);
 
     // if any titling, draw an extra bounding box (ticket #285)
-    if (!title.empty()||!xlabel().empty()||!ylabel().empty()||!y1label().empty())
+    if (!title().empty()||!xlabel().empty()||!ylabel().empty()||!y1label().empty())
       {
         cairoShim.rectangle(-0.5*w+10,-0.5*h,w-20,h-10);
         cairoShim.setLineWidth(1);
@@ -102,22 +102,6 @@ namespace minsky
       }
 
     cairoShim.translate(-0.5*w,-0.5*h);
-
-    yoffs=0;
-    if (!title.empty())
-      {
-        const PreserveContext cs(cairoShim);
-        const double fy=titleHeight*iHeight();
-        
-        auto pango=cairoShim.cachedRender(TextProperties(latexToPango(title),fabs(fy)));
-        cairoShim.setSourceRGB(0,0,0);
-        cairoShim.moveTo(0.5*(w-pango->extents().width), 0);
-        pango->show();
-
-        // allow some room for the title
-        yoffs=pango->extents().height;
-        h-=yoffs;
-      }
 
     // draw bounding box ports
     
@@ -127,8 +111,8 @@ namespace minsky
       {
         const float x=boundX[i]*w, y=boundY[i]*h;
         if (!justDataChanged)
-          m_ports[i]->moveTo(x*z + this->x(), y*z + this->y()+0.5*yoffs);
-        drawTriangle(cairoShim, x+0.5*w, y+0.5*h+yoffs, palette[(i/2)%palette.size()].colour, orient[i]);
+          m_ports[i]->moveTo(x*z + this->x(), y*z + this->y());
+        drawTriangle(cairoShim, x+0.5*w, y+0.5*h, palette[(i/2)%palette.size()].colour, orient[i]);
         
       }
 
@@ -139,8 +123,8 @@ namespace minsky
       {
         const float y=0.5*(dy-h) + (i-nBoundsPorts)*dy;
         if (!justDataChanged)
-          m_ports[i]->moveTo(xLeft*z + this->x(), y*z + this->y()+0.5*yoffs);
-        drawTriangle(cairoShim, xLeft+0.5*w, y+0.5*h+yoffs, palette[(i-nBoundsPorts)%palette.size()].colour, 0);
+          m_ports[i]->moveTo(xLeft*z + this->x(), y*z + this->y());
+        drawTriangle(cairoShim, xLeft+0.5*w, y+0.5*h, palette[(i-nBoundsPorts)%palette.size()].colour, 0);
       }
     
     // draw RHS y data ports
@@ -148,8 +132,8 @@ namespace minsky
       {
         const float y=0.5*(dy-h) + (i-m_numLines-nBoundsPorts)*dy, x=0.5*w;
         if (!justDataChanged)
-          m_ports[i]->moveTo(x*z + this->x(), y*z + this->y()+0.5*yoffs);
-        drawTriangle(cairoShim, x+0.5*w, y+0.5*h+yoffs, palette[(i-nBoundsPorts)%palette.size()].colour, M_PI);
+          m_ports[i]->moveTo(x*z + this->x(), y*z + this->y());
+        drawTriangle(cairoShim, x+0.5*w, y+0.5*h, palette[(i-nBoundsPorts)%palette.size()].colour, M_PI);
       }
 
     // draw x data ports
@@ -158,11 +142,11 @@ namespace minsky
       {
         const float x=dx-0.5*w + (i-2*m_numLines-nBoundsPorts)*dx;
         if (!justDataChanged)
-          m_ports[i]->moveTo(x*z + this->x(), yBottom*z + this->y()+0.5*yoffs);
-        drawTriangle(cairoShim, x+0.5*w, yBottom+0.5*h+yoffs, palette[(i-2*m_numLines-nBoundsPorts)%palette.size()].colour, -0.5*M_PI);
+          m_ports[i]->moveTo(x*z + this->x(), yBottom*z + this->y());
+        drawTriangle(cairoShim, x+0.5*w, yBottom+0.5*h, palette[(i-2*m_numLines-nBoundsPorts)%palette.size()].colour, -0.5*M_PI);
       }
 
-    cairoShim.translate(portSpace, yoffs);
+    cairoShim.translate(portSpace, 0);
     cairoShim.setLineWidth(1);
     const double gw=w-2*portSpace, gh=h-portSpace;
 
@@ -304,7 +288,7 @@ namespace minsky
     const double z=Item::zoomFactor();
     const double gw=iWidth()*z-2*portSpace;
     double gh=iHeight()*z-portSpace;
-    if (!title.empty()) gh=iHeight()*z-portSpace-titleHeight;
+    if (!title().empty()) gh=iHeight()*z-portSpace-titleHeight;
     oldLegendLeft=legendLeft*gw+portSpace;
     oldLegendTop=legendTop*gh;
     oldLegendFontSz=legendFontSz;
@@ -317,18 +301,18 @@ namespace minsky
     //const double dx=x-this->x(), dy=y-this->y();
     const double gw=iWidth()*z-2*portSpace;
     double gh=iHeight()*z-portSpace;
-    if (!title.empty()) gh=iHeight()*z-portSpace-titleHeight;
+    if (!title().empty()) gh=iHeight()*z-portSpace-titleHeight;
     const double yoffs=this->y()-(legendTop-0.5)*iHeight()*z;
     switch (ct)
       {
       case ClickType::legendMove:
         legendLeft = (oldLegendLeft + x - clickX-portSpace)/gw;
         legendTop = (oldLegendTop + clickY - y)/gh;
-        if (!title.empty()) legendTop = (oldLegendTop + clickY - y + titleHeight)/gh;
+        if (!title().empty()) legendTop = (oldLegendTop + clickY - y + titleHeight)/gh;
         break;
       case ClickType::legendResize:
         legendFontSz = oldLegendFontSz * (y-yoffs)/(clickY-yoffs);
-        if (!title.empty()) legendFontSz = oldLegendFontSz * (y-yoffs+titleHeight)/(clickY-yoffs);
+        if (!title().empty()) legendFontSz = oldLegendFontSz * (y-yoffs+titleHeight)/(clickY-yoffs);
         break;
       default:
         {
@@ -348,7 +332,7 @@ namespace minsky
     const double dx=x-this->x()+0.5*iWidth()*z-portSpace;
     const double dy=this->y()-y+0.5*iHeight()*z-portSpace;
     const double gw=iWidth()*z-2*portSpace;
-    const double gh=iHeight()*z-portSpace-yoffs*z;
+    const double gh=iHeight()*z-portSpace-titleUsedHeight()*z;
     const double loffx=lh(gw,gh)*!Plot::ylabel.empty(), loffy=lh(gw,gh)*!Plot::xlabel.empty();
     return Plot::mouseMove((dx-loffx)/gw, (dy-loffy)/gh, 10.0/std::max(gw,gh),formatter);
   }
@@ -397,7 +381,7 @@ namespace minsky
 
     double legendWidth, legendHeight, lx, ly;
     // uses legend extents cached when last drawn
-    legendSizeFromCache(lx, ly, legendWidth, legendHeight, z*(iWidth()-2*portSpace), z*(iHeight()-portSpace-yoffs));
+    legendSizeFromCache(lx, ly, legendWidth, legendHeight, z*(iWidth()-2*portSpace), z*(iHeight()-portSpace-titleUsedHeight()));
     // xx & yy are in plot user coordinates
     const double xx= x-this->x() + z*(0.5*iWidth()-portSpace) - lx;
     const double yy= z*(0.5*iHeight()-portSpace)-y+this->y()  - ly+legendHeight;
