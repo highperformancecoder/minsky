@@ -10,7 +10,7 @@ import {
   ElectronService,
   WindowUtilityService,
 } from '@minsky/core';
-import { events, MainRenderingTabs, minsky, RenderNativeWindow } from '@minsky/shared';
+import { events, EventInterface, MainRenderingTabs, minsky, RenderNativeWindow } from '@minsky/shared';
 import { fromEvent, Observable, Subject, takeUntil } from 'rxjs';
 import { sampleTime } from 'rxjs/operators';
 import { AvailableOperationsComponent } from './available-operations/available-operations.component';
@@ -77,15 +77,16 @@ export class WiringComponent implements OnInit, OnDestroy {
 
     this.cmService.resetScroll=async ()=>{
       const generation=scrollGeneration;
-      var pos= await this.electronService.currentTabPosition();
+      const tab=this.cmService.currentTab;
+      var pos= await new EventInterface(tab).position();
       let bounds: number[];
       try {
         // bounds of the currently displayed tab (empty if the tab cannot report them)
-        bounds=await new RenderNativeWindow(this.cmService.currentTab).contentBounds();
+        bounds=await new RenderNativeWindow(tab).contentBounds();
       } catch (e) {console.error(e);}
       // user scrolled while awaiting: discard this stale reset (including the
       // resize), the debounce from the latest scroll will perform a fresh one
-      if (generation!==scrollGeneration) return;
+      if (generation!==scrollGeneration || tab!==this.cmService.currentTab) return;
       // resizing or setting the scroll position generates scroll events,
       // which must not be interpreted as the user panning
       suppressScroll=true;
@@ -102,15 +103,18 @@ export class WiringComponent implements OnInit, OnDestroy {
    this.zone.runOutsideAngular(() => {
       if (this.electronService.isElectron) {
         const handleScroll = async (scrollTop: number, scrollLeft: number) => {
+          // address the tab explicitly, so a move still in flight when the tab
+          // is switched cannot be applied to the newly selected tab
+          const tab=this.cmService.currentTab;
           const scrollableArea = this.windowUtilityService.getScrollableArea();
           const posX = scrollableArea.width / 2 - scrollLeft;
           const posY = scrollableArea.height / 2 - scrollTop;
-          await this.electronService.currentTabMoveTo(posX,posY);
+          await new EventInterface(tab).moveTo(posX,posY);
         };
 
         let rescaleTimer: any;
         minskyCanvasContainer.addEventListener('scroll', async () => {
-          if (suppressScroll) return;
+          if (suppressScroll || this.cmService.tabSwitching) return;
           // once scrolling stops, resize the scrollable area to fit the contents
           {
             ++scrollGeneration;

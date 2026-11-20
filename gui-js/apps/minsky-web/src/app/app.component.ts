@@ -174,6 +174,7 @@ export class AppComponent implements OnInit, DoCheck {
       this.router.navigate(['wiring']);
 
       if (this.electronService.isElectron) {
+        this.cmService.tabSwitching = true;
         this.cmService.currentTab = tab;
         
         setTimeout(async ()=> {
@@ -182,7 +183,11 @@ export class AppComponent implements OnInit, DoCheck {
           await this.electronService.invoke(events.CHANGE_MAIN_TAB, payload);
           // restore the new tab's own pan position (without moving it), and
           // size the scrollbars now that the tab has rendered
-          await this.cmService.resetScroll();
+          try {
+            await this.cmService.resetScroll();
+          } finally {
+            this.cmService.tabSwitching = false;
+          }
         }, 1);
       }
     }
