@@ -41,6 +41,10 @@ namespace minsky
     EquationDisplay(const EquationDisplay&)=default;
     void requestRedraw() {if (surface.get()) surface->requestRedraw();}
     bool hasScrollBars() const override {return true;}
+    std::vector<double> contentBounds() const override {
+      // equations are rendered at the pan offset, scaled by the zoom factor
+      return {offsx, offsy, offsx+m_width*m_zoomFactor, offsy+m_height*m_zoomFactor};
+    }
   };
 
 }

@@ -122,6 +122,21 @@ namespace minsky
     return true;
   }
 
+  std::vector<double> PhillipsDiagram::contentBounds() const
+  {
+    // stocks are drawn at their own position offset by the pan position (x,y)
+    if (stocks.empty()) return {x,y,x,y};
+    double x0=std::numeric_limits<double>::max(), y0=x0, x1=-x0, y1=-x0;
+    for (auto& i: stocks)
+      {
+        x0=std::min<double>(x0,i.second.left());
+        x1=std::max<double>(x1,i.second.right());
+        y0=std::min<double>(y0,i.second.top());
+        y1=std::max<double>(y1,i.second.bottom());
+      }
+    return {x0+x, y0+y, x1+x, y1+y};
+  }
+
   void PhillipsDiagram::init()
   {
     decltype(stocks) newStocks;
