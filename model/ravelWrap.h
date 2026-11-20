@@ -225,6 +225,7 @@ namespace minsky
     /// @param preservePositions if true, do not rotate handles
     void applyState(const ravel::RavelState& state);
     void displayDelayedTooltip(float x, float y) override;
+    std::string tooltipText() const override {return tooltip().empty()? explanation: tooltip();}
     /// export the plotted data as a CSV file
     /// @param tabular - if true, the longest dimension is split across columns as a horizontal dimension
     void exportAsCSV(const std::string& filename, bool tabular) const;

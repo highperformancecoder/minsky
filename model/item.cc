@@ -376,9 +376,6 @@ namespace minsky
     cairoShim.moveTo(r.x(-w+1,-h+2), r.y(-w+1,-h+2));
     cairoShim.showText(tp);
 
-    if (mouseFocus) {
-      displayTooltip(cairoShim,tooltip());	
-    }
     if (onResizeHandles) drawResizeHandles(cairoShim);	
     cairoShim.moveTo(r.x(-w,-h), r.y(-w,-h));
     cairoShim.lineTo(r.x(w,-h), r.y(w,-h));
@@ -394,20 +391,27 @@ namespace minsky
     inkExtents([this](const IMansoura& shim) {draw(shim);});
   }
 
-  void Item::displayTooltip(const mansoura::IMansoura& cairoShim, const std::string& tooltip) const
+  void Item::displayTooltip(const mansoura::IMansoura& cairoShim, const double* viewport) const
   {
+    const string tooltip=tooltipText();
     const string unitstr=units().latexStr();
     if (!tooltip.empty() || !unitstr.empty())
       {
         cairoShim.save();
         string toolTipText=latexToPango(tooltip);
         if (!unitstr.empty())
-          toolTipText+=" Units:"+latexToPango(unitstr);
+          toolTipText+=(toolTipText.empty()? "": "\n")+("Units:"+latexToPango(unitstr)); // units on their own line
         TextProperties tp(toolTipText);
         const float z=zoomFactor();
-        cairoShim.translate(z*(0.5*bb.width())+10,
-                            z*(-0.5*bb.height())-20);
         auto bbox=cairoShim.textExtents(tp);
+        double tx=z*(0.5*bb.width())+10, ty=z*(-0.5*bb.height())-20;
+        if (viewport)
+          {
+            // keep tooltip on screen, favouring the top left corner if too big
+            tx=std::max(viewport[0]-x(), std::min(tx, viewport[2]-bbox.width-x()));
+            ty=std::max(viewport[1]-y(), std::min(ty, viewport[3]-bbox.height-y()));
+          }
+        cairoShim.translate(tx,ty);
         cairoShim.rectangle(0,0,bbox.width,bbox.height);
         cairoShim.setSourceRGB(1,1,1);
         cairoShim.fill(true);

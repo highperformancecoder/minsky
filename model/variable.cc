@@ -872,7 +872,6 @@ void VariableBase::draw(const IMansoura& cairoShim) const
     {
       cairoShim.save();
       drawPorts(cairoShim);
-      displayTooltip(cairoShim,tooltip());
       if (onResizeHandles) drawResizeHandles(cairoShim);
       cairoShim.restore();
     }  
