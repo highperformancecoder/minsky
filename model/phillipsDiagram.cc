@@ -124,8 +124,7 @@ namespace minsky
 
   std::vector<double> PhillipsDiagram::contentBounds() const
   {
-    // stocks are drawn at their own position offset by the pan position (x,y)
-    if (stocks.empty()) return {x,y,x,y};
+    // stocks and flow handles are drawn at their own positions, offset by the pan position (x,y)
     double x0=std::numeric_limits<double>::max(), y0=x0, x1=-x0, y1=-x0;
     for (auto& i: stocks)
       {
@@ -134,6 +133,20 @@ namespace minsky
         y0=std::min<double>(y0,i.second.top());
         y1=std::max<double>(y1,i.second.bottom());
       }
+    for (auto& i: flows)
+      {
+        if (!i.second.from() || !i.second.to()) continue;
+        // end points and intermediate control points
+        auto c=i.second.coords();
+        for (size_t j=0; j+1<c.size(); j+=2)
+          {
+            x0=std::min<double>(x0,c[j]);
+            x1=std::max<double>(x1,c[j]);
+            y0=std::min<double>(y0,c[j+1]);
+            y1=std::max<double>(y1,c[j+1]);
+          }
+      }
+    if (x0>x1) return {x,y,x,y}; // nothing to display
     return {x0+x, y0+y, x1+x, y1+y};
   }
 
