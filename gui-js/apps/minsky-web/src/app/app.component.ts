@@ -177,14 +177,15 @@ export class AppComponent implements OnInit, DoCheck {
         this.cmService.currentTab = tab;
         
         setTimeout(async ()=> {
-          await this.windowUtilityService.reInitialize();
-          const payload = { newTab: tab };
-          await this.electronService.invoke(events.CHANGE_MAIN_TAB, payload);
-          // restore the new tab's own pan position (without moving it), and
-          // size the scrollbars now that the tab has rendered
           try {
+            await this.windowUtilityService.reInitialize();
+            const payload = { newTab: tab };
+            await this.electronService.invoke(events.CHANGE_MAIN_TAB, payload);
+            // restore the new tab's own pan position (without moving it), and
+            // size the scrollbars now that the tab has rendered
             await this.cmService.resetScroll();
           } finally {
+            // always re-enable scrolling, even if a step above failed
             this.cmService.tabSwitching = false;
           }
         }, 1);
