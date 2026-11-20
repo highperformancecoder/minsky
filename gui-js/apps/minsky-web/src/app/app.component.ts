@@ -26,7 +26,6 @@ export class AppComponent implements OnInit, DoCheck {
 
   loading = true;
   publicationTabs = [];
-  private windowUtilityService: WindowUtilityService;
   private resizeTimeout;
   constructor(
     private electronService: ElectronService,
@@ -34,8 +33,8 @@ export class AppComponent implements OnInit, DoCheck {
     private translate: TranslateService,
     private cdRef: ChangeDetectorRef,
     public router: Router,
+    private windowUtilityService: WindowUtilityService,
   ) {
-    this.windowUtilityService=new WindowUtilityService(electronService);
     this.translate.setDefaultLang('en');
   }
 
