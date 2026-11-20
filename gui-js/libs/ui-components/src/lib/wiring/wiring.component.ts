@@ -35,6 +35,7 @@ export class WiringComponent implements OnInit, OnDestroy {
   wiringTab = MainRenderingTabs.canvas;
 
   destroy$ = new Subject<{}>();
+  private rescaleTimer: ReturnType<typeof setTimeout>; // pending scrollable area resize
 
   constructor(
     public cmService: CommunicationService,
@@ -112,22 +113,21 @@ export class WiringComponent implements OnInit, OnDestroy {
           await new EventInterface(tab).moveTo(posX,posY);
         };
 
-        let rescaleTimer: any;
         minskyCanvasContainer.addEventListener('scroll', async () => {
           if (suppressScroll || this.cmService.tabSwitching) return;
           // once scrolling stops, resize the scrollable area to fit the contents
           {
             ++scrollGeneration;
-            clearTimeout(rescaleTimer);
+            clearTimeout(this.rescaleTimer);
             const rescale=()=>{
               // resizing mid-drag would shift the scroll baseline the drag is relative to,
               // so wait until the drag ends
               if (this.cmService.drag)
-                rescaleTimer=setTimeout(rescale,500);
+                this.rescaleTimer=setTimeout(rescale,500);
               else
                 this.cmService.resetScroll();
             };
-            rescaleTimer=setTimeout(rescale,500);
+            this.rescaleTimer=setTimeout(rescale,500);
           }
           await handleScroll(
             minskyCanvasContainer.scrollTop,
@@ -233,6 +233,7 @@ export class WiringComponent implements OnInit, OnDestroy {
   }
   
   ngOnDestroy() {
+    clearTimeout(this.rescaleTimer);
     this.destroy$.next(undefined);
     this.destroy$.complete();
   }
