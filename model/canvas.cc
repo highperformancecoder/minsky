@@ -892,18 +892,16 @@ namespace minsky
       const double viewport[]={updateRegion.x0,updateRegion.y0,updateRegion.x1,updateRegion.y1};
       const bool finite=updateRegion.x1-updateRegion.x0<1e5 && updateRegion.y1-updateRegion.y0<1e5;
       auto drawTooltip=[&](const Item& it) {
-        if (!finite) return;
         const PreserveContext cs(mans);
         mans.identityMatrix();
         mans.translate(it.x(), it.y());
-        it.displayTooltip(mans,viewport);
+        it.displayTooltip(mans,finite? viewport: nullptr);
       };
       auto hasFocus=[](const Item& it) {
         if (it.mouseFocus) return true;
         // io variables show their tooltips when the owning group is focused
-        auto v=it.variableCast();
-        if (!v || !v->ioVar()) return false;
-        auto g=v->group.lock();
+        if (!it.ioVar()) return false;
+        auto g=it.group.lock();
         return g && g->mouseFocus;
       };
       model->recursiveDo
