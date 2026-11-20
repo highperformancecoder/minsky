@@ -87,6 +87,7 @@ namespace minsky
     void mouseMove(float x, float y) override;
     bool keyPress(const EventInterface::KeyPressArgs&) override;
     bool hasScrollBars() const override {return true;}
+    std::vector<double> contentBounds() const override;
   };
 }
 

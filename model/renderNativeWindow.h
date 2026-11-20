@@ -75,6 +75,9 @@ namespace minsky
     static double scaleFactor();
     /// return whether this window has scrollbars (needed for MacOSX).
     virtual bool hasScrollBars() const {return false;}
+    /// bounds {x0,y0,x1,y1} of the rendered content in window
+    /// coordinates, used to size the scrollable area. Empty if unknown.
+    virtual std::vector<double> contentBounds() const {return {};}
     
   private:
     CLASSDESC_ACCESS(RenderNativeWindow); 

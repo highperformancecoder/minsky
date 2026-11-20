@@ -174,6 +174,25 @@ namespace minsky
     return !items.empty() || clickType!=ClickType::outside;
   }
 
+  std::vector<double> PubTab::contentBounds() const
+  {
+    // items are drawn at (x,y) within the tab, then scaled by the zoom and translated by the pan offset
+    double x0=std::numeric_limits<double>::max(), y0=x0, x1=-x0, y1=-x0;
+    for (auto& i: items)
+      {
+        if (!i.itemRef) continue;
+        // restores item state on destruction, so safe to apply to a const PubTab
+        const EnsureEditorMode e(const_cast<PubItem&>(i));
+        const double ix=i.itemRef->x(), iy=i.itemRef->y();
+        x0=std::min<double>(x0,i.x+i.itemRef->left()-ix);
+        x1=std::max<double>(x1,i.x+i.itemRef->right()-ix);
+        y0=std::min<double>(y0,i.y+i.itemRef->top()-iy);
+        y1=std::max<double>(y1,i.y+i.itemRef->bottom()-iy);
+      }
+    if (x0>x1) return {offsx,offsy,offsx,offsy};
+    return {offsx+x0*m_zoomFactor, offsy+y0*m_zoomFactor, offsx+x1*m_zoomFactor, offsy+y1*m_zoomFactor};
+  }
+
   PubItem* PubTab::m_getItemAt(float x, float y) 
   {
     for (auto& i: items)
