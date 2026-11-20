@@ -27,6 +27,7 @@ export class AppComponent implements OnInit, DoCheck {
   loading = true;
   publicationTabs = [];
   private resizeTimeout;
+  private tabSwitchGeneration=0; // identifies the most recent main tab switch
   constructor(
     private electronService: ElectronService,
     private cmService: CommunicationService,
@@ -173,6 +174,7 @@ export class AppComponent implements OnInit, DoCheck {
       this.router.navigate(['wiring']);
 
       if (this.electronService.isElectron) {
+        const generation=++this.tabSwitchGeneration;
         this.cmService.tabSwitching = true;
         this.cmService.currentTab = tab;
         
@@ -185,8 +187,10 @@ export class AppComponent implements OnInit, DoCheck {
             // size the scrollbars now that the tab has rendered
             await this.cmService.resetScroll();
           } finally {
-            // always re-enable scrolling, even if a step above failed
-            this.cmService.tabSwitching = false;
+            // re-enable scrolling, even if a step above failed, but only if no
+            // later switch has started and is still in progress
+            if (generation===this.tabSwitchGeneration)
+              this.cmService.tabSwitching = false;
           }
         }, 1);
       }
