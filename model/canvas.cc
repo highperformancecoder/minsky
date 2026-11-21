@@ -889,8 +889,9 @@ namespace minsky
     // draw tooltips last, so they are on top of everything else (ticket #780)
     {
       // only clamp to a real viewport, not the huge region used for export
-      const double viewport[]={updateRegion.x0,updateRegion.y0,updateRegion.x1,updateRegion.y1};
-      const bool finite=updateRegion.x1-updateRegion.x0<1e5 && updateRegion.y1-updateRegion.y0<1e5;
+      auto& f=frameArgs();
+      const double viewport[]={f.offsetLeft,f.offsetTop,f.offsetLeft+f.childWidth,f.offsetTop+f.childHeight};
+      const bool finite=f.childWidth<1e5 && f.childHeight<1e5;
       auto drawTooltip=[&](const Item& it) {
         const PreserveContext cs(mans);
         mans.identityMatrix();
