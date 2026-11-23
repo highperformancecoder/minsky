@@ -301,7 +301,6 @@ void Sheet::draw(const IMansoura& cairo) const
   if (mouseFocus)
     {
       drawPorts(cairo);
-      displayTooltip(cairo,tooltip());
       // Resize handles always visible on mousefocus. For ticket 92.
       drawResizeHandles(cairo);
     }

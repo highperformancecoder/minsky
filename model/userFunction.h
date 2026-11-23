@@ -45,10 +45,10 @@ namespace  minsky
     double operator()(const std::vector<double>& p) override;
 
     Units units(bool check=false) const override;
-    void displayTooltip(const mansoura::IMansoura& cr, const std::string& tt) const override
-    {Item::displayTooltip(cr,tt.empty()? expression: tt+" "+expression);}
     Units units(const std::vector<Units>& argUnits, bool check,
                 const std::vector<double>& argValues={}) const;
+    std::string tooltipText() const override
+    {return tooltip().empty()? expression: tooltip()+" "+expression;}
 
     using NamedOp::description;
     std::string description(const std::string&) override;

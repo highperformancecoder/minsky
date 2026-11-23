@@ -525,7 +525,6 @@ namespace minsky
     if (mouseFocus)
       {
         drawPorts(cairoShim);
-        displayTooltip(cairoShim,tooltip());
         drawResizeHandles(cairoShim);
       }
       

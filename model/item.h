@@ -299,8 +299,13 @@ namespace minsky
     /// port positions
     void dummyDraw() const;
 
-    /// display tooltip text, eg on mouseover
-    virtual void displayTooltip(const mansoura::IMansoura&, const std::string&) const;
+    /// text to display as a tooltip on mouseover
+    virtual std::string tooltipText() const {return tooltip();}
+
+    /// display tooltip text, eg on mouseover. The current origin must
+    /// be (x(),y()). If viewport {x0,y0,x1,y1} is given, the tooltip
+    /// is shifted if necessary to lie within it.
+    virtual void displayTooltip(const mansoura::IMansoura&, const double* viewport=nullptr) const;
     
     /// update display after a step()
     virtual void updateIcon(double t) {}
