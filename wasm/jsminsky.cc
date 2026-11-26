@@ -130,6 +130,10 @@ struct JSMinsky: public CppWrapper
     jsGuard([&]{renderImpl(width,height); return 0;});
   }
 
+  /// Called (with no arguments) when an SVG image finishes loading
+  /// asynchronously, so the page can redraw.
+  void setSVGReadyCallback(const val& fn) {man.setSVGReadyCallback(fn);}
+
   void renderImpl(int width, int height)
   {
     man.syncState();
@@ -153,6 +157,7 @@ EMSCRIPTEN_BINDINGS(Minsky) {
   class_<JSMinsky,base<CppWrapper>>("Minsky")
     .constructor<const val&>()
     .function("render",&JSMinsky::render)
+    .function("setSVGReadyCallback",&JSMinsky::setSVGReadyCallback)
     ;
 
   register_vector<std::string>("vector<string>");

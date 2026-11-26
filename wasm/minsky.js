@@ -126,9 +126,24 @@ function newMinsky(Module, canvasId, options={}) {
     requestAnimationFrame(()=>{pending=false; minsky.redraw();});
   };
 
+  // SVG icons load asynchronously, so redraw once each is ready
+  if (impl.setSVGReadyCallback) impl.setSVGReadyCallback(()=>minsky.requestRedraw());
+  else console.warn("setSVGReadyCallback missing: stale jsminsky.js/.wasm? SVGs won't redraw when loaded");
+
   // read a file into the module's virtual file system, so it can be loaded
   minsky.writeFile=(path,data)=>Module.FS.writeFile(path,
       data instanceof ArrayBuffer? new Uint8Array(data): data);
+  // Fetch an SVG from \a url into the virtual file system, and
+  // register it with the backend via \a method, eg
+  //   await minsky.loadIconResource('setGodleyIconResource','icons/bank.svg');
+  // Must be done before the icon is first drawn (ie before loading a model).
+  minsky.loadIconResource=async (method,url,name)=>{
+    const response=await fetch(url);
+    if (!response.ok) throw new Error(url+": "+response.statusText);
+    const path='/'+(name||url.split('/').pop());
+    minsky.writeFile(path,await response.arrayBuffer());
+    minsky.call(method,path);
+  };
   // fetch a model from a URL, and load it
   minsky.loadURL=async (url)=>{
     const response=await fetch(url);

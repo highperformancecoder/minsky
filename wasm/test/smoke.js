@@ -83,6 +83,11 @@ createMinsky().then(M=>{
   assert.strictEqual(m.call('t','[]').json(),'0.34600000000000025');
   assert.strictEqual(m.call('variableValues.@elem.:Y.value','[]').json(),'100.99024361459334');
 
+  // the Godley icon can be loaded from an SVG file
+  M.FS.writeFile('/bank.svg',fs.readFileSync(path.join(__dirname,
+    '../../gui-js/apps/minsky-web/src/assets/images/icons/bank.svg')));
+  m.call('setGodleyIconResource','/bank.svg');
+
   // the loaded model draws items: text, paths and fills
   log.length=0;
   m.render(800,600);
