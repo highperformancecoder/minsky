@@ -30,12 +30,12 @@
 <!-- json5 is needed by minsky.js; use any copy of it, eg from a CDN. This one is the
      copy the GUI uses, which is why the page must be served from the repository root. -->
 <script src="json5.js"></script>
-<script src="jsminsky.js"></script>
-<script src="minsky.js"></script>
+<script src="jsminsky.js?v=3"></script>
+<script src="minsky.js?v=3"></script>
 <script>
 // Serve the parent directory, eg: cd .. && python3 -m http.server, then open /wasm/test.html
 const msg=text=>{document.getElementById('msg').textContent=text||'';};
-createMinsky().then(Module=>{
+createMinsky({locateFile: f=>f+"?v=3"}).then(Module=>{
   const minsky=newMinsky(Module,'c',{onError: e=>msg(e.message||e)});
   window.minsky=minsky;   // for experimenting in the console
   let running=false, frame=0;
@@ -60,7 +60,11 @@ createMinsky().then(Module=>{
     $('run').textContent=running? 'Stop': 'Run';
     if (running) tick(); else cancelAnimationFrame(frame);
   };
-  $('load').click();
+  // the icon must be in the virtual file system before the model is drawn
+  minsky.loadIconResource('setGodleyIconResource',
+    '../gui-js/apps/minsky-web/src/assets/images/icons/bank.svg')
+    .catch(e=>msg(e.message))
+    .then(()=>$('load').click());
 });
 </script>
 </body>
